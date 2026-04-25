@@ -1,0 +1,642 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+.page { font-family: var(--font-sans); color: var(--color-text-primary); padding: 1.5rem 0; }
+.nav-tabs { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 2rem; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.tab-btn { padding: 8px 14px; font-size: 13px; font-weight: 500; border: 0.5px solid var(--color-border-secondary); border-bottom: none; border-radius: 8px 8px 0 0; background: var(--color-background-secondary); color: var(--color-text-secondary); cursor: pointer; transition: all 0.15s; }
+.tab-btn.active { background: var(--color-background-primary); color: var(--color-text-primary); border-color: var(--color-border-primary); }
+.section { display: none; }
+.section.active { display: block; }
+h2 { font-size: 18px; font-weight: 500; margin-bottom: 0.4rem; }
+h3 { font-size: 15px; font-weight: 500; margin: 1.2rem 0 0.5rem; }
+p { font-size: 14px; line-height: 1.7; color: var(--color-text-secondary); margin-bottom: 0.6rem; }
+.card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; }
+.formula { font-family: var(--font-mono); font-size: 13px; background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: 8px; padding: 10px 14px; margin: 0.5rem 0; line-height: 1.8; }
+.grid2 { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 12px; }
+@media (max-width: 500px) { .grid2 { grid-template-columns: 1fr; } }
+.sim-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+.sim-row label { font-size: 13px; color: var(--color-text-secondary); }
+.result-box { background: var(--color-background-secondary); border-radius: 8px; padding: 12px 16px; font-size: 13px; line-height: 1.8; min-height: 40px; }
+.step { font-size: 13px; padding: 5px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.step:last-child { border: none; }
+.sn { display: inline-block; width: 20px; height: 20px; border-radius: 50%; background: var(--color-background-info); color: var(--color-text-info); font-size: 11px; font-weight: 500; text-align: center; line-height: 20px; margin-right: 6px; }
+.hl { color: var(--color-text-info); font-weight: 500; }
+.hl2 { color: #3B6D11; font-weight: 500; }
+.hl3 { color: #993556; font-weight: 500; }
+.btn { padding: 8px 16px; font-size: 13px; font-weight: 500; border: 0.5px solid var(--color-border-primary); border-radius: 8px; background: var(--color-background-primary); color: var(--color-text-primary); cursor: pointer; }
+.btn:hover { background: var(--color-background-secondary); }
+.tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 6px; font-weight: 500; margin: 2px; }
+.tag-b { background: #E6F1FB; color: #0C447C; }
+.tag-g { background: #EAF3DE; color: #3B6D11; }
+.tag-a { background: #FAEEDA; color: #633806; }
+.tag-p { background: #EEEDFE; color: #3C3489; }
+.tag-r { background: #FCEBEB; color: #791F1F; }
+.quiz-opt { width: 100%; text-align: left; padding: 10px 14px; font-size: 13px; margin-bottom: 6px; border: 0.5px solid var(--color-border-secondary); border-radius: 8px; background: var(--color-background-primary); color: var(--color-text-primary); cursor: pointer; }
+.quiz-opt:hover { background: var(--color-background-secondary); }
+.quiz-opt.correct { background: #EAF3DE; border-color: #97C459; color: #3B6D11; }
+.quiz-opt.wrong { background: #FCEBEB; border-color: #F09595; color: #791F1F; }
+.fb { font-size: 13px; padding: 10px 14px; border-radius: 8px; margin-top: 8px; }
+.fb-ok { background: #EAF3DE; color: #27500A; }
+.fb-no { background: #FCEBEB; color: #501313; }
+.score-b { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; background: #E6F1FB; color: #0C447C; }
+.step-trace { max-height: 200px; overflow-y: auto; }
+.pascal-row { display: flex; justify-content: center; gap: 4px; margin-bottom: 4px; }
+.pascal-cell { min-width: 36px; height: 28px; border-radius: 6px; font-size: 12px; font-weight: 500; display: flex; align-items: center; justify-content: center; border: 0.5px solid var(--color-border-tertiary); background: var(--color-background-secondary); transition: all 0.2s; }
+.pascal-cell.hl-cell { background: #E6F1FB; color: #0C447C; border-color: #85B7EB; }
+.pascal-cell.target { background: #FAEEDA; color: #633806; border-color: #EF9F27; font-size: 13px; }
+.fib-cell { display: inline-flex; align-items: center; justify-content: center; min-width: 42px; height: 34px; border-radius: 6px; font-size: 12px; font-weight: 500; border: 0.5px solid var(--color-border-tertiary); background: var(--color-background-secondary); margin: 3px; }
+.fib-cell.active { background: #EEEDFE; color: #3C3489; border-color: #AFA9EC; }
+.fib-cell.prev1 { background: #E6F1FB; color: #0C447C; border-color: #85B7EB; }
+.fib-cell.prev2 { background: #EAF3DE; color: #3B6D11; border-color: #97C459; }
+.hanoi-disk { height: 20px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; color: white; margin: 2px auto; transition: all 0.3s; }
+.peg { border-left: 2px solid var(--color-border-primary); min-height: 120px; position: relative; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 0; }
+.peg-base { height: 6px; background: var(--color-border-primary); border-radius: 3px; margin-top: 2px; }
+.peg-container { flex: 1; display: flex; flex-direction: column-reverse; align-items: center; width: 100%; padding: 0 4px; }
+.hanoi-wrap { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 0.75rem 0; }
+.peg-label { text-align: center; font-size: 12px; color: var(--color-text-secondary); margin-bottom: 4px; }
+.venn-wrap { margin: 0.75rem 0; }
+.inclusion-table { width: 100%; font-size: 12px; border-collapse: collapse; }
+.inclusion-table th { background: var(--color-background-secondary); padding: 6px; text-align: center; border: 0.5px solid var(--color-border-tertiary); font-weight: 500; }
+.inclusion-table td { padding: 5px 8px; text-align: center; border: 0.5px solid var(--color-border-tertiary); }
+.dove-grid { display: flex; flex-wrap: wrap; gap: 6px; margin: 0.75rem 0; }
+.dove-box { border: 0.5px solid var(--color-border-secondary); border-radius: 8px; padding: 8px; min-width: 50px; text-align: center; font-size: 12px; background: var(--color-background-secondary); }
+.dove-box.overflow { background: #FCEBEB; border-color: #F09595; color: #791F1F; }
+.dove-item { font-size: 16px; }
+</style>
+
+<div class="page">
+  <h2 style="margin-bottom:0.25rem">조합론 (Combinatorics)</h2>
+  <p style="font-size:13px;margin-bottom:1.25rem">경우의 수 핵심 이론 — 변별력 최고 영역 완전 정복</p>
+
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="switchTab('perm')">순열 & 조합</button>
+    <button class="tab-btn" onclick="switchTab('inclusion')">포함-배제 원리</button>
+    <button class="tab-btn" onclick="switchTab('pigeon')">비둘기집 원리</button>
+    <button class="tab-btn" onclick="switchTab('recur')">점화식</button>
+    <button class="tab-btn" onclick="switchTab('quiz')">퀴즈</button>
+  </div>
+
+  <!-- 순열 조합 -->
+  <div class="section active" id="tab-perm">
+    <h2>순열(Permutation) & 조합(Combination)</h2>
+    <p>순서를 고려하면 순열, 고려하지 않으면 조합입니다.</p>
+
+    <div class="grid2">
+      <div class="card">
+        <h3 style="margin-top:0">기본 공식</h3>
+        <div class="formula">// 순열: n개 중 r개를 순서있게<br>nPr = n! / (n-r)!<br><br>// 조합: n개 중 r개를 순서없이<br>nCr = n! / (r! × (n-r)!)<br>    = nPr / r!</div>
+        <p style="font-size:12px;margin-top:0.5rem">핵심: 조합 = 순열 ÷ r! (중복 순서 제거)</p>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">중복 순열 & 중복 조합</h3>
+        <div class="formula">// 중복 순열: n개에서 r개 (반복 허용)<br>n^r  (n의 r제곱)<br><br>// 중복 조합: n개에서 r개 (순서 무시, 반복 허용)<br>H(n,r) = C(n+r-1, r)<br>       = (n+r-1)! / (r! × (n-1)!)</div>
+        <p style="font-size:12px;margin-top:0.5rem">예: 동전 3종류에서 4개 선택 → H(3,4)=C(6,4)=15</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">C 언어 구현</h3>
+      <div class="formula">long long fact(int n) { return n&lt;=1?1:n*fact(n-1); }<br>long long perm(int n,int r) { return fact(n)/fact(n-r); }<br>long long comb(int n,int r) { return fact(n)/(fact(r)*fact(n-r)); }<br><br>// DP로 큰 조합 계산 (파스칼 삼각형)<br>long long C[101][101];<br>void build() {<br>  for(int i=0;i&lt;=100;i++) {<br>    C[i][0]=C[i][i]=1;<br>    for(int j=1;j&lt;i;j++)<br>      C[i][j]=C[i-1][j-1]+C[i-1][j]; // mod 필요 시 추가<br>  }<br>}</div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3 style="margin-top:0">계산기</h3>
+        <div class="sim-row">
+          <label>n =</label>
+          <input type="number" id="cn" value="6" min="0" max="20" style="width:60px">
+          <label>r =</label>
+          <input type="number" id="cr" value="2" min="0" max="20" style="width:60px">
+          <button class="btn" onclick="calcComb()">계산</button>
+        </div>
+        <div id="comb_result" class="result-box"></div>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">파스칼 삼각형</h3>
+        <p style="font-size:12px">C(n,r) = C(n-1,r-1) + C(n-1,r) — 노란 셀이 선택된 값</p>
+        <div id="pascal_tri"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">중복 종류별 비교 표</h3>
+      <table style="width:100%;font-size:13px;border-collapse:collapse">
+        <tr>
+          <th style="background:var(--color-background-secondary);padding:8px;border:0.5px solid var(--color-border-tertiary);text-align:left">유형</th>
+          <th style="background:var(--color-background-secondary);padding:8px;border:0.5px solid var(--color-border-tertiary)">공식</th>
+          <th style="background:var(--color-background-secondary);padding:8px;border:0.5px solid var(--color-border-tertiary)">순서</th>
+          <th style="background:var(--color-background-secondary);padding:8px;border:0.5px solid var(--color-border-tertiary)">중복</th>
+          <th style="background:var(--color-background-secondary);padding:8px;border:0.5px solid var(--color-border-tertiary)">n=3,r=2 예</th>
+        </tr>
+        <tr>
+          <td style="padding:7px 8px;border:0.5px solid var(--color-border-tertiary)"><span class="tag tag-b">순열</span></td>
+          <td style="padding:7px 8px;border:0.5px solid var(--color-border-tertiary);text-align:center;font-family:var(--font-mono);font-size:12px">nPr</td>
+          <td style="padding:7px 8px;border:0.5px solid var(--color-border-tertiary);text-align:center">O</td>
+          <td style="padding:7px 8px;border:0.5px solid var(--color-border-tertiary);text-align:center">X</td>
+          <td style="padding:7px 8px;border:0.5px solid var(--color-border-tertiary);text-align:center">6</td>
+        </tr>
+        <tr>
+          <td style="padding:7px 8px;border:0.5px solid var(--color-border-tertiary)"><span class="tag tag-g">조합</span></td>
+          <td style="padding:7px 8px;border:0.5px solid var(--color-border-tertiary);text-align:center;font-family:var(--font-mono);font-size:12px">nCr</td>
+          <td style="padding:7px 8px;border:0.5px solid var(--color-border-tertiary);text-align:center">X</td>
+          <td style="padding:7px 8px;border:0.5px solid var(--color-border-tertiary);text-align:center">X</td>
+          <td style="padding:7px 8px;border:0.5px solid var(--color-border-tertiary);text-align:center">3</td>
+        </tr>
+        <tr>
+          <td style="padding:7px 8px;border:0.5px solid var(--color-border-tertiary)"><span class="tag tag-a">중복 순열</span></td>
+          <td style="padding:7px 8px;border:0.5px solid var(--color-border-tertiary);text-align:center;font-family:var(--font-mono);font-size:12px">n^r</td>
+          <td style="padding:7px 8px;border:0.5px solid var(--color-border-tertiary);text-align:center">O</td>
+          <td style="padding:7px 8px;border:0.5px solid var(--color-border-tertiary);text-align:center">O</td>
+          <td style="padding:7px 8px;border:0.5px solid var(--color-border-tertiary);text-align:center">9</td>
+        </tr>
+        <tr>
+          <td style="padding:7px 8px;border:0.5px solid var(--color-border-tertiary)"><span class="tag tag-p">중복 조합</span></td>
+          <td style="padding:7px 8px;border:0.5px solid var(--color-border-tertiary);text-align:center;font-family:var(--font-mono);font-size:12px">H(n,r)</td>
+          <td style="padding:7px 8px;border:0.5px solid var(--color-border-tertiary);text-align:center">X</td>
+          <td style="padding:7px 8px;border:0.5px solid var(--color-border-tertiary);text-align:center">O</td>
+          <td style="padding:7px 8px;border:0.5px solid var(--color-border-tertiary);text-align:center">6</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- 포함-배제 -->
+  <div class="section" id="tab-inclusion">
+    <h2>포함과 배제의 원리</h2>
+    <p>여러 집합의 합집합 원소 수를 구할 때, 중복 계산을 보정하는 원리입니다.</p>
+
+    <div class="grid2">
+      <div class="card">
+        <h3 style="margin-top:0">2개 집합</h3>
+        <div class="formula">|A ∪ B| = |A| + |B| - |A ∩ B|</div>
+        <p style="font-size:12px;margin-top:0.5rem">A와 B 모두에 속하는 원소를 한 번 빼줌</p>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">3개 집합</h3>
+        <div class="formula">|A∪B∪C| =<br>  |A|+|B|+|C|<br>  -|A∩B|-|B∩C|-|A∩C|<br>  +|A∩B∩C|</div>
+        <p style="font-size:12px;margin-top:0.5rem">교집합은 빼고, 3중 교집합은 다시 더함</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">일반화 공식</h3>
+      <div class="formula">|A₁∪A₂∪...∪Aₙ| =<br>  Σ|Aᵢ|<br>  - Σ|Aᵢ∩Aⱼ|<br>  + Σ|Aᵢ∩Aⱼ∩Aₖ|<br>  - ... + (-1)^(n+1)|A₁∩A₂∩...∩Aₙ|</div>
+      <p style="font-size:13px;margin-top:0.5rem">부호 규칙: 홀수 개 교집합은 +, 짝수 개는 −</p>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">시뮬레이터 — 1~N 중 k의 배수 제외</h3>
+      <p style="font-size:13px">1부터 N까지의 수 중, 각 약수의 배수를 가지는 수의 개수 (포함-배제 적용)</p>
+      <div class="sim-row">
+        <label>N =</label>
+        <input type="number" id="ie_n" value="30" min="1" max="300" style="width:70px">
+        <label>A의 배수</label>
+        <input type="number" id="ie_a" value="2" min="2" max="20" style="width:55px">
+        <label>B의 배수</label>
+        <input type="number" id="ie_b" value="3" min="2" max="20" style="width:55px">
+        <label>C의 배수</label>
+        <input type="number" id="ie_c" value="5" min="2" max="20" style="width:55px">
+        <button class="btn" onclick="runIE()">계산</button>
+      </div>
+      <div id="ie_steps" class="step-trace"></div>
+      <div id="ie_result" class="result-box" style="margin-top:8px"></div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">대표 유형: 교란 순열(완전 순열)</h3>
+      <p style="font-size:13px">n개를 배열할 때 어떤 원소도 원래 자리에 없는 경우의 수 D(n):</p>
+      <div class="formula">D(0)=1, D(1)=0<br>D(n) = (n-1) × (D(n-2) + D(n-1))<br>     = n! × (1 - 1/1! + 1/2! - 1/3! + ...)</div>
+      <div class="sim-row" style="margin-top:0.75rem">
+        <label>n =</label>
+        <input type="number" id="derange_n" value="4" min="0" max="10" style="width:60px">
+        <button class="btn" onclick="runDerange()">계산</button>
+      </div>
+      <div id="derange_result" class="result-box"></div>
+    </div>
+  </div>
+
+  <!-- 비둘기집 -->
+  <div class="section" id="tab-pigeon">
+    <h2>비둘기집의 원리 (Pigeonhole Principle)</h2>
+    <p>n+1마리의 비둘기가 n개의 집에 들어갈 때, 반드시 2마리 이상이 같은 집에 있습니다.</p>
+
+    <div class="grid2">
+      <div class="card">
+        <h3 style="margin-top:0">기본 원리</h3>
+        <div class="formula">비둘기 수 > 집의 수<br>⟹ 어떤 집에는 2마리 이상</div>
+        <p style="font-size:13px;margin-top:0.5rem">더 일반적으로: n개 집에 kn+1개 비둘기 → 어떤 집에 k+1마리 이상</p>
+        <div class="formula">⌈(총 비둘기) / (집의 수)⌉ 마리 이상이<br>반드시 같은 집에 존재</div>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">대표 응용</h3>
+        <p style="font-size:13px"><span class="tag tag-b">생일 문제</span> 367명 중 생일 같은 쌍 보장 (365+1)</p>
+        <p style="font-size:13px"><span class="tag tag-g">수열 증가</span> n²+1개 수 중 길이 n+1 이상의 증가 또는 감소 부분수열 존재</p>
+        <p style="font-size:13px"><span class="tag tag-a">나머지</span> n+1개의 정수 중 차가 n의 배수인 쌍 존재</p>
+        <p style="font-size:13px"><span class="tag tag-p">그래프</span> n개 꼭짓점에서 각 차수 0~n-1 → 중복 차수 존재</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">시뮬레이터 — 비둘기 배치</h3>
+      <div class="sim-row">
+        <label>집 수 (n)</label>
+        <input type="number" id="ph_boxes" value="5" min="2" max="10" style="width:60px">
+        <label>비둘기 수</label>
+        <input type="number" id="ph_birds" value="7" min="2" max="25" style="width:60px">
+        <button class="btn" onclick="runPigeon()">배치하기</button>
+        <button class="btn" onclick="shufflePigeon()">섞기</button>
+      </div>
+      <div id="pigeon_grid" class="dove-grid"></div>
+      <div id="pigeon_result" class="result-box"></div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">예제 분석: 나머지 비둘기집</h3>
+      <p style="font-size:13px">1부터 200까지의 수 중 51개를 선택하면, 반드시 한 수가 다른 수의 배수인 쌍이 존재합니다.</p>
+      <div class="formula">이유: 1~200의 모든 수는 홀수 × 2^k 로 표현<br>홀수 부분(1,3,5,...,199)은 100개<br>51 > 100/2 → 비둘기집 원리 적용<br>⟹ 같은 홀수 성분을 가진 두 수 존재<br>⟹ 한 수가 다른 수의 배수</div>
+      <div class="sim-row" style="margin-top:0.5rem">
+        <button class="btn" onclick="runPigeonEx()">예시 생성</button>
+      </div>
+      <div id="pigeon_ex" class="result-box"></div>
+    </div>
+  </div>
+
+  <!-- 점화식 -->
+  <div class="section" id="tab-recur">
+    <h2>점화식 (Recurrence Relation)</h2>
+    <p>수열의 이전 항들로 다음 항을 정의하는 규칙입니다. DP의 핵심 개념입니다.</p>
+
+    <div class="grid2">
+      <div class="card">
+        <h3 style="margin-top:0">점화식 유형</h3>
+        <p style="font-size:13px"><span class="tag tag-b">1차 선형</span> a(n) = r × a(n-1)</p>
+        <p style="font-size:13px"><span class="tag tag-g">피보나치형</span> F(n) = F(n-1) + F(n-2)</p>
+        <p style="font-size:13px"><span class="tag tag-a">분할정복형</span> T(n) = 2T(n/2) + n</p>
+        <p style="font-size:13px"><span class="tag tag-p">이항형</span> C(n,r) = C(n-1,r-1) + C(n-1,r)</p>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">하노이의 탑</h3>
+        <div class="formula">H(1) = 1<br>H(n) = 2×H(n-1) + 1<br>     = 2^n - 1</div>
+        <p style="font-size:12px;margin-top:0.5rem">n개 원판 이동에 2ⁿ-1번 필요. 3개면 7번, 10개면 1023번!</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">피보나치 수열 시뮬레이터</h3>
+      <p style="font-size:13px">F(0)=0, F(1)=1, F(n)=F(n-1)+F(n-2) — 파란색+초록색=보라색</p>
+      <div class="sim-row">
+        <label>n까지 =</label>
+        <input type="number" id="fib_n" value="10" min="2" max="20" style="width:60px">
+        <button class="btn" onclick="runFib()">생성</button>
+      </div>
+      <div id="fib_cells" style="margin:0.5rem 0;line-height:2"></div>
+      <div id="fib_step" class="result-box" style="margin-top:6px"></div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">하노이의 탑 시뮬레이터</h3>
+      <div class="sim-row">
+        <label>원판 수 n =</label>
+        <input type="number" id="hanoi_n" value="3" min="1" max="5" style="width:60px">
+        <button class="btn" onclick="startHanoi()">시작</button>
+        <button class="btn" onclick="hanoiStep()">다음 이동</button>
+        <button class="btn" onclick="hanoiReset()">초기화</button>
+        <span id="hanoi_info" style="font-size:13px;color:var(--color-text-secondary)"></span>
+      </div>
+      <div class="hanoi-wrap" id="hanoi_wrap"></div>
+      <div id="hanoi_log" class="result-box" style="max-height:100px;overflow-y:auto"></div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">대표 점화식 모음</h3>
+      <table style="width:100%;font-size:12px;border-collapse:collapse">
+        <tr>
+          <th style="background:var(--color-background-secondary);padding:6px 8px;border:0.5px solid var(--color-border-tertiary);text-align:left">수열/문제</th>
+          <th style="background:var(--color-background-secondary);padding:6px 8px;border:0.5px solid var(--color-border-tertiary)">점화식</th>
+          <th style="background:var(--color-background-secondary);padding:6px 8px;border:0.5px solid var(--color-border-tertiary)">초기값</th>
+          <th style="background:var(--color-background-secondary);padding:6px 8px;border:0.5px solid var(--color-border-tertiary)">처음 몇 항</th>
+        </tr>
+        <tr><td style="padding:6px 8px;border:0.5px solid var(--color-border-tertiary)">피보나치</td><td style="padding:6px 8px;border:0.5px solid var(--color-border-tertiary);font-family:var(--font-mono);font-size:11px;text-align:center">F(n)=F(n-1)+F(n-2)</td><td style="padding:6px 8px;border:0.5px solid var(--color-border-tertiary);text-align:center">0,1</td><td style="padding:6px 8px;border:0.5px solid var(--color-border-tertiary);text-align:center">0,1,1,2,3,5,8,13</td></tr>
+        <tr><td style="padding:6px 8px;border:0.5px solid var(--color-border-tertiary)">하노이</td><td style="padding:6px 8px;border:0.5px solid var(--color-border-tertiary);font-family:var(--font-mono);font-size:11px;text-align:center">H(n)=2H(n-1)+1</td><td style="padding:6px 8px;border:0.5px solid var(--color-border-tertiary);text-align:center">H(1)=1</td><td style="padding:6px 8px;border:0.5px solid var(--color-border-tertiary);text-align:center">1,3,7,15,31</td></tr>
+        <tr><td style="padding:6px 8px;border:0.5px solid var(--color-border-tertiary)">카탈란 수</td><td style="padding:6px 8px;border:0.5px solid var(--color-border-tertiary);font-family:var(--font-mono);font-size:11px;text-align:center">C(n)=C(n-1)×2(2n-1)/(n+1)</td><td style="padding:6px 8px;border:0.5px solid var(--color-border-tertiary);text-align:center">C(0)=1</td><td style="padding:6px 8px;border:0.5px solid var(--color-border-tertiary);text-align:center">1,1,2,5,14,42</td></tr>
+        <tr><td style="padding:6px 8px;border:0.5px solid var(--color-border-tertiary)">계단 오르기</td><td style="padding:6px 8px;border:0.5px solid var(--color-border-tertiary);font-family:var(--font-mono);font-size:11px;text-align:center">S(n)=S(n-1)+S(n-2)</td><td style="padding:6px 8px;border:0.5px solid var(--color-border-tertiary);text-align:center">S(1)=1,S(2)=2</td><td style="padding:6px 8px;border:0.5px solid var(--color-border-tertiary);text-align:center">1,2,3,5,8,13</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- 퀴즈 -->
+  <div class="section" id="tab-quiz">
+    <h2>연습 퀴즈</h2>
+    <p>조합론 4개 파트 통합 문제입니다.</p>
+    <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:1rem">문제 <span id="q_num">1</span> / <span id="q_total">10</span> &nbsp;<span class="score-b" id="q_score">점수: 0</span></div>
+    <div class="card" id="quiz_card">
+      <p id="quiz_q" style="font-size:15px;font-weight:500;color:var(--color-text-primary);margin-bottom:1rem"></p>
+      <div id="quiz_opts"></div>
+      <div id="quiz_fb" class="fb" style="display:none"></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button class="btn" id="next_btn" onclick="nextQ()" style="display:none">다음 문제 →</button>
+    </div>
+    <div id="quiz_done" style="display:none;margin-top:1rem">
+      <div class="card">
+        <p style="font-size:15px;font-weight:500;margin-bottom:0.5rem">퀴즈 완료!</p>
+        <p id="quiz_final" style="font-size:14px;color:var(--color-text-secondary)"></p>
+        <button class="btn" onclick="resetQuiz()" style="margin-top:0.75rem">다시 풀기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Tab
+function switchTab(id) {
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// Factorial
+function fact(n) { let r=1n; for(let i=2n;i<=BigInt(n);i++) r*=i; return r; }
+function C(n,r) { if(r<0||r>n) return 0n; return fact(n)/(fact(r)*fact(n-r)); }
+
+// Comb calc + pascal
+function calcComb() {
+  let n=parseInt(document.getElementById('cn').value);
+  let r=parseInt(document.getElementById('cr').value);
+  if(isNaN(n)||isNaN(r)||n<0||r<0) return;
+  let perm_v = r<=n ? fact(n)/fact(n-r) : 0n;
+  let comb_v = r<=n ? C(n,r) : 0n;
+  let rperm = BigInt(n)**BigInt(r);
+  let hcomb = r<=n ? C(n+r-1,r) : 0n;
+  document.getElementById('comb_result').innerHTML =
+    `<span class="tag tag-b">순열 ${n}P${r}</span> = <span class="hl">${perm_v}</span> &nbsp;
+     <span class="tag tag-g">조합 ${n}C${r}</span> = <span class="hl2">${comb_v}</span><br>
+     <span class="tag tag-a">중복순열 ${n}^${r}</span> = <span class="hl">${rperm}</span> &nbsp;
+     <span class="tag tag-p">중복조합 H(${n},${r})</span> = <span class="hl2">${hcomb}</span>`;
+  buildPascal(n, r);
+}
+
+function buildPascal(tn, tr) {
+  let rows = Math.min(tn+1, 9);
+  let dp = [];
+  for(let i=0;i<=rows;i++) {
+    dp[i]=[];
+    for(let j=0;j<=i;j++) dp[i][j] = j===0||j===i ? 1 : dp[i-1][j-1]+dp[i-1][j];
+  }
+  let html='';
+  for(let i=0;i<rows;i++) {
+    html+=`<div class="pascal-row">`;
+    for(let j=0;j<=i;j++) {
+      let cls = 'pascal-cell';
+      if(i===tn&&j===tr&&tr<=tn) cls+=' target';
+      else if((i===tn&&(j===tr-1||j===tr-1+1))||((i===tn-1)&&(j===tr-1||j===tr))) cls+=' hl-cell';
+      html+=`<div class="${cls}">${dp[i][j]}</div>`;
+    }
+    html+='</div>';
+  }
+  document.getElementById('pascal_tri').innerHTML=html;
+}
+
+// Inclusion-Exclusion
+function runIE() {
+  let N=parseInt(document.getElementById('ie_n').value);
+  let a=parseInt(document.getElementById('ie_a').value);
+  let b=parseInt(document.getElementById('ie_b').value);
+  let c=parseInt(document.getElementById('ie_c').value);
+  let A=Math.floor(N/a), B=Math.floor(N/b), Cv=Math.floor(N/c);
+  function lcm2(x,y){let g=gcd(x,y);return x/g*y;}
+  function gcd(x,y){while(y){let t=y;y=x%y;x=t;}return x;}
+  let AB=Math.floor(N/lcm2(a,b)), BC=Math.floor(N/lcm2(b,c)), AC=Math.floor(N/lcm2(a,c));
+  let ABC=Math.floor(N/lcm2(lcm2(a,b),c));
+  let union = A+B+Cv-AB-BC-AC+ABC;
+  let steps = `
+    <div class="step"><span class="sn">1</span>|A| = ⌊${N}/${a}⌋ = <span class="hl">${A}</span> (${a}의 배수)</div>
+    <div class="step"><span class="sn">2</span>|B| = ⌊${N}/${b}⌋ = <span class="hl">${B}</span> (${b}의 배수)</div>
+    <div class="step"><span class="sn">3</span>|C| = ⌊${N}/${c}⌋ = <span class="hl">${Cv}</span> (${c}의 배수)</div>
+    <div class="step"><span class="sn">4</span>|A∩B| = ⌊${N}/${lcm2(a,b)}⌋ = <span class="hl3">${AB}</span> (${lcm2(a,b)}의 배수)</div>
+    <div class="step"><span class="sn">5</span>|B∩C| = ⌊${N}/${lcm2(b,c)}⌋ = <span class="hl3">${BC}</span> (${lcm2(b,c)}의 배수)</div>
+    <div class="step"><span class="sn">6</span>|A∩C| = ⌊${N}/${lcm2(a,c)}⌋ = <span class="hl3">${AC}</span> (${lcm2(a,c)}의 배수)</div>
+    <div class="step"><span class="sn">7</span>|A∩B∩C| = ⌊${N}/${lcm2(lcm2(a,b),c)}⌋ = <span class="hl2">${ABC}</span> (${lcm2(lcm2(a,b),c)}의 배수)</div>`;
+  document.getElementById('ie_steps').innerHTML=steps;
+  document.getElementById('ie_result').innerHTML=
+    `|A∪B∪C| = ${A}+${B}+${Cv} − ${AB}−${BC}−${AC} + ${ABC} = <span class="hl">${union}</span>개`;
+}
+
+function runDerange() {
+  let n=parseInt(document.getElementById('derange_n').value);
+  let d=[0,0];
+  d[0]=1; d[1]=0;
+  for(let i=2;i<=n;i++) d[i]=(i-1)*(d[i-2]+d[i-1]);
+  let html='';
+  for(let i=0;i<=n;i++) html+=`D(${i})=${d[i]}${i<n?' → ':''}`;
+  document.getElementById('derange_result').innerHTML=
+    html+`<br>D(${n}) = <span class="hl">${d[n]}</span>가지`;
+}
+
+// Pigeonhole
+let pigeonState = {boxes:5, birds:7, assignment:[]};
+function runPigeon() {
+  let boxes=parseInt(document.getElementById('ph_boxes').value)||5;
+  let birds=parseInt(document.getElementById('ph_birds').value)||7;
+  pigeonState.boxes=boxes; pigeonState.birds=birds;
+  let asgn=Array.from({length:boxes},()=>[]);
+  for(let i=0;i<birds;i++) asgn[i%boxes].push(i);
+  pigeonState.assignment=asgn;
+  renderPigeon();
+}
+function shufflePigeon() {
+  let {boxes,birds}=pigeonState;
+  let asgn=Array.from({length:boxes},()=>[]);
+  for(let i=0;i<birds;i++) asgn[Math.floor(Math.random()*boxes)].push(i);
+  pigeonState.assignment=asgn;
+  renderPigeon();
+}
+function renderPigeon() {
+  let {boxes,birds,assignment}=pigeonState;
+  let grid=document.getElementById('pigeon_grid');
+  let emojis=['🐦','🦜','🦢','🦅','🐧','🦆','🦉','🐓'];
+  grid.innerHTML='';
+  let maxInBox=0;
+  assignment.forEach((box,i)=>{
+    let div=document.createElement('div');
+    div.className='dove-box'+(box.length>=2?' overflow':'');
+    div.innerHTML=`<div style="font-size:10px;color:var(--color-text-secondary);margin-bottom:4px">집 ${i+1}</div>`;
+    box.forEach(b=>{
+      let s=document.createElement('div');
+      s.className='dove-item'; s.textContent=emojis[b%emojis.length];
+      div.appendChild(s);
+    });
+    if(box.length===0){let e=document.createElement('div');e.style.fontSize='10px';e.style.color='var(--color-text-secondary)';e.textContent='(비어있음)';div.appendChild(e);}
+    grid.appendChild(div);
+    maxInBox=Math.max(maxInBox,box.length);
+  });
+  let overBoxes=assignment.filter(b=>b.length>=2).length;
+  document.getElementById('pigeon_result').innerHTML=
+    `비둘기 ${birds}마리, 집 ${boxes}개 → ⌈${birds}/${boxes}⌉ = ${Math.ceil(birds/boxes)}마리 이상인 집이 반드시 존재`+
+    (overBoxes>0?` → 실제로 <span class="hl">${overBoxes}개</span> 집에서 2마리 이상 확인`:'');
+}
+function runPigeonEx() {
+  let nums=[];
+  let used=new Set();
+  while(nums.length<10) {
+    let n=Math.floor(Math.random()*200)+1;
+    if(!used.has(n)){used.add(n);nums.push(n);}
+  }
+  nums.sort((a,b)=>a-b);
+  let pairs=[];
+  for(let i=0;i<nums.length;i++)
+    for(let j=i+1;j<nums.length;j++)
+      if(nums[j]%nums[i]===0) pairs.push([nums[i],nums[j]]);
+  let res=document.getElementById('pigeon_ex');
+  res.innerHTML=`선택된 수: ${nums.join(', ')}<br>`;
+  if(pairs.length>0) res.innerHTML+=`배수 관계: <span class="hl">${pairs[0][0]} × ${nums[pairs[0][1]-1]?Math.round(pairs[0][1]/pairs[0][0]):'?'} = ${pairs[0][1]}</span> (${pairs[0][0]}이 ${pairs[0][1]}의 약수)`;
+  else res.innerHTML+=`(이 샘플에선 배수 쌍 없음 — 더 많은 수 선택 시 반드시 존재)`;
+}
+
+// Fibonacci
+let fibData=[];
+function runFib() {
+  let n=parseInt(document.getElementById('fib_n').value)||10;
+  fibData=[];
+  fibData[0]=0; fibData[1]=1;
+  for(let i=2;i<=n;i++) fibData[i]=fibData[i-1]+fibData[i-2];
+  let html='';
+  for(let i=0;i<=n;i++) {
+    html+=`<span class="fib-cell" id="fc${i}" title="F(${i})=${fibData[i]}">${fibData[i]}</span>`;
+  }
+  document.getElementById('fib_cells').innerHTML=html;
+  document.getElementById('fib_step').innerHTML=`총 ${n+1}항 생성 완료. 셀 위에 마우스를 올리면 인덱스 확인`;
+  document.querySelectorAll('.fib-cell').forEach((el,i)=>{
+    el.onmouseenter=()=>highlightFib(i,n);
+    el.onmouseleave=()=>clearFib(n);
+  });
+}
+function highlightFib(i,n) {
+  clearFib(n);
+  if(i<document.getElementById('fib_cells').children.length) {
+    document.getElementById('fib_cells').children[i].className='fib-cell active';
+    if(i>=2) {
+      document.getElementById('fib_cells').children[i-2].className='fib-cell prev2';
+      document.getElementById('fib_cells').children[i-1].className='fib-cell prev1';
+    }
+    document.getElementById('fib_step').innerHTML=
+      i>=2?`F(${i}) = F(${i-1}) + F(${i-2}) = <span class="hl">${fibData[i-1]}</span> + <span class="hl2">${fibData[i-2]}</span> = <span class="hl">${fibData[i]}</span>`:
+      `F(${i}) = ${fibData[i]} (초기값)`;
+  }
+}
+function clearFib(n) {
+  let cells=document.getElementById('fib_cells').children;
+  for(let el of cells) el.className='fib-cell';
+}
+
+// Hanoi
+let hanoiMoves=[], hanoiIdx=0, hanoiPegs=[[],[],[]];
+const DISK_COLORS=['#378ADD','#1D9E75','#D4537E','#BA7517','#E24B4A'];
+function startHanoi() {
+  let n=parseInt(document.getElementById('hanoi_n').value)||3;
+  hanoiMoves=[];
+  hanoiIdx=0;
+  hanoiPegs=[[],[],[]];
+  for(let i=n;i>=1;i--) hanoiPegs[0].push(i);
+  function moves(n,from,to,via) {
+    if(n===0) return;
+    moves(n-1,from,via,to);
+    hanoiMoves.push([from,to,n]);
+    moves(n-1,via,to,from);
+  }
+  moves(n,0,2,1);
+  document.getElementById('hanoi_info').textContent=`총 ${hanoiMoves.length}번 (2^${n}-1)`;
+  document.getElementById('hanoi_log').innerHTML='이동 시작!';
+  renderHanoi();
+}
+function hanoiStep() {
+  if(hanoiIdx>=hanoiMoves.length) return;
+  let [from,to,disk]=hanoiMoves[hanoiIdx++];
+  let d=hanoiPegs[from].pop();
+  hanoiPegs[to].push(d);
+  let pNames=['A','B','C'];
+  document.getElementById('hanoi_log').innerHTML+=`<br>${hanoiIdx}. 원판${disk}: ${pNames[from]}→${pNames[to]}`;
+  document.getElementById('hanoi_log').scrollTop=9999;
+  document.getElementById('hanoi_info').textContent=`${hanoiIdx}/${hanoiMoves.length}번 이동`;
+  renderHanoi();
+}
+function hanoiReset() { hanoiMoves=[]; hanoiIdx=0; hanoiPegs=[[],[],[]]; document.getElementById('hanoi_wrap').innerHTML=''; document.getElementById('hanoi_info').textContent=''; document.getElementById('hanoi_log').innerHTML=''; }
+function renderHanoi() {
+  let wrap=document.getElementById('hanoi_wrap');
+  wrap.innerHTML='';
+  ['A','B','C'].forEach((name,pi)=>{
+    let col=document.createElement('div');
+    let lbl=document.createElement('div'); lbl.className='peg-label'; lbl.textContent='기둥 '+name;
+    let peg=document.createElement('div'); peg.className='peg';
+    let cont=document.createElement('div'); cont.className='peg-container';
+    hanoiPegs[pi].forEach(disk=>{
+      let d=document.createElement('div');
+      d.className='hanoi-disk';
+      let maxN=parseInt(document.getElementById('hanoi_n').value)||3;
+      d.style.width=(disk/maxN*90+10)+'%';
+      d.style.background=DISK_COLORS[(disk-1)%DISK_COLORS.length];
+      d.textContent=disk;
+      cont.appendChild(d);
+    });
+    peg.appendChild(cont);
+    let base=document.createElement('div'); base.className='peg-base'; base.style.width='100%';
+    peg.appendChild(base);
+    col.appendChild(lbl); col.appendChild(peg);
+    wrap.appendChild(col);
+  });
+}
+
+// Quiz
+const questions=[
+  {q:'5명 중 3명을 순서있게 나열하는 경우의 수는?',opts:['10','20','60','120'],ans:2,exp:'5P3 = 5×4×3 = 60'},
+  {q:'6명 중 2명을 뽑는 조합의 수는?',opts:['15','12','30','6'],ans:0,exp:'6C2 = 6!/(2!×4!) = 15'},
+  {q:'포함-배제 원리: |A∪B| = |A|+|B| - ?',opts:['|A|','|B|','|A∩B|','|A×B|'],ans:2,exp:'겹치는 부분(교집합)을 한 번 빼야 정확한 합집합 크기 계산 가능'},
+  {q:'비둘기집 원리: 5개 서랍에 11개 물건 → 한 서랍의 최소 최대 개수는?',opts:['2','3','4','5'],ans:1,exp:'⌈11/5⌉ = 3, 어떤 서랍에는 반드시 3개 이상'},
+  {q:'F(7) = ? (피보나치: F(0)=0, F(1)=1)',opts:['11','13','8','15'],ans:1,exp:'F(7)=F(6)+F(5)=8+5=13'},
+  {q:'하노이 탑 n=4일 때 필요한 최소 이동 횟수는?',opts:['7','15','8','16'],ans:1,exp:'H(n)=2^n-1, H(4)=2^4-1=15'},
+  {q:'중복 조합 H(3,2) = ?',opts:['6','3','9','12'],ans:0,exp:'H(n,r)=C(n+r-1,r)=C(4,2)=6'},
+  {q:'D(3) (교란순열, 완전순열) = ?',opts:['1','2','3','4'],ans:1,exp:'D(3)=2×(D(1)+D(2))=2×(0+1)=2'},
+  {q:'1~100 중 2의 배수이거나 3의 배수인 수의 개수는?',opts:['50','66','67','83'],ans:2,exp:'|A|=50, |B|=33, |A∩B|=16 → 50+33-16=67'},
+  {q:'파스칼 삼각형에서 C(n,r) = ?',opts:['C(n,r-1)+C(n-1,r)','C(n-1,r-1)+C(n-1,r)','C(n-1,r)+C(n,r-1)','C(n,r+1)+C(n+1,r)'],ans:1,exp:'파스칼 점화식: 위 행의 인접한 두 값의 합'},
+];
+let qIdx=0,score=0,answered=false;
+function renderQ() {
+  let q=questions[qIdx];
+  document.getElementById('q_num').textContent=qIdx+1;
+  document.getElementById('q_total').textContent=questions.length;
+  document.getElementById('q_score').textContent='점수: '+score;
+  document.getElementById('quiz_q').textContent=q.q;
+  let opts=document.getElementById('quiz_opts'); opts.innerHTML='';
+  q.opts.forEach((o,i)=>{
+    let btn=document.createElement('button'); btn.className='quiz-opt';
+    btn.textContent=['①','②','③','④'][i]+' '+o;
+    btn.onclick=()=>selectAns(i);
+    opts.appendChild(btn);
+  });
+  document.getElementById('quiz_fb').style.display='none';
+  document.getElementById('next_btn').style.display='none';
+  answered=false;
+}
+function selectAns(i) {
+  if(answered) return; answered=true;
+  let q=questions[qIdx];
+  let btns=document.querySelectorAll('.quiz-opt');
+  btns[q.ans].classList.add('correct');
+  let fb=document.getElementById('quiz_fb');
+  if(i===q.ans) { score++; document.getElementById('q_score').textContent='점수: '+score; fb.className='fb fb-ok'; fb.textContent='✓ 정답! '+q.exp; }
+  else { btns[i].classList.add('wrong'); fb.className='fb fb-no'; fb.textContent='✗ 오답. '+q.exp; }
+  fb.style.display='block';
+  document.getElementById('next_btn').style.display=qIdx<questions.length-1?'inline-block':'none';
+  if(qIdx===questions.length-1) setTimeout(()=>{ document.getElementById('quiz_done').style.display='block'; let p=Math.round(score/questions.length*100); document.getElementById('quiz_final').textContent=`${questions.length}문제 중 ${score}개 정답 (${p}%) — ${p>=80?'훌륭합니다!':p>=60?'잘 하셨어요!':'개념 복습 후 다시 도전!'}`; },400);
+}
+function nextQ(){qIdx++;renderQ();}
+function resetQuiz(){qIdx=0;score=0;answered=false;document.getElementById('quiz_done').style.display='none';renderQ();}
+
+// Init
+calcComb();
+runIE();
+runPigeon();
+runFib();
+renderQ();
+</script>

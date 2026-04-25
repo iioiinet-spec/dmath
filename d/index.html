@@ -1,0 +1,601 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.page{font-family:var(--font-sans);color:var(--color-text-primary);padding:1.5rem 0}
+.nav-tabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:1.75rem;border-bottom:.5px solid var(--color-border-tertiary)}
+.tab-btn{padding:8px 13px;font-size:13px;font-weight:500;border:.5px solid var(--color-border-secondary);border-bottom:none;border-radius:8px 8px 0 0;background:var(--color-background-secondary);color:var(--color-text-secondary);cursor:pointer;transition:all .15s}
+.tab-btn.active{background:var(--color-background-primary);color:var(--color-text-primary);border-color:var(--color-border-primary)}
+.section{display:none}.section.active{display:block}
+h2{font-size:18px;font-weight:500;margin-bottom:.4rem}
+h3{font-size:15px;font-weight:500;margin:1.1rem 0 .4rem}
+p{font-size:14px;line-height:1.7;color:var(--color-text-secondary);margin-bottom:.5rem}
+.card{background:var(--color-background-primary);border:.5px solid var(--color-border-tertiary);border-radius:12px;padding:1.25rem;margin-bottom:1rem}
+.formula{font-family:var(--font-mono);font-size:12px;background:var(--color-background-secondary);border:.5px solid var(--color-border-tertiary);border-radius:8px;padding:10px 14px;margin:.5rem 0;line-height:1.9}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+@media(max-width:520px){.grid2{grid-template-columns:1fr}}
+.sim-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.sim-row label{font-size:13px;color:var(--color-text-secondary)}
+.result-box{background:var(--color-background-secondary);border-radius:8px;padding:10px 14px;font-size:13px;line-height:1.9;min-height:36px}
+.btn{padding:7px 14px;font-size:13px;font-weight:500;border:.5px solid var(--color-border-primary);border-radius:8px;background:var(--color-background-primary);color:var(--color-text-primary);cursor:pointer}
+.btn:hover{background:var(--color-background-secondary)}
+.btn:disabled{opacity:.4;cursor:default}
+.hl{color:#185FA5;font-weight:500}
+.hl2{color:#3B6D11;font-weight:500}
+.hl3{color:#993556;font-weight:500}
+.tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:6px;font-weight:500;margin:2px}
+.tag-b{background:#E6F1FB;color:#0C447C}
+.tag-g{background:#EAF3DE;color:#3B6D11}
+.tag-a{background:#FAEEDA;color:#633806}
+.tag-p{background:#EEEDFE;color:#3C3489}
+.tag-r{background:#FCEBEB;color:#791F1F}
+.truth-table{width:100%;border-collapse:collapse;font-size:13px}
+.truth-table th{background:var(--color-background-secondary);padding:7px 10px;border:.5px solid var(--color-border-tertiary);font-weight:500;text-align:center}
+.truth-table td{padding:7px 10px;border:.5px solid var(--color-border-tertiary);text-align:center;font-family:var(--font-mono)}
+.truth-table td.t{color:#3B6D11;font-weight:500}
+.truth-table td.f{color:#791F1F}
+.truth-table tr.highlight-row td{background:#E6F1FB;color:#0C447C}
+.bit-toggle{width:36px;height:36px;border-radius:8px;font-size:15px;font-weight:700;border:.5px solid var(--color-border-secondary);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.bit-toggle.on{background:#EAF3DE;color:#3B6D11;border-color:#97C459}
+.bit-toggle.off{background:var(--color-background-secondary);color:var(--color-text-secondary)}
+.nim-stone{width:28px;height:28px;border-radius:50%;border:none;cursor:pointer;font-size:11px;font-weight:500;transition:all .15s;display:flex;align-items:center;justify-content:center}
+.nim-stone.active{background:#378ADD;color:#fff}
+.nim-stone.removed{background:var(--color-background-secondary);color:var(--color-text-secondary);border:.5px dashed var(--color-border-tertiary);cursor:default}
+.nim-piles{display:flex;gap:12px;flex-wrap:wrap;margin:.75rem 0;align-items:flex-end}
+.pile-label{font-size:12px;color:var(--color-text-secondary);text-align:center;margin-top:4px}
+.step-log{max-height:140px;overflow-y:auto;font-size:12px;font-family:var(--font-mono);background:var(--color-background-secondary);border-radius:8px;padding:8px 12px;line-height:1.9}
+.dp-table{border-collapse:collapse;font-size:12px;font-family:var(--font-mono)}
+.dp-table th{background:var(--color-background-secondary);padding:6px 10px;border:.5px solid var(--color-border-tertiary);font-weight:500;text-align:center}
+.dp-table td{padding:6px 10px;border:.5px solid var(--color-border-tertiary);text-align:center;min-width:36px;transition:all .3s}
+.dp-table td.dp-cur{background:#EEEDFE;color:#3C3489;font-weight:500}
+.dp-table td.dp-done{background:#EAF3DE;color:#3B6D11}
+.quiz-opt{width:100%;text-align:left;padding:10px 14px;font-size:13px;margin-bottom:6px;border:.5px solid var(--color-border-secondary);border-radius:8px;background:var(--color-background-primary);color:var(--color-text-primary);cursor:pointer}
+.quiz-opt:hover{background:var(--color-background-secondary)}
+.quiz-opt.correct{background:#EAF3DE;border-color:#97C459;color:#3B6D11}
+.quiz-opt.wrong{background:#FCEBEB;border-color:#F09595;color:#791F1F}
+.fb{font-size:13px;padding:10px 14px;border-radius:8px;margin-top:8px}
+.fb-ok{background:#EAF3DE;color:#27500A}
+.fb-no{background:#FCEBEB;color:#501313}
+.score-b{display:inline-block;padding:2px 10px;border-radius:20px;font-size:12px;font-weight:500;background:#E6F1FB;color:#0C447C}
+</style>
+
+<div class="page">
+<h2 style="margin-bottom:.25rem">논리 & 알고리즘 사고</h2>
+<p style="font-size:13px;margin-bottom:1.25rem">명제·논리연산 / 게임이론 / 그리디 / DP — 변별력 핵심 파트 완전 정복</p>
+
+<div class="nav-tabs" id="nav-tabs">
+  <button class="tab-btn active" data-tab="logic">명제 &amp; 논리연산</button>
+  <button class="tab-btn" data-tab="game">게임 이론 (님)</button>
+  <button class="tab-btn" data-tab="greedy">그리디 알고리즘</button>
+  <button class="tab-btn" data-tab="dp">동적 계획법 (DP)</button>
+  <button class="tab-btn" data-tab="quiz">퀴즈</button>
+</div>
+
+<!-- 명제 & 논리 -->
+<div class="section active" id="tab-logic">
+  <h2>명제와 논리 연산</h2>
+  <p>참(T)과 거짓(F) 값을 다루는 논리 연산자의 규칙을 이해합니다.</p>
+  <div class="grid2">
+    <div class="card">
+      <h3 style="margin-top:0">기본 연산자</h3>
+      <p style="font-size:13px"><span class="tag tag-b">AND (∧)</span> 둘 다 참일 때만 참</p>
+      <p style="font-size:13px"><span class="tag tag-g">OR (∨)</span> 하나라도 참이면 참</p>
+      <p style="font-size:13px"><span class="tag tag-p">NOT (¬)</span> 참↔거짓 반전</p>
+      <p style="font-size:13px"><span class="tag tag-a">XOR (⊕)</span> 서로 다를 때만 참</p>
+      <p style="font-size:13px"><span class="tag tag-r">NAND</span> AND의 부정 (범용 게이트)</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">드 모르간의 법칙</h3>
+      <div class="formula">¬(A ∧ B) = ¬A ∨ ¬B<br>¬(A ∨ B) = ¬A ∧ ¬B</div>
+      <p style="font-size:13px;margin-top:.5rem">핵심 응용: 조건문 부정</p>
+      <div class="formula">// C 코드에서<br>!(a &amp;&amp; b)  ==  (!a || !b)<br>!(a || b)  ==  (!a &amp;&amp; !b)</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">논리 연산 진리표</h3>
+    <div class="sim-row">
+      <label>A =</label>
+      <div class="bit-toggle off" id="bit_a" onclick="toggleBit('a')">0</div>
+      <label>B =</label>
+      <div class="bit-toggle off" id="bit_b" onclick="toggleBit('b')">0</div>
+      <span style="font-size:13px;color:var(--color-text-secondary)">← 클릭해서 0/1 전환</span>
+    </div>
+    <table class="truth-table" id="logic_table"></table>
+    <div id="logic_highlight" class="result-box" style="margin-top:8px"></div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">논리식 계산기</h3>
+    <div class="sim-row">
+      <label>A =</label>
+      <input type="number" id="calc_a" value="170" min="0" max="255" style="width:70px">
+      <label>op</label>
+      <select id="calc_op">
+        <option value="and">AND (&amp;)</option>
+        <option value="or">OR (|)</option>
+        <option value="xor">XOR (^)</option>
+        <option value="not">NOT (~A)</option>
+        <option value="nand">NAND</option>
+      </select>
+      <label>B =</label>
+      <input type="number" id="calc_b" value="204" min="0" max="255" style="width:70px">
+      <button class="btn" onclick="runLogicCalc()">계산</button>
+    </div>
+    <div id="logic_calc_result" class="result-box"></div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">논리 항등식 &amp; 명제 법칙</h3>
+    <div class="grid2">
+      <div>
+        <p style="font-size:13px;font-weight:500;margin-bottom:.4rem">항등 법칙</p>
+        <div class="formula">A ∧ T = A<br>A ∨ F = A</div>
+        <p style="font-size:13px;font-weight:500;margin:.6rem 0 .4rem">보수 법칙</p>
+        <div class="formula">A ∧ ¬A = F<br>A ∨ ¬A = T</div>
+      </div>
+      <div>
+        <p style="font-size:13px;font-weight:500;margin-bottom:.4rem">분배 법칙</p>
+        <div class="formula">A∧(B∨C) = (A∧B)∨(A∧C)<br>A∨(B∧C) = (A∨B)∧(A∨C)</div>
+        <p style="font-size:13px;font-weight:500;margin:.6rem 0 .4rem">대우 / 명제</p>
+        <div class="formula">p→q 의 대우: ¬q→¬p (참값 동일)<br>p→q 의 역: q→p (참값 무관)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 게임 이론 -->
+<div class="section" id="tab-game">
+  <h2>게임 이론 — 님(Nim) 게임</h2>
+  <p>두 사람이 번갈아 돌을 가져가며, 마지막 돌을 가져가는 사람이 이기는 전략 게임입니다.</p>
+  <div class="grid2">
+    <div class="card">
+      <h3 style="margin-top:0">님 게임 필승 전략</h3>
+      <div class="formula">nim_sum = pile₁ XOR pile₂ XOR ... XOR pileₙ<br><br>nim_sum ≠ 0 → 현재 플레이어 필승<br>nim_sum = 0 → 현재 플레이어 패배</div>
+      <p style="font-size:13px;margin-top:.5rem">필승 전략: XOR 후 0이 되도록 한 더미에서 제거</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">P-position vs N-position</h3>
+      <p style="font-size:13px"><span class="tag tag-g">P-position</span> 이전 플레이어가 이기는 상태 → 현재 패</p>
+      <p style="font-size:13px;margin-top:.5rem"><span class="tag tag-b">N-position</span> 다음 플레이어가 이기는 상태 → 현재 승</p>
+      <div class="formula">terminal 상태 → P-position<br>P-position으로 이동 가능 → N-position<br>모든 이동이 N-position → P-position</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">님 게임 플레이어 (인간 vs AI)</h3>
+    <div class="sim-row">
+      <label>더미 1:</label><input type="number" id="nim_p1" value="3" min="1" max="9" style="width:55px">
+      <label>더미 2:</label><input type="number" id="nim_p2" value="4" min="1" max="9" style="width:55px">
+      <label>더미 3:</label><input type="number" id="nim_p3" value="5" min="1" max="9" style="width:55px">
+      <button class="btn" onclick="initNim()">게임 시작</button>
+    </div>
+    <div id="nim_piles_wrap" class="nim-piles"></div>
+    <div class="sim-row" style="margin-top:4px">
+      <span id="nim_sel_info" style="font-size:13px;color:var(--color-text-secondary)"></span>
+      <button class="btn" id="nim_confirm" onclick="playerMove()" disabled>선택 확정</button>
+    </div>
+    <div id="nim_status" class="result-box" style="margin-top:6px"></div>
+    <div class="step-log" id="nim_log" style="margin-top:6px"></div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">변형: 1~K개 가져가기</h3>
+    <div class="formula">필승 조건: N mod (K+1) ≠ 0<br>→ 상대가 m개 가져가면 (K+1-m)개 가져가 합을 K+1로 유지</div>
+    <div class="sim-row" style="margin-top:.5rem">
+      <label>N =</label><input type="number" id="mod_n" value="20" min="1" max="100" style="width:60px">
+      <label>K =</label><input type="number" id="mod_k" value="3" min="1" max="10" style="width:60px">
+      <button class="btn" onclick="runModGame()">분석</button>
+    </div>
+    <div id="mod_result" class="result-box"></div>
+  </div>
+</div>
+
+<!-- 그리디 -->
+<div class="section" id="tab-greedy">
+  <h2>그리디(Greedy) 알고리즘</h2>
+  <p>매 선택 순간에 현재 가장 좋아 보이는 선택을 하는 알고리즘입니다.</p>
+  <div class="grid2">
+    <div class="card">
+      <h3 style="margin-top:0">그리디가 유효한 조건</h3>
+      <p style="font-size:13px"><span class="tag tag-b">탐욕 선택 속성</span> 현재의 최선이 전체 최적에 포함됨</p>
+      <p style="font-size:13px"><span class="tag tag-g">최적 부분 구조</span> 부분 문제의 최적해가 전체 최적해에 포함됨</p>
+      <p style="font-size:13px;margin-top:.5rem">두 조건 불성립 시 DP 사용!</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">대표 그리디 문제</h3>
+      <p style="font-size:13px"><span class="tag tag-b">거스름돈</span> 큰 단위부터 채우기</p>
+      <p style="font-size:13px"><span class="tag tag-g">활동 선택</span> 끝나는 시간 빠른 순서</p>
+      <p style="font-size:13px"><span class="tag tag-a">크루스칼</span> 가중치 작은 간선부터</p>
+      <p style="font-size:13px"><span class="tag tag-p">허프만 코딩</span> 빈도 낮은 것 먼저 합침</p>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">거스름돈 문제 시뮬레이터</h3>
+    <div class="sim-row">
+      <label>금액 =</label>
+      <input type="number" id="change_amt" value="1260" min="1" max="9999" style="width:80px">
+      <button class="btn" onclick="runChange()">계산</button>
+    </div>
+    <div class="step-log" id="change_log"></div>
+    <div id="change_result" class="result-box" style="margin-top:6px"></div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">활동 선택 문제 (Interval Scheduling)</h3>
+    <p style="font-size:13px">겹치지 않는 최대 활동 수 — <span class="hl">끝 시간 기준 정렬</span> 후 그리디 선택</p>
+    <div class="sim-row">
+      <button class="btn" onclick="runActivity()">그리디 실행</button>
+      <button class="btn" onclick="resetActivity()">초기화</button>
+    </div>
+    <div id="activity_chart" style="margin:.5rem 0"></div>
+    <div id="activity_result" class="result-box" style="margin-top:6px"></div>
+    <div class="step-log" id="activity_log" style="margin-top:6px"></div>
+  </div>
+</div>
+
+<!-- DP -->
+<div class="section" id="tab-dp">
+  <h2>동적 계획법 (Dynamic Programming)</h2>
+  <p>문제를 작은 부분 문제로 나누고, 결과를 저장해 중복 계산을 피하는 알고리즘입니다.</p>
+  <div class="grid2">
+    <div class="card">
+      <h3 style="margin-top:0">DP vs 그리디</h3>
+      <table style="width:100%;font-size:12px;border-collapse:collapse;margin-top:.4rem">
+        <tr><th style="background:var(--color-background-secondary);padding:6px;border:.5px solid var(--color-border-tertiary)">항목</th><th style="background:#E6F1FB;color:#0C447C;padding:6px;border:.5px solid var(--color-border-tertiary)">그리디</th><th style="background:#EEEDFE;color:#3C3489;padding:6px;border:.5px solid var(--color-border-tertiary)">DP</th></tr>
+        <tr><td style="padding:5px 8px;border:.5px solid var(--color-border-tertiary)">선택 방식</td><td style="padding:5px 8px;border:.5px solid var(--color-border-tertiary);text-align:center">매 순간 최선</td><td style="padding:5px 8px;border:.5px solid var(--color-border-tertiary);text-align:center">모든 경우 저장</td></tr>
+        <tr><td style="padding:5px 8px;border:.5px solid var(--color-border-tertiary)">최적 보장</td><td style="padding:5px 8px;border:.5px solid var(--color-border-tertiary);text-align:center">조건부</td><td style="padding:5px 8px;border:.5px solid var(--color-border-tertiary);text-align:center">항상</td></tr>
+        <tr><td style="padding:5px 8px;border:.5px solid var(--color-border-tertiary)">대표 문제</td><td style="padding:5px 8px;border:.5px solid var(--color-border-tertiary);text-align:center">거스름돈, MST</td><td style="padding:5px 8px;border:.5px solid var(--color-border-tertiary);text-align:center">배낭, LCS, LIS</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">DP 두 가지 구현 방식</h3>
+      <div class="formula">// Top-down (재귀 + 메모이제이션)<br>int memo[MAX];<br>int fib(int n) {<br>  if(n&lt;=1) return n;<br>  if(memo[n]!=-1) return memo[n];<br>  return memo[n]=fib(n-1)+fib(n-2);<br>}<br><br>// Bottom-up (반복문)<br>dp[0]=0; dp[1]=1;<br>for(int i=2;i&lt;=n;i++)<br>  dp[i]=dp[i-1]+dp[i-2];</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">0/1 배낭 문제 시뮬레이터</h3>
+    <div class="sim-row">
+      <label>배낭 용량 W =</label>
+      <input type="number" id="knap_w" value="7" min="3" max="12" style="width:60px">
+      <button class="btn" onclick="initKnap()">DP 시작</button>
+      <button class="btn" id="knap_step_btn" onclick="knapStep()" disabled>다음 셀</button>
+      <button class="btn" onclick="knapAll()">전체 실행</button>
+    </div>
+    <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:.5rem" id="knap_items_info"></div>
+    <div style="overflow-x:auto"><table class="dp-table" id="knap_table"></table></div>
+    <div id="knap_result" class="result-box" style="margin-top:8px"></div>
+    <div class="step-log" id="knap_log" style="margin-top:6px"></div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">LIS (최장 증가 부분 수열) 시뮬레이터</h3>
+    <div class="formula">dp[i] = i번째 원소를 마지막으로 하는 LIS 길이<br>dp[i] = max(dp[j]+1) for all j&lt;i where arr[j]&lt;arr[i]</div>
+    <div class="sim-row">
+      <label>수열 (쉼표 구분):</label>
+      <input type="text" id="lis_arr" value="3,1,4,1,5,9,2,6" style="width:180px">
+      <button class="btn" onclick="runLIS()">계산</button>
+    </div>
+    <div id="lis_visual" style="margin:.5rem 0;display:flex;gap:4px;flex-wrap:wrap"></div>
+    <div style="overflow-x:auto;margin-top:6px"><table class="dp-table" id="lis_table"></table></div>
+    <div id="lis_result" class="result-box" style="margin-top:8px"></div>
+  </div>
+</div>
+
+<!-- 퀴즈 -->
+<div class="section" id="tab-quiz">
+  <h2>연습 퀴즈</h2>
+  <p>논리·게임이론·그리디·DP 통합 문제입니다.</p>
+  <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:1rem">문제 <span id="q_num">1</span>/<span id="q_total">10</span> &nbsp;<span class="score-b" id="q_score">점수: 0</span></div>
+  <div class="card">
+    <p id="quiz_q" style="font-size:15px;font-weight:500;color:var(--color-text-primary);margin-bottom:1rem"></p>
+    <div id="quiz_opts"></div>
+    <div id="quiz_fb" class="fb" style="display:none"></div>
+  </div>
+  <div style="display:flex;gap:8px;margin-top:10px">
+    <button class="btn" id="next_btn" onclick="nextQ()" style="display:none">다음 문제 →</button>
+  </div>
+  <div id="quiz_done" style="display:none;margin-top:1rem">
+    <div class="card">
+      <p style="font-size:15px;font-weight:500;margin-bottom:.5rem">퀴즈 완료!</p>
+      <p id="quiz_final" style="font-size:14px;color:var(--color-text-secondary)"></p>
+      <button class="btn" onclick="resetQuiz()" style="margin-top:.75rem">다시 풀기</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+// ── TAB 전환 (event 객체 의존 제거) ─────────────────────
+document.getElementById('nav-tabs').addEventListener('click', function(e) {
+  const btn = e.target.closest('.tab-btn');
+  if (!btn) return;
+  const tabId = btn.getAttribute('data-tab');
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tabId).classList.add('active');
+  btn.classList.add('active');
+  if (tabId === 'greedy') renderActivityChart(activitySelected);
+});
+
+// ── LOGIC ─────────────────────────────────────────────
+let bitA=0, bitB=0;
+function toggleBit(which) {
+  if(which==='a'){bitA=1-bitA;const el=document.getElementById('bit_a');el.textContent=bitA;el.className='bit-toggle '+(bitA?'on':'off');}
+  else{bitB=1-bitB;const el=document.getElementById('bit_b');el.textContent=bitB;el.className='bit-toggle '+(bitB?'on':'off');}
+  buildTruthTable();
+}
+function buildTruthTable() {
+  const ops=[{n:'AND',f:(a,b)=>a&b},{n:'OR',f:(a,b)=>a|b},{n:'NOT A',f:(a,b)=>1-a},{n:'XOR',f:(a,b)=>a^b},{n:'NAND',f:(a,b)=>1-(a&b)},{n:'NOR',f:(a,b)=>1-(a|b)}];
+  const rows=[[0,0],[0,1],[1,0],[1,1]];
+  let h=`<tr><th>A</th><th>B</th>${ops.map(o=>`<th>${o.n}</th>`).join('')}</tr>`;
+  rows.forEach(([a,b])=>{
+    const isCur=a===bitA&&b===bitB;
+    h+=`<tr${isCur?' class="highlight-row"':''}>`;
+    h+=`<td class="${a?'t':'f'}">${a}</td><td class="${b?'t':'f'}">${b}</td>`;
+    ops.forEach(o=>{const v=o.f(a,b);h+=`<td class="${v?'t':'f'}">${v}</td>`;});
+    h+='</tr>';
+  });
+  document.getElementById('logic_table').innerHTML=h;
+  const results=ops.map(o=>({n:o.n,v:o.f(bitA,bitB)}));
+  document.getElementById('logic_highlight').innerHTML=
+    `A=${bitA}, B=${bitB} → `+results.map(r=>`<span class="${r.v?'hl2':'hl3'}">${r.n}=${r.v}</span>`).join(' &nbsp; ');
+}
+function runLogicCalc() {
+  let a=parseInt(document.getElementById('calc_a').value)&255;
+  let b=parseInt(document.getElementById('calc_b').value)&255;
+  const op=document.getElementById('calc_op').value;
+  let res;
+  if(op==='and') res=a&b;
+  else if(op==='or') res=a|b;
+  else if(op==='xor') res=a^b;
+  else if(op==='not') res=(~a)&255;
+  else res=(~(a&b))&255;
+  const bin=v=>v.toString(2).padStart(8,'0');
+  document.getElementById('logic_calc_result').innerHTML=
+    `A = <span class="hl">${bin(a)}</span> (${a})<br>`+
+    (op!=='not'?`B = <span class="hl">${bin(b)}</span> (${b})<br>`:'')+
+    `결과 = <span class="hl2">${bin(res)}</span> (${res})`;
+}
+
+// ── NIM ──────────────────────────────────────────────
+let nimState=null, nimSel={pile:-1,count:0};
+function initNim() {
+  const p=[parseInt(document.getElementById('nim_p1').value),parseInt(document.getElementById('nim_p2').value),parseInt(document.getElementById('nim_p3').value)];
+  nimState={piles:p.map(x=>({total:x,left:x})),turn:'player',gameOver:false};
+  nimSel={pile:-1,count:0};
+  document.getElementById('nim_confirm').disabled=true;
+  document.getElementById('nim_log').innerHTML='';
+  renderNim();
+  const xor=nimState.piles.reduce((acc,p)=>acc^p.left,0);
+  document.getElementById('nim_status').innerHTML=
+    `님-합(XOR): <span class="${xor?'hl':'hl3'}">${xor}</span> → ${xor?'선공(당신) 필승 위치!':'후공(AI) 필승 위치 — 조심하세요!'} &nbsp; 당신 차례`;
+}
+function renderNim() {
+  const wrap=document.getElementById('nim_piles_wrap'); wrap.innerHTML='';
+  if(!nimState) return;
+  nimState.piles.forEach((pile,pi)=>{
+    const col=document.createElement('div');col.style.cssText='display:flex;flex-direction:column;align-items:center;gap:3px';
+    for(let i=0;i<pile.total;i++){
+      const btn=document.createElement('div');
+      if(i<pile.left){
+        btn.className='nim-stone active'; btn.textContent='●';
+        btn.style.cursor=nimState.turn==='player'&&!nimState.gameOver?'pointer':'default';
+        if(nimState.turn==='player'&&!nimState.gameOver){
+          const cnt=pile.left-i;
+          btn.onclick=()=>selectNimStone(pi,cnt);
+        }
+        if(nimSel.pile===pi&&(pile.left-i)<=nimSel.count){btn.style.background='#E24B4A';}
+      } else {
+        btn.className='nim-stone removed'; btn.textContent='○';
+      }
+      col.appendChild(btn);
+    }
+    const lbl=document.createElement('div');lbl.className='pile-label';lbl.textContent=`더미 ${pi+1} (${pile.left})`;
+    col.appendChild(lbl); wrap.appendChild(col);
+  });
+}
+function selectNimStone(pi,cnt) {
+  if(nimState.turn!=='player'||nimState.gameOver) return;
+  nimSel={pile:pi,count:cnt};
+  document.getElementById('nim_sel_info').textContent=`더미 ${pi+1}에서 ${cnt}개 제거 선택`;
+  document.getElementById('nim_confirm').disabled=false;
+  renderNim();
+}
+function playerMove() {
+  if(!nimState||nimState.turn!=='player'||nimSel.pile<0) return;
+  const {pile,count}=nimSel;
+  nimState.piles[pile].left-=count;
+  const log=document.getElementById('nim_log');
+  log.innerHTML+=`<span style="color:#185FA5">당신</span>: 더미${pile+1}에서 ${count}개 제거\n`;
+  log.scrollTop=9999;
+  nimSel={pile:-1,count:0}; document.getElementById('nim_confirm').disabled=true;
+  if(nimState.piles.every(p=>p.left===0)){endNim('player');return;}
+  nimState.turn='ai';
+  document.getElementById('nim_status').innerHTML='AI 생각 중...';
+  setTimeout(aiMove,600);
+}
+function aiMove() {
+  const piles=nimState.piles.map(p=>p.left);
+  const xor=piles.reduce((a,b)=>a^b,0);
+  const log=document.getElementById('nim_log');
+  let moved=false;
+  if(xor!==0){
+    for(let i=0;i<piles.length;i++){
+      const t=piles[i]^xor;
+      if(t<piles[i]){nimState.piles[i].left=t;log.innerHTML+=`<span style="color:#993556">AI</span>: 더미${i+1}에서 ${piles[i]-t}개 제거\n`;moved=true;break;}
+    }
+  }
+  if(!moved){for(let i=0;i<piles.length;i++){if(piles[i]>0){nimState.piles[i].left--;log.innerHTML+=`<span style="color:#993556">AI</span>: 더미${i+1}에서 1개 제거\n`;break;}}}
+  log.scrollTop=9999;
+  if(nimState.piles.every(p=>p.left===0)){endNim('ai');return;}
+  nimState.turn='player';
+  const newXor=nimState.piles.reduce((acc,p)=>acc^p.left,0);
+  document.getElementById('nim_status').innerHTML=`님-합: <span class="${newXor?'hl':'hl3'}">${newXor}</span> → 당신 차례`;
+  renderNim();
+}
+function endNim(winner) {
+  nimState.gameOver=true;
+  document.getElementById('nim_status').innerHTML=
+    winner==='player'?'<span class="hl2">당신이 마지막 돌을 가져갔습니다 — 승리!</span>':'<span class="hl3">AI가 마지막 돌을 가져갔습니다 — AI 승리!</span>';
+  renderNim();
+}
+function runModGame() {
+  const N=parseInt(document.getElementById('mod_n').value);
+  const K=parseInt(document.getElementById('mod_k').value);
+  const r=N%(K+1);
+  let html=`N=${N}, K=${K} → K+1=${K+1}<br>${N} mod ${K+1} = <span class="${r?'hl':'hl3'}">${r}</span><br>`;
+  html+=r?`<span class="hl">선공 필승!</span> 처음에 ${r}개 가져가고, 이후 상대가 m개 가져가면 ${K+1}-m개 가져가세요.`:`<span class="hl3">후공 필승!</span> 선공이 어떤 수를 가져가도 후공이 합을 ${K+1}로 유지하면 됩니다.`;
+  document.getElementById('mod_result').innerHTML=html;
+}
+
+// ── GREEDY ───────────────────────────────────────────
+function runChange() {
+  const coins=[500,100,50,10,5,1];
+  let amt=parseInt(document.getElementById('change_amt').value);
+  const orig=amt; let log='',total=0;
+  coins.forEach(c=>{const cnt=Math.floor(amt/c);amt-=cnt*c;if(cnt>0){log+=`${c}원짜리: <span class="hl">${cnt}개</span><br>`;total+=cnt;}});
+  document.getElementById('change_log').innerHTML=log;
+  document.getElementById('change_result').innerHTML=`${orig}원 → 총 <span class="hl2">${total}개</span> 동전`;
+}
+
+const ACTIVITIES=[
+  {name:'A',start:1,end:4,color:'#378ADD'},{name:'B',start:3,end:5,color:'#1D9E75'},
+  {name:'C',start:0,end:6,color:'#D4537E'},{name:'D',start:5,end:7,color:'#EF9F27'},
+  {name:'E',start:3,end:9,color:'#534AB7'},{name:'F',start:6,end:10,color:'#639922'},
+  {name:'G',start:8,end:11,color:'#E24B4A'},{name:'H',start:2,end:14,color:'#BA7517'},
+];
+let activitySelected=[];
+function resetActivity() {activitySelected=[];renderActivityChart([]);document.getElementById('activity_result').textContent='';document.getElementById('activity_log').innerHTML='';}
+function runActivity() {
+  const sorted=[...ACTIVITIES].sort((a,b)=>a.end-b.end);
+  let lastEnd=-1; const log=[]; const sel=[];
+  sorted.forEach(a=>{
+    if(a.start>=lastEnd){sel.push(a);lastEnd=a.end;log.push(`✓ 활동 ${a.name} (${a.start}~${a.end}) 선택`);}
+    else log.push(`✗ 활동 ${a.name} (${a.start}~${a.end}) 겹침 → 제외`);
+  });
+  activitySelected=sel;
+  document.getElementById('activity_log').innerHTML=log.join('<br>');
+  document.getElementById('activity_result').innerHTML=`최대 ${sel.length}개 활동: ${sel.map(a=>a.name).join(', ')}`;
+  renderActivityChart(sel);
+}
+function renderActivityChart(selected) {
+  const el=document.getElementById('activity_chart'); if(!el) return;
+  const maxT=14; let html='';
+  ACTIVITIES.forEach(a=>{
+    const isSel=selected.some(s=>s.name===a.name);
+    const left=(a.start/maxT*100)+'%', width=((a.end-a.start)/maxT*100)+'%';
+    const bg=isSel?a.color:'#D3D1C7', opacity=isSel?1:.4;
+    html+=`<div style="display:flex;align-items:center;gap:8px;margin:3px 0">
+      <span style="font-size:12px;width:16px;color:var(--color-text-secondary)">${a.name}</span>
+      <div style="flex:1;position:relative;height:24px;background:var(--color-background-secondary);border-radius:4px;border:.5px solid var(--color-border-tertiary)">
+        <div style="position:absolute;left:${left};width:${width};height:100%;background:${bg};opacity:${opacity};border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:${isSel?'#fff':'#444'}">${a.start}–${a.end}</div>
+      </div></div>`;
+  });
+  html+=`<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--color-text-secondary);margin-top:4px;padding:0 24px">`;
+  for(let i=0;i<=maxT;i+=2) html+=`<span>${i}</span>`;
+  html+='</div>';
+  el.innerHTML=html;
+}
+
+// ── DP — Knapsack ─────────────────────────────────────
+const ITEMS=[{w:2,v:3},{w:3,v:4},{w:4,v:5},{w:5,v:7}];
+let knapState=null;
+function initKnap() {
+  const W=parseInt(document.getElementById('knap_w').value);
+  const n=ITEMS.length;
+  const dp=Array.from({length:n+1},()=>Array(W+1).fill(0));
+  knapState={W,n,dp,i:1,j:0,done:false};
+  document.getElementById('knap_step_btn').disabled=false;
+  document.getElementById('knap_items_info').textContent='물건: '+ITEMS.map((it,i)=>`[${i+1}] 무게${it.w}/가치${it.v}`).join(', ')+` | 용량: ${W}`;
+  renderKnapTable(); document.getElementById('knap_result').textContent=''; document.getElementById('knap_log').innerHTML='단계별로 클릭하세요';
+}
+function knapStep() {
+  const s=knapState; if(!s||s.done) return;
+  const {W,n,dp}=s;
+  if(s.i>n){s.done=true;document.getElementById('knap_step_btn').disabled=true;document.getElementById('knap_result').innerHTML=`최대 가치: <span class="hl2">${dp[n][W]}</span>`;return;}
+  const i=s.i,j=s.j,it=ITEMS[i-1];
+  if(j<it.w) dp[i][j]=dp[i-1][j];
+  else dp[i][j]=Math.max(dp[i-1][j],dp[i-1][j-it.w]+it.v);
+  document.getElementById('knap_log').innerHTML=`dp[${i}][${j}] = ${j<it.w?`dp[${i-1}][${j}]=${dp[i][j]}`:`max(${dp[i-1][j]}, ${dp[i-1][j-it.w]}+${it.v}) = <span class="hl">${dp[i][j]}</span>`}`;
+  renderKnapTable(i,j);
+  s.j++; if(s.j>W){s.j=0;s.i++;}
+}
+function knapAll(){while(knapState&&!knapState.done)knapStep();}
+function renderKnapTable(ci=-1,cj=-1) {
+  const s=knapState; if(!s) return;
+  const {W,n,dp}=s;
+  let h=`<tr><th>물건\\용량</th>${Array.from({length:W+1},(_,j)=>`<th>${j}</th>`).join('')}</tr>`;
+  for(let i=0;i<=n;i++){
+    h+=`<tr><th>${i===0?'없음':`물건${i}`}</th>`;
+    for(let j=0;j<=W;j++){
+      const cur=i===ci&&j===cj, done=i<ci||(i===ci&&j<cj);
+      h+=`<td class="${cur?'dp-cur':done?'dp-done':''}">${dp[i][j]}</td>`;
+    }
+    h+='</tr>';
+  }
+  document.getElementById('knap_table').innerHTML=h;
+}
+
+// ── DP — LIS ─────────────────────────────────────────
+function runLIS() {
+  const arr=document.getElementById('lis_arr').value.split(',').map(s=>parseInt(s.trim())).filter(n=>!isNaN(n));
+  if(!arr.length) return;
+  const n=arr.length, dp=Array(n).fill(1), parent=Array(n).fill(-1);
+  for(let i=1;i<n;i++) for(let j=0;j<i;j++) if(arr[j]<arr[i]&&dp[j]+1>dp[i]){dp[i]=dp[j]+1;parent[i]=j;}
+  const maxLen=Math.max(...dp); let idx=dp.lastIndexOf(maxLen); const lis=[];
+  while(idx!==-1){lis.unshift(idx);idx=parent[idx];}
+  const lisSet=new Set(lis);
+  const vis=document.getElementById('lis_visual'); vis.innerHTML='';
+  arr.forEach((v,i)=>{
+    const d=document.createElement('div');
+    d.style.cssText=`min-width:36px;height:44px;border-radius:8px;font-size:13px;font-weight:500;display:flex;flex-direction:column;align-items:center;justify-content:center;border:.5px solid var(--color-border-secondary);background:${lisSet.has(i)?'#EAF3DE':'var(--color-background-secondary)'};color:${lisSet.has(i)?'#3B6D11':'var(--color-text-secondary)'};margin:2px`;
+    d.innerHTML=`${v}<span style="font-size:9px">dp:${dp[i]}</span>`;
+    vis.appendChild(d);
+  });
+  let h=`<tr><th>i</th>${arr.map((_,i)=>`<th>${i}</th>`).join('')}</tr>`;
+  h+=`<tr><th>값</th>${arr.map(v=>`<td>${v}</td>`).join('')}</tr>`;
+  h+=`<tr><th>dp[i]</th>${dp.map((d,i)=>`<td class="${lisSet.has(i)?'dp-done':''}">${d}</td>`).join('')}</tr>`;
+  document.getElementById('lis_table').innerHTML=h;
+  document.getElementById('lis_result').innerHTML=`LIS 길이: <span class="hl2">${maxLen}</span> &nbsp;|&nbsp; 값: [${lis.map(i=>arr[i]).join(', ')}]`;
+}
+
+// ── QUIZ ─────────────────────────────────────────────
+const questions=[
+  {q:'드 모르간의 법칙: ¬(A ∧ B) = ?',opts:['¬A ∧ ¬B','¬A ∨ ¬B','A ∨ B','¬A ∧ B'],ans:1,exp:'¬(A∧B) = ¬A∨¬B — 괄호를 열면 AND↔OR 교환'},
+  {q:'A=1, B=0 일 때 A XOR B = ?',opts:['0','1','2','정의되지 않음'],ans:1,exp:'XOR: 서로 다를 때만 1 → 1 XOR 0 = 1'},
+  {q:'님 게임에서 더미가 [1, 2, 3]일 때 님-합(XOR)은?',opts:['0','1','2','6'],ans:0,exp:'1⊕2⊕3 = 01⊕10⊕11 = 00 = 0 → 후공 필승'},
+  {q:'N=13, K=3일 때 1~K개 가져가는 게임에서 필승은?',opts:['선공','후공','랜덤','비김'],ans:0,exp:'13 mod (3+1) = 13 mod 4 = 1 ≠ 0 → 선공 필승'},
+  {q:'활동 선택 문제의 그리디 기준은?',opts:['시작 시간 빠른 순','끝 시간 빠른 순','지속 시간 짧은 순','지속 시간 긴 순'],ans:1,exp:'끝 시간 기준 정렬 후 겹치지 않으면 선택 — 최적 보장'},
+  {q:'0/1 배낭 문제를 그리디로 풀 수 없는 이유는?',opts:['시간이 오래 걸려서','최선의 선택이 전체 최적을 보장하지 않아서','물건을 나눌 수 없어서','배낭 크기 제한 때문'],ans:1,exp:'그리디로 풀면 최적해를 놓칠 수 있음. 0/1 배낭은 DP 필요'},
+  {q:'DP에서 메모이제이션(Memoization)이란?',opts:['재귀를 반복문으로 변환','이미 계산한 결과를 저장해 재사용','가장 작은 부분 문제부터 풀기','최악의 경우를 미리 계산'],ans:1,exp:'메모이제이션: 계산 결과를 배열에 저장해 중복 계산을 피하는 Top-down 방식'},
+  {q:'A=1, B=1일 때 NAND(A,B) = ?',opts:['0','1','2','undefined'],ans:0,exp:'NAND = NOT(AND(1,1)) = NOT(1) = 0'},
+  {q:'LIS(Longest Increasing Subsequence)의 의미는?',opts:['가장 긴 감소 수열','가장 긴 증가 부분 수열','가장 많이 등장하는 수','가장 작은 원소의 위치'],ans:1,exp:'LIS: 수열에서 순서를 유지하며 오름차순으로 고를 때 가장 긴 것'},
+  {q:'p→q 명제의 대우는?',opts:['q→p','¬p→¬q','¬q→¬p','p→¬q'],ans:2,exp:'대우: ¬q→¬p (원래 명제와 진리값 동일)'},
+];
+let qIdx=0,score=0,answered=false;
+function renderQ(){
+  const q=questions[qIdx];
+  document.getElementById('q_num').textContent=qIdx+1;
+  document.getElementById('q_total').textContent=questions.length;
+  document.getElementById('q_score').textContent='점수: '+score;
+  document.getElementById('quiz_q').textContent=q.q;
+  const opts=document.getElementById('quiz_opts');opts.innerHTML='';
+  q.opts.forEach((o,i)=>{const btn=document.createElement('button');btn.className='quiz-opt';btn.textContent=['①','②','③','④'][i]+' '+o;btn.onclick=()=>selectAns(i);opts.appendChild(btn);});
+  document.getElementById('quiz_fb').style.display='none';
+  document.getElementById('next_btn').style.display='none';
+  answered=false;
+}
+function selectAns(i){
+  if(answered)return;answered=true;
+  const q=questions[qIdx];
+  document.querySelectorAll('.quiz-opt')[q.ans].classList.add('correct');
+  const fb=document.getElementById('quiz_fb');
+  if(i===q.ans){score++;document.getElementById('q_score').textContent='점수: '+score;fb.className='fb fb-ok';fb.textContent='✓ 정답! '+q.exp;}
+  else{document.querySelectorAll('.quiz-opt')[i].classList.add('wrong');fb.className='fb fb-no';fb.textContent='✗ 오답. '+q.exp;}
+  fb.style.display='block';
+  document.getElementById('next_btn').style.display=qIdx<questions.length-1?'inline-block':'none';
+  if(qIdx===questions.length-1)setTimeout(()=>{document.getElementById('quiz_done').style.display='block';const p=Math.round(score/questions.length*100);document.getElementById('quiz_final').textContent=`${questions.length}문제 중 ${score}개 정답 (${p}%) — ${p>=80?'훌륭합니다!':p>=60?'잘 하셨어요!':'개념 복습 후 다시 도전!'}`},400);
+}
+function nextQ(){qIdx++;renderQ();}
+function resetQuiz(){qIdx=0;score=0;answered=false;document.getElementById('quiz_done').style.display='none';renderQ();}
+
+// ── INIT ─────────────────────────────────────────────
+buildTruthTable();
+runChange();
+resetActivity();
+runLIS();
+renderQ();
+</script>

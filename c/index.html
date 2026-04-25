@@ -1,0 +1,748 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.page{font-family:var(--font-sans);color:var(--color-text-primary);padding:1.5rem 0}
+.nav-tabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:1.75rem;border-bottom:.5px solid var(--color-border-tertiary)}
+.tab-btn{padding:8px 13px;font-size:13px;font-weight:500;border:.5px solid var(--color-border-secondary);border-bottom:none;border-radius:8px 8px 0 0;background:var(--color-background-secondary);color:var(--color-text-secondary);cursor:pointer;transition:all .15s}
+.tab-btn.active{background:var(--color-background-primary);color:var(--color-text-primary);border-color:var(--color-border-primary)}
+.section{display:none}.section.active{display:block}
+h2{font-size:18px;font-weight:500;margin-bottom:.4rem}
+h3{font-size:15px;font-weight:500;margin:1.1rem 0 .4rem}
+p{font-size:14px;line-height:1.7;color:var(--color-text-secondary);margin-bottom:.5rem}
+.card{background:var(--color-background-primary);border:.5px solid var(--color-border-tertiary);border-radius:12px;padding:1.25rem;margin-bottom:1rem}
+.formula{font-family:var(--font-mono);font-size:12px;background:var(--color-background-secondary);border:.5px solid var(--color-border-tertiary);border-radius:8px;padding:10px 14px;margin:.5rem 0;line-height:1.8}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+@media(max-width:520px){.grid2{grid-template-columns:1fr}}
+.sim-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.sim-row label{font-size:13px;color:var(--color-text-secondary)}
+.result-box{background:var(--color-background-secondary);border-radius:8px;padding:10px 14px;font-size:13px;line-height:1.8;min-height:36px}
+.btn{padding:7px 14px;font-size:13px;font-weight:500;border:.5px solid var(--color-border-primary);border-radius:8px;background:var(--color-background-primary);color:var(--color-text-primary);cursor:pointer}
+.btn:hover{background:var(--color-background-secondary)}
+.btn:disabled{opacity:.4;cursor:default}
+.hl{color:#185FA5;font-weight:500}
+.hl2{color:#3B6D11;font-weight:500}
+.hl3{color:#993556;font-weight:500}
+.tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:6px;font-weight:500;margin:2px}
+.tag-b{background:#E6F1FB;color:#0C447C}
+.tag-g{background:#EAF3DE;color:#3B6D11}
+.tag-a{background:#FAEEDA;color:#633806}
+.tag-p{background:#EEEDFE;color:#3C3489}
+.tag-r{background:#FCEBEB;color:#791F1F}
+canvas{display:block;width:100%;border-radius:8px;border:.5px solid var(--color-border-tertiary);background:var(--color-background-secondary)}
+.step-log{max-height:140px;overflow-y:auto;font-size:12px;font-family:var(--font-mono);background:var(--color-background-secondary);border-radius:8px;padding:8px 12px;line-height:1.9}
+.queue-row{display:flex;gap:4px;flex-wrap:wrap;margin:.4rem 0;min-height:28px;align-items:center}
+.q-cell{min-width:28px;height:28px;border-radius:6px;font-size:12px;font-weight:500;display:flex;align-items:center;justify-content:center;border:.5px solid var(--color-border-secondary)}
+.q-cell.visited{background:#E6F1FB;color:#0C447C;border-color:#85B7EB}
+.q-cell.inqueue{background:#FAEEDA;color:#633806;border-color:#EF9F27}
+.q-cell.current{background:#EEEDFE;color:#3C3489;border-color:#AFA9EC}
+.traverse-seq{display:flex;gap:4px;flex-wrap:wrap;margin:.5rem 0}
+.tr-cell{min-width:28px;height:28px;border-radius:6px;font-size:12px;font-weight:500;display:flex;align-items:center;justify-content:center;background:var(--color-background-secondary);border:.5px solid var(--color-border-tertiary);transition:all .3s}
+.tr-cell.pre{background:#EEEDFE;color:#3C3489;border-color:#AFA9EC}
+.tr-cell.ino{background:#E6F1FB;color:#0C447C;border-color:#85B7EB}
+.tr-cell.post{background:#EAF3DE;color:#3B6D11;border-color:#97C459}
+.edge-table{width:100%;font-size:12px;border-collapse:collapse}
+.edge-table th{background:var(--color-background-secondary);padding:5px 8px;border:.5px solid var(--color-border-tertiary);font-weight:500;text-align:center}
+.edge-table td{padding:5px 8px;border:.5px solid var(--color-border-tertiary);text-align:center}
+.edge-table tr.selected td{background:#E6F1FB;color:#0C447C}
+.quiz-opt{width:100%;text-align:left;padding:10px 14px;font-size:13px;margin-bottom:6px;border:.5px solid var(--color-border-secondary);border-radius:8px;background:var(--color-background-primary);color:var(--color-text-primary);cursor:pointer}
+.quiz-opt:hover{background:var(--color-background-secondary)}
+.quiz-opt.correct{background:#EAF3DE;border-color:#97C459;color:#3B6D11}
+.quiz-opt.wrong{background:#FCEBEB;border-color:#F09595;color:#791F1F}
+.fb{font-size:13px;padding:10px 14px;border-radius:8px;margin-top:8px}
+.fb-ok{background:#EAF3DE;color:#27500A}
+.fb-no{background:#FCEBEB;color:#501313}
+.score-b{display:inline-block;padding:2px 10px;border-radius:20px;font-size:12px;font-weight:500;background:#E6F1FB;color:#0C447C}
+</style>
+
+<div class="page">
+<h2 style="margin-bottom:.25rem">그래프 & 트리 이론</h2>
+<p style="font-size:13px;margin-bottom:1.25rem">정보올림피아드 핵심 — 탐색·순회·최단경로·신장트리 완전 정복</p>
+
+<div class="nav-tabs">
+  <button class="tab-btn active" onclick="switchTab('basic')">기초 용어</button>
+  <button class="tab-btn" onclick="switchTab('search')">DFS / BFS</button>
+  <button class="tab-btn" onclick="switchTab('tree')">트리 & 순회</button>
+  <button class="tab-btn" onclick="switchTab('shortest')">최단경로</button>
+  <button class="tab-btn" onclick="switchTab('span')">신장 트리</button>
+  <button class="tab-btn" onclick="switchTab('quiz')">퀴즈</button>
+</div>
+
+<!-- 기초 용어 -->
+<div class="section active" id="tab-basic">
+  <h2>그래프 기초 용어</h2>
+  <p>그래프는 정점(Vertex)과 간선(Edge)으로 이루어진 자료구조입니다.</p>
+  <div class="grid2">
+    <div class="card">
+      <h3 style="margin-top:0">핵심 용어 정의</h3>
+      <p style="font-size:13px"><span class="tag tag-b">정점(Vertex/Node)</span> 그래프의 기본 단위, 노드라고도 함</p>
+      <p style="font-size:13px"><span class="tag tag-g">간선(Edge)</span> 두 정점을 연결하는 선</p>
+      <p style="font-size:13px"><span class="tag tag-a">차수(Degree)</span> 한 정점에 연결된 간선의 수</p>
+      <p style="font-size:13px"><span class="tag tag-p">경로(Path)</span> 정점을 따라 이동하는 순서</p>
+      <p style="font-size:13px"><span class="tag tag-r">사이클(Cycle)</span> 시작점으로 돌아오는 경로</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">그래프 종류</h3>
+      <p style="font-size:13px"><span class="tag tag-b">무방향 그래프</span> 간선에 방향 없음 (양방향)</p>
+      <p style="font-size:13px"><span class="tag tag-g">방향 그래프(DAG)</span> 간선에 방향 있음</p>
+      <p style="font-size:13px"><span class="tag tag-a">가중치 그래프</span> 간선에 비용(거리) 부여</p>
+      <p style="font-size:13px"><span class="tag tag-p">연결 그래프</span> 모든 정점이 연결됨</p>
+      <p style="font-size:13px"><span class="tag tag-r">이분 그래프</span> 두 집합으로 색칠 가능</p>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <h3 style="margin-top:0">인접 행렬 표현</h3>
+      <div class="formula">int adj[V][V];<br>// adj[i][j]=1 이면 i→j 간선 존재<br>// 가중치 그래프: 가중치 값 저장<br>// 공간: O(V²), 조회: O(1)</div>
+      <p style="font-size:12px">밀집 그래프(간선 많음)에 유리</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">인접 리스트 표현</h3>
+      <div class="formula">vector&lt;int&gt; adj[V];<br>// adj[i]에 i와 연결된 정점 저장<br>// 가중치: pair&lt;int,int&gt; 사용<br>// 공간: O(V+E), 순회: O(V+E)</div>
+      <p style="font-size:12px">희소 그래프(간선 적음)에 유리</p>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">인터랙티브 그래프 — 정점 클릭으로 차수 확인</h3>
+    <p style="font-size:13px">정점을 클릭하면 해당 정점의 차수와 이웃을 확인할 수 있습니다.</p>
+    <canvas id="basic_canvas" height="200"></canvas>
+    <div id="basic_info" class="result-box" style="margin-top:8px">정점을 클릭해보세요</div>
+  </div>
+</div>
+
+<!-- DFS BFS -->
+<div class="section" id="tab-search">
+  <h2>DFS & BFS 탐색</h2>
+  <p>그래프의 모든 정점을 체계적으로 방문하는 두 가지 핵심 알고리즘입니다.</p>
+  <div class="grid2">
+    <div class="card">
+      <h3 style="margin-top:0">DFS — 깊이 우선 탐색</h3>
+      <p style="font-size:13px">갈 수 있는 한 깊이 파고들다가, 막히면 되돌아옵니다.</p>
+      <div class="formula">// 재귀 방식<br>bool visited[MAX];<br>void dfs(int v) {<br>  visited[v] = true;<br>  for (int u : adj[v])<br>    if (!visited[u]) dfs(u);<br>}</div>
+      <p style="font-size:12px">자료구조: <span class="hl">스택(Stack)</span> / 재귀 호출 스택</p>
+      <p style="font-size:12px">시간복잡도: O(V+E)</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">BFS — 너비 우선 탐색</h3>
+      <p style="font-size:13px">가까운 정점부터 차례대로 방문합니다. 최단 거리 보장.</p>
+      <div class="formula">// 큐 방식<br>void bfs(int start) {<br>  queue&lt;int&gt; q;<br>  visited[start]=true; q.push(start);<br>  while(!q.empty()) {<br>    int v=q.front(); q.pop();<br>    for(int u:adj[v])<br>      if(!visited[u]){visited[u]=true;q.push(u);}<br>  }<br>}</div>
+      <p style="font-size:12px">자료구조: <span class="hl2">큐(Queue)</span></p>
+      <p style="font-size:12px">시간복잡도: O(V+E)</p>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">DFS vs BFS 시뮬레이터</h3>
+    <div class="sim-row">
+      <label>시작 정점:</label>
+      <select id="search_start" style="width:60px">
+        <option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option>
+      </select>
+      <button class="btn" onclick="initSearch('dfs')">DFS 시작</button>
+      <button class="btn" onclick="initSearch('bfs')">BFS 시작</button>
+      <button class="btn" id="search_step_btn" onclick="doSearchStep()" disabled>다음 단계</button>
+      <button class="btn" onclick="resetSearch()">초기화</button>
+    </div>
+    <canvas id="search_canvas" height="220"></canvas>
+    <div style="margin-top:8px;font-size:13px;color:var(--color-text-secondary)">
+      방문 순서: <div class="traverse-seq" id="search_seq"></div>
+    </div>
+    <div style="font-size:13px;color:var(--color-text-secondary);margin-top:6px">
+      <span id="search_struct_label">큐/스택:</span>
+      <div class="queue-row" id="search_struct"></div>
+    </div>
+    <div class="step-log" id="search_log">탐색 알고리즘을 선택하고 시작하세요</div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">DFS vs BFS 비교</h3>
+    <table style="width:100%;font-size:13px;border-collapse:collapse">
+      <tr>
+        <th style="background:var(--color-background-secondary);padding:7px;border:.5px solid var(--color-border-tertiary);text-align:left">항목</th>
+        <th style="background:#E6F1FB;color:#0C447C;padding:7px;border:.5px solid var(--color-border-tertiary)">DFS</th>
+        <th style="background:#EAF3DE;color:#3B6D11;padding:7px;border:.5px solid var(--color-border-tertiary)">BFS</th>
+      </tr>
+      <tr><td style="padding:6px 8px;border:.5px solid var(--color-border-tertiary)">자료구조</td><td style="padding:6px 8px;border:.5px solid var(--color-border-tertiary);text-align:center">스택/재귀</td><td style="padding:6px 8px;border:.5px solid var(--color-border-tertiary);text-align:center">큐</td></tr>
+      <tr><td style="padding:6px 8px;border:.5px solid var(--color-border-tertiary)">최단 경로</td><td style="padding:6px 8px;border:.5px solid var(--color-border-tertiary);text-align:center">보장 X</td><td style="padding:6px 8px;border:.5px solid var(--color-border-tertiary);text-align:center">보장 O</td></tr>
+      <tr><td style="padding:6px 8px;border:.5px solid var(--color-border-tertiary)">메모리</td><td style="padding:6px 8px;border:.5px solid var(--color-border-tertiary);text-align:center">적음(깊이)</td><td style="padding:6px 8px;border:.5px solid var(--color-border-tertiary);text-align:center">많음(너비)</td></tr>
+      <tr><td style="padding:6px 8px;border:.5px solid var(--color-border-tertiary)">활용</td><td style="padding:6px 8px;border:.5px solid var(--color-border-tertiary);text-align:center">사이클 탐지, 위상정렬</td><td style="padding:6px 8px;border:.5px solid var(--color-border-tertiary);text-align:center">최단거리, 레벨 탐색</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- 트리 -->
+<div class="section" id="tab-tree">
+  <h2>트리(Tree) & 순회</h2>
+  <p>사이클이 없는 연결 그래프. V개 정점, V-1개 간선.</p>
+  <div class="grid2">
+    <div class="card">
+      <h3 style="margin-top:0">트리 용어</h3>
+      <p style="font-size:13px"><span class="tag tag-b">루트(Root)</span> 최상위 정점 (부모 없음)</p>
+      <p style="font-size:13px"><span class="tag tag-g">리프(Leaf)</span> 자식이 없는 정점</p>
+      <p style="font-size:13px"><span class="tag tag-a">깊이(Depth)</span> 루트에서의 거리</p>
+      <p style="font-size:13px"><span class="tag tag-p">높이(Height)</span> 리프까지의 최대 거리</p>
+      <p style="font-size:13px"><span class="tag tag-r">이진 트리</span> 자식이 최대 2개</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">완전 이진 트리 특성</h3>
+      <div class="formula">// 배열로 표현 (1-indexed)<br>부모(i)  = i / 2<br>왼쪽(i)  = 2 * i<br>오른쪽(i) = 2 * i + 1<br><br>// n개 노드 → 높이 = ⌊log₂n⌋<br>// 레벨 k → 최대 2^k개 노드</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">이진 트리 순회 시뮬레이터</h3>
+    <p style="font-size:13px">전위(Pre): <span class="tag tag-p">루트→왼→오</span> &nbsp; 중위(In): <span class="tag tag-b">왼→루트→오</span> &nbsp; 후위(Post): <span class="tag tag-g">왼→오→루트</span></p>
+    <div class="sim-row">
+      <button class="btn" onclick="runTraversal('pre')">전위 순회</button>
+      <button class="btn" onclick="runTraversal('in')">중위 순회</button>
+      <button class="btn" onclick="runTraversal('post')">후위 순회</button>
+      <button class="btn" id="trav_step" onclick="travStep()" disabled>다음 단계</button>
+      <button class="btn" onclick="resetTraversal()">초기화</button>
+    </div>
+    <canvas id="tree_canvas" height="200"></canvas>
+    <div style="margin-top:8px;font-size:13px;color:var(--color-text-secondary)">
+      순회 결과: <div class="traverse-seq" id="trav_seq"></div>
+    </div>
+    <div class="step-log" id="trav_log" style="margin-top:6px">순회 방법을 선택하세요</div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">순회 C 코드</h3>
+    <div class="formula">typedef struct Node { int val; Node *left, *right; } Node;<br><br>void preorder(Node* n)  { if(!n)return; visit(n); preorder(n->left); preorder(n->right); }<br>void inorder(Node* n)   { if(!n)return; inorder(n->left); visit(n); inorder(n->right); }<br>void postorder(Node* n) { if(!n)return; postorder(n->left); postorder(n->right); visit(n); }</div>
+  </div>
+</div>
+
+<!-- 최단경로 -->
+<div class="section" id="tab-shortest">
+  <h2>최단 경로 — 다익스트라 알고리즘</h2>
+  <p>가중치가 양수인 그래프에서 단일 시작점으로부터 모든 정점까지의 최단 거리를 구합니다.</p>
+  <div class="grid2">
+    <div class="card">
+      <h3 style="margin-top:0">알고리즘 핵심 아이디어</h3>
+      <p style="font-size:13px">아직 방문하지 않은 정점 중 <span class="hl">거리가 가장 짧은 정점</span>을 선택해 이웃을 갱신(Relaxation)합니다.</p>
+      <div class="formula">dist[start] = 0; // 나머지 INF<br>while (미방문 정점 존재) {<br>  v = dist 최솟값 미방문 정점;<br>  visited[v] = true;<br>  for (u in adj[v])<br>    if(dist[v]+w(v,u) &lt; dist[u])<br>      dist[u] = dist[v]+w(v,u);<br>}</div>
+      <p style="font-size:12px">우선순위 큐 사용 시: <span class="hl">O((V+E) log V)</span></p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">주의사항 & 응용</h3>
+      <p style="font-size:13px"><span class="tag tag-r">음수 간선</span> 사용 불가 → 벨만-포드 사용</p>
+      <p style="font-size:13px"><span class="tag tag-b">단일 출발</span> 한 정점에서 모든 정점</p>
+      <p style="font-size:13px"><span class="tag tag-g">응용</span> 네비게이션, 네트워크 라우팅</p>
+      <p style="font-size:13px">모든 쌍 최단 경로는 <span class="hl">플로이드-워셜</span> O(V³) 사용</p>
+      <div class="formula">// 플로이드-워셜 핵심<br>for(k) for(i) for(j)<br>  d[i][j]=min(d[i][j],d[i][k]+d[k][j]);</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">다익스트라 시뮬레이터</h3>
+    <div class="sim-row">
+      <label>시작:</label>
+      <select id="dijk_start" style="width:55px"><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option></select>
+      <button class="btn" onclick="initDijk()">시작</button>
+      <button class="btn" id="dijk_step_btn" onclick="dijkStep()" disabled>다음 단계</button>
+      <button class="btn" onclick="resetDijk()">초기화</button>
+    </div>
+    <canvas id="dijk_canvas" height="220"></canvas>
+    <div style="margin-top:8px;overflow-x:auto">
+      <table class="edge-table" id="dijk_table" style="min-width:300px"></table>
+    </div>
+    <div class="step-log" id="dijk_log" style="margin-top:8px">시작 정점을 선택하고 시작하세요</div>
+  </div>
+</div>
+
+<!-- 신장 트리 -->
+<div class="section" id="tab-span">
+  <h2>최소 신장 트리 — 크루스칼 알고리즘</h2>
+  <p>모든 정점을 사이클 없이 연결하는 간선들의 집합 중, 가중치 합이 최소인 것입니다.</p>
+  <div class="grid2">
+    <div class="card">
+      <h3 style="margin-top:0">크루스칼 알고리즘</h3>
+      <p style="font-size:13px">간선을 가중치 오름차순으로 정렬 후, 사이클을 형성하지 않는 간선을 탐욕적으로 선택합니다.</p>
+      <div class="formula">sort(edges by weight);<br>for (edge(u,v,w) in edges) {<br>  if (find(u) != find(v)) { // 다른 집합<br>    union(u, v); // 합치기<br>    MST.add(edge);<br>  }<br>}<br>// Union-Find 자료구조 활용<br>// 시간복잡도: O(E log E)</div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Union-Find (서로소 집합)</h3>
+      <div class="formula">int parent[MAX];<br>int find(int x) {<br>  if(parent[x]==x) return x;<br>  return parent[x]=find(parent[x]); // 경로압축<br>}<br>void unite(int a, int b) {<br>  a=find(a); b=find(b);<br>  if(a!=b) parent[a]=b;<br>}</div>
+      <p style="font-size:12px">경로 압축으로 거의 O(1) 달성</p>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">크루스칼 시뮬레이터</h3>
+    <div class="sim-row">
+      <button class="btn" onclick="initKruskal()">시작</button>
+      <button class="btn" id="kruskal_step_btn" onclick="kruskalStep()" disabled>다음 간선 처리</button>
+      <button class="btn" onclick="resetKruskal()">초기화</button>
+    </div>
+    <canvas id="kruskal_canvas" height="220"></canvas>
+    <div style="margin-top:8px;overflow-x:auto">
+      <table class="edge-table" id="kruskal_table" style="min-width:350px"></table>
+    </div>
+    <div class="step-log" id="kruskal_log" style="margin-top:8px">시작 버튼을 눌러 크루스칼 알고리즘을 실행하세요</div>
+  </div>
+</div>
+
+<!-- 퀴즈 -->
+<div class="section" id="tab-quiz">
+  <h2>연습 퀴즈</h2>
+  <p>그래프 & 트리 이론 통합 문제입니다.</p>
+  <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:1rem">문제 <span id="q_num">1</span>/<span id="q_total">10</span> &nbsp;<span class="score-b" id="q_score">점수: 0</span></div>
+  <div class="card">
+    <p id="quiz_q" style="font-size:15px;font-weight:500;color:var(--color-text-primary);margin-bottom:1rem"></p>
+    <div id="quiz_opts"></div>
+    <div id="quiz_fb" class="fb" style="display:none"></div>
+  </div>
+  <div style="display:flex;gap:8px;margin-top:10px">
+    <button class="btn" id="next_btn" onclick="nextQ()" style="display:none">다음 문제 →</button>
+  </div>
+  <div id="quiz_done" style="display:none;margin-top:1rem">
+    <div class="card">
+      <p style="font-size:15px;font-weight:500;margin-bottom:.5rem">퀴즈 완료!</p>
+      <p id="quiz_final" style="font-size:14px;color:var(--color-text-secondary)"></p>
+      <button class="btn" onclick="resetQuiz()" style="margin-top:.75rem">다시 풀기</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+// ── helpers ──────────────────────────────────────────
+function getStyle(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+function col(v){return getStyle(v)||'#888'}
+
+// ── BASIC GRAPH ───────────────────────────────────────
+const BG={
+  nodes:[{x:.15,y:.25},{x:.45,y:.1},{x:.8,y:.2},{x:.25,y:.6},{x:.6,y:.55},{x:.85,y:.7},{x:.45,y:.85}],
+  edges:[[0,1],[0,3],[1,2],[1,4],[2,5],[3,4],[3,6],[4,5],[4,6]]
+};
+let basicSel=-1;
+function drawBasic(){
+  const cv=document.getElementById('basic_canvas');
+  const dpr=window.devicePixelRatio||1;
+  cv.width=cv.offsetWidth*dpr; cv.height=200*dpr;
+  const g=cv.getContext('2d'); g.scale(dpr,dpr);
+  const W=cv.offsetWidth,H=200;
+  g.clearRect(0,0,W,H);
+  const px=i=>BG.nodes[i].x*W, py=i=>BG.nodes[i].y*H;
+  BG.edges.forEach(([a,b])=>{
+    const nb=basicSel!==-1&&(a===basicSel||b===basicSel);
+    g.strokeStyle=nb?'#378ADD':'#888780'; g.lineWidth=nb?2:1;
+    g.beginPath(); g.moveTo(px(a),py(a)); g.lineTo(px(b),py(b)); g.stroke();
+  });
+  BG.nodes.forEach((n,i)=>{
+    const sel=i===basicSel;
+    const nb=basicSel!==-1&&BG.edges.some(([a,b])=>(a===i&&b===basicSel)||(b===i&&a===basicSel));
+    g.beginPath(); g.arc(px(i),py(i),16,0,Math.PI*2);
+    g.fillStyle=sel?'#378ADD':nb?'#E6F1FB':'#D3D1C7';
+    g.fill(); g.strokeStyle=sel?'#0C447C':'#888780'; g.lineWidth=1.5; g.stroke();
+    g.fillStyle=sel?'#fff':'#2C2C2A'; g.font='bold 13px sans-serif'; g.textAlign='center'; g.textBaseline='middle';
+    g.fillText(i,px(i),py(i));
+  });
+}
+document.getElementById('basic_canvas').addEventListener('click',function(e){
+  const cv=this; const rect=cv.getBoundingClientRect();
+  const W=cv.offsetWidth,H=200;
+  const mx=(e.clientX-rect.left)/rect.width*W, my=(e.clientY-rect.top)/rect.height*H;
+  const px=i=>BG.nodes[i].x*W, py=i=>BG.nodes[i].y*H;
+  let hit=-1;
+  BG.nodes.forEach((n,i)=>{if(Math.hypot(mx-px(i),my-py(i))<18)hit=i;});
+  basicSel=hit===basicSel?-1:hit;
+  if(basicSel!==-1){
+    const deg=BG.edges.filter(([a,b])=>a===basicSel||b===basicSel).length;
+    const nb=BG.edges.filter(([a,b])=>a===basicSel?b:a===basicSel?-1:b===basicSel?a:-1).map(([a,b])=>a===basicSel?b:a);
+    document.getElementById('basic_info').innerHTML=`정점 <span class="hl">${basicSel}</span> &nbsp;|&nbsp; 차수(Degree): <span class="hl">${deg}</span> &nbsp;|&nbsp; 이웃: [${nb.join(', ')}]`;
+  } else document.getElementById('basic_info').textContent='정점을 클릭해보세요';
+  drawBasic();
+});
+window.addEventListener('resize',drawBasic);
+
+// ── SEARCH GRAPH ──────────────────────────────────────
+const SG={
+  nodes:[{x:.15,y:.2},{x:.45,y:.1},{x:.8,y:.2},{x:.15,y:.6},{x:.5,y:.5},{x:.8,y:.6},{x:.5,y:.85}],
+  edges:[[0,1],[0,3],[1,2],[1,4],[2,5],[3,4],[4,5],[4,6],[3,6]]
+};
+let searchState=null;
+
+function initSearch(type){
+  const start=parseInt(document.getElementById('search_start').value);
+  const n=SG.nodes.length;
+  const adj=Array.from({length:n},()=>[]);
+  SG.edges.forEach(([a,b])=>{adj[a].push(b);adj[b].push(a);});
+  adj.forEach(a=>a.sort((x,y)=>x-y));
+  searchState={type,visited:Array(n).fill(false),order:[],struct:[],log:[],adj,done:false};
+  const s=searchState;
+  if(type==='dfs'){
+    s.struct=[start]; s.visited[start]=true;
+    document.getElementById('search_struct_label').textContent='스택:';
+    s.log.push(`DFS 시작. 스택: [${start}]`);
+  } else {
+    s.struct=[start]; s.visited[start]=true;
+    document.getElementById('search_struct_label').textContent='큐:';
+    s.log.push(`BFS 시작. 큐: [${start}]`);
+  }
+  document.getElementById('search_step_btn').disabled=false;
+  document.getElementById('search_seq').innerHTML='';
+  document.getElementById('search_log').innerHTML=s.log[0];
+  renderSearch();
+}
+
+function doSearchStep(){
+  const s=searchState; if(!s||s.done) return;
+  if(s.type==='dfs'){
+    if(!s.struct.length){s.done=true;document.getElementById('search_step_btn').disabled=true;return;}
+    const v=s.struct.pop();
+    if(s.order.includes(v)){renderSearch();return;}
+    s.order.push(v);
+    const cell=document.createElement('div');cell.className='tr-cell pre';cell.textContent=v;
+    document.getElementById('search_seq').appendChild(cell);
+    const nbrs=[...s.adj[v]].reverse();
+    nbrs.forEach(u=>{if(!s.order.includes(u)&&!s.struct.includes(u)){s.struct.push(u);}});
+    s.log.push(`방문: ${v} | 스택: [${s.struct.join(',')}]`);
+  } else {
+    if(!s.struct.length){s.done=true;document.getElementById('search_step_btn').disabled=true;return;}
+    const v=s.struct.shift();
+    s.order.push(v);
+    const cell=document.createElement('div');cell.className='tr-cell ino';cell.textContent=v;
+    document.getElementById('search_seq').appendChild(cell);
+    s.adj[v].forEach(u=>{if(!s.visited[u]){s.visited[u]=true;s.struct.push(u);}});
+    s.log.push(`방문: ${v} | 큐: [${s.struct.join(',')}]`);
+  }
+  const logEl=document.getElementById('search_log');
+  logEl.innerHTML=s.log.slice(-6).join('<br>');
+  renderSearchStruct();
+  renderSearch();
+  if(!s.struct.length){s.done=true;document.getElementById('search_step_btn').disabled=true;}
+}
+
+function resetSearch(){searchState=null;document.getElementById('search_step_btn').disabled=true;document.getElementById('search_seq').innerHTML='';document.getElementById('search_struct').innerHTML='';document.getElementById('search_log').textContent='탐색 알고리즘을 선택하고 시작하세요';drawSearchBase();}
+
+function renderSearchStruct(){
+  const s=searchState; if(!s) return;
+  const el=document.getElementById('search_struct'); el.innerHTML='';
+  s.struct.forEach(v=>{
+    const d=document.createElement('div');d.className='q-cell inqueue';d.textContent=v;el.appendChild(d);
+  });
+}
+
+function drawSearchBase(){
+  const cv=document.getElementById('search_canvas');
+  const dpr=window.devicePixelRatio||1;
+  cv.width=cv.offsetWidth*dpr; cv.height=220*dpr;
+  const g=cv.getContext('2d');g.scale(dpr,dpr);
+  const W=cv.offsetWidth,H=220;
+  const px=i=>SG.nodes[i].x*W,py=i=>SG.nodes[i].y*H;
+  g.clearRect(0,0,W,H);
+  SG.edges.forEach(([a,b])=>{g.strokeStyle='#B4B2A9';g.lineWidth=1.5;g.beginPath();g.moveTo(px(a),py(a));g.lineTo(px(b),py(b));g.stroke();});
+  SG.nodes.forEach((_,i)=>{
+    g.beginPath();g.arc(px(i),py(i),16,0,Math.PI*2);
+    g.fillStyle='#D3D1C7';g.fill();g.strokeStyle='#888780';g.lineWidth=1.5;g.stroke();
+    g.fillStyle='#2C2C2A';g.font='bold 13px sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText(i,px(i),py(i));
+  });
+}
+
+function renderSearch(){
+  const s=searchState; if(!s){drawSearchBase();return;}
+  const cv=document.getElementById('search_canvas');
+  const dpr=window.devicePixelRatio||1;
+  cv.width=cv.offsetWidth*dpr; cv.height=220*dpr;
+  const g=cv.getContext('2d');g.scale(dpr,dpr);
+  const W=cv.offsetWidth,H=220;
+  const px=i=>SG.nodes[i].x*W,py=i=>SG.nodes[i].y*H;
+  g.clearRect(0,0,W,H);
+  SG.edges.forEach(([a,b])=>{g.strokeStyle='#B4B2A9';g.lineWidth=1.5;g.beginPath();g.moveTo(px(a),py(a));g.lineTo(px(b),py(b));g.stroke();});
+  SG.nodes.forEach((_,i)=>{
+    const visited=s.order.includes(i);
+    const inStruct=s.struct.includes(i);
+    const isCur=s.order.length&&s.order[s.order.length-1]===i;
+    g.beginPath();g.arc(px(i),py(i),16,0,Math.PI*2);
+    g.fillStyle=isCur?'#534AB7':visited?'#378ADD':inStruct?'#EF9F27':'#D3D1C7';
+    g.fill();g.strokeStyle=isCur?'#26215C':visited?'#0C447C':inStruct?'#633806':'#888780';g.lineWidth=1.5;g.stroke();
+    g.fillStyle=visited||inStruct?'#fff':'#2C2C2A';
+    g.font='bold 13px sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText(i,px(i),py(i));
+    if(visited){const ord=s.order.indexOf(i)+1;g.fillStyle='rgba(255,255,255,.85)';g.font='9px sans-serif';g.fillText(ord,px(i)+11,py(i)-11);}
+  });
+}
+
+// ── TREE ─────────────────────────────────────────────
+const TREE={vals:[1,2,3,4,5,6,7],left:[1,3,5,-1,-1,-1,-1],right:[2,4,6,-1,-1,-1,-1]};
+let travState=null;
+function buildTravOrder(type){
+  const res=[];
+  function pre(i){if(i<0||i>=TREE.vals.length)return;res.push(i);pre(TREE.left[i]);pre(TREE.right[i]);}
+  function ino(i){if(i<0||i>=TREE.vals.length)return;ino(TREE.left[i]);res.push(i);ino(TREE.right[i]);}
+  function post(i){if(i<0||i>=TREE.vals.length)return;post(TREE.left[i]);post(TREE.right[i]);res.push(i);}
+  if(type==='pre')pre(0);else if(type==='in')ino(0);else post(0);
+  return res;
+}
+function runTraversal(type){
+  const order=buildTravOrder(type);
+  travState={type,order,step:0};
+  document.getElementById('trav_step').disabled=false;
+  document.getElementById('trav_seq').innerHTML='';
+  document.getElementById('trav_log').textContent=`${type==='pre'?'전위':type==='in'?'중위':'후위'} 순회 시작 — 단계별 진행`;
+  drawTree([]);
+}
+function travStep(){
+  const s=travState; if(!s||s.step>=s.order.length)return;
+  const i=s.order[s.step++];
+  const cls=s.type==='pre'?'pre':s.type==='in'?'ino':'post';
+  const cell=document.createElement('div');cell.className=`tr-cell ${cls}`;cell.textContent=TREE.vals[i];
+  document.getElementById('trav_seq').appendChild(cell);
+  document.getElementById('trav_log').textContent=`노드 ${TREE.vals[i]} 방문 (${s.step}/${s.order.length})`;
+  drawTree(s.order.slice(0,s.step));
+  if(s.step>=s.order.length)document.getElementById('trav_step').disabled=true;
+}
+function resetTraversal(){travState=null;document.getElementById('trav_step').disabled=true;document.getElementById('trav_seq').innerHTML='';document.getElementById('trav_log').textContent='순회 방법을 선택하세요';drawTree([]);}
+function treePos(i,W,H){const positions=[{x:.5,y:.1},{x:.25,y:.35},{x:.75,y:.35},{x:.12,y:.65},{x:.38,y:.65},{x:.62,y:.65},{x:.88,y:.65}];return{x:positions[i].x*W,y:positions[i].y*H+20};}
+function drawTree(visited){
+  const cv=document.getElementById('tree_canvas');
+  const dpr=window.devicePixelRatio||1;
+  cv.width=cv.offsetWidth*dpr; cv.height=200*dpr;
+  const g=cv.getContext('2d');g.scale(dpr,dpr);
+  const W=cv.offsetWidth,H=200;
+  g.clearRect(0,0,W,H);
+  TREE.vals.forEach((_,i)=>{
+    if(TREE.left[i]>=0){const p=treePos(i,W,H),c=treePos(TREE.left[i],W,H);g.strokeStyle='#B4B2A9';g.lineWidth=1.5;g.beginPath();g.moveTo(p.x,p.y);g.lineTo(c.x,c.y);g.stroke();}
+    if(TREE.right[i]>=0){const p=treePos(i,W,H),c=treePos(TREE.right[i],W,H);g.strokeStyle='#B4B2A9';g.lineWidth=1.5;g.beginPath();g.moveTo(p.x,p.y);g.lineTo(c.x,c.y);g.stroke();}
+  });
+  TREE.vals.forEach((_,i)=>{
+    const p=treePos(i,W,H);const isV=visited.includes(i);const isCur=visited.length&&visited[visited.length-1]===i;
+    const cls=travState?travState.type:'none';
+    g.beginPath();g.arc(p.x,p.y,18,0,Math.PI*2);
+    g.fillStyle=isCur?(cls==='pre'?'#534AB7':cls==='in'?'#378ADD':'#1D9E75'):isV?(cls==='pre'?'#AFA9EC':cls==='in'?'#85B7EB':'#5DCAA5'):'#D3D1C7';
+    g.fill();g.strokeStyle=isCur?'#26215C':'#888780';g.lineWidth=1.5;g.stroke();
+    g.fillStyle=isV?'#fff':'#2C2C2A';g.font='bold 13px sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText(TREE.vals[i],p.x,p.y);
+  });
+}
+
+// ── DIJKSTRA ─────────────────────────────────────────
+const DG={
+  nodes:[{x:.15,y:.3},{x:.45,y:.1},{x:.82,y:.25},{x:.2,y:.75},{x:.65,y:.7}],
+  edges:[[0,1,4],[0,3,2],[1,2,5],[1,4,10],[2,4,3],[3,4,8],[0,2,15],[3,1,6]]
+};
+let dijkState=null;
+function initDijk(){
+  const start=parseInt(document.getElementById('dijk_start').value);
+  const n=DG.nodes.length;
+  const INF=999;
+  const dist=Array(n).fill(INF); dist[start]=0;
+  const visited=Array(n).fill(false);
+  const prev=Array(n).fill(-1);
+  const adj=Array.from({length:n},()=>[]);
+  DG.edges.forEach(([a,b,w])=>{adj[a].push({to:b,w});adj[b].push({to:a,w});});
+  dijkState={dist,visited,prev,adj,n,start,log:[],cur:-1,done:false};
+  document.getElementById('dijk_step_btn').disabled=false;
+  document.getElementById('dijk_log').innerHTML=`시작점 ${start}, dist=[${dist.map(d=>d===INF?'∞':d).join(',')}]`;
+  renderDijkTable();
+  drawDijk();
+}
+function dijkStep(){
+  const s=dijkState; if(!s||s.done)return;
+  let u=-1;
+  for(let i=0;i<s.n;i++) if(!s.visited[i]&&(u===-1||s.dist[i]<s.dist[u]))u=i;
+  if(u===-1||s.dist[u]===999){s.done=true;document.getElementById('dijk_step_btn').disabled=true;document.getElementById('dijk_log').innerHTML+='<br>완료!';return;}
+  s.visited[u]=true; s.cur=u;
+  s.adj[u].forEach(({to,w})=>{
+    if(s.dist[u]+w<s.dist[to]){s.dist[to]=s.dist[u]+w;s.prev[to]=u;}
+  });
+  s.log.push(`정점 ${u} 확정 | dist=[${s.dist.map(d=>d===999?'∞':d).join(',')}]`);
+  document.getElementById('dijk_log').innerHTML=s.log.slice(-4).join('<br>');
+  renderDijkTable();
+  drawDijk();
+}
+function resetDijk(){dijkState=null;document.getElementById('dijk_step_btn').disabled=true;document.getElementById('dijk_table').innerHTML='';document.getElementById('dijk_log').textContent='시작 정점을 선택하고 시작하세요';drawDijkBase();}
+function renderDijkTable(){
+  const s=dijkState; if(!s)return;
+  let h=`<tr><th>정점</th>${DG.nodes.map((_,i)=>`<th>${i}</th>`).join('')}</tr>`;
+  h+=`<tr><td style="padding:5px 8px;border:.5px solid var(--color-border-tertiary);font-weight:500">거리</td>${s.dist.map((d,i)=>`<td class="${s.visited[i]?'selected':''}" style="padding:5px 8px;border:.5px solid var(--color-border-tertiary)">${d===999?'∞':d}</td>`).join('')}</tr>`;
+  h+=`<tr><td style="padding:5px 8px;border:.5px solid var(--color-border-tertiary);font-weight:500">이전</td>${s.prev.map(p=>`<td style="padding:5px 8px;border:.5px solid var(--color-border-tertiary)">${p===-1?'-':p}</td>`).join('')}</tr>`;
+  document.getElementById('dijk_table').innerHTML=h;
+}
+function nodePosDijk(i,W,H){return{x:DG.nodes[i].x*W,y:DG.nodes[i].y*H+15};}
+function drawDijkBase(){
+  const cv=document.getElementById('dijk_canvas');
+  const dpr=window.devicePixelRatio||1;
+  cv.width=cv.offsetWidth*dpr; cv.height=220*dpr;
+  const g=cv.getContext('2d');g.scale(dpr,dpr);
+  const W=cv.offsetWidth,H=220; g.clearRect(0,0,W,H);
+  DG.edges.forEach(([a,b,w])=>{
+    const pa=nodePosDijk(a,W,H),pb=nodePosDijk(b,W,H);
+    g.strokeStyle='#B4B2A9';g.lineWidth=1.5;g.beginPath();g.moveTo(pa.x,pa.y);g.lineTo(pb.x,pb.y);g.stroke();
+    const mx=(pa.x+pb.x)/2,my=(pa.y+pb.y)/2;
+    g.fillStyle='#888780';g.font='11px sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText(w,mx,my-7);
+  });
+  DG.nodes.forEach((_,i)=>{
+    const p=nodePosDijk(i,W,H);
+    g.beginPath();g.arc(p.x,p.y,17,0,Math.PI*2);g.fillStyle='#D3D1C7';g.fill();g.strokeStyle='#888780';g.lineWidth=1.5;g.stroke();
+    g.fillStyle='#2C2C2A';g.font='bold 13px sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText(i,p.x,p.y);
+  });
+}
+function drawDijk(){
+  const s=dijkState; if(!s){drawDijkBase();return;}
+  const cv=document.getElementById('dijk_canvas');
+  const dpr=window.devicePixelRatio||1;
+  cv.width=cv.offsetWidth*dpr; cv.height=220*dpr;
+  const g=cv.getContext('2d');g.scale(dpr,dpr);
+  const W=cv.offsetWidth,H=220; g.clearRect(0,0,W,H);
+  DG.edges.forEach(([a,b,w])=>{
+    const pa=nodePosDijk(a,W,H),pb=nodePosDijk(b,W,H);
+    const inMST=s.prev[b]===a||s.prev[a]===b;
+    g.strokeStyle=inMST?'#378ADD':'#B4B2A9';g.lineWidth=inMST?2.5:1.5;
+    g.beginPath();g.moveTo(pa.x,pa.y);g.lineTo(pb.x,pb.y);g.stroke();
+    const mx=(pa.x+pb.x)/2,my=(pa.y+pb.y)/2;
+    g.fillStyle='#888780';g.font='11px sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText(w,mx,my-7);
+  });
+  DG.nodes.forEach((_,i)=>{
+    const p=nodePosDijk(i,W,H);
+    const isCur=i===s.cur;
+    g.beginPath();g.arc(p.x,p.y,17,0,Math.PI*2);
+    g.fillStyle=isCur?'#534AB7':s.visited[i]?'#378ADD':'#D3D1C7';
+    g.fill();g.strokeStyle=isCur?'#26215C':s.visited[i]?'#0C447C':'#888780';g.lineWidth=1.5;g.stroke();
+    g.fillStyle=s.visited[i]?'#fff':'#2C2C2A';g.font='bold 12px sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText(i,p.x,p.y);
+    const d=s.dist[i];
+    g.fillStyle='#185FA5';g.font='10px sans-serif';g.fillText(d===999?'∞':d,p.x,p.y+27);
+  });
+}
+
+// ── KRUSKAL ──────────────────────────────────────────
+const KG={
+  nodes:[{x:.15,y:.25},{x:.5,y:.1},{x:.85,y:.25},{x:.1,y:.7},{x:.5,y:.75},{x:.9,y:.7}],
+  edges:[[0,1,2],[0,3,3],[1,2,6],[1,4,5],[2,5,4],[3,4,7],[4,5,1],[0,2,8],[3,5,9]]
+};
+let kruskalState=null;
+function initKruskal(){
+  const n=KG.nodes.length;
+  const parent=Array.from({length:n},(_,i)=>i);
+  function find(x){return parent[x]===x?x:(parent[x]=find(parent[x]));}
+  function unite(a,b){parent[find(a)]=find(b);}
+  const sorted=[...KG.edges].sort((a,b)=>a[2]-b[2]);
+  kruskalState={parent,find,unite,sorted,step:0,mst:[],rejected:[],log:[],done:false};
+  document.getElementById('kruskal_step_btn').disabled=false;
+  document.getElementById('kruskal_log').textContent='간선을 가중치 오름차순으로 정렬 완료';
+  renderKruskalTable();
+  drawKruskal();
+}
+function kruskalStep(){
+  const s=kruskalState; if(!s||s.done)return;
+  if(s.step>=s.sorted.length){s.done=true;document.getElementById('kruskal_step_btn').disabled=true;return;}
+  const [a,b,w]=s.sorted[s.step++];
+  if(s.find(a)!==s.find(b)){
+    s.unite(a,b); s.mst.push([a,b,w]);
+    s.log.push(`✓ 간선(${a}-${b},${w}) 추가 | MST 간선: ${s.mst.length}개`);
+  } else {
+    s.rejected.push([a,b,w]);
+    s.log.push(`✗ 간선(${a}-${b},${w}) 사이클 형성 → 제외`);
+  }
+  document.getElementById('kruskal_log').innerHTML=s.log.slice(-4).join('<br>');
+  renderKruskalTable();
+  drawKruskal();
+  if(s.mst.length===KG.nodes.length-1){s.done=true;document.getElementById('kruskal_step_btn').disabled=true;const total=s.mst.reduce((acc,[a,b,w])=>acc+w,0);document.getElementById('kruskal_log').innerHTML+=`<br>MST 완성! 총 비용: ${total}`;}
+}
+function resetKruskal(){kruskalState=null;document.getElementById('kruskal_step_btn').disabled=true;document.getElementById('kruskal_table').innerHTML='';document.getElementById('kruskal_log').textContent='시작 버튼을 눌러 크루스칼 알고리즘을 실행하세요';drawKruskalBase();}
+function renderKruskalTable(){
+  const s=kruskalState; if(!s)return;
+  let h=`<tr><th>순서</th><th>간선</th><th>가중치</th><th>결과</th></tr>`;
+  s.sorted.forEach(([a,b,w],i)=>{
+    const isMST=s.mst.some(([x,y])=>x===a&&y===b||x===b&&y===a);
+    const isRej=s.rejected.some(([x,y])=>x===a&&y===b||x===b&&y===a);
+    const isPending=i>=s.step;
+    h+=`<tr${isMST?' class="selected"':''}><td style="padding:5px 8px;border:.5px solid var(--color-border-tertiary)">${i+1}</td><td style="padding:5px 8px;border:.5px solid var(--color-border-tertiary)">${a} — ${b}</td><td style="padding:5px 8px;border:.5px solid var(--color-border-tertiary)">${w}</td><td style="padding:5px 8px;border:.5px solid var(--color-border-tertiary);color:${isMST?'#3B6D11':isRej?'#791F1F':'#888780'}">${isMST?'✓ 추가':isRej?'✗ 제외':'대기'}</td></tr>`;
+  });
+  document.getElementById('kruskal_table').innerHTML=h;
+}
+function nodePosK(i,W,H){return{x:KG.nodes[i].x*W,y:KG.nodes[i].y*H+15};}
+function drawKruskalBase(){
+  const cv=document.getElementById('kruskal_canvas');
+  const dpr=window.devicePixelRatio||1;
+  cv.width=cv.offsetWidth*dpr; cv.height=220*dpr;
+  const g=cv.getContext('2d');g.scale(dpr,dpr);
+  const W=cv.offsetWidth,H=220; g.clearRect(0,0,W,H);
+  KG.edges.forEach(([a,b,w])=>{
+    const pa=nodePosK(a,W,H),pb=nodePosK(b,W,H);
+    g.strokeStyle='#B4B2A9';g.lineWidth=1.5;g.beginPath();g.moveTo(pa.x,pa.y);g.lineTo(pb.x,pb.y);g.stroke();
+    g.fillStyle='#888780';g.font='11px sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText(w,(pa.x+pb.x)/2,(pa.y+pb.y)/2-7);
+  });
+  KG.nodes.forEach((_,i)=>{const p=nodePosK(i,W,H);g.beginPath();g.arc(p.x,p.y,16,0,Math.PI*2);g.fillStyle='#D3D1C7';g.fill();g.strokeStyle='#888780';g.lineWidth=1.5;g.stroke();g.fillStyle='#2C2C2A';g.font='bold 13px sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText(i,p.x,p.y);});
+}
+function drawKruskal(){
+  const s=kruskalState; if(!s){drawKruskalBase();return;}
+  const cv=document.getElementById('kruskal_canvas');
+  const dpr=window.devicePixelRatio||1;
+  cv.width=cv.offsetWidth*dpr; cv.height=220*dpr;
+  const g=cv.getContext('2d');g.scale(dpr,dpr);
+  const W=cv.offsetWidth,H=220; g.clearRect(0,0,W,H);
+  KG.edges.forEach(([a,b,w])=>{
+    const pa=nodePosK(a,W,H),pb=nodePosK(b,W,H);
+    const isMST=s.mst.some(([x,y])=>x===a&&y===b||x===b&&y===a);
+    const isRej=s.rejected.some(([x,y])=>x===a&&y===b||x===b&&y===a);
+    g.strokeStyle=isMST?'#1D9E75':isRej?'#E24B4A':'#B4B2A9';
+    g.lineWidth=isMST?3:1.5;
+    if(isRej){g.setLineDash([4,3]);}else{g.setLineDash([]);}
+    g.beginPath();g.moveTo(pa.x,pa.y);g.lineTo(pb.x,pb.y);g.stroke();
+    g.setLineDash([]);
+    g.fillStyle='#5F5E5A';g.font='11px sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText(w,(pa.x+pb.x)/2,(pa.y+pb.y)/2-7);
+  });
+  KG.nodes.forEach((_,i)=>{
+    const p=nodePosK(i,W,H);
+    g.beginPath();g.arc(p.x,p.y,16,0,Math.PI*2);
+    g.fillStyle='#1D9E75';g.fill();g.strokeStyle='#085041';g.lineWidth=1.5;g.stroke();
+    g.fillStyle='#fff';g.font='bold 13px sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText(i,p.x,p.y);
+  });
+}
+
+// ── QUIZ ─────────────────────────────────────────────
+const questions=[
+  {q:'정점의 차수(Degree)란 무엇인가요?',opts:['정점까지의 최단 거리','연결된 간선의 수','트리에서의 깊이','서브트리의 크기'],ans:1,exp:'차수 = 해당 정점에 연결된 간선의 개수'},
+  {q:'BFS가 최단 경로를 보장하는 이유는?',opts:['재귀를 사용해서','가까운 노드부터 레벨 순서로 탐색하기 때문','DFS보다 빠르기 때문','스택을 사용하기 때문'],ans:1,exp:'BFS는 거리 순으로 탐색하므로 처음 도달한 경로가 최단 경로'},
+  {q:'이진 트리 중위 순회(In-order)의 방문 순서는?',opts:['루트→왼→오','왼→루트→오','왼→오→루트','오→루트→왼'],ans:1,exp:'중위 순회: 왼쪽 서브트리 → 루트 → 오른쪽 서브트리'},
+  {q:'완전 이진 트리에서 노드 i의 왼쪽 자식 인덱스는? (1-indexed)',opts:['i-1','i+1','2i','2i+1'],ans:2,exp:'배열 기반 완전 이진 트리: 왼쪽=2i, 오른쪽=2i+1'},
+  {q:'다익스트라 알고리즘이 동작하지 않는 경우는?',opts:['무방향 그래프','가중치가 양수인 그래프','음수 가중치 간선이 존재할 때','연결 그래프'],ans:2,exp:'다익스트라는 음수 간선에서 올바른 결과를 보장하지 않음 → 벨만-포드 사용'},
+  {q:'크루스칼 알고리즘에서 사이클 여부 판단에 사용하는 자료구조는?',opts:['큐(Queue)','스택(Stack)','Union-Find (서로소 집합)','힙(Heap)'],ans:2,exp:'Union-Find로 두 정점이 같은 집합인지 확인 → 같으면 사이클 형성'},
+  {q:'V개 정점의 트리가 가지는 간선 수는?',opts:['V','V-1','V+1','V²'],ans:1,exp:'트리는 사이클 없이 모든 정점을 연결 → V-1개 간선'},
+  {q:'DFS에서 사용하는 핵심 자료구조는?',opts:['큐','스택 (또는 재귀 호출 스택)','우선순위 큐','해시맵'],ans:1,exp:'DFS는 스택(재귀 호출 스택)으로 구현 — 깊이를 우선으로 탐색'},
+  {q:'최소 신장 트리(MST)의 간선 수는? (V개 정점)',opts:['V','V-1','V+1','E'],ans:1,exp:'MST는 V개 정점을 V-1개 간선으로 사이클 없이 연결'},
+  {q:'후위 순회(Post-order) 결과로 알 수 있는 것은?',opts:['정렬된 키 값','루트가 마지막으로 방문됨','루트가 처음 방문됨','레벨 순서'],ans:1,exp:'후위 순회: 왼→오→루트, 따라서 루트가 항상 마지막에 방문됨'},
+];
+let qIdx=0,score=0,answered=false;
+function renderQ(){
+  const q=questions[qIdx];
+  document.getElementById('q_num').textContent=qIdx+1;
+  document.getElementById('q_total').textContent=questions.length;
+  document.getElementById('q_score').textContent='점수: '+score;
+  document.getElementById('quiz_q').textContent=q.q;
+  const opts=document.getElementById('quiz_opts'); opts.innerHTML='';
+  q.opts.forEach((o,i)=>{
+    const btn=document.createElement('button');btn.className='quiz-opt';
+    btn.textContent=['①','②','③','④'][i]+' '+o;
+    btn.onclick=()=>selectAns(i); opts.appendChild(btn);
+  });
+  document.getElementById('quiz_fb').style.display='none';
+  document.getElementById('next_btn').style.display='none';
+  answered=false;
+}
+function selectAns(i){
+  if(answered)return; answered=true;
+  const q=questions[qIdx];
+  document.querySelectorAll('.quiz-opt')[q.ans].classList.add('correct');
+  const fb=document.getElementById('quiz_fb');
+  if(i===q.ans){score++;document.getElementById('q_score').textContent='점수: '+score;fb.className='fb fb-ok';fb.textContent='✓ 정답! '+q.exp;}
+  else{document.querySelectorAll('.quiz-opt')[i].classList.add('wrong');fb.className='fb fb-no';fb.textContent='✗ 오답. '+q.exp;}
+  fb.style.display='block';
+  document.getElementById('next_btn').style.display=qIdx<questions.length-1?'inline-block':'none';
+  if(qIdx===questions.length-1)setTimeout(()=>{document.getElementById('quiz_done').style.display='block';const p=Math.round(score/questions.length*100);document.getElementById('quiz_final').textContent=`${questions.length}문제 중 ${score}개 정답 (${p}%) — ${p>=80?'훌륭합니다!':p>=60?'잘 하셨어요!':'개념 복습 후 다시 도전!'}`},400);
+}
+function nextQ(){qIdx++;renderQ();}
+function resetQuiz(){qIdx=0;score=0;answered=false;document.getElementById('quiz_done').style.display='none';renderQ();}
+
+function switchTab(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  event.target.classList.add('active');
+  setTimeout(()=>{
+    if(id==='basic')drawBasic();
+    else if(id==='search'){drawSearchBase();}
+    else if(id==='tree')drawTree([]);
+    else if(id==='shortest')drawDijkBase();
+    else if(id==='span')drawKruskalBase();
+  },30);
+}
+
+// Init
+drawBasic();
+drawTree([]);
+renderQ();
+</script>
