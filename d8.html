@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KOI 중등 조합론 — 15문제</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700;900&family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  --bg:#050e0a;--deep:#091410;--card:#0f1e18;--card2:#142820;
+  --border:#1c3828;--border2:#254e38;--faint:#2e6448;
+  --muted:#4a8a68;--dim:#6aaa88;--text:#c0e8d0;--bright:#e4f8ec;
+  --em:#00e87a;--em2:#40f0a0;--em3:#80f8c0;
+  --teal:#00c8d8;--teal2:#40dce8;
+  --gold:#f0c040;--gold2:#f8d870;
+  --rose:#ff5060;--violet:#b070ff;--sky:#60c0ff;
+  --ok-bg:rgba(0,232,122,.08);--ok-br:#00e87a;
+  --sel-bg:rgba(0,200,216,.07);--sel-br:#00c8d8;
+  --ng-bg:rgba(255,80,96,.08);--ng-br:#ff5060;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;
+  min-height:100vh;line-height:1.8;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(0,232,122,.018) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,232,122,.018) 1px,transparent 1px);
+  background-size:36px 36px;pointer-events:none;z-index:0;}
+body::after{content:'';position:fixed;inset:0;
+  background:radial-gradient(ellipse 65% 45% at 50% -5%,rgba(0,200,216,.07),transparent);
+  pointer-events:none;z-index:0;}
+
+/* SPLASH */
+#splash{position:fixed;inset:0;z-index:500;background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  transition:opacity .7s,visibility .7s;}
+#splash.out{opacity:0;visibility:hidden;}
+.sp{max-width:640px;width:92%;text-align:center;position:relative;z-index:1;}
+.sp-sym{font-size:52px;margin-bottom:12px;display:block;
+  text-shadow:0 0 30px rgba(0,232,122,.4);}
+.sp-badge{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:5px;
+  text-transform:uppercase;color:var(--faint);border:1px solid var(--border2);
+  padding:5px 18px;margin-bottom:32px;display:inline-block;}
+.sp-title{font-family:'Noto Serif KR',serif;font-size:clamp(44px,9vw,88px);
+  font-weight:900;line-height:.92;letter-spacing:-2px;color:var(--bright);margin-bottom:10px;}
+.sp-title .hi{color:var(--em);text-shadow:0 0 28px rgba(0,232,122,.5);}
+.sp-sub{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);
+  letter-spacing:3px;margin-bottom:44px;}
+.sp-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+  background:var(--border2);margin-bottom:36px;}
+.sp-cell{background:var(--card);padding:20px 12px;text-align:center;}
+.sp-n{font-family:'Noto Serif KR',serif;font-size:34px;font-weight:900;
+  color:var(--em);display:block;line-height:1;text-shadow:0 0 14px rgba(0,232,122,.3);}
+.sp-l{font-size:11px;color:var(--muted);margin-top:5px;letter-spacing:2px;}
+.sp-note{background:rgba(0,232,122,.04);border:1px solid var(--border2);
+  border-left:3px solid var(--em);padding:14px 18px;font-size:13px;
+  color:var(--muted);line-height:1.85;margin-bottom:36px;text-align:left;}
+.sp-note strong{color:var(--text);}
+.sp-btn{padding:14px 56px;background:linear-gradient(135deg,var(--em),rgba(0,180,80,1));
+  border:none;color:var(--bg);font-family:'Noto Serif KR',serif;font-size:17px;
+  font-weight:900;cursor:pointer;letter-spacing:1px;transition:all .25s;
+  box-shadow:0 0 28px rgba(0,232,122,.3);}
+.sp-btn:hover{box-shadow:0 0 44px rgba(0,232,122,.5);transform:translateY(-2px);}
+
+/* HEADER */
+#hdr{display:none;position:sticky;top:0;z-index:100;
+  background:rgba(5,14,10,.94);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border2);}
+.hdr-in{max-width:940px;margin:0 auto;padding:10px 24px;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.hdr-brand{font-family:'Noto Serif KR',serif;font-size:16px;font-weight:700;color:var(--bright);}
+.hdr-brand em{color:var(--em);font-style:italic;text-shadow:0 0 8px rgba(0,232,122,.4);}
+.qdots{display:flex;gap:5px;flex-wrap:wrap;max-width:480px;}
+.qdot{width:12px;height:12px;background:var(--border2);border-radius:2px;
+  cursor:pointer;transition:all .2s;}
+.qdot:hover{background:var(--faint);}
+.qdot.ans{background:rgba(0,232,122,.4);}
+.qdot.cur{background:var(--em);transform:scale(1.4);box-shadow:0 0 8px rgba(0,232,122,.6);}
+.qdot.ok{background:var(--em);box-shadow:0 0 6px rgba(0,232,122,.5);}
+.qdot.ng{background:var(--rose);}
+.hdr-r{display:flex;flex-direction:column;align-items:flex-end;gap:2px;}
+#tmr{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--bright);}
+#tmr.warn{color:var(--rose);animation:blink .8s step-end infinite;}
+@keyframes blink{50%{opacity:.2}}
+#hpts{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--faint);}
+#pbar{display:none;height:3px;background:var(--border);}
+#pfill{height:100%;background:linear-gradient(90deg,var(--em),var(--teal));
+  transition:width .4s;box-shadow:0 0 8px rgba(0,232,122,.4);}
+
+/* APP */
+#app{display:none;position:relative;z-index:1;
+  max-width:940px;margin:0 auto;padding:44px 24px 180px;}
+.qcard{display:none;animation:rise .35s ease;}
+.qcard.on{display:block;}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+.qinfo{display:flex;align-items:flex-start;justify-content:space-between;
+  margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border2);}
+.qinfo-l{display:flex;flex-direction:column;gap:4px;}
+.qnum-tag{font-family:'JetBrains Mono',monospace;font-size:10px;
+  letter-spacing:3px;color:var(--faint);text-transform:uppercase;}
+.qnum-big{font-family:'Noto Serif KR',serif;font-size:66px;font-weight:900;
+  color:var(--border2);line-height:1;letter-spacing:-3px;}
+.qinfo-r{display:flex;flex-direction:column;align-items:flex-end;gap:7px;}
+.qcat{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;
+  text-transform:uppercase;border:1px solid;padding:3px 11px;}
+.qpts{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--gold);}
+.qtitle{font-family:'Noto Serif KR',serif;font-size:22px;font-weight:700;
+  color:var(--bright);line-height:1.35;margin-bottom:18px;
+  border-left:3px solid var(--em);padding-left:14px;}
+
+.qbody{background:var(--card);border:1px solid var(--border2);
+  border-top:2px solid rgba(0,232,122,.3);
+  padding:26px 28px;margin-bottom:18px;font-size:15px;line-height:2.05;color:var(--text);}
+.qbody p{margin-bottom:12px;}.qbody p:last-child{margin-bottom:0;}
+.qbody strong{color:var(--em2);}
+.qbody em{color:var(--gold);font-style:normal;font-weight:700;}
+.qbody ul,.qbody ol{margin:8px 0 8px 26px;line-height:2.3;}
+.scene{background:var(--card2);border:1px solid var(--border2);
+  border-left:3px solid var(--gold);
+  padding:14px 18px;margin:14px 0;font-size:14px;line-height:2;}
+.scene-t{font-family:'JetBrains Mono',monospace;font-size:9px;
+  letter-spacing:3px;text-transform:uppercase;
+  color:var(--gold2);margin-bottom:8px;font-weight:700;}
+.cbox{font-family:'JetBrains Mono',monospace;background:#020906;color:var(--em2);
+  border:1px solid var(--border2);border-left:3px solid var(--em);
+  padding:13px 17px;margin:10px 0;font-size:13px;
+  line-height:1.9;overflow-x:auto;white-space:pre;}
+.ctable{border-collapse:collapse;margin:12px 0;font-size:13.5px;}
+.ctable th{background:rgba(0,232,122,.08);border:1px solid var(--border2);
+  padding:7px 14px;font-family:'JetBrains Mono',monospace;
+  font-size:10px;letter-spacing:1px;color:var(--em2);text-align:center;}
+.ctable td{border:1px solid var(--border);padding:8px 14px;
+  text-align:center;font-family:'JetBrains Mono',monospace;font-size:13px;}
+.ctable td.hi{color:var(--gold);font-weight:700;}
+.ctable td.ok{color:var(--em);font-weight:700;}
+
+.opts{display:flex;flex-direction:column;gap:8px;margin-bottom:22px;}
+.opt{display:flex;align-items:flex-start;gap:14px;padding:13px 18px;
+  background:var(--card);border:1px solid var(--border2);color:var(--text);
+  cursor:pointer;font-size:14px;line-height:1.75;
+  text-align:left;width:100%;transition:all .18s;}
+.opt:hover{border-color:var(--em);background:var(--sel-bg);}
+.opt.sel{border-color:var(--sel-br);background:var(--sel-bg);}
+.opt.ok{border-color:var(--ok-br);background:var(--ok-bg);}
+.opt.ng{border-color:var(--ng-br);background:var(--ng-bg);}
+.opt.off{pointer-events:none;}
+.opt-n{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;
+  color:var(--faint);min-width:22px;flex-shrink:0;padding-top:1px;}
+.opt.sel .opt-n{color:var(--teal);}
+.opt.ok  .opt-n{color:var(--em);}
+.opt.ng  .opt-n{color:var(--rose);}
+.opt-ck{margin-left:auto;font-size:16px;flex-shrink:0;}
+
+.expl{display:none;background:var(--card2);border:1px solid var(--border2);
+  margin-bottom:22px;animation:fadein .4s;}
+.expl.on{display:block;}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.expl-top{background:rgba(0,0,0,.4);border-bottom:1px solid var(--border2);
+  padding:11px 20px;display:flex;align-items:center;gap:12px;}
+.expl-icon{width:30px;height:30px;border:1px solid var(--em);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;
+  color:var(--em);flex-shrink:0;box-shadow:0 0 8px rgba(0,232,122,.2);}
+.expl-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;
+  letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.v-ok{margin-left:auto;color:var(--em);font-weight:700;font-size:13px;}
+.v-ng{margin-left:auto;color:var(--rose);font-weight:700;font-size:13px;}
+.concept-bar{background:rgba(0,200,216,.06);border-bottom:1px solid var(--border2);
+  padding:10px 20px;display:flex;align-items:flex-start;gap:10px;}
+.concept-tag{font-family:'JetBrains Mono',monospace;font-size:9px;
+  letter-spacing:2px;text-transform:uppercase;color:var(--teal2);
+  border:1px solid var(--teal);padding:2px 10px;
+  white-space:nowrap;flex-shrink:0;margin-top:2px;}
+.concept-desc{font-size:13px;color:var(--muted);line-height:1.75;}
+.ans-wrap{padding:0 20px;}
+.ans-pill{display:inline-block;background:var(--ok-bg);border:1px solid var(--ok-br);
+  color:var(--em);font-family:'JetBrains Mono',monospace;font-size:12px;
+  padding:5px 16px;margin-top:16px;font-weight:600;
+  box-shadow:0 0 8px rgba(0,232,122,.15);}
+.expl-body{padding:18px 20px 22px;font-size:14px;line-height:2;color:var(--dim);}
+.expl-body p{margin-bottom:10px;}.expl-body p:last-child{margin-bottom:0;}
+.expl-body strong{color:var(--sky);}
+.step{font-family:'JetBrains Mono',monospace;background:#020906;
+  border:1px solid var(--border2);border-left:3px solid var(--violet);
+  padding:16px 20px;margin:12px 0;font-size:12.5px;
+  line-height:1.95;white-space:pre-wrap;overflow-x:auto;color:#90c8b0;}
+.tip{background:rgba(240,192,64,.06);border-left:3px solid var(--gold);
+  padding:11px 16px;margin:12px 0;font-size:13px;line-height:1.75;color:var(--muted);}
+.tip-t{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--gold);margin-bottom:4px;font-weight:700;}
+
+.nav-row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.nb{padding:11px 24px;background:transparent;border:1px solid var(--border2);
+  color:var(--muted);font-family:'Noto Sans KR',sans-serif;font-size:13px;
+  cursor:pointer;transition:all .2s;}
+.nb:hover{border-color:var(--text);color:var(--text);}
+.nb:disabled{opacity:.25;cursor:not-allowed;}
+.nb.sub{background:var(--em);border-color:var(--em);color:var(--bg);font-weight:700;
+  box-shadow:0 0 16px rgba(0,232,122,.3);}
+.nb.sub:hover{box-shadow:0 0 24px rgba(0,232,122,.5);}
+.nb.sub:disabled{opacity:.3;}
+.nb.end{background:var(--teal);border-color:var(--teal);color:var(--bg);font-weight:700;
+  box-shadow:0 0 12px rgba(0,200,216,.3);}
+.nb.end:hover{background:var(--teal2);border-color:var(--teal2);}
+
+/* RESULT */
+#result{display:none;position:fixed;inset:0;z-index:200;background:var(--bg);
+  overflow-y:auto;animation:rise .5s;}
+#result.on{display:block;}
+.res-w{max-width:720px;margin:0 auto;padding:68px 24px 120px;}
+.res-hero{text-align:center;margin-bottom:52px;}
+.res-eye{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:5px;
+  text-transform:uppercase;color:var(--faint);margin-bottom:20px;}
+.res-ring{width:172px;height:172px;margin:0 auto 20px;position:relative;}
+.res-ring svg{position:absolute;inset:0;transform:rotate(-90deg);}
+.res-in{position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;}
+.res-n{font-family:'Noto Serif KR',serif;font-size:50px;font-weight:900;
+  color:var(--em);line-height:1;text-shadow:0 0 16px rgba(0,232,122,.5);}
+.res-d{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--faint);}
+.res-grade{font-family:'Noto Serif KR',serif;font-size:22px;font-weight:700;font-style:italic;}
+.res-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+  background:var(--border2);border:1px solid var(--border2);margin-bottom:44px;}
+.rs{background:var(--card);padding:20px;text-align:center;}
+.rs-n{font-family:'Noto Serif KR',serif;font-size:32px;font-weight:900;display:block;line-height:1;}
+.rs-l{font-size:11px;color:var(--muted);margin-top:4px;letter-spacing:1px;}
+.rev-t{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:3px;
+  text-transform:uppercase;color:var(--faint);
+  border-top:1px solid var(--border2);padding-top:16px;margin-bottom:14px;}
+.rev-list{display:flex;flex-direction:column;gap:6px;margin-bottom:44px;}
+.rev-row{display:flex;align-items:flex-start;gap:12px;background:var(--card);
+  border:1px solid var(--border2);padding:12px 16px;cursor:pointer;transition:border-color .15s;}
+.rev-row:hover{border-color:var(--em);}
+.rev-row.ok{border-left:3px solid var(--em);}
+.rev-row.ng{border-left:3px solid var(--rose);}
+.rev-num{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--faint);
+  min-width:56px;flex-shrink:0;line-height:1.5;}
+.rev-ttl{font-size:13px;flex:1;line-height:1.5;}
+.rev-mk{font-size:18px;flex-shrink:0;}
+.btn-restart{display:block;width:100%;padding:18px;background:var(--em);border:none;
+  color:var(--bg);font-family:'Noto Serif KR',serif;font-size:16px;font-weight:900;
+  cursor:pointer;transition:all .2s;box-shadow:0 0 24px rgba(0,232,122,.3);letter-spacing:1px;}
+.btn-restart:hover{box-shadow:0 0 36px rgba(0,232,122,.5);transform:translateY(-2px);}
+@media(max-width:600px){.qdots{display:none;}.res-stats{grid-template-columns:1fr 1fr;}
+  .qbody,.expl-body{padding:16px;}}
+</style>
+</head>
+<body>
+
+<div id="splash">
+  <div class="sp">
+    <span class="sp-sym">𝒞</span>
+    <div class="sp-badge">KOI 중등부 심화 · Combinatorics</div>
+    <div class="sp-title">조합론<br><span class="hi">Combinatorics</span></div>
+    <div class="sp-sub">15 Problems · 150 Points · 60 Minutes</div>
+    <div class="sp-stats">
+      <div class="sp-cell"><span class="sp-n">15</span><span class="sp-l">총 문항</span></div>
+      <div class="sp-cell"><span class="sp-n">150</span><span class="sp-l">총 배점</span></div>
+      <div class="sp-cell"><span class="sp-n">60</span><span class="sp-l">제한(분)</span></div>
+    </div>
+    <div class="sp-note">
+      KOI 기출 수준의 <strong>조합론</strong> 전문 문제집입니다.<br>
+      순열·조합·중복순열·중복조합·이항정리·카탈란수·<br>
+      포함배제·비둘기집·격자경로·분할·생성함수 등<br>
+      핵심 유형 15문제를 다룹니다.
+    </div>
+    <button class="sp-btn" onclick="startExam()">▶ 풀기 시작</button>
+  </div>
+</div>
+
+<header id="hdr">
+  <div class="hdr-in">
+    <div class="hdr-brand">조합론 <em>Combinatorics</em></div>
+    <div class="qdots" id="qdots"></div>
+    <div class="hdr-r"><div id="tmr">60:00</div><div id="hpts">0 / 150점</div></div>
+  </div>
+</header>
+<div id="pbar"><div id="pfill"></div></div>
+<div id="app"></div>
+
+<div id="result">
+  <div class="res-w">
+    <div class="res-hero">
+      <div class="res-eye">최종 결과 · Combinatorics</div>
+      <div class="res-ring">
+        <svg viewBox="0 0 172 172" fill="none">
+          <circle cx="86" cy="86" r="74" stroke="#1c3828" stroke-width="8"/>
+          <circle id="arc" cx="86" cy="86" r="74" stroke="#00e87a" stroke-width="8"
+            stroke-dasharray="465" stroke-dashoffset="465" stroke-linecap="round"
+            style="transition:stroke-dashoffset 1.2s ease"/>
+        </svg>
+        <div class="res-in">
+          <div class="res-n" id="rscore">0</div>
+          <div class="res-d">/ 150점</div>
+        </div>
+      </div>
+      <div class="res-grade" id="rgrade"></div>
+    </div>
+    <div class="res-stats">
+      <div class="rs"><span class="rs-n" id="rn-ok" style="color:var(--em)">0</span><span class="rs-l">정답</span></div>
+      <div class="rs"><span class="rs-n" id="rn-ng" style="color:var(--rose)">0</span><span class="rs-l">오답</span></div>
+      <div class="rs"><span class="rs-n" id="rn-t"  style="color:var(--teal)">--</span><span class="rs-l">소요시간</span></div>
+    </div>
+    <div class="rev-t">문항별 결과</div>
+    <div class="rev-list" id="rlist"></div>
+    <button class="btn-restart" onclick="restartExam()">↺ 다시 풀기</button>
+  </div>
+</div>
+
+<script>
+var LBLS=['①','②','③','④','⑤'];
+
+var QS=[
+
+// Q01
+{id:1,pts:8,cat:'순열·조합 기초',catC:'#00e87a',
+title:'순열과 조합 계산',
+body:'<p>서로 다른 7명의 학생 중에서 회장, 부회장, 총무를 각각 1명씩 뽑으려 한다.</p><div class="scene"><div class="scene-t">📐 조건</div><p>회장, 부회장, 총무는 <strong>서로 다른 사람</strong>이어야 하며, <strong>역할이 구별</strong>된다.</p></div><p>임원을 구성하는 경우의 수는?</p>',
+opts:['210','35','5040','420','840'],
+ans:0,
+concept:{key:'순열 P(n,r)=n!/(n-r)!',val:'7명 중 3명을 순서 있게 선택. P(7,3)=7×6×5=210.'},
+expl:'<div class="step">역할이 구별되므로 순서가 중요 → 순열\n\nP(7,3) = 7 × 6 × 5\n       = 210\n\n또는:\n  회장 선택: 7가지\n  부회장 선택: 남은 6명 중\n  총무 선택: 남은 5명 중\n  7 × 6 × 5 = 210\n\n참고: C(7,3) = 35 (순서 무관 경우)</div>',
+tip:{title:'P vs C 구분',text:'순열 P(n,r): 순서 있게 r개 선택. 조합 C(n,r): 순서 없이 r개 선택. P(n,r)=C(n,r)×r!. 역할이 구별되면 순열, 구별 없으면 조합.'}},
+
+// Q02
+{id:2,pts:8,cat:'조합·이항계수',catC:'#00c8d8',
+title:'이항계수와 파스칼 삼각형',
+body:'<p>이항계수 C(n,r)에 대해 다음을 구하시오.</p><div class="scene"><div class="scene-t">📐 파스칼 항등식</div><p>C(n,r) = C(n-1,r-1) + C(n-1,r)</p></div><p><strong>C(10,3) + C(10,4)</strong>의 값은?</p>',
+opts:['330','462','252','210','336'],
+ans:0,
+concept:{key:'파스칼 항등식',val:'C(10,3)+C(10,4) = C(11,4) = 11!/(4!7!) = 330.'},
+expl:'<div class="step">파스칼 항등식: C(n,r)+C(n,r+1) = C(n+1,r+1)\n\nC(10,3) + C(10,4) = C(11,4)\n\nC(11,4) = 11!/(4!×7!)\n        = (11×10×9×8)/(4×3×2×1)\n        = 7920/24\n        = 330\n\n검증:\n  C(10,3) = 120\n  C(10,4) = 210\n  합: 120+210 = 330 ✓</div>',
+tip:{title:'파스칼 삼각형 활용',text:'C(n,r)+C(n,r+1)=C(n+1,r+1). n행의 합=2ⁿ. 가운데 항이 최대. 이항정리: (1+x)ⁿ=ΣC(n,r)xʳ.'}},
+
+// Q03
+{id:3,pts:8,cat:'중복순열',catC:'#00e87a',
+title:'중복 허용 순열',
+body:'<p>0, 1, 2, 3, 4 다섯 개의 숫자를 사용하여 세 자리 자연수를 만들려 한다.</p><div class="scene"><div class="scene-t">📐 조건</div><p>각 숫자는 <strong>중복 사용 가능</strong>하며, 만의 자리(첫째 자리)는 0이 될 수 없다.</p></div><p>만들 수 있는 세 자리 수의 개수는?</p>',
+opts:['100','125','80','60','96'],
+ans:0,
+concept:{key:'중복순열에서 조건 처리',val:'첫째 자리: 1~4 (4가지). 둘째·셋째: 0~4 (5가지씩). 4×5×5=100.'},
+expl:'<div class="step">세 자리 자연수 조건:\n  첫째 자리: 0 제외, 1~4 → 4가지\n  둘째 자리: 0~4 → 5가지\n  셋째 자리: 0~4 → 5가지\n\n총: 4 × 5 × 5 = 100\n\n참고: 0 포함 세 자리(중복 허용)\n  전체: 5³=125, 첫째 자리 0인 것: 5²=25\n  → 125-25=100 ✓</div>',
+tip:{title:'자리별 독립 계산',text:'각 자리를 독립적으로 계산 후 곱셈의 원리 적용. 조건(첫째 0 불가)은 해당 자리 선택지만 줄임. 전체 - 제외 방법도 유효.'}},
+
+// Q04
+{id:4,pts:10,cat:'중복조합',catC:'#00c8d8',
+title:'중복조합 H(n,r)',
+body:'<p>서로 다른 종류의 구슬이 5가지 있다. 이 중 <strong>중복을 허용하여 4개</strong>를 선택하는 경우의 수는?</p><div class="scene"><div class="scene-t">📐 중복조합 공식</div><p>H(n,r) = C(n+r-1, r)</p></div>',
+opts:['70','56','35','126','84'],
+ans:0,
+concept:{key:'중복조합 H(n,r)=C(n+r-1,r)',val:'H(5,4)=C(5+4-1,4)=C(8,4)=70.'},
+expl:'<div class="step">5가지 종류 중 중복 허용하여 4개 선택\n\nH(5,4) = C(5+4-1, 4)\n       = C(8, 4)\n       = 8!/(4!×4!)\n       = (8×7×6×5)/(4×3×2×1)\n       = 1680/24\n       = 70</div>',
+tip:{title:'중복조합 직관',text:'n종류 r개 선택 = (r개의 공)을 (n-1개의 칸막이)로 분리하는 방법. 별과 막대(Stars and Bars): C(n+r-1,r)개.'}},
+
+// Q05
+{id:5,pts:10,cat:'이항정리',catC:'#00e87a',
+title:'이항정리 계수 구하기',
+body:'<p>(2x + 3)⁵를 전개할 때, <strong>x³</strong>의 계수를 구하시오.</p><div class="scene"><div class="scene-t">📐 이항정리</div><p>(a+b)ⁿ = ΣC(n,r)·aⁿ⁻ʳ·bʳ  (r=0,1,...,n)</p></div>',
+opts:['720','360','1080','240','960'],
+ans:0,
+concept:{key:'이항정리 일반항',val:'(2x+3)⁵의 x³항: C(5,3)·(2x)³·3² = 10·8x³·9 = 720x³.'},
+expl:'<div class="step">(2x+3)⁵ = Σ C(5,r)·(2x)^(5-r)·3^r\n\nx³항은 2x의 지수가 3일 때 → (5-r)=3 → r=2\n\nx³ 계수:\n  C(5,2) × 2³ × 3²\n  = 10 × 8 × 9\n  = 720</div>',
+tip:{title:'이항정리 일반항',text:'(a+b)ⁿ의 r번째 항(r=0부터): C(n,r)aⁿ⁻ʳbʳ. 특정 항 계수는 r을 결정하고 계산. x의 지수가 조건이면 지수 방정식으로 r을 구함.'}},
+
+// Q06
+{id:6,pts:10,cat:'격자 경로',catC:'#00c8d8',
+title:'격자 위의 최단 경로',
+body:'<p>좌표 (0,0)에서 (5,4)까지 격자를 따라 오른쪽(→) 또는 위쪽(↑)으로만 이동하는 최단 경로의 수는?</p><div class="scene"><div class="scene-t">📐 경로 규칙</div><p>오른쪽 이동 5번, 위쪽 이동 4번을 배열하는 방법의 수</p></div>',
+opts:['126','210','252','84','120'],
+ans:0,
+concept:{key:'격자 경로 = 조합',val:'총 9번 이동 중 위로 갈 4번의 위치 선택. C(9,4)=126.'},
+expl:'<div class="step">총 이동 횟수: 5(오른쪽) + 4(위쪽) = 9번\n\n경로 = 9번 이동 중 ↑를 4번 배치\n     = C(9,4)\n     = 9!/(4!×5!)\n     = (9×8×7×6)/(4×3×2×1)\n     = 3024/24\n     = 126</div>',
+tip:{title:'격자 경로와 파스칼 삼각형',text:'(m,n) 격자 경로 수=C(m+n,n). 특정 점을 지나는 경로: 분할 후 곱셈. 금지 구역: 전체-금지 구역 포함 경로(반사 원리).'}},
+
+// Q07
+{id:7,pts:10,cat:'원형 순열',catC:'#00e87a',
+title:'원형 배열의 경우의 수',
+body:'<p>서로 다른 색의 구슬 <strong>6개</strong>를 원형으로 배열하는 경우의 수는?</p><div class="scene"><div class="scene-t">📐 원형 순열 공식</div><p>n개를 원형으로 배열: (n-1)!</p><p>(회전하면 같은 것으로 간주)</p></div>',
+opts:['120','720','360','240','60'],
+ans:0,
+concept:{key:'원형 순열 (n-1)!',val:'6개를 원형 배열: (6-1)!=5!=120.'},
+expl:'<div class="step">원형 순열: 하나를 고정하고 나머지를 배열\n\n(n-1)! = (6-1)! = 5! = 120\n\n이유:\n  일반 순열 6!=720가지\n  회전이 같은 것: 6가지씩 동일\n  원형 순열: 720/6 = 120\n\n목걸이(뒤집기도 같다면): (n-1)!/2 = 60</div>',
+tip:{title:'원형 순열 vs 목걸이',text:'원형 순열: (n-1)! (회전만 동일). 목걸이: (n-1)!/2 (회전+뒤집기 동일). 구슬이 일부 같으면 버언사이드 보조정리 사용.'}},
+
+// Q08
+{id:8,pts:10,cat:'포함-배제',catC:'#00c8d8',
+title:'비인접 조건의 경우의 수',
+body:'<p>1~9의 수 중 3개를 선택할 때, 선택한 어떤 두 수도 연속이 아닌 경우의 수는?</p><div class="scene"><div class="scene-t">📐 힌트</div><p>변환: a₁ &lt; a₂ &lt; a₃이고 a₂≥a₁+2, a₃≥a₂+2 조건<br>→ bᵢ = aᵢ-(i-1)로 치환하면 1~7에서 3개 선택</p></div>',
+opts:['35','42','28','56','21'],
+ans:0,
+concept:{key:'비인접 조합 공식',val:'1~n에서 r개, 비인접 = C(n-r+1,r). C(9-3+1,3)=C(7,3)=35.'},
+expl:'<div class="step">비인접 조합 공식: C(n-r+1, r)\n  n=9, r=3\n  C(9-3+1, 3) = C(7, 3) = 35\n\n증명(변환):\n  a₁ < a₂ < a₃, 각 차이 ≥ 2\n  b₁=a₁, b₂=a₂-1, b₃=a₃-2\n  b₁<b₂<b₃, 1≤bᵢ≤7\n  → 1~7에서 3개 조합: C(7,3)=35</div>',
+tip:{title:'비인접 조합 유도',text:'bᵢ=aᵢ-(i-1) 변환으로 인접 제약 제거. 일반화: 1~n에서 r개, 어느 두 수도 d 이상 차이 → C(n-(r-1)(d-1), r).'}},
+
+// Q09
+{id:9,pts:10,cat:'중복조합·방정식',catC:'#00e87a',
+title:'방정식의 음이 아닌 정수해',
+body:'<p>방정식 <strong>x + y + z = 10</strong>을 만족하는 음이 아닌 정수해의 개수는?</p><div class="scene"><div class="scene-t">📐 힌트</div><p>음이 아닌 정수해 = 중복조합 H(3,10) = C(12,2)</p></div>',
+opts:['66','55','78','45','91'],
+ans:0,
+concept:{key:'중복조합 = 방정식 해 개수',val:'x+y+z=10, 음이 아닌 정수해 = H(3,10) = C(12,2) = 66.'},
+expl:'<div class="step">x+y+z=10, x,y,z≥0인 정수해 개수\n\n= 3가지 변수에 10을 분배\n= H(3,10) = C(3+10-1, 10) = C(12, 2)\n= 12!/(2!×10!) = 66\n\n직관: 10개의 공을 3개 상자에 담기\n  ○○○|○○○|○○○○ (별과 막대)\n  10개 공 + 2개 막대 = 12개 중 막대 2개 위치\n  C(12,2) = 66</div>',
+tip:{title:'1 이상 조건 처리',text:'xᵢ≥1이면: x\'ᵢ=xᵢ-1로 치환 → x\'ᵢ≥0. 합이 n-r로 줄어 H(k,n-r). 예: x+y+z=10, 각≥1 → H(3,7)=C(9,2)=36.'}},
+
+// Q10
+{id:10,pts:10,cat:'카탈란 수',catC:'#00c8d8',
+title:'카탈란 수와 괄호 쌍',
+body:'<p><strong>카탈란 수</strong> Cₙ = C(2n,n)/(n+1)은 여러 조합론 문제에서 등장한다.</p><div class="scene"><div class="scene-t">📐 응용</div><p>여는 괄호 4개와 닫는 괄호 4개로 만들 수 있는 <strong>올바른 괄호 쌍</strong>의 수는?<br>예: ()()()(), ((())), ... (C₄를 구하시오)</p></div>',
+opts:['14','42','5','132','28'],
+ans:0,
+concept:{key:'카탈란 수 C₄',val:'Cₙ=C(2n,n)/(n+1). C₄=C(8,4)/5=70/5=14.'},
+expl:'<div class="step">카탈란 수 Cₙ = C(2n,n)/(n+1)\n\nn=4:\nC₄ = C(8,4)/(4+1)\n   = 70/5\n   = 14\n\n처음 몇 카탈란 수:\n  C₀=1, C₁=1, C₂=2, C₃=5, C₄=14, C₅=42\n\n직접 확인(n=3까지):\n  ()()() → ()(()), (()), (()()) ... = 5가지 → C₃=5 ✓</div>',
+tip:{title:'카탈란 수의 다양한 해석',text:'올바른 괄호 쌍, (0,0)→(n,n) 대각선 아래 격자 경로, n+2각형의 삼각분할, 이진 트리 모양, 비교정렬 순서... 매우 다양한 조합 문제에서 등장.'}},
+
+// Q11
+{id:11,pts:10,cat:'비둘기집 원리',catC:'#00e87a',
+title:'비둘기집 원리 심화',
+body:'<p>1부터 200까지의 정수 중 <strong>임의로 101개</strong>를 선택할 때, 반드시 서로소(GCD=1)인 두 수가 존재하는가? 이를 비둘기집 원리로 설명하시오.</p><div class="scene"><div class="scene-t">📐 힌트</div><p>연속하는 두 정수는 항상 서로소 (GCD(n,n+1)=1)</p><p>쌍: (1,2),(3,4),(5,6),...,(199,200) → 100쌍</p></div><p>이 증명에서 비둘기(선택한 수)와 상자(쌍)의 수는?</p>',
+opts:['비둘기 101개, 상자 100개','비둘기 200개, 상자 101개','비둘기 101개, 상자 101개','비둘기 100개, 상자 50개','비둘기 200개, 상자 100개'],
+ans:0,
+concept:{key:'비둘기집 원리 구조',val:'연속 쌍 100개=상자. 101개 선택=비둘기. 101>100이면 같은 쌍에서 2개 선택→서로소.'},
+expl:'<div class="step">연속 정수 쌍 (비둘기집):\n  (1,2),(3,4),(5,6),...,(199,200)\n  → 100쌍 = 100개 상자\n\n101개의 수를 선택 = 101마리 비둘기\n\n비둘기집 원리:\n  101마리 > 100개 상자\n  → 어느 쌍에서 두 수 모두 선택\n  → 연속 두 수는 GCD=1 (서로소)\n  → 서로소인 두 수 반드시 존재! ✓\n\n비둘기: 101개, 상자: 100개</div>',
+tip:{title:'비둘기집 원리 응용',text:'비둘기>상자→ 어느 상자에 2개 이상. 이 문제: 연속쌍이 상자. 서로소 외에도: 합이 n+1인 쌍, 홀짝, 나머지 클래스 등 다양한 분류가 상자가 됨.'}},
+
+// Q12
+{id:12,pts:10,cat:'이항정리·다항식',catC:'#00c8d8',
+title:'다항정리 계수',
+body:'<p>(x + y + z)⁴를 전개할 때, <strong>x²yz</strong>의 계수를 구하시오.</p><div class="scene"><div class="scene-t">📐 다항정리</div><p>(x₁+x₂+...+xₖ)ⁿ에서 x₁^a₁x₂^a₂...xₖ^aₖ의 계수<br>= n! / (a₁! a₂! ... aₖ!)  (단, a₁+...+aₖ=n)</p></div>',
+opts:['12','6','24','4','8'],
+ans:0,
+concept:{key:'다항정리(Multinomial Theorem)',val:'x²yz: 지수 2,1,1, 합=4. 계수=4!/(2!1!1!)=12.'},
+expl:'<div class="step">(x+y+z)⁴에서 x²yz의 계수\n\nx의 지수=2, y의 지수=1, z의 지수=1\n지수의 합: 2+1+1=4 ✓\n\n다항정리 계수:\n  4! / (2! × 1! × 1!)\n  = 24 / (2 × 1 × 1)\n  = 24 / 2\n  = 12</div>',
+tip:{title:'다항정리 일반화',text:'이항정리는 k=2인 특수 경우. 일반: 계수=n!/(a₁!a₂!...aₖ!)=다항계수. 경우의 수로 해석: n개 중 a₁개를 x로, a₂개를 y로... 배정하는 방법.'}},
+
+// Q13
+{id:13,pts:12,cat:'포함-배제·경우의 수',catC:'#00e87a',
+title:'자리 제한 순열 (완전 순열)',
+body:'<p>4명 A,B,C,D를 일렬로 세울 때, 모든 사람이 <strong>자기 자리가 아닌</strong> 자리에 서는 경우의 수를 구하시오. (완전 순열, Derangement D₄)</p><div class="scene"><div class="scene-t">📐 공식</div><p>Dₙ = n! × Σ(-1)ᵏ/k!  (k=0~n)</p><p>= n!(1 - 1/1! + 1/2! - 1/3! + ... )</p></div>',
+opts:['9','10','8','12','6'],
+ans:0,
+concept:{key:'완전 순열(Derangement) D₄',val:'D₄=4!(1-1+1/2-1/6+1/24)=24(1/2-1/6+1/24)=12-4+1=9.'},
+expl:'<div class="step">완전 순열(아무도 원래 자리에 없는 순열):\n\nDₙ = n! × (1 - 1/1! + 1/2! - 1/3! + ... + (-1)ⁿ/n!)\n\nD₄ = 4! × (1 - 1 + 1/2 - 1/6 + 1/24)\n   = 24 × (12/24 - 4/24 + 1/24)\n   = 24 × 9/24\n   = 9\n\n또는 점화식: Dₙ=(n-1)(Dₙ₋₁+Dₙ₋₂)\n  D₁=0, D₂=1\n  D₃=2(1+0)=2\n  D₄=3(2+1)=9</div>',
+tip:{title:'완전 순열 근사',text:'Dₙ ≈ n!/e (자연상수 e≈2.718). 큰 n에서 완전 순열의 비율은 1/e≈36.8%로 수렴. 포함-배제 원리의 대표적 응용.'}},
+
+// Q14
+{id:14,pts:12,cat:'분배·스털링 수',catC:'#00c8d8',
+title:'집합의 분할 (제2종 스털링 수)',
+body:'<p>5개의 서로 다른 공을 <strong>3개의 구별 없는 상자</strong>에 넣되, 빈 상자가 없는 경우의 수는? (제2종 스털링 수 S(5,3))</p><div class="scene"><div class="scene-t">📐 점화식</div><p>S(n,k) = k·S(n-1,k) + S(n-1,k-1)</p><p>S(n,1)=1, S(n,n)=1</p></div>',
+opts:['25','30','15','20','35'],
+ans:0,
+concept:{key:'제2종 스털링 수 S(5,3)',val:'S(5,3): 점화식으로 계산. S(5,3)=25.'},
+expl:'<div class="step">제2종 스털링 수 S(n,k):\n  S(n,k) = k·S(n-1,k) + S(n-1,k-1)\n\n초기값:\n  S(1,1)=1\n  S(2,1)=1, S(2,2)=1\n  S(3,1)=1, S(3,2)=3, S(3,3)=1\n  S(4,1)=1, S(4,2)=7, S(4,3)=6, S(4,4)=1\n  S(5,1)=1, S(5,2)=15,S(5,3)=?, S(5,4)=10,S(5,5)=1\n\nS(5,3) = 3×S(4,3) + S(4,2)\n       = 3×6 + 7\n       = 18+7 = 25</div>',
+tip:{title:'스털링 수 해석',text:'S(n,k): n개 원소를 k개의 비어있지 않은 동일한 그룹으로 분할하는 방법. 벨수 Bₙ=ΣS(n,k): 전체 분할 방법. B₁=1,B₂=2,B₃=5,B₄=15,B₅=52.'}},
+
+// Q15
+{id:15,pts:12,cat:'생성함수·경우의 수',catC:'#00e87a',
+title:'제약 조건이 있는 분배',
+body:'<p>동전 1원, 5원, 10원이 각각 <strong>충분히</strong> 있다. 세 종류의 동전으로 정확히 <strong>20원</strong>을 만드는 방법의 수는? (각 동전은 0개 이상 사용 가능)</p>',
+opts:['9','10','12','8','11'],
+ans:0,
+concept:{key:'동전 문제 — 직접 열거',val:'10원 동전 0,1,2개 경우로 나눠 5원과 1원 조합을 센다.'},
+expl:'<div class="step">20 = 10a + 5b + c  (a,b,c≥0)\n\na=2: 5b+c=0 → b=0,c=0 → 1가지\na=1: 5b+c=10 → b=0,1,2\n  b=0: c=10 ✓\n  b=1: c=5  ✓\n  b=2: c=0  ✓  → 3가지\na=0: 5b+c=20 → b=0,1,2,3,4\n  b=0: c=20 ✓\n  b=1: c=15 ✓\n  b=2: c=10 ✓\n  b=3: c=5  ✓\n  b=4: c=0  ✓  → 5가지\n\n총: 1+3+5 = 9가지</div>',
+tip:{title:'생성함수 접근',text:'동전 1,5,10원: (1+x+x²+...)(1+x⁵+x¹⁰+...)(1+x¹⁰+...)에서 x²⁰의 계수를 구하면 9. 생성함수는 복잡한 분배 문제를 다항식 곱으로 처리.'}}
+
+]; // END QS
+
+// ══════════════════════════════════════════════════════════════
+// STATE & ENGINE
+// ══════════════════════════════════════════════════════════════
+var S={cur:0,chosen:new Array(QS.length).fill(null),
+  done:new Array(QS.length).fill(false),
+  elapsed:0,timer:null,total:60*60};
+
+function startExam(){
+  document.getElementById('splash').classList.add('out');
+  document.getElementById('hdr').style.display='block';
+  document.getElementById('pbar').style.display='block';
+  document.getElementById('app').style.display='block';
+  buildDots();render(0);S.timer=setInterval(tick,1000);
+}
+function tick(){
+  S.elapsed++;var rem=S.total-S.elapsed;
+  if(rem<=0){clearInterval(S.timer);showResult();return;}
+  var m=Math.floor(rem/60),s=rem%60;
+  var el=document.getElementById('tmr');
+  el.textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+  if(rem<=300)el.classList.add('warn');
+}
+function buildDots(){
+  var c=document.getElementById('qdots');c.innerHTML='';
+  QS.forEach(function(_,i){
+    var d=document.createElement('div');
+    d.className='qdot'+(i===0?' cur':'');d.id='dot'+i;d.title=(i+1)+'번';
+    d.onclick=(function(ii){return function(){go(ii);};})(i);
+    c.appendChild(d);
+  });
+}
+function isOk(i){return S.chosen[i]===QS[i].ans;}
+function calcScore(){
+  return QS.reduce(function(s,q,i){return s+(S.done[i]&&isOk(i)?q.pts:0);},0);
+}
+function render(idx){
+  S.cur=idx;updateDots();updatePts();
+  var q=QS[idx];var app=document.getElementById('app');
+  var card=document.createElement('div');card.className='qcard on';
+
+  var info=document.createElement('div');info.className='qinfo';
+  var il=document.createElement('div');il.className='qinfo-l';
+  var nt=document.createElement('div');nt.className='qnum-tag';
+  nt.textContent='문제 '+String(idx+1).padStart(2,'0')+' / '+QS.length;
+  var nb=document.createElement('div');nb.className='qnum-big';nb.textContent=String(idx+1).padStart(2,'0');
+  il.appendChild(nt);il.appendChild(nb);
+  var ir=document.createElement('div');ir.className='qinfo-r';
+  var qc=document.createElement('div');qc.className='qcat';
+  qc.style.color=q.catC;qc.style.borderColor=q.catC;qc.textContent=q.cat;
+  var qp=document.createElement('div');qp.className='qpts';qp.textContent='+'+q.pts+'점';
+  ir.appendChild(qc);ir.appendChild(qp);
+  info.appendChild(il);info.appendChild(ir);card.appendChild(info);
+
+  var title=document.createElement('div');title.className='qtitle';title.textContent=q.title;card.appendChild(title);
+  var body=document.createElement('div');body.className='qbody';body.innerHTML=q.body;card.appendChild(body);
+
+  var opts=document.createElement('div');opts.className='opts';
+  q.opts.forEach(function(o,oi){
+    var cls='opt';
+    if(S.done[idx]){if(oi===q.ans)cls+=' ok';else if(oi===S.chosen[idx])cls+=' ng';cls+=' off';}
+    else if(oi===S.chosen[idx])cls+=' sel';
+    var btn=document.createElement('button');btn.className=cls;
+    btn.onclick=(function(qi,oi2){return function(){pick(qi,oi2);};})(idx,oi);
+    var n=document.createElement('span');n.className='opt-n';n.textContent=LBLS[oi];
+    var t=document.createElement('span');t.textContent=o;
+    btn.appendChild(n);btn.appendChild(t);
+    if(S.done[idx]&&oi===q.ans){var ck=document.createElement('span');ck.className='opt-ck';ck.textContent='✓';btn.appendChild(ck);}
+    if(S.done[idx]&&oi===S.chosen[idx]&&oi!==q.ans){var ck2=document.createElement('span');ck2.className='opt-ck';ck2.textContent='✗';btn.appendChild(ck2);}
+    opts.appendChild(btn);
+  });
+  card.appendChild(opts);
+
+  var expl=document.createElement('div');expl.className='expl'+(S.done[idx]?' on':'');
+  var etop=document.createElement('div');etop.className='expl-top';
+  var eic=document.createElement('div');eic.className='expl-icon';eic.textContent='解';
+  var elb=document.createElement('span');elb.className='expl-lbl';elb.textContent='풀이 해설';
+  etop.appendChild(eic);etop.appendChild(elb);
+  if(S.done[idx]){var vd=document.createElement('span');vd.className=isOk(idx)?'v-ok':'v-ng';vd.textContent=isOk(idx)?'✓ 정답!':'✗ 오답';etop.appendChild(vd);}
+  expl.appendChild(etop);
+  if(q.concept){
+    var cb=document.createElement('div');cb.className='concept-bar';
+    var ct=document.createElement('div');ct.className='concept-tag';ct.textContent=q.concept.key;
+    var cd=document.createElement('div');cd.className='concept-desc';cd.textContent=q.concept.val;
+    cb.appendChild(ct);cb.appendChild(cd);expl.appendChild(cb);
+  }
+  var aw=document.createElement('div');aw.className='ans-wrap';
+  var ap=document.createElement('div');ap.className='ans-pill';
+  ap.textContent='정답: '+LBLS[q.ans]+' '+q.opts[q.ans];
+  aw.appendChild(ap);expl.appendChild(aw);
+  var eb=document.createElement('div');eb.className='expl-body';eb.innerHTML=q.expl;
+  if(q.tip){var tb=document.createElement('div');tb.className='tip';var tt=document.createElement('div');tt.className='tip-t';tt.textContent='💡 '+q.tip.title;var tx=document.createElement('div');tx.textContent=q.tip.text;tb.appendChild(tt);tb.appendChild(tx);eb.appendChild(tb);}
+  expl.appendChild(eb);card.appendChild(expl);
+
+  var nav=document.createElement('div');nav.className='nav-row';
+  var prev=document.createElement('button');prev.className='nb';prev.textContent='← 이전';prev.disabled=(idx===0);
+  prev.onclick=(function(ii){return function(){go(ii-1);};})(idx);nav.appendChild(prev);
+  var right=document.createElement('div');right.style.cssText='display:flex;gap:8px';
+  if(!S.done[idx]){var sbtn=document.createElement('button');sbtn.className='nb sub';sbtn.textContent='제출하기';sbtn.onclick=(function(ii){return function(){sub(ii);};})(idx);right.appendChild(sbtn);}
+  if(idx===QS.length-1){var eb2=document.createElement('button');eb2.className='nb end';eb2.textContent='🏁 채점 완료';eb2.onclick=showResult;right.appendChild(eb2);}
+  else{var nb2=document.createElement('button');nb2.className='nb';nb2.textContent='다음 →';nb2.onclick=(function(ii){return function(){go(ii+1);};})(idx);right.appendChild(nb2);}
+  nav.appendChild(right);card.appendChild(nav);
+  app.innerHTML='';app.appendChild(card);
+}
+function updateDots(){
+  QS.forEach(function(_,i){
+    var d=document.getElementById('dot'+i);if(!d)return;
+    d.className='qdot';
+    if(i===S.cur)d.classList.add('cur');
+    else if(S.done[i])d.classList.add(isOk(i)?'ok':'ng');
+    else if(S.chosen[i]!==null)d.classList.add('ans');
+  });
+}
+function updatePts(){
+  document.getElementById('pfill').style.width=((S.cur+1)/QS.length*100)+'%';
+  document.getElementById('hpts').textContent=calcScore()+' / 150점';
+}
+function pick(qi,oi){if(S.done[qi])return;S.chosen[qi]=oi;render(qi);}
+function sub(qi){if(S.chosen[qi]===null)return;S.done[qi]=true;render(qi);}
+function go(i){if(i<0||i>=QS.length)return;render(i);}
+function showResult(){
+  clearInterval(S.timer);
+  var score=calcScore();
+  var ok=QS.filter(function(_,i){return S.done[i]&&isOk(i);}).length;
+  var ng=QS.filter(function(_,i){return S.done[i]&&!isOk(i);}).length;
+  var m=Math.floor(S.elapsed/60),s=S.elapsed%60;
+  var pct=score/150;
+  document.getElementById('rscore').textContent=score;
+  document.getElementById('rn-ok').textContent=ok;
+  document.getElementById('rn-ng').textContent=ng;
+  document.getElementById('rn-t').textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+  var arc=document.getElementById('arc');
+  arc.style.strokeDashoffset=465-(465*pct);
+  arc.setAttribute('stroke',pct>=.8?'#00e87a':pct>=.6?'#00c8d8':'#ff5060');
+  var grade='',gc='';
+  if(pct>=.93){grade='🏆 최우수 — 금상 수준';gc='#f0c040';}
+  else if(pct>=.8){grade='✨ 우수 — 은상 수준';gc='#a0b8a0';}
+  else if(pct>=.67){grade='💎 양호 — 동상 수준';gc:'#00e87a';}
+  else if(pct>=.5){grade='📐 보통 — 계속 도전';gc:'#60c0ff';}
+  else{grade='💪 분발! — 다시 도전하자';gc='#4a8a68';}
+  var rg=document.getElementById('rgrade');rg.textContent=grade;rg.style.color=gc;
+  var list=document.getElementById('rlist');list.innerHTML='';
+  QS.forEach(function(q,i){
+    var ok2=S.done[i]&&isOk(i),ng2=S.done[i]&&!isOk(i);
+    var d=document.createElement('div');
+    d.className='rev-row'+(ok2?' ok':'')+(ng2?' ng':'');
+    d.innerHTML='<div class="rev-num">Q'+String(i+1).padStart(2,'0')+'<br>'+q.pts+'점</div>'+
+      '<div class="rev-ttl"><span style="font-family:JetBrains Mono,monospace;font-size:10px;color:'+q.catC+'">'+q.cat+'</span><br>'+q.title+'</div>'+
+      '<div class="rev-mk">'+(ok2?'✅':ng2?'❌':'⬜')+'</div>';
+    d.onclick=(function(ii){return function(){document.getElementById('result').classList.remove('on');render(ii);};})(i);
+    list.appendChild(d);
+  });
+  document.getElementById('result').classList.add('on');
+}
+function restartExam(){
+  S={cur:0,chosen:new Array(QS.length).fill(null),done:new Array(QS.length).fill(false),elapsed:0,timer:null,total:60*60};
+  document.getElementById('result').classList.remove('on');
+  document.getElementById('tmr').textContent='60:00';
+  document.getElementById('tmr').classList.remove('warn');
+  buildDots();render(0);S.timer=setInterval(tick,1000);
+}
+</script>
+</body>
+</html>

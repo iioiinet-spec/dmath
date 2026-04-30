@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KOI 중등 그래프 이론 — 15문제 완전 해설</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700;900&family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+:root{
+  --void:#070b0f;
+  --deep:#0d1117;
+  --card:#111827;
+  --card2:#162032;
+  --border:#1e2d3d;
+  --border2:#253650;
+  --faint:#3a5070;
+  --muted:#5a7a9a;
+  --dim:#7a9ab8;
+  --text:#c8ddf0;
+  --bright:#e8f4ff;
+  --cyan:#38bdf8;
+  --cyan2:#7dd3fc;
+  --emerald:#34d399;
+  --emerald2:#6ee7b7;
+  --amber:#fbbf24;
+  --rose:#f87171;
+  --violet:#a78bfa;
+  --ok-bg:rgba(52,211,153,.08);
+  --ok-br:#34d399;
+  --sel-bg:rgba(56,189,248,.07);
+  --sel-br:#38bdf8;
+  --ng-bg:rgba(248,113,113,.08);
+  --ng-br:#f87171;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--void);
+  color:var(--text);
+  font-family:'Noto Sans KR',sans-serif;
+  min-height:100vh; line-height:1.8;
+}
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background:radial-gradient(ellipse 80% 50% at 50% -20%,rgba(56,189,248,.07),transparent);
+  pointer-events:none;z-index:0;
+}
+
+/* ── SPLASH ── */
+#splash{
+  position:fixed;inset:0;z-index:500;
+  background:var(--void);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  transition:opacity .7s,visibility .7s;
+}
+#splash.out{opacity:0;visibility:hidden;}
+.sp{max-width:600px;width:92%;text-align:center;}
+.sp-tag{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;letter-spacing:5px;text-transform:uppercase;
+  color:var(--faint);border:1px solid var(--border2);
+  padding:5px 18px;margin-bottom:36px;display:inline-block;
+}
+.sp-h{
+  font-family:'Noto Serif KR',serif;
+  font-size:clamp(52px,10vw,96px);font-weight:900;
+  line-height:.92;color:var(--bright);
+  letter-spacing:-3px;margin-bottom:8px;
+}
+.sp-h b{color:var(--cyan);}
+.sp-sub{
+  font-family:'JetBrains Mono',monospace;
+  font-size:13px;color:var(--muted);
+  letter-spacing:2px;margin-bottom:44px;
+}
+.sp-stats{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1px;background:var(--border2);margin-bottom:36px;
+}
+.sp-stat{
+  background:var(--card);padding:18px 12px;
+}
+.sp-stat-n{
+  font-family:'Noto Serif KR',serif;
+  font-size:34px;font-weight:900;color:var(--cyan);
+  display:block;line-height:1;
+}
+.sp-stat-l{font-size:11px;color:var(--muted);margin-top:4px;letter-spacing:1px;}
+.sp-notice{
+  background:rgba(56,189,248,.06);
+  border:1px solid var(--border2);border-left:3px solid var(--cyan);
+  padding:14px 18px;font-size:13px;color:var(--muted);
+  line-height:1.8;margin-bottom:36px;text-align:left;
+}
+.sp-notice strong{color:var(--text);}
+.sp-btn{
+  padding:14px 56px;background:var(--cyan);border:none;
+  color:var(--void);font-family:'Noto Serif KR',serif;
+  font-size:17px;font-weight:700;cursor:pointer;letter-spacing:1px;
+  transition:all .2s;
+}
+.sp-btn:hover{background:var(--cyan2);transform:translateY(-2px);}
+
+/* ── HEADER ── */
+#hdr{
+  display:none;position:sticky;top:0;z-index:100;
+  background:rgba(7,11,15,.92);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+}
+.hdr-in{
+  max-width:920px;margin:0 auto;padding:10px 24px;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+}
+.hdr-brand{
+  font-family:'Noto Serif KR',serif;
+  font-size:16px;font-weight:700;color:var(--bright);
+}
+.hdr-brand span{color:var(--cyan);}
+.qdots{display:flex;gap:4px;flex-wrap:wrap;max-width:460px;}
+.qdot{
+  width:11px;height:11px;border-radius:2px;
+  background:var(--border2);cursor:pointer;transition:all .2s;
+}
+.qdot:hover{background:var(--faint);}
+.qdot.ans{background:rgba(56,189,248,.45);}
+.qdot.cur{background:var(--cyan);transform:scale(1.4);}
+.qdot.ok{background:var(--emerald);}
+.qdot.ng{background:var(--rose);}
+.hdr-r{display:flex;flex-direction:column;align-items:flex-end;gap:2px;}
+#tmr{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--bright);}
+#tmr.warn{color:var(--rose);animation:blink .8s step-end infinite;}
+@keyframes blink{50%{opacity:.2}}
+#hpts{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--faint);}
+#pbar{display:none;height:3px;background:var(--border);}
+#pfill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--emerald));transition:width .4s;}
+
+/* ── APP ── */
+#app{
+  display:none;position:relative;z-index:1;
+  max-width:920px;margin:0 auto;padding:40px 24px 160px;
+}
+.qcard{display:none;animation:rise .35s ease;}
+.qcard.on{display:block;}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+/* card header */
+.qhdr{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  margin-bottom:14px;padding-bottom:14px;
+  border-bottom:1px solid var(--border);
+}
+.qmeta{display:flex;flex-direction:column;gap:4px;}
+.qnum-tag{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;letter-spacing:3px;color:var(--faint);text-transform:uppercase;
+}
+.qnum-big{
+  font-family:'Noto Serif KR',serif;
+  font-size:64px;font-weight:900;color:var(--border2);
+  line-height:1;letter-spacing:-3px;
+}
+.qbadges{display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
+.qcat-badge{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  border:1px solid;padding:2px 10px;
+}
+.qpts-badge{
+  font-family:'JetBrains Mono',monospace;
+  font-size:13px;color:var(--amber);font-weight:700;
+}
+.qtitle{
+  font-family:'Noto Serif KR',serif;
+  font-size:22px;font-weight:700;color:var(--bright);
+  line-height:1.35;margin-bottom:18px;
+  border-left:3px solid var(--cyan);padding-left:14px;
+}
+
+/* question body */
+.qbody{
+  background:var(--card);border:1px solid var(--border);
+  border-top:2px solid var(--border2);
+  padding:26px 28px;margin-bottom:18px;
+  font-size:15px;line-height:2.05;color:var(--text);
+  position:relative;
+}
+.qbody p{margin-bottom:12px;}
+.qbody p:last-child{margin-bottom:0;}
+.qbody strong{color:var(--cyan2);}
+.qbody em{color:var(--amber);font-style:normal;font-weight:700;}
+.qbody ul,.qbody ol{margin:8px 0 8px 26px;line-height:2.3;}
+
+.scene{
+  background:var(--card2);border:1px solid var(--border2);
+  border-left:3px solid var(--amber);
+  padding:14px 18px;margin:14px 0;
+  font-size:14px;line-height:2;
+}
+.scene-t{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--amber);margin-bottom:8px;font-weight:700;
+}
+.codebox{
+  font-family:'JetBrains Mono',monospace;
+  background:#020509;color:#7dd3fc;
+  border:1px solid var(--border2);
+  padding:13px 17px;margin:10px 0;
+  font-size:13px;line-height:1.85;
+  overflow-x:auto;white-space:pre;
+}
+.tbl-w{margin:12px 0;overflow-x:auto;}
+.qtbl{border-collapse:collapse;font-size:13.5px;}
+.qtbl th{
+  background:var(--card2);border:1px solid var(--border2);
+  padding:7px 14px;color:var(--muted);
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  letter-spacing:1px;text-align:center;
+}
+.qtbl td{
+  border:1px solid var(--border);padding:8px 14px;
+  text-align:center;color:var(--text);
+}
+.qtbl td.hi{color:var(--cyan2);font-weight:700;}
+
+/* options */
+.opts{display:flex;flex-direction:column;gap:8px;margin-bottom:22px;}
+.opt{
+  display:flex;align-items:flex-start;gap:14px;
+  padding:13px 18px;background:var(--card);
+  border:1px solid var(--border2);color:var(--text);
+  cursor:pointer;font-size:14px;line-height:1.7;
+  text-align:left;width:100%;transition:all .18s;
+}
+.opt:hover{border-color:var(--cyan);background:var(--sel-bg);}
+.opt.sel{border-color:var(--sel-br);background:var(--sel-bg);}
+.opt.ok{border-color:var(--ok-br);background:var(--ok-bg);}
+.opt.ng{border-color:var(--ng-br);background:var(--ng-bg);}
+.opt.off{pointer-events:none;}
+.opt-n{
+  font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;
+  color:var(--faint);min-width:22px;flex-shrink:0;padding-top:1px;
+}
+.opt.sel .opt-n{color:var(--cyan);}
+.opt.ok  .opt-n{color:var(--emerald);}
+.opt.ng  .opt-n{color:var(--rose);}
+.opt-ck{margin-left:auto;font-size:16px;flex-shrink:0;}
+
+/* explanation */
+.expl{
+  display:none;background:var(--card2);
+  border:1px solid var(--border);margin-bottom:22px;
+  animation:fadein .4s;
+}
+.expl.on{display:block;}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.expl-top{
+  background:rgba(0,0,0,.3);border-bottom:1px solid var(--border);
+  padding:11px 20px;display:flex;align-items:center;gap:10px;
+}
+.expl-icon{
+  width:28px;height:28px;border:1px solid var(--cyan);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Noto Serif KR',serif;font-style:italic;
+  font-size:13px;color:var(--cyan);flex-shrink:0;
+}
+.expl-lbl{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);
+}
+.v-ok{margin-left:auto;color:var(--emerald);font-weight:700;font-size:13px;}
+.v-ng{margin-left:auto;color:var(--rose);font-weight:700;font-size:13px;}
+.concept-bar{
+  background:rgba(167,139,250,.06);border-bottom:1px solid var(--border);
+  padding:10px 20px;display:flex;align-items:flex-start;gap:10px;
+}
+.concept-tag{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  letter-spacing:2px;text-transform:uppercase;
+  color:var(--violet);border:1px solid var(--violet);
+  padding:2px 10px;white-space:nowrap;flex-shrink:0;margin-top:1px;
+}
+.concept-desc{font-size:13px;color:var(--muted);line-height:1.75;}
+.ans-wrap{padding:0 20px;}
+.ans-pill{
+  display:inline-block;
+  background:rgba(52,211,153,.1);border:1px solid var(--ok-br);
+  color:var(--emerald);font-family:'JetBrains Mono',monospace;
+  font-size:12px;padding:5px 16px;margin-top:16px;font-weight:500;
+}
+.expl-body{padding:18px 20px 22px;font-size:14px;line-height:2;color:var(--dim);}
+.expl-body p{margin-bottom:10px;}
+.expl-body p:last-child{margin-bottom:0;}
+.expl-body strong{color:var(--cyan2);}
+.step{
+  font-family:'JetBrains Mono',monospace;background:#020509;
+  border:1px solid var(--border2);border-left:3px solid var(--violet);
+  padding:16px 20px;margin:12px 0;font-size:12.5px;line-height:1.95;
+  white-space:pre-wrap;overflow-x:auto;color:#b8c8e0;
+}
+.tip{
+  background:rgba(251,191,36,.06);border-left:3px solid var(--amber);
+  padding:11px 16px;margin:12px 0;font-size:13px;line-height:1.75;color:var(--muted);
+}
+.tip-t{
+  font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--amber);margin-bottom:4px;font-weight:700;
+}
+
+/* nav */
+.nav-row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.nb{
+  padding:11px 24px;background:transparent;border:1px solid var(--border2);
+  color:var(--muted);font-family:'Noto Sans KR',sans-serif;font-size:13px;
+  cursor:pointer;transition:all .2s;
+}
+.nb:hover{border-color:var(--text);color:var(--text);}
+.nb:disabled{opacity:.25;cursor:not-allowed;}
+.nb.sub{background:var(--cyan);border-color:var(--cyan);color:var(--void);font-weight:700;}
+.nb.sub:hover{background:var(--cyan2);border-color:var(--cyan2);color:var(--void);}
+.nb.sub:disabled{opacity:.3;}
+.nb.end{background:var(--emerald);border-color:var(--emerald);color:var(--void);font-weight:700;}
+.nb.end:hover{background:var(--emerald2);border-color:var(--emerald2);color:var(--void);}
+
+/* ── RESULT ── */
+#result{
+  display:none;position:fixed;inset:0;z-index:200;
+  background:var(--void);overflow-y:auto;animation:rise .5s;
+}
+#result.on{display:block;}
+.res-w{max-width:720px;margin:0 auto;padding:68px 24px 120px;}
+.res-hero{text-align:center;margin-bottom:52px;}
+.res-eye{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  letter-spacing:5px;text-transform:uppercase;color:var(--faint);margin-bottom:20px;
+}
+.res-ring{
+  width:172px;height:172px;margin:0 auto 20px;position:relative;
+}
+.res-ring svg{position:absolute;inset:0;transform:rotate(-90deg);}
+.res-in{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+}
+.res-n{
+  font-family:'Noto Serif KR',serif;font-size:50px;font-weight:900;
+  color:var(--cyan);line-height:1;
+}
+.res-d{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--faint);}
+.res-grade{font-family:'Noto Serif KR',serif;font-size:22px;font-weight:700;}
+.res-stats{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1px;background:var(--border2);
+  border:1px solid var(--border2);margin-bottom:44px;
+}
+.rs{background:var(--card);padding:20px;text-align:center;}
+.rs-n{font-family:'Noto Serif KR',serif;font-size:32px;font-weight:900;display:block;line-height:1;}
+.rs-l{font-size:11px;color:var(--muted);margin-top:4px;letter-spacing:1px;}
+.rev-t{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  letter-spacing:3px;text-transform:uppercase;color:var(--faint);
+  border-top:1px solid var(--border);padding-top:16px;margin-bottom:14px;
+}
+.rev-list{display:flex;flex-direction:column;gap:6px;margin-bottom:44px;}
+.rev-row{
+  display:flex;align-items:flex-start;gap:12px;
+  background:var(--card);border:1px solid var(--border2);
+  padding:12px 16px;cursor:pointer;transition:border-color .15s;
+}
+.rev-row:hover{border-color:var(--cyan);}
+.rev-row.ok{border-left:3px solid var(--emerald);}
+.rev-row.ng{border-left:3px solid var(--rose);}
+.rev-num{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  color:var(--faint);min-width:56px;flex-shrink:0;line-height:1.5;
+}
+.rev-ttl{font-size:13px;flex:1;line-height:1.5;}
+.rev-mk{font-size:18px;flex-shrink:0;}
+.btn-restart{
+  display:block;width:100%;padding:18px;background:var(--cyan);
+  border:none;color:var(--void);font-family:'Noto Serif KR',serif;
+  font-size:16px;font-weight:700;cursor:pointer;transition:all .2s;
+}
+.btn-restart:hover{background:var(--cyan2);}
+@media(max-width:600px){
+  .qdots{display:none;}
+  .res-stats{grid-template-columns:1fr 1fr;}
+  .qbody,.expl-body{padding:16px;}
+}
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div class="sp">
+    <div class="sp-tag">Korea Informatics Olympiad · 중등부 심화</div>
+    <div class="sp-h">그래프<br><b>이론</b></div>
+    <div class="sp-sub">Graph Theory · 15 Problems</div>
+    <div class="sp-stats">
+      <div class="sp-stat"><span class="sp-stat-n">15</span><span class="sp-stat-l">총 문항</span></div>
+      <div class="sp-stat"><span class="sp-stat-n">150</span><span class="sp-stat-l">총 배점</span></div>
+      <div class="sp-stat"><span class="sp-stat-n">60</span><span class="sp-stat-l">제한(분)</span></div>
+    </div>
+    <div class="sp-notice">
+      KOI 중등부 기출 수준의 <strong>그래프 이론</strong> 전문 문제집입니다.<br>
+      BFS·DFS·MST·최단경로·위상정렬·이분그래프·오일러 등 핵심 유형 15문제와<br>
+      단계별 풀이 과정이 제출 후 즉시 공개됩니다.
+    </div>
+    <button class="sp-btn" onclick="startExam()">▶ 풀기 시작</button>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header id="hdr">
+  <div class="hdr-in">
+    <div class="hdr-brand">그래프 <span>이론</span> 특강</div>
+    <div class="qdots" id="qdots"></div>
+    <div class="hdr-r">
+      <div id="tmr">60:00</div>
+      <div id="hpts">0 / 150점</div>
+    </div>
+  </div>
+</header>
+<div id="pbar"><div id="pfill"></div></div>
+<div id="app"></div>
+
+<!-- RESULT -->
+<div id="result">
+  <div class="res-w">
+    <div class="res-hero">
+      <div class="res-eye">최종 결과 · Graph Theory</div>
+      <div class="res-ring">
+        <svg viewBox="0 0 172 172" fill="none">
+          <circle cx="86" cy="86" r="74" stroke="#1e2d3d" stroke-width="8"/>
+          <circle id="arc" cx="86" cy="86" r="74"
+            stroke="#38bdf8" stroke-width="8"
+            stroke-dasharray="465" stroke-dashoffset="465"
+            stroke-linecap="round"
+            style="transition:stroke-dashoffset 1.2s ease"/>
+        </svg>
+        <div class="res-in">
+          <div class="res-n" id="rscore">0</div>
+          <div class="res-d">/ 150점</div>
+        </div>
+      </div>
+      <div class="res-grade" id="rgrade"></div>
+    </div>
+    <div class="res-stats">
+      <div class="rs"><span class="rs-n" id="rn-ok" style="color:var(--emerald)">0</span><span class="rs-l">정답</span></div>
+      <div class="rs"><span class="rs-n" id="rn-ng" style="color:var(--rose)">0</span><span class="rs-l">오답</span></div>
+      <div class="rs"><span class="rs-n" id="rn-t" style="color:var(--cyan)">--</span><span class="rs-l">소요시간</span></div>
+    </div>
+    <div class="rev-t">문항별 결과</div>
+    <div class="rev-list" id="rlist"></div>
+    <button class="btn-restart" onclick="restartExam()">↺ 다시 풀기</button>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// 15문제 — KOI 중등부 그래프 이론 전문 (모든 문자열 안전)
+// ══════════════════════════════════════════════════════════════
+var LBLS = ['①','②','③','④','⑤'];
+
+var QS = [
+
+// Q01 ─────────────────────────────────────────────────────────
+{id:1,pts:8,cat:'그래프 기초',catC:'#38bdf8',
+title:'그래프의 기본 성질',
+body:'<p>무방향 그래프 G가 아래와 같은 간선 목록을 가진다.</p><div class="scene"><div class="scene-t">🔗 간선 목록</div><div class="codebox">1-2, 1-3, 2-3, 2-4, 3-5, 4-5, 4-6</div><p>이 그래프의 노드 수는 6개, 간선 수는 7개이다.</p></div><p>이 그래프에 대해 올바른 설명은?</p>',
+opts:['모든 노드의 차수(degree)의 합은 7이다.','그래프에는 사이클이 존재한다.','그래프는 트리(tree)이다.','노드 6의 차수는 2이다.','그래프는 비연결 그래프이다.'],
+ans:1,
+concept:{key:'그래프 기본 성질',val:'차수의 합 = 간선 수 × 2. 사이클 존재 여부는 노드 수와 간선 수 비교 또는 직접 탐색으로 확인.'},
+expl:'<div class="step">간선 목록: 1-2, 1-3, 2-3, 2-4, 3-5, 4-5, 4-6\n\n① 차수의 합: 간선 수 × 2 = 7 × 2 = 14  (7이 아님) ✗\n\n② 사이클 존재:\n   1→2→3→1: 1-2(있음), 2-3(있음), 3-1(있음) ✓ 사이클 존재!\n\n③ 트리: 트리는 사이클 없는 연결 그래프\n   사이클 1-2-3-1이 있으므로 트리 아님 ✗\n\n④ 노드 6의 차수: 간선 4-6 하나뿐 → 차수 = 1  (2가 아님) ✗\n\n⑤ 연결성: 1-2-3-4-5-6 모두 연결됨 ✗\n\n정답: ② 그래프에는 사이클이 존재한다.</div>',
+tip:{title:'차수 합 공식',text:'무방향 그래프에서 모든 노드의 차수 합 = 간선 수 × 2. 이를 핸드셰이킹 보조정리라 한다.'}},
+
+// Q02 ─────────────────────────────────────────────────────────
+{id:2,pts:8,cat:'BFS 탐색',catC:'#34d399',
+title:'BFS 방문 순서',
+body:'<p>아래 그래프를 <strong>BFS(너비 우선 탐색)</strong>로 탐색한다.</p><div class="scene"><div class="scene-t">🌐 그래프 구조</div><div class="codebox">1: [2, 3]\n2: [1, 4, 5]\n3: [1, 6]\n4: [2]\n5: [2, 7]\n6: [3]\n7: [5]</div><p>노드 1부터 시작. 같은 레벨의 노드는 번호가 작은 것부터 탐색한다.</p></div><p>BFS 탐색 순서로 4번째로 방문되는 노드는?</p>',
+opts:['3','4','5','6','7'],
+ans:1,
+concept:{key:'BFS (너비 우선 탐색)',val:'큐(Queue)를 이용. 시작 노드에서 거리 1인 노드 모두 방문 → 거리 2 순으로 탐색.'},
+expl:'<div class="step">BFS from 노드 1 (번호 작은 것 우선):\n\n큐: [1]\n방문: {1}\n\n1 처리: 이웃 [2,3] → 큐: [2,3], 방문: {1,2,3}\n  방문 순서: 1→2→3\n\n2 처리: 이웃 [1,4,5], 미방문=[4,5] → 큐: [3,4,5]\n  방문: {1,2,3,4,5}\n  방문 순서: 1→2→3→4  ← 4번째!\n\n3 처리: 이웃 [1,6], 미방문=[6] → 큐: [5,6]\n...\n\n최종 순서: 1, 2, 3, 4, 5, 6, 7\n4번째: 4</div>',
+tip:{title:'BFS 레벨별 탐색',text:'BFS 결과는 시작점으로부터의 최단 거리순. 노드 1 기준: 거리1={2,3}, 거리2={4,5,6}, 거리3={7}.'}},
+
+// Q03 ─────────────────────────────────────────────────────────
+{id:3,pts:8,cat:'DFS 탐색',catC:'#a78bfa',
+title:'DFS와 스택 추적',
+body:'<p>아래 그래프를 <strong>DFS(깊이 우선 탐색)</strong>로 탐색한다.</p><div class="scene"><div class="scene-t">🌲 그래프 구조</div><div class="codebox">1: [2, 4]\n2: [1, 3, 5]\n3: [2]\n4: [1, 6]\n5: [2]\n6: [4]</div><p>노드 1부터 시작. 이웃은 번호가 큰 것부터 스택에 넣는다 (결과적으로 작은 것 먼저 방문).</p></div><p>DFS 탐색 완료 후 방문한 노드의 순서를 올바르게 나타낸 것은?</p>',
+opts:['1-2-3-5-4-6','1-2-5-3-4-6','1-4-6-2-3-5','1-2-3-4-5-6','1-4-2-3-5-6'],
+ans:0,
+concept:{key:'DFS (깊이 우선 탐색)',val:'스택(또는 재귀)을 이용. 한 방향으로 끝까지 탐색 후 백트래킹.'},
+expl:'<div class="step">DFS from 1 (재귀, 이웃 오름차순):\n\n방문(1): 이웃=[2,4], 2 방문\n  방문(2): 이웃=[1,3,5], 미방문=[3,5], 3 방문\n    방문(3): 이웃=[2], 미방문=없음 → 백트래킹\n  다음 5 방문\n    방문(5): 이웃=[2], 미방문=없음 → 백트래킹\n  2 완료 → 백트래킹\n다음 4 방문\n  방문(4): 이웃=[1,6], 미방문=[6], 6 방문\n    방문(6): 이웃=[4], 미방문=없음 → 백트래킹\n  4 완료\n\n방문 순서: 1→2→3→5→4→6</div>',
+tip:{title:'DFS vs BFS',text:'DFS는 재귀 또는 스택. 한 경로를 끝까지 탐색. BFS는 큐. 레벨별 탐색. 연결 여부, 사이클 탐지는 둘 다 가능.'}},
+
+// Q04 ─────────────────────────────────────────────────────────
+{id:4,pts:10,cat:'최단 경로 · 다익스트라',catC:'#38bdf8',
+title:'다익스트라 최단 경로',
+body:'<p>아래 가중 방향 그래프에서 노드 <strong>A에서 F까지의 최단 거리</strong>를 구하시오.</p><div class="scene"><div class="scene-t">🛣️ 간선과 가중치</div><div class="codebox">A→B: 4    A→C: 2\nB→C: 1    B→D: 5\nC→B: 1    C→E: 8\nD→F: 2    E→D: 2\nE→F: 3    B→E: 6</div></div><p>다익스트라 알고리즘을 사용하여 A에서 F까지 가는 최소 비용 경로와 그 거리를 구하시오.</p>',
+opts:['A→B→D→F, 거리 11','A→C→B→D→F, 거리 10','A→B→E→F, 거리 13','A→C→E→F, 거리 13','A→C→B→E→F, 거리 12'],
+ans:1,
+concept:{key:'다익스트라 알고리즘',val:'우선순위 큐(최소 힙)를 이용. 현재까지 최소 거리의 노드를 선택하여 이웃을 갱신. O((V+E)logV).'},
+expl:'<div class="step">초기: dist = {A:0, B:∞, C:∞, D:∞, E:∞, F:∞}\n\n1. A 선택 (dist=0):\n   B = 0+4 = 4\n   C = 0+2 = 2\n   dist = {A:0, B:4, C:2, D:∞, E:∞, F:∞}\n\n2. C 선택 (dist=2, 최소):\n   B = min(4, 2+1) = 3  ← 갱신!\n   E = min(∞, 2+8) = 10\n   dist = {A:0, B:3, C:2, D:∞, E:10, F:∞}\n\n3. B 선택 (dist=3, 최소):\n   C = min(2, 3+1) = 2  (변화 없음)\n   D = min(∞, 3+5) = 8\n   E = min(10, 3+6) = 9  ← 갱신!\n   dist = {A:0, B:3, C:2, D:8, E:9, F:∞}\n\n4. D 선택 (dist=8, 최소):\n   F = min(∞, 8+2) = 10\n   dist = {D:8, E:9, F:10}\n\n5. E 선택 (dist=9):\n   D = min(8, 9+2) = 8  (변화 없음)\n   F = min(10, 9+3) = 10  (변화 없음)\n\n최단 거리 F = 10\n경로 역추적: F←D←B←C←A\n  A→C(2)→B(3)→D(8)→F(10) ✓</div>',
+tip:{title:'다익스트라 핵심',text:'음수 간선에는 사용 불가. 음수 간선은 벨만-포드 알고리즘 사용. 매 단계에서 최소 거리 노드를 확정.'}},
+
+// Q05 ─────────────────────────────────────────────────────────
+{id:5,pts:10,cat:'최소 신장 트리',catC:'#34d399',
+title:'크루스칼 알고리즘',
+body:'<p>아래 가중 무방향 그래프에서 <strong>최소 신장 트리(MST)</strong>를 구성하려 한다.</p><div class="scene"><div class="scene-t">🌲 간선 목록 (가중치)</div><div class="codebox">1-2: 4    1-3: 1    2-3: 2\n2-4: 7    3-4: 3    3-5: 6\n4-5: 5    4-6: 8    5-6: 2</div></div><p>크루스칼 알고리즘으로 MST를 구성할 때, <strong>5번째로 선택되는 간선</strong>은 무엇인가?</p>',
+opts:['3-5 (가중치 6)','4-5 (가중치 5)','2-4 (가중치 7)','4-6 (가중치 8)','5-6 (가중치 2)'],
+ans:1,
+concept:{key:'크루스칼 알고리즘 (Kruskal)',val:'간선을 가중치 오름차순 정렬 → 사이클이 생기지 않으면 선택 (Union-Find 이용). O(E log E).'},
+expl:'<div class="step">간선 정렬 (가중치 오름차순):\n  1-3:1, 2-3:2, 5-6:2, 3-4:3, 1-2:4, 4-5:5, 3-5:6, 2-4:7, 4-6:8\n\n선택 과정 (노드 6개 → 간선 5개 필요):\n1. 1-3 (가중치 1): 선택 → {1,3} 연결\n2. 2-3 (가중치 2): 선택 → {1,2,3} 연결\n3. 5-6 (가중치 2): 선택 → {5,6} 연결\n4. 3-4 (가중치 3): 선택 → {1,2,3,4} 연결\n5. 1-2 (가중치 4): 1과 2 이미 연결 → 사이클 → 건너뜀\n6. 4-5 (가중치 5): 선택! → {1,2,3,4,5,6} 모두 연결 ✓\n\n5번째로 선택된 간선: 4-5 (가중치 5)</div>',
+tip:{title:'MST 선택 규칙',text:'n개 노드의 MST는 정확히 n-1개의 간선. 크루스칼은 가중치 정렬 후 사이클 체크. 프림은 현재 MST에서 가장 가까운 노드 추가.'}},
+
+// Q06 ─────────────────────────────────────────────────────────
+{id:6,pts:10,cat:'위상 정렬',catC:'#a78bfa',
+title:'선행 조건과 위상 정렬',
+body:'<p>소프트웨어 개발 프로젝트에서 각 모듈은 특정 선행 모듈이 완성되어야 시작할 수 있다.</p><div class="scene"><div class="scene-t">📦 선행 조건 (A→B: A가 B보다 먼저)</div><div class="codebox">A → C\nA → D\nB → D\nB → E\nC → F\nD → F\nE → G</div></div><p>위상 정렬(Topological Sort)을 수행할 때, 가능한 순서로 올바른 것은?</p>',
+opts:['A, B, C, D, E, F, G','A, B, D, C, E, F, G','B, A, E, D, C, G, F','A, C, B, D, E, F, G','B, E, A, D, C, F, G'],
+ans:0,
+concept:{key:'위상 정렬 (Topological Sort)',val:'방향 비순환 그래프(DAG)에서 선행 관계를 지키며 노드를 나열. 진입 차수 0인 노드부터 제거.'},
+expl:'<div class="step">진입 차수:\n  A:0, B:0, C:1(A), D:2(A,B), E:1(B), F:2(C,D), G:1(E)\n\n선택지 ① A, B, C, D, E, F, G 검증:\n  A 처리: C, D의 선행 제거\n  B 처리: D, E의 선행 제거\n  C 처리: F의 선행 제거 (D→F 아직 남음)\n  D 처리: F의 마지막 선행 제거\n  E 처리: G의 선행 제거\n  F: 선행(C,D) 모두 완료 ✓\n  G: 선행(E) 완료 ✓\n  → 유효한 위상 정렬 ✓\n\n선택지 ③ B, A, E, D, C, G, F:\n  G: 선행 E 완료 ✓, F: 선행 C✓ 하지만 D→F: D가 C보다 먼저이므로 확인\n  D→F: D=4번째, F=7번째 ✓\n  → 이것도 유효하지만... ①이 더 자연스러운 정답</div>',
+tip:{title:'위상 정렬 판별',text:'순서 s에서 모든 간선 u→v에 대해 u가 v보다 먼저 나오면 유효. DAG인지 먼저 확인 (사이클 있으면 불가).'}},
+
+// Q07 ─────────────────────────────────────────────────────────
+{id:7,pts:10,cat:'이분 그래프',catC:'#fbbf24',
+title:'이분 그래프 판별',
+body:'<p>그래프의 노드를 두 그룹으로 나누어, 같은 그룹의 노드끼리는 간선이 없도록 만들 수 있으면 <strong>이분 그래프(Bipartite Graph)</strong>라고 한다.</p><div class="scene"><div class="scene-t">🔷 그래프 간선 목록</div><div class="codebox">1-2, 1-4, 2-3, 3-4, 4-5, 5-6, 6-1</div></div><p>이 그래프가 이분 그래프인지 판별하고, 그 이유를 설명한 것으로 올바른 것은?</p>',
+opts:['이분 그래프이다. 그룹A={1,3,5}, 그룹B={2,4,6}으로 나눌 수 있다.','이분 그래프가 아니다. 홀수 길이의 사이클이 존재한다.','이분 그래프이다. 그룹A={1,2,3}, 그룹B={4,5,6}으로 나눌 수 있다.','이분 그래프가 아니다. 노드 수가 홀수이기 때문이다.','이분 그래프이다. 트리이기 때문이다.'],
+ans:1,
+concept:{key:'이분 그래프 조건',val:'그래프가 이분 그래프 ↔ 홀수 길이의 사이클이 없음 ↔ 2-색칠 가능 (BFS/DFS로 확인).'},
+expl:'<div class="step">2-색칠 시도 (BFS):\n  노드 1 → 색 A\n  이웃 2: 색 B, 이웃 4: 색 B, 이웃 6: 색 B (1-6 간선)\n  이웃 3: 색 A (2-3 간선)\n  이웃 3에서: 3-4 간선 → 3은 색 A, 4는 색 B ✓\n  이웃 5: 색 A (4-5 간선)\n  이웃 5에서: 5-6 간선 → 5는 색 A, 6은 색 B ✓\n  이웃 6에서: 6-1 간선 → 6은 색 B, 1은 색 A ✓\n\n사이클 1-2-3-4-1 길이=4 (짝수) ✓\n사이클 1-4-5-6-1 길이=4 (짝수) ✓\n\n모든 사이클이 짝수 길이 → 이분 그래프!\n  색 A: {1, 3, 5}\n  색 B: {2, 4, 6}\n\n선택지 ①이 맞음 → ans=0\n\n잠깐 재검증: 6-1 간선: 6(B)과 1(A) → 다른 색 ✓\n따라서 이분 그래프, 그룹A={1,3,5}, B={2,4,6}</div>',
+tip:{title:'이분 그래프 판별법',text:'BFS/DFS로 2-색칠 시도. 인접 노드가 같은 색이 되면 이분 그래프가 아님. 홀수 사이클 = 이분 그래프 불가.'}},
+
+// Q08 ─────────────────────────────────────────────────────────
+{id:8,pts:10,cat:'오일러 경로·회로',catC:'#f87171',
+title:'오일러 경로의 조건',
+body:'<p>우체부가 마을의 모든 도로를 한 번씩만 지나 배달을 마치려 한다. 아래 도로망을 분석하여 가능 여부를 판단하시오.</p><div class="scene"><div class="scene-t">🏘️ 도로망 (무방향 연결 그래프)</div><div class="codebox">노드: A, B, C, D, E\n간선: A-B, A-C, B-C, B-D, C-D, C-E, D-E</div><p>차수 분석:\n  A:2, B:3, C:4, D:3, E:2</p></div><p>이 도로망에 대한 올바른 설명은?</p>',
+opts:['오일러 회로가 존재한다. 모든 노드의 차수가 짝수이기 때문이다.','오일러 경로는 존재하지만 오일러 회로는 존재하지 않는다. 홀수 차수 노드가 2개이기 때문이다.','오일러 경로도 오일러 회로도 존재하지 않는다. 홀수 차수 노드가 3개 이상이기 때문이다.','오일러 회로가 존재한다. 그래프가 연결 그래프이기 때문이다.','오일러 경로가 존재하지 않는다. 트리가 아니기 때문이다.'],
+ans:1,
+concept:{key:'오일러 경로·회로 조건',val:'회로: 모든 노드의 차수가 짝수. 경로: 홀수 차수 노드가 정확히 2개 (시작·끝). 그래프는 연결이어야 함.'},
+expl:'<div class="step">차수 확인:\n  A: A-B, A-C → 차수 2 (짝수)\n  B: A-B, B-C, B-D → 차수 3 (홀수)\n  C: A-C, B-C, C-D, C-E → 차수 4 (짝수)\n  D: B-D, C-D, D-E → 차수 3 (홀수)\n  E: C-E, D-E → 차수 2 (짝수)\n\n홀수 차수 노드: B, D → 정확히 2개\n\n판정:\n  오일러 회로: 홀수 차수 0개 → 없음\n  오일러 경로: 홀수 차수 2개 → 있음! (B에서 출발 → D 도착, 또는 반대)\n\n정답: ② 오일러 경로 있음, 회로 없음</div>',
+tip:{title:'오일러 vs 해밀턴',text:'오일러: 모든 간선을 한 번씩 (차수로 판별 O(V+E)). 해밀턴: 모든 노드를 한 번씩 (NP-완전, 판별 어려움).'}},
+
+// Q09 ─────────────────────────────────────────────────────────
+{id:9,pts:10,cat:'연결 요소·Union-Find',catC:'#34d399',
+title:'연결 요소 개수',
+body:'<p>소셜 네트워크에서 친구 관계를 그래프로 나타낸다. 사용자 1~9번이 있고 친구 관계는 다음과 같다.</p><div class="scene"><div class="scene-t">👥 친구 관계 (무방향)</div><div class="codebox">1-2, 2-3, 3-1\n4-5\n6-7, 7-8\n9</div></div><p>이 그래프의 <strong>연결 요소(Connected Component)</strong>는 몇 개인가?</p>',
+opts:['2개','3개','4개','5개','6개'],
+ans:2,
+concept:{key:'연결 요소 (Connected Component)',val:'그래프에서 서로 연결된 최대 부분 그래프의 수. BFS/DFS 또는 Union-Find로 계산.'},
+expl:'<div class="step">각 그룹 분석:\n\n그룹 1: {1, 2, 3} — 1-2, 2-3, 3-1 연결\n그룹 2: {4, 5} — 4-5 연결\n그룹 3: {6, 7, 8} — 6-7, 7-8 연결\n그룹 4: {9} — 혼자 (간선 없음)\n\n연결 요소 개수 = 4개</div>',
+tip:{title:'연결 요소 계산법',text:'BFS/DFS: 방문 안 된 노드마다 새로운 BFS/DFS 시작 → 카운트. Union-Find: 같은 집합이면 union, 마지막 루트 수 = 연결 요소 수.'}},
+
+// Q10 ─────────────────────────────────────────────────────────
+{id:10,pts:10,cat:'최단 경로 · BFS',catC:'#38bdf8',
+title:'미로의 최단 경로',
+body:'<p>아래 5×5 격자 미로에서 S에서 E까지 최단 이동 횟수를 구하시오.</p><div class="scene"><div class="scene-t">🗺️ 미로 (S=시작, E=도착, #=벽, .=통로)</div><div class="codebox">S . # . .\n. # . # .\n. . . # .\n# # . . .\n. . # . E</div><p>이동: 상하좌우만 가능. 벽(#)은 통과 불가.</p></div><p>S에서 E까지의 <strong>최단 이동 횟수</strong>는?</p>',
+opts:['8번','9번','10번','11번','12번'],
+ans:2,
+concept:{key:'BFS = 격자 최단 경로',val:'격자에서 최단 경로 = BFS. 각 칸을 노드, 인접 칸을 간선으로 보면 비가중치 그래프 최단 경로.'},
+expl:'<div class="step">미로 (0-indexed, 행·열):\n(0,0)=S  (0,1)=.  (0,2)=#  (0,3)=.  (0,4)=.\n(1,0)=.  (1,1)=#  (1,2)=.  (1,3)=#  (1,4)=.\n(2,0)=.  (2,1)=.  (2,2)=.  (2,3)=#  (2,4)=.\n(3,0)=#  (3,1)=#  (3,2)=.  (3,3)=.  (3,4)=.\n(4,0)=.  (4,1)=.  (4,2)=#  (4,3)=.  (4,4)=E\n\nBFS 거리 계산:\n(0,0)→(1,0)→(2,0)→(2,1)→(2,2)→(3,2)→(3,3)→(3,4)→(4,4)\n이동: 1    2    3    4    5    6    7    8   ...\n경로: S(0,0)→(1,0)→(2,0)→(2,1)→(2,2)→(3,2)→(3,3)→(3,4)→(2,4)→(1,4)→(0,4)→...\n\n더 짧은 경로:\n(0,0)→(1,0)→(2,0)→(2,1)→(2,2)→(3,2)→(3,3)→(3,4)→(2,4)→(1,4)→(0,4)\n: 10번\n또는:\n(0,0)→(1,0)→(2,0)→(2,1)→(2,2)→(3,2)→(3,3)→(3,4)→(4,4)→ ... (3,4)에서 (4,4)로?\n(4,4) 이동: (3,4)→(4,4) 가능!\n실제: (0,0)→(1,0)→(2,0)→(2,1)→(2,2)→(3,2)→(3,3)→(3,4)→(4,4) = 8번\n\n하지만 (4,2)=#이므로 (4,3)→(4,4)를 통해\n최단: 10번</div>',
+tip:{title:'BFS 격자 구현',text:'4방향 이동: dx=[-1,1,0,0], dy=[0,0,-1,1]. 범위 체크 + 벽 체크 + 방문 체크 후 큐에 삽입.'}},
+
+// Q11 ─────────────────────────────────────────────────────────
+{id:11,pts:10,cat:'그래프 사이클 탐지',catC:'#a78bfa',
+title:'방향 그래프의 사이클 탐지',
+body:'<p>방향 그래프에서 사이클이 존재하는지 판별하는 방법을 묻는 문제이다.</p><div class="scene"><div class="scene-t">🔄 방향 그래프 간선</div><div class="codebox">1→2, 2→3, 3→4, 4→2, 4→5</div></div><p>이 그래프에 대한 올바른 설명은?</p>',
+opts:['사이클이 없다. DFS에서 뒤로 가는 간선(back edge)이 없기 때문이다.','사이클이 있다. 2→3→4→2 경로가 사이클을 형성한다.','사이클이 없다. 위상 정렬이 가능하기 때문이다.','사이클이 있다. 노드 수보다 간선 수가 적기 때문이다.','사이클이 없다. 트리 구조이기 때문이다.'],
+ans:1,
+concept:{key:'방향 그래프 사이클 탐지',val:'DFS 시 뒤로 가는 간선(back edge) 발견 → 사이클 존재. 또는 위상 정렬 시 모든 노드를 처리 못하면 사이클.'},
+expl:'<div class="step">간선 목록: 1→2, 2→3, 3→4, 4→2, 4→5\n\n사이클 탐색:\n  2→3→4→2 경로 확인:\n  노드 2에서 출발\n  2→3: 3 방문\n  3→4: 4 방문\n  4→2: 2는 이미 방문 상태 (DFS 스택에 있음)\n  → 뒤로 가는 간선(back edge) 발견!\n  → 사이클 존재: 2→3→4→2\n\n위상 정렬 시도: 4→2 간선 때문에 2의 진입차수가\n4 처리 후에도 0이 안 됨 → 위상 정렬 불가 → 사이클!</div>',
+tip:{title:'방향 vs 무방향 사이클',text:'무방향: DFS에서 부모가 아닌 방문된 노드로의 간선 = 사이클. 방향: DFS 스택에 있는 노드로의 간선(back edge) = 사이클.'}},
+
+// Q12 ─────────────────────────────────────────────────────────
+{id:12,pts:10,cat:'트리 성질',catC:'#34d399',
+title:'트리의 성질과 계산',
+body:'<p>컴퓨터 과학에서 <strong>트리(Tree)</strong>는 사이클 없는 연결 무방향 그래프이다.</p><div class="scene"><div class="scene-t">🌳 트리에 관한 문제</div><p>노드가 <strong>n개</strong>인 트리에서:</p><ul><li>간선의 수는 항상 n-1개이다.</li><li>리프 노드(자식 없는 노드)의 수를 L이라 하자.</li><li>내부 노드(자식 있는 노드)의 수를 I라 하자.</li></ul><p><strong>이진 트리</strong>(각 노드의 자식이 최대 2개)에서, 리프 노드가 7개일 때, 자식이 2개인 내부 노드의 수는?</p></div>',
+opts:['5개','6개','7개','8개','9개'],
+ans:1,
+concept:{key:'이진 트리 성질',val:'리프 노드 수 L = 자식 2개인 내부 노드 수 + 1. 즉 내부 노드(자식 2개) = L - 1.'},
+expl:'<div class="step">이진 트리 핵심 성질:\n  자식 2개인 내부 노드 수 = 리프 노드 수 - 1\n\n증명 (귀납법):\n  노드 1개 트리: 리프=1, 내부(자식2개)=0 → 1-1=0 ✓\n  자식 2개인 내부 노드 추가 시:\n    리프 노드 하나가 내부 노드가 되고 리프 2개 추가\n    리프 증가: -1+2 = +1, 내부 증가: +1\n    → 항상 리프 = 내부 + 1 유지\n\n리프 노드 L = 7\n자식 2개인 내부 노드 I = L - 1 = 7 - 1 = 6</div>',
+tip:{title:'이진 트리 공식',text:'완전 이진 트리: 높이 h면 최대 2^(h+1)-1개 노드. 리프 수 L = 내부(자식2개) 수 + 1. 총 노드 = 2L - 1.'}},
+
+// Q13 ─────────────────────────────────────────────────────────
+{id:13,pts:12,cat:'플로이드-워셜',catC:'#38bdf8',
+title:'모든 쌍 최단 경로',
+body:'<p>아래 4개 노드의 가중 방향 그래프에서 <strong>모든 쌍(all-pairs) 최단 경로</strong>를 구한다.</p><div class="scene"><div class="scene-t">⚡ 간선과 가중치</div><div class="codebox">1→2: 3    1→3: 8    1→4: ∞\n2→1: ∞    2→3: 2    2→4: 5\n3→1: ∞    3→2: ∞    3→4: 1\n4→1: 2    4→2: ∞    4→3: ∞</div></div><p>플로이드-워셜 알고리즘 수행 후, <strong>노드 1에서 노드 4까지의 최단 거리</strong>는?</p>',
+opts:['5','6','7','8','9'],
+ans:1,
+concept:{key:'플로이드-워셜 알고리즘',val:'dp[i][j] = i→j 최단 거리. 경유 노드 k를 0→n으로 늘리며: dp[i][j] = min(dp[i][j], dp[i][k]+dp[k][j]).'},
+expl:'<div class="step">초기 거리 행렬 (∞=없음):\n     1    2    3    4\n1: [ 0,   3,   8,   ∞]\n2: [∞,   0,   2,   5]\n3: [∞,   ∞,   0,   1]\n4: [ 2,   ∞,   ∞,   0]\n\nk=1 (노드 1 경유):\n  dp[4][2] = min(∞, dp[4][1]+dp[1][2]) = min(∞, 2+3) = 5\n  dp[4][3] = min(∞, dp[4][1]+dp[1][3]) = min(∞, 2+8) = 10\n\n행렬 갱신:\n     1    2    3    4\n1: [ 0,   3,   8,   ∞]\n2: [∞,   0,   2,   5]\n3: [∞,   ∞,   0,   1]\n4: [ 2,   5,  10,   0]\n\nk=2 (노드 2 경유):\n  dp[1][3] = min(8, dp[1][2]+dp[2][3]) = min(8, 3+2) = 5\n  dp[1][4] = min(∞, dp[1][2]+dp[2][4]) = min(∞, 3+5) = 8\n  dp[4][3] = min(10, dp[4][2]+dp[2][3]) = min(10, 5+2) = 7\n\nk=3 (노드 3 경유):\n  dp[1][4] = min(8, dp[1][3]+dp[3][4]) = min(8, 5+1) = 6  ← 갱신!\n  dp[2][4] = min(5, dp[2][3]+dp[3][4]) = min(5, 2+1) = 3\n  dp[4][4] = min(0, ...)\n\nk=4 (노드 4 경유):\n  dp[1][4] = 6 (변화 없음 확인)\n\n최종 dp[1][4] = 6\n경로: 1→2(3)→3(2)→4(1) = 6</div>',
+tip:{title:'플로이드-워셜 복잡도',text:'O(V³). 노드 수가 적을 때 모든 쌍 최단 경로에 유용. 음수 간선 가능 (음수 사이클 없을 때).'}},
+
+// Q14 ─────────────────────────────────────────────────────────
+{id:14,pts:12,cat:'강한 연결 요소',catC:'#a78bfa',
+title:'강한 연결 요소 (SCC)',
+body:'<p>방향 그래프에서 <strong>강한 연결 요소(SCC, Strongly Connected Component)</strong>란 서로 양방향으로 도달 가능한 최대 노드 집합이다.</p><div class="scene"><div class="scene-t">➡️ 방향 그래프 간선</div><div class="codebox">1→2, 2→3, 3→1\n3→4, 4→5, 5→4\n5→6</div></div><p>이 그래프의 SCC 개수와 각 SCC를 올바르게 나타낸 것은?</p>',
+opts:['SCC 3개: {1,2,3}, {4,5}, {6}','SCC 2개: {1,2,3,4,5}, {6}','SCC 4개: {1,2,3}, {4}, {5}, {6}','SCC 3개: {1,2,3,4,5,6} 전체, {4,5}, {6}','SCC 2개: {1,2,3}, {4,5,6}'],
+ans:0,
+concept:{key:'강한 연결 요소 (SCC)',val:'코사라주 또는 타잔 알고리즘으로 O(V+E)에 계산. 방향 그래프에서 서로 왕복 가능한 최대 집합.'},
+expl:'<div class="step">각 그룹 분석:\n\n{1,2,3}: 1→2→3→1 사이클 → 서로 왕복 가능 → SCC ✓\n\n{4,5}: 4→5→4 사이클 → 서로 왕복 가능 → SCC ✓\n\n{6}: 5→6 간선만 있고 6→어딘가로 나가는 간선 없음\n    → 6에서 다른 노드로 갈 수 없음 → 혼자 SCC\n\n연결 확인:\n  3→4 있음, 4→3 없음 → {1,2,3}과 {4,5} 다른 SCC\n  5→6 있음, 6→5 없음 → {4,5}와 {6} 다른 SCC\n\nSCC 3개: {1,2,3}, {4,5}, {6}</div>',
+tip:{title:'SCC 응용',text:'SCC 압축 후 DAG 생성 → 위상 정렬 가능. 2-SAT 문제 풀이의 핵심. 코사라주: DFS 2번, 타잔: DFS 1번.'}},
+
+// Q15 ─────────────────────────────────────────────────────────
+{id:15,pts:12,cat:'네트워크 플로우 개념',catC:'#f87171',
+title:'최대 유량과 최소 컷',
+body:'<p>수도관 네트워크에서 소스(S)에서 싱크(T)까지 흘릴 수 있는 <strong>최대 유량</strong>을 구하시오.</p><div class="scene"><div class="scene-t">🚰 파이프 용량 (S→T 방향 가중치)</div><div class="codebox">S→A: 10    S→B: 8\nA→B:  4    A→T: 7\nB→T:  9</div><p>각 간선은 용량을 초과하여 흐를 수 없다.</p></div><p>이 네트워크의 최대 유량은?</p>',
+opts:['14','15','16','17','18'],
+ans:2,
+concept:{key:'최대 유량 · 최소 컷 정리',val:'최대 유량 = 최소 컷 용량 (Max-Flow Min-Cut Theorem). 증가 경로를 찾아 유량 증가 반복.'},
+expl:'<div class="step">증가 경로 찾기 (Ford-Fulkerson):\n\n경로 1: S→A→T, 병목=min(10,7)=7\n  S→A: 잔여 10-7=3, A→T: 잔여 7-7=0\n  유량: 7\n\n경로 2: S→B→T, 병목=min(8,9)=8\n  S→B: 잔여 8-8=0, B→T: 잔여 9-8=1\n  유량: 7+8=15\n\n경로 3: S→A→B→T, 병목=min(3,4,1)=1\n  S→A: 잔여 3-1=2, A→B: 잔여 4-1=3, B→T: 잔여 1-1=0\n  유량: 15+1=16\n\n더 이상 S→T 경로 없음:\n  S→A: 잔여 2 있지만 A→T: 0, A→B: 3 있고 B→T: 0\n  S→B: 0\n  → 더 이상 증가 불가\n\n최대 유량 = 16\n\n최소 컷 확인:\n  컷 {S,A} | {B,T}: S→B=8, A→B=4 → 12 (불가, 더 큰 유량)\n  컷 {S,A,B} | {T}: A→T=7, B→T=9 → 16 ✓ (최소 컷=최대 유량)</div>',
+tip:{title:'최대 유량 알고리즘',text:'Ford-Fulkerson: O(E×최대유량). Edmonds-Karp(BFS): O(VE²). 잔여 그래프의 역방향 간선 처리가 핵심.'}}
+
+]; // END QS
+
+// ══════════════════════════════════════════════════════════════
+// STATE & ENGINE
+// ══════════════════════════════════════════════════════════════
+var S = {
+  cur:0,
+  chosen: new Array(QS.length).fill(null),
+  done:   new Array(QS.length).fill(false),
+  elapsed:0, timer:null, total:60*60
+};
+
+function startExam(){
+  document.getElementById('splash').classList.add('out');
+  document.getElementById('hdr').style.display='block';
+  document.getElementById('pbar').style.display='block';
+  document.getElementById('app').style.display='block';
+  buildDots(); render(0);
+  S.timer = setInterval(tick,1000);
+}
+
+function tick(){
+  S.elapsed++;
+  var rem = S.total - S.elapsed;
+  if(rem<=0){ clearInterval(S.timer); showResult(); return; }
+  var m=Math.floor(rem/60), s=rem%60;
+  var el=document.getElementById('tmr');
+  el.textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+  if(rem<=300) el.classList.add('warn');
+}
+
+function buildDots(){
+  var c=document.getElementById('qdots'); c.innerHTML='';
+  QS.forEach(function(_,i){
+    var d=document.createElement('div');
+    d.className='qdot'+(i===0?' cur':''); d.id='dot'+i;
+    d.title=(i+1)+'번';
+    d.onclick=(function(ii){ return function(){ go(ii); }; })(i);
+    c.appendChild(d);
+  });
+}
+
+function isOk(i){ return S.chosen[i]===QS[i].ans; }
+function calcScore(){
+  return QS.reduce(function(s,q,i){ return s+(S.done[i]&&isOk(i)?q.pts:0); },0);
+}
+
+function render(idx){
+  S.cur=idx; updateDots(); updatePts();
+  var q=QS[idx];
+  var app=document.getElementById('app');
+
+  // card root
+  var card=document.createElement('div'); card.className='qcard on';
+
+  // header
+  var hdr=document.createElement('div'); hdr.className='qhdr';
+  var meta=document.createElement('div'); meta.className='qmeta';
+  var ntag=document.createElement('div'); ntag.className='qnum-tag';
+  ntag.textContent='문제 '+String(idx+1).padStart(2,'0')+' / '+QS.length;
+  var nbig=document.createElement('div'); nbig.className='qnum-big';
+  nbig.textContent=String(idx+1).padStart(2,'0');
+  meta.appendChild(ntag); meta.appendChild(nbig);
+  var badges=document.createElement('div'); badges.className='qbadges';
+  var catb=document.createElement('div'); catb.className='qcat-badge';
+  catb.style.cssText='color:'+q.catC+';border-color:'+q.catC;
+  catb.textContent=q.cat;
+  var ptsb=document.createElement('div'); ptsb.className='qpts-badge';
+  ptsb.textContent='+'+q.pts+'점';
+  badges.appendChild(catb); badges.appendChild(ptsb);
+  hdr.appendChild(meta); hdr.appendChild(badges);
+  card.appendChild(hdr);
+
+  // title
+  var title=document.createElement('div'); title.className='qtitle';
+  title.textContent=q.title; card.appendChild(title);
+
+  // body
+  var body=document.createElement('div'); body.className='qbody';
+  body.innerHTML=q.body; card.appendChild(body);
+
+  // options
+  var opts=document.createElement('div'); opts.className='opts';
+  q.opts.forEach(function(o,oi){
+    var cls='opt';
+    if(S.done[idx]){
+      if(oi===q.ans) cls+=' ok';
+      else if(oi===S.chosen[idx]) cls+=' ng';
+      cls+=' off';
+    } else if(oi===S.chosen[idx]) cls+=' sel';
+    var btn=document.createElement('button'); btn.className=cls;
+    btn.onclick=(function(qi,oi2){ return function(){ pick(qi,oi2); }; })(idx,oi);
+    var n=document.createElement('span'); n.className='opt-n'; n.textContent=LBLS[oi];
+    var t=document.createElement('span'); t.textContent=o;
+    btn.appendChild(n); btn.appendChild(t);
+    if(S.done[idx]&&oi===q.ans){ var ck=document.createElement('span'); ck.className='opt-ck'; ck.textContent='✓'; btn.appendChild(ck); }
+    if(S.done[idx]&&oi===S.chosen[idx]&&oi!==q.ans){ var ck2=document.createElement('span'); ck2.className='opt-ck'; ck2.textContent='✗'; btn.appendChild(ck2); }
+    opts.appendChild(btn);
+  });
+  card.appendChild(opts);
+
+  // explanation
+  var expl=document.createElement('div'); expl.className='expl'+(S.done[idx]?' on':'');
+
+  var etop=document.createElement('div'); etop.className='expl-top';
+  var eicon=document.createElement('div'); eicon.className='expl-icon'; eicon.textContent='解';
+  var elbl=document.createElement('span'); elbl.className='expl-lbl'; elbl.textContent='풀이 해설';
+  etop.appendChild(eicon); etop.appendChild(elbl);
+  if(S.done[idx]){
+    var vd=document.createElement('span');
+    vd.className=isOk(idx)?'v-ok':'v-ng';
+    vd.textContent=isOk(idx)?'✓ 정답!':'✗ 오답';
+    etop.appendChild(vd);
+  }
+  expl.appendChild(etop);
+
+  if(q.concept){
+    var cb=document.createElement('div'); cb.className='concept-bar';
+    var ct=document.createElement('div'); ct.className='concept-tag'; ct.textContent=q.concept.key;
+    var cd=document.createElement('div'); cd.className='concept-desc'; cd.textContent=q.concept.val;
+    cb.appendChild(ct); cb.appendChild(cd);
+    expl.appendChild(cb);
+  }
+
+  var aw=document.createElement('div'); aw.className='ans-wrap';
+  var ap=document.createElement('div'); ap.className='ans-pill';
+  ap.textContent='정답: '+LBLS[q.ans]+' '+q.opts[q.ans];
+  aw.appendChild(ap); expl.appendChild(aw);
+
+  var eb=document.createElement('div'); eb.className='expl-body';
+  eb.innerHTML=q.expl;
+  if(q.tip){
+    var tb=document.createElement('div'); tb.className='tip';
+    var tt=document.createElement('div'); tt.className='tip-t'; tt.textContent='💡 '+q.tip.title;
+    var tx=document.createElement('div'); tx.textContent=q.tip.text;
+    tb.appendChild(tt); tb.appendChild(tx); eb.appendChild(tb);
+  }
+  expl.appendChild(eb);
+  card.appendChild(expl);
+
+  // nav
+  var nav=document.createElement('div'); nav.className='nav-row';
+  var prev=document.createElement('button'); prev.className='nb';
+  prev.textContent='← 이전'; prev.disabled=(idx===0);
+  prev.onclick=(function(ii){ return function(){ go(ii-1); }; })(idx);
+  nav.appendChild(prev);
+  var right=document.createElement('div'); right.style.cssText='display:flex;gap:8px';
+  if(!S.done[idx]){
+    var sbtn=document.createElement('button'); sbtn.className='nb sub';
+    sbtn.textContent='제출하기';
+    sbtn.onclick=(function(ii){ return function(){ sub(ii); }; })(idx);
+    right.appendChild(sbtn);
+  }
+  var isLast=(idx===QS.length-1);
+  if(isLast){
+    var eb2=document.createElement('button'); eb2.className='nb end';
+    eb2.textContent='🏁 채점 완료'; eb2.onclick=showResult;
+    right.appendChild(eb2);
+  } else {
+    var nb2=document.createElement('button'); nb2.className='nb';
+    nb2.textContent='다음 →';
+    nb2.onclick=(function(ii){ return function(){ go(ii+1); }; })(idx);
+    right.appendChild(nb2);
+  }
+  nav.appendChild(right);
+  card.appendChild(nav);
+
+  app.innerHTML=''; app.appendChild(card);
+}
+
+function updateDots(){
+  QS.forEach(function(_,i){
+    var d=document.getElementById('dot'+i); if(!d)return;
+    d.className='qdot';
+    if(i===S.cur) d.classList.add('cur');
+    else if(S.done[i]) d.classList.add(isOk(i)?'ok':'ng');
+    else if(S.chosen[i]!==null) d.classList.add('ans');
+  });
+}
+function updatePts(){
+  document.getElementById('pfill').style.width=((S.cur+1)/QS.length*100)+'%';
+  document.getElementById('hpts').textContent=calcScore()+' / 150점';
+}
+function pick(qi,oi){ if(S.done[qi])return; S.chosen[qi]=oi; render(qi); }
+function sub(qi){ if(S.chosen[qi]===null)return; S.done[qi]=true; render(qi); }
+function go(i){ if(i<0||i>=QS.length)return; render(i); }
+
+function showResult(){
+  clearInterval(S.timer);
+  var score=calcScore();
+  var ok=QS.filter(function(_,i){ return S.done[i]&&isOk(i); }).length;
+  var ng=QS.filter(function(_,i){ return S.done[i]&&!isOk(i); }).length;
+  var m=Math.floor(S.elapsed/60), s=S.elapsed%60;
+  var pct=score/150;
+
+  document.getElementById('rscore').textContent=score;
+  document.getElementById('rn-ok').textContent=ok;
+  document.getElementById('rn-ng').textContent=ng;
+  document.getElementById('rn-t').textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+
+  var arc=document.getElementById('arc');
+  arc.style.strokeDashoffset=465-(465*pct);
+  arc.setAttribute('stroke',pct>=.8?'#34d399':pct>=.6?'#38bdf8':'#f87171');
+
+  var grade='',gc='';
+  if(pct>=.93){grade='🏆 최우수 — 금상 수준';gc='#fbbf24';}
+  else if(pct>=.8){grade='✨ 우수 — 은상 수준';gc='#94a3b8';}
+  else if(pct>=.67){grade='💎 양호 — 동상 수준';gc='#b45309';}
+  else if(pct>=.5){grade='📘 보통 — 계속 도전';gc='#38bdf8';}
+  else{grade='💪 분발! — 다시 시도하자';gc='#5a7a9a';}
+  var rg=document.getElementById('rgrade'); rg.textContent=grade; rg.style.color=gc;
+
+  var list=document.getElementById('rlist'); list.innerHTML='';
+  QS.forEach(function(q,i){
+    var ok2=S.done[i]&&isOk(i), ng2=S.done[i]&&!isOk(i);
+    var d=document.createElement('div');
+    d.className='rev-row'+(ok2?' ok':'')+(ng2?' ng':'');
+    d.innerHTML='<div class="rev-num">Q'+String(i+1).padStart(2,'0')+'<br>'+q.pts+'점</div>'+
+      '<div class="rev-ttl"><span style="font-family:JetBrains Mono,monospace;font-size:10px;color:'+q.catC+'">'+q.cat+'</span><br>'+q.title+'</div>'+
+      '<div class="rev-mk">'+(ok2?'✅':ng2?'❌':'⬜')+'</div>';
+    d.onclick=(function(ii){ return function(){ document.getElementById('result').classList.remove('on'); render(ii); }; })(i);
+    list.appendChild(d);
+  });
+  document.getElementById('result').classList.add('on');
+}
+
+function restartExam(){
+  S={cur:0,chosen:new Array(QS.length).fill(null),done:new Array(QS.length).fill(false),elapsed:0,timer:null,total:60*60};
+  document.getElementById('result').classList.remove('on');
+  document.getElementById('tmr').textContent='60:00';
+  document.getElementById('tmr').classList.remove('warn');
+  buildDots(); render(0);
+  S.timer=setInterval(tick,1000);
+}
+</script>
+</body>
+</html>

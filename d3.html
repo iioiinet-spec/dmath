@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KOI 중등 논리와 불대수 — 15문제</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700;900&family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+:root{
+  --bg:#0c0b08;--deep:#13120e;--card:#1a1914;--card2:#232118;
+  --border:#302d1e;--border2:#433f28;--faint:#5a5538;--muted:#8a8460;
+  --dim:#b0a878;--text:#e8e0c0;--bright:#f4f0d8;
+  --gold:#e8c547;--gold2:#f0d060;--amber:#c87828;
+  --sage:#6ec898;--rose:#e07070;--sky:#78b0f0;--violet:#c0a0f8;
+  --ok-bg:rgba(110,200,152,.09);--ok-br:#6ec898;
+  --sel-bg:rgba(232,197,71,.07);--sel-br:#e8c547;
+  --ng-bg:rgba(224,112,112,.09);--ng-br:#e07070;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;min-height:100vh;line-height:1.8;}
+body::before{content:'';position:fixed;inset:0;
+  background:radial-gradient(ellipse 70% 40% at 15% 5%,rgba(232,197,71,.035),transparent),
+             radial-gradient(ellipse 50% 30% at 85% 90%,rgba(200,120,40,.03),transparent);
+  pointer-events:none;z-index:0;}
+
+/* ══ SPLASH ══ */
+#splash{position:fixed;inset:0;z-index:500;background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  transition:opacity .7s,visibility .7s;overflow:hidden;}
+#splash.out{opacity:0;visibility:hidden;}
+#splash::before{content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(45deg,transparent,transparent 48px,rgba(232,197,71,.012) 48px,rgba(232,197,71,.012) 49px);}
+.sp{max-width:600px;width:92%;text-align:center;position:relative;z-index:1;}
+.sp-ornament{display:flex;align-items:center;gap:10px;margin-bottom:28px;justify-content:center;}
+.sp-ornament::before,.sp-ornament::after{content:'◆';font-size:8px;color:var(--faint);}
+.sp-ornament-txt{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:5px;text-transform:uppercase;color:var(--faint);}
+.sp-title{font-family:'Noto Serif KR',serif;font-size:clamp(46px,9vw,88px);font-weight:900;line-height:.9;
+  color:var(--bright);letter-spacing:-2px;margin-bottom:12px;}
+.sp-title .gold{color:var(--gold);font-style:italic;}
+.sp-subtitle{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);letter-spacing:3px;margin-bottom:44px;}
+.sp-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border2);margin-bottom:36px;}
+.sp-cell{background:var(--card);padding:18px 10px;text-align:center;}
+.sp-n{font-family:'Noto Serif KR',serif;font-size:34px;font-weight:900;color:var(--gold);display:block;line-height:1;}
+.sp-l{font-size:11px;color:var(--muted);margin-top:4px;letter-spacing:2px;}
+.sp-note{background:rgba(232,197,71,.05);border:1px solid var(--border2);border-left:3px solid var(--gold);
+  padding:14px 18px;font-size:13px;color:var(--muted);line-height:1.85;margin-bottom:36px;text-align:left;}
+.sp-note strong{color:var(--text);}
+.sp-btn{padding:14px 56px;background:var(--gold);border:none;color:var(--bg);
+  font-family:'Noto Serif KR',serif;font-size:17px;font-weight:900;cursor:pointer;letter-spacing:1px;transition:all .2s;}
+.sp-btn:hover{background:var(--gold2);transform:translateY(-2px);}
+
+/* ══ HEADER ══ */
+#hdr{display:none;position:sticky;top:0;z-index:100;background:rgba(12,11,8,.94);
+  backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.hdr-in{max-width:920px;margin:0 auto;padding:10px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.hdr-brand{font-family:'Noto Serif KR',serif;font-size:16px;font-weight:700;color:var(--bright);}
+.hdr-brand em{color:var(--gold);font-style:italic;}
+.qdots{display:flex;gap:4px;flex-wrap:wrap;max-width:460px;}
+.qdot{width:11px;height:11px;background:var(--border2);border-radius:2px;cursor:pointer;transition:all .2s;}
+.qdot:hover{background:var(--faint);}
+.qdot.ans{background:rgba(232,197,71,.4);}
+.qdot.cur{background:var(--gold);transform:scale(1.4);}
+.qdot.ok{background:var(--sage);}
+.qdot.ng{background:var(--rose);}
+.hdr-r{display:flex;flex-direction:column;align-items:flex-end;gap:2px;}
+#tmr{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--bright);}
+#tmr.warn{color:var(--rose);animation:blink .8s step-end infinite;}
+@keyframes blink{50%{opacity:.2}}
+#hpts{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--faint);}
+#pbar{display:none;height:3px;background:var(--border);}
+#pfill{height:100%;background:linear-gradient(90deg,var(--gold),var(--amber));transition:width .4s;}
+
+/* ══ APP ══ */
+#app{display:none;position:relative;z-index:1;max-width:920px;margin:0 auto;padding:40px 24px 160px;}
+.qcard{display:none;animation:rise .35s ease;}
+.qcard.on{display:block;}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+.qhdr{display:flex;align-items:flex-start;justify-content:space-between;
+  margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border);}
+.qmeta{display:flex;flex-direction:column;gap:4px;}
+.qnum-tag{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--faint);text-transform:uppercase;}
+.qnum-big{font-family:'Noto Serif KR',serif;font-size:64px;font-weight:900;color:var(--border2);line-height:1;letter-spacing:-3px;}
+.qbadges{display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
+.qcat-b{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;border:1px solid;padding:2px 10px;}
+.qpts-b{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--gold);font-weight:700;}
+.qtitle{font-family:'Noto Serif KR',serif;font-size:22px;font-weight:700;color:var(--bright);
+  line-height:1.35;margin-bottom:18px;border-left:3px solid var(--gold);padding-left:14px;}
+
+.qbody{background:var(--card);border:1px solid var(--border);border-top:2px solid var(--border2);
+  padding:26px 28px;margin-bottom:18px;font-size:15px;line-height:2.05;color:var(--text);}
+.qbody p{margin-bottom:12px;}.qbody p:last-child{margin-bottom:0;}
+.qbody strong{color:var(--gold2);}
+.qbody em{color:var(--amber);font-style:normal;font-weight:700;}
+.qbody ul,.qbody ol{margin:8px 0 8px 26px;line-height:2.3;}
+.scene{background:var(--card2);border:1px solid var(--border2);border-left:3px solid var(--amber);
+  padding:14px 18px;margin:14px 0;font-size:14px;line-height:2;}
+.scene-t{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--amber);margin-bottom:8px;font-weight:700;}
+.codebox{font-family:'JetBrains Mono',monospace;background:#07060404;color:#e0d090;
+  border:1px solid var(--border2);padding:13px 17px;margin:10px 0;
+  font-size:13px;line-height:1.85;overflow-x:auto;white-space:pre;}
+.paytable{border-collapse:collapse;margin:12px 0;font-size:13px;}
+.paytable th,.paytable td{border:1px solid var(--border2);padding:8px 16px;text-align:center;}
+.paytable th{background:var(--card2);color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;}
+.paytable td.hi{color:var(--gold2);font-weight:700;}
+.paytable td.lo{color:var(--rose);}
+
+.opts{display:flex;flex-direction:column;gap:8px;margin-bottom:22px;}
+.opt{display:flex;align-items:flex-start;gap:14px;padding:13px 18px;
+  background:var(--card);border:1px solid var(--border2);color:var(--text);
+  cursor:pointer;font-size:14px;line-height:1.75;text-align:left;width:100%;transition:all .18s;}
+.opt:hover{border-color:var(--gold);background:var(--sel-bg);}
+.opt.sel{border-color:var(--sel-br);background:var(--sel-bg);}
+.opt.ok{border-color:var(--ok-br);background:var(--ok-bg);}
+.opt.ng{border-color:var(--ng-br);background:var(--ng-bg);}
+.opt.off{pointer-events:none;}
+.opt-n{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;
+  color:var(--faint);min-width:22px;flex-shrink:0;padding-top:1px;}
+.opt.sel .opt-n{color:var(--gold);}
+.opt.ok .opt-n{color:var(--sage);}
+.opt.ng .opt-n{color:var(--rose);}
+.opt-ck{margin-left:auto;font-size:16px;flex-shrink:0;}
+
+.expl{display:none;background:var(--card2);border:1px solid var(--border);margin-bottom:22px;animation:fadein .4s;}
+.expl.on{display:block;}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.expl-top{background:rgba(0,0,0,.3);border-bottom:1px solid var(--border);
+  padding:11px 20px;display:flex;align-items:center;gap:10px;}
+.expl-icon{width:28px;height:28px;border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;
+  font-family:'Noto Serif KR',serif;font-style:italic;font-size:13px;color:var(--gold);flex-shrink:0;}
+.expl-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.v-ok{margin-left:auto;color:var(--sage);font-weight:700;font-size:13px;}
+.v-ng{margin-left:auto;color:var(--rose);font-weight:700;font-size:13px;}
+.concept-bar{background:rgba(192,160,248,.06);border-bottom:1px solid var(--border);
+  padding:10px 20px;display:flex;align-items:flex-start;gap:10px;}
+.concept-tag{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--violet);border:1px solid var(--violet);padding:2px 10px;white-space:nowrap;flex-shrink:0;margin-top:2px;}
+.concept-desc{font-size:13px;color:var(--muted);line-height:1.75;}
+.ans-wrap{padding:0 20px;}
+.ans-pill{display:inline-block;background:rgba(110,200,152,.1);border:1px solid var(--ok-br);
+  color:var(--sage);font-family:'JetBrains Mono',monospace;font-size:12px;padding:5px 16px;margin-top:16px;font-weight:500;}
+.expl-body{padding:18px 20px 22px;font-size:14px;line-height:2;color:var(--dim);}
+.expl-body p{margin-bottom:10px;}.expl-body p:last-child{margin-bottom:0;}
+.expl-body strong{color:var(--sky);}
+.step{font-family:'JetBrains Mono',monospace;background:#07060404;
+  border:1px solid var(--border2);border-left:3px solid var(--violet);
+  padding:16px 20px;margin:12px 0;font-size:12.5px;line-height:1.95;
+  white-space:pre-wrap;overflow-x:auto;color:#d0c888;}
+.tip{background:rgba(232,197,71,.06);border-left:3px solid var(--gold);
+  padding:11px 16px;margin:12px 0;font-size:13px;line-height:1.75;color:var(--muted);}
+.tip-t{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--gold);margin-bottom:4px;font-weight:700;}
+
+.nav-row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.nb{padding:11px 24px;background:transparent;border:1px solid var(--border2);color:var(--muted);
+  font-family:'Noto Sans KR',sans-serif;font-size:13px;cursor:pointer;transition:all .2s;}
+.nb:hover{border-color:var(--text);color:var(--text);}
+.nb:disabled{opacity:.25;cursor:not-allowed;}
+.nb.sub{background:var(--gold);border-color:var(--gold);color:var(--bg);font-weight:700;}
+.nb.sub:hover{background:var(--gold2);border-color:var(--gold2);}
+.nb.sub:disabled{opacity:.3;}
+.nb.end{background:var(--sage);border-color:var(--sage);color:var(--bg);font-weight:700;}
+.nb.end:hover{background:#8edcb0;}
+
+/* ══ RESULT ══ */
+#result{display:none;position:fixed;inset:0;z-index:200;background:var(--bg);overflow-y:auto;animation:rise .5s;}
+#result.on{display:block;}
+.res-w{max-width:720px;margin:0 auto;padding:68px 24px 120px;}
+.res-hero{text-align:center;margin-bottom:52px;}
+.res-eye{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--faint);margin-bottom:20px;}
+.res-ring{width:172px;height:172px;margin:0 auto 20px;position:relative;}
+.res-ring svg{position:absolute;inset:0;transform:rotate(-90deg);}
+.res-in{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.res-n{font-family:'Noto Serif KR',serif;font-size:50px;font-weight:900;color:var(--gold);line-height:1;}
+.res-d{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--faint);}
+.res-grade{font-family:'Noto Serif KR',serif;font-size:22px;font-weight:700;font-style:italic;}
+.res-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border2);border:1px solid var(--border2);margin-bottom:44px;}
+.rs{background:var(--card);padding:20px;text-align:center;}
+.rs-n{font-family:'Noto Serif KR',serif;font-size:32px;font-weight:900;display:block;line-height:1;}
+.rs-l{font-size:11px;color:var(--muted);margin-top:4px;letter-spacing:1px;}
+.rev-t{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--faint);
+  border-top:1px solid var(--border);padding-top:16px;margin-bottom:14px;}
+.rev-list{display:flex;flex-direction:column;gap:6px;margin-bottom:44px;}
+.rev-row{display:flex;align-items:flex-start;gap:12px;background:var(--card);border:1px solid var(--border2);
+  padding:12px 16px;cursor:pointer;transition:border-color .15s;}
+.rev-row:hover{border-color:var(--gold);}
+.rev-row.ok{border-left:3px solid var(--sage);}
+.rev-row.ng{border-left:3px solid var(--rose);}
+.rev-num{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--faint);min-width:56px;flex-shrink:0;line-height:1.5;}
+.rev-ttl{font-size:13px;flex:1;line-height:1.5;}
+.rev-mk{font-size:18px;flex-shrink:0;}
+.btn-restart{display:block;width:100%;padding:18px;background:var(--gold);border:none;color:var(--bg);
+  font-family:'Noto Serif KR',serif;font-size:16px;font-weight:900;cursor:pointer;transition:all .2s;}
+.btn-restart:hover{background:var(--gold2);}
+@media(max-width:600px){.qdots{display:none;}.res-stats{grid-template-columns:1fr 1fr;}.qbody,.expl-body{padding:16px;}}
+</style>
+</head>
+<body>
+
+<div id="splash">
+  <div class="sp">
+    <div class="sp-ornament"><span class="sp-ornament-txt">KOI 중등부 심화 · Boolean Algebra &amp; Logic Gates</span></div>
+    <div class="sp-title">논리와<br><span class="gold">불대수</span></div>
+    <div class="sp-subtitle">15 Problems · 150 Points · 60 Minutes</div>
+    <div class="sp-row">
+      <div class="sp-cell"><span class="sp-n">15</span><span class="sp-l">총 문항</span></div>
+      <div class="sp-cell"><span class="sp-n">150</span><span class="sp-l">총 배점</span></div>
+      <div class="sp-cell"><span class="sp-n">60</span><span class="sp-l">제한(분)</span></div>
+    </div>
+    <div class="sp-note">
+      KOI 기출 수준의 <strong>논리와 불대수</strong> 전문 문제집입니다.<br>
+      진리표·드모르간·불대수 법칙·카르노 맵·NAND/NOR 완전성·<br>
+      XOR·반가산기·패리티 검사 등 핵심 유형 15문제를 다룹니다.
+    </div>
+    <button class="sp-btn" onclick="startExam()">▶ 풀기 시작</button>
+  </div>
+</div>
+
+<header id="hdr">
+  <div class="hdr-in">
+    <div class="hdr-brand">논리와 불대수</div>
+    <div class="qdots" id="qdots"></div>
+    <div class="hdr-r"><div id="tmr">60:00</div><div id="hpts">0 / 150점</div></div>
+  </div>
+</header>
+<div id="pbar"><div id="pfill"></div></div>
+<div id="app"></div>
+
+<div id="result">
+  <div class="res-w">
+    <div class="res-hero">
+      <div class="res-eye">최종 결과 · Boolean Algebra &amp; Logic</div>
+      <div class="res-ring">
+        <svg viewBox="0 0 172 172" fill="none">
+          <circle cx="86" cy="86" r="74" stroke="#302d1e" stroke-width="8"/>
+          <circle id="arc" cx="86" cy="86" r="74" stroke="#e8c547" stroke-width="8"
+            stroke-dasharray="465" stroke-dashoffset="465" stroke-linecap="round"
+            style="transition:stroke-dashoffset 1.2s ease"/>
+        </svg>
+        <div class="res-in"><div class="res-n" id="rscore">0</div><div class="res-d">/ 150점</div></div>
+      </div>
+      <div class="res-grade" id="rgrade"></div>
+    </div>
+    <div class="res-stats">
+      <div class="rs"><span class="rs-n" id="rn-ok" style="color:var(--sage)">0</span><span class="rs-l">정답</span></div>
+      <div class="rs"><span class="rs-n" id="rn-ng" style="color:var(--rose)">0</span><span class="rs-l">오답</span></div>
+      <div class="rs"><span class="rs-n" id="rn-t" style="color:var(--gold)">--</span><span class="rs-l">소요시간</span></div>
+    </div>
+    <div class="rev-t">문항별 결과</div>
+    <div class="rev-list" id="rlist"></div>
+    <button class="btn-restart" onclick="restartExam()">↺ 다시 풀기</button>
+  </div>
+</div>
+
+<script>
+var LBLS=['①','②','③','④','⑤'];
+
+// ══════════════════════════════════════════════════════════════
+// 15문제 — KOI 중등부 논리와 불대수 (완전 창작)
+// ══════════════════════════════════════════════════════════════
+var QS=[
+
+// Q01
+{id:1,pts:8,cat:'진리표·기본',catC:'#00e5ff',
+title:'논리 연산의 진리표 완성',
+body:'<p>두 논리 변수 A, B에 대해 논리식 <strong>F = A·B + A\'·B\'</strong>의 진리표를 완성하시오. (A\'= NOT A, · = AND, + = OR)</p><p>F의 값이 1이 되는 (A, B) 조합을 모두 고른 것은?</p>',
+opts:['(0,0)과 (1,1)','(0,1)과 (1,0)','(0,0)만','(1,1)만','모든 경우에서 1'],
+ans:0,
+concept:{key:'AND·OR·NOT 기본 연산',val:'A·B: 둘 다 1일 때만 1. A\'·B\': 둘 다 0일 때만 1. 두 항을 OR로 합산.'},
+expl:'<div class="step">F = A·B + A\'·B\' 계산:\n\nA=0,B=0: 0·0 + 1·1 = 0+1 = 1  ✓\nA=0,B=1: 0·1 + 1·0 = 0+0 = 0\nA=1,B=0: 1·0 + 0·1 = 0+0 = 0\nA=1,B=1: 1·1 + 0·0 = 1+0 = 1  ✓\n\nF=1인 경우: (0,0)과 (1,1)\n→ XNOR(동치 연산) 진리표와 동일!</div>',
+tip:{title:'XNOR = 동치 연산',text:'A XNOR B = A·B + A\'·B\'. 두 입력이 같을 때 1, 다를 때 0. XOR의 보수.'}},
+
+// Q02
+{id:2,pts:8,cat:'드모르간 법칙',catC:'#a060ff',
+title:'드모르간 법칙으로 변환',
+body:'<p>드모르간의 법칙을 적용하여 논리식 <strong>F = (A\'·B + C)\'</strong>을 변환하시오.</p>',
+opts:['(A + B\')·C\'','(A·B\') + C','A\'·B·C','A·B\' + C\'','(A + B\')·C'],
+ans:0,
+concept:{key:'드모르간 법칙',val:'(X+Y)\'=X\'·Y\'. (X·Y)\'=X\'+Y\'. (A\'B+C)\'=(A\'B)\'·C\'=(A+B\')·C\'.'},
+expl:'<div class="step">F = (A\'·B + C)\'\n\n드모르간 법칙 1: (X+Y)\' = X\'·Y\'\n  X=A\'·B, Y=C\n  결과: (A\'·B)\' · C\'\n\n드모르간 법칙 2: (A\'·B)\' = A + B\'\n\n최종: F = (A + B\')·C\'</div>',
+tip:{title:'단계별 적용',text:'복잡한 식은 가장 바깥 괄호부터 법칙 적용. (X+Y)\'→X\'·Y\', 그 다음 X=A\'B에 법칙 재적용.'}},
+
+// Q03
+{id:3,pts:8,cat:'불대수 단순화',catC:'#00e080',
+title:'불 대수 인수분해와 흡수',
+body:'<p>논리식 <strong>F = A·B·C + A·B·C\' + A·B\'·C</strong>를 불 대수로 최소화하시오.</p>',
+opts:['A·(B + C)','A·B + A·C','A·B·C','A + B·C','A\'·B + A·C'],
+ans:0,
+concept:{key:'인수분해 + 흡수 법칙',val:'A로 묶기 → B(C+C\')=B, B+B\'C=B+C. 결국 A·(B+C).'},
+expl:'<div class="step">F = A·B·C + A·B·C\' + A·B\'·C\n\n공통 인수 A 묶기:\n  F = A·(B·C + B·C\' + B\'·C)\n\n괄호 안 정리:\n  B·C + B·C\' = B·(C+C\') = B·1 = B\n  B + B\'·C = B + C  (흡수 법칙)\n\nF = A·(B + C)</div>',
+tip:{title:'흡수 법칙 증명',text:'A + A\'B = A + B. 증명: (A+A\')(A+B) = 1·(A+B) = A+B. 카르노 맵으로도 확인 가능.'}},
+
+// Q04
+{id:4,pts:10,cat:'카르노 맵·2변수',catC:'#ffaa00',
+title:'2변수 카르노 맵 최소화',
+body:'<p>2변수 카르노 맵이 아래와 같다. 최소 표현을 구하시오.</p><table class="ttable"><tr><th>A \\ B</th><th>0</th><th>1</th></tr><tr><td>0</td><td class="t">1</td><td class="f">0</td></tr><tr><td>1</td><td class="t">1</td><td class="f">0</td></tr></table>',
+opts:['B\'','A\'','A + B\'','A\'·B\'','A XOR B'],
+ans:0,
+concept:{key:'카르노 맵 묶기',val:'B=0인 열 전체가 1. A=0,1 모두 등장 → A 소거. B\'만 남음.'},
+expl:'<div class="step">F=1인 셀:\n  A=0,B=0: F=1  (A\'B\')\n  A=1,B=0: F=1  (AB\')\n\n두 셀 묶기 (B=0 열 전체):\n  A가 0과 1 모두 → A 소거\n  공통: B=0 → B\'\n\nF = B\'</div>',
+tip:{title:'카르노 맵 원리',text:'인접 셀(한 비트만 다름)을 2의 거듭제곱 크기로 묶는다. 묶음이 클수록 소거 변수가 많아 식이 단순해진다.'}},
+
+// Q05
+{id:5,pts:10,cat:'카르노 맵·3변수',catC:'#ffaa00',
+title:'3변수 카르노 맵',
+body:'<p>F(A,B,C) = Σm(0, 2, 4, 6) — C=0인 모든 경우. 최소화하시오.</p>',
+opts:['C\'','A\'·C\'','B·C\'','A·C','A XOR C'],
+ans:0,
+concept:{key:'패턴 인식',val:'짝수 번호 민텀(0,2,4,6)은 C=0. A,B 무관 → F=C\'.'},
+expl:'<div class="step">민텀 0,2,4,6 분석:\n  m0: ABC=000 → C=0\n  m2: ABC=010 → C=0\n  m4: ABC=100 → C=0\n  m6: ABC=110 → C=0\n\n공통: C=0, A와 B는 0,1 모두\nA,B 소거 → F = C\'</div>',
+tip:{title:'민텀 번호와 변수',text:'n비트 민텀 번호에서 최하위 비트(LSB)가 마지막 변수. 짝수=마지막 변수 0, 홀수=마지막 변수 1.'}},
+
+// Q06
+{id:6,pts:10,cat:'NAND·완전성',catC:'#00e5ff',
+title:'NAND 게이트로 OR 구현',
+body:'<p>NAND(A,B) = (A·B)\' 게이트만으로 A + B를 구현하시오.</p>',
+opts:['NAND(NAND(A,A), NAND(B,B))','NAND(A, B)','NAND(NAND(A,B), NAND(A,B))','NAND(A, NAND(B,B))','NAND(NAND(A,A), B)'],
+ans:0,
+concept:{key:'NAND로 OR 구현',val:'A+B=(A\'·B\')\'(드모르간). A\'=NAND(A,A). (A\'·B\')\'=NAND(A\',B\')=NAND(NAND(A,A),NAND(B,B)).'},
+expl:'<div class="step">드모르간: A+B = (A\'·B\')\'\n\n구현:\n  A\' = NAND(A,A)\n  B\' = NAND(B,B)\n  (A\'·B\')\'= NAND(A\',B\')\n         = NAND(NAND(A,A), NAND(B,B))\n\n검증 A=0,B=1:\n  A\'=NAND(0,0)=1, B\'=NAND(1,1)=0\n  NAND(1,0)=1 = 0+1 ✓</div>',
+tip:{title:'NAND 완전 집합',text:'NOT: NAND(A,A). AND: NAND(NAND(A,B),NAND(A,B)). OR: NAND(NAND(A,A),NAND(B,B)).'}},
+
+// Q07
+{id:7,pts:10,cat:'XOR 게이트',catC:'#a060ff',
+title:'XOR 게이트의 성질',
+body:'<p>XOR(A,B) = A⊕B에 대한 설명 중 <strong>옳지 않은</strong> 것은?</p>',
+opts:['A⊕0 = A','A⊕A = 0','A⊕1 = A (잘못된 설명)','A⊕B = B⊕A','(A⊕B)⊕C = A⊕(B⊕C)'],
+ans:2,
+concept:{key:'XOR 기본 성질',val:'A⊕0=A, A⊕1=A\'(NOT), A⊕A=0, 교환·결합법칙 성립.'},
+expl:'<div class="step">각 선택지:\n① A⊕0: 0⊕0=0, 1⊕0=1 → A ✓\n② A⊕A: 0⊕0=0, 1⊕1=0 → 0 ✓\n③ A⊕1 = A라고 주장:\n  0⊕1=1 ≠ 0, 1⊕1=0 ≠ 1\n  실제 A⊕1 = A\' (NOT A) ✗ 틀림!\n④ A⊕B = B⊕A: 교환법칙 ✓\n⑤ 결합법칙 ✓</div>',
+tip:{title:'XOR 핵심',text:'A⊕0=A(불변), A⊕1=A\'(반전), A⊕A=0(소거). 비밀키 암호화에서 동일 키로 XOR을 두 번하면 원래 값 복원.'}},
+
+// Q08
+{id:8,pts:10,cat:'불대수 분배법칙',catC:'#00e080',
+title:'OR 기준 분배법칙',
+body:'<p>논리식 <strong>F = (A + B)·(A + C)</strong>를 불 대수로 단순화하시오.</p>',
+opts:['A + B·C','A·B + A·C','A·(B+C)','A + B + C','A·B·C'],
+ans:0,
+concept:{key:'불 대수 OR 분배법칙',val:'A+(B·C)=(A+B)·(A+C). 역: (A+B)(A+C)=A+BC.'},
+expl:'<div class="step">F = (A+B)·(A+C)\n\nOR 기준 분배법칙:\n  (A+B)·(A+C) = A + B·C\n\n검증:\n  A=0,B=1,C=1: (1)(1)=1, 0+1=1 ✓\n  A=0,B=0,C=1: (0)(1)=0, 0+0=0 ✓\n  A=1,B=0,C=0: (1)(1)=1, 1+0=1 ✓</div>',
+tip:{title:'두 분배법칙',text:'AND 기준: A·(B+C)=AB+AC. OR 기준: A+(B·C)=(A+B)·(A+C). 두 번째가 덜 알려졌지만 자주 출제.'}},
+
+// Q09
+{id:9,pts:10,cat:'반가산기',catC:'#00e5ff',
+title:'반가산기 논리식',
+body:'<p>1비트 반가산기(Half Adder): 두 비트 A,B를 더해 합(Sum)과 올림수(Carry)를 출력한다.</p><table class="ttable"><tr><th>A</th><th>B</th><th>Sum</th><th>Carry</th></tr><tr><td>0</td><td>0</td><td class="f">0</td><td class="f">0</td></tr><tr><td>0</td><td>1</td><td class="t">1</td><td class="f">0</td></tr><tr><td>1</td><td>0</td><td class="t">1</td><td class="f">0</td></tr><tr><td>1</td><td>1</td><td class="f">0</td><td class="t">1</td></tr></table><p>Sum과 Carry의 올바른 논리식은?</p>',
+opts:['Sum = A⊕B, Carry = A·B','Sum = A+B, Carry = A·B','Sum = A·B, Carry = A+B','Sum = A⊕B, Carry = A+B','Sum = A+B, Carry = A⊕B'],
+ans:0,
+concept:{key:'반가산기 = XOR + AND',val:'Sum = XOR (다를 때 1). Carry = AND (둘 다 1일 때 올림).'},
+expl:'<div class="step">Sum 분석:\n  (0,0)→0, (0,1)→1, (1,0)→1, (1,1)→0\n  → XOR 진리표 → Sum = A⊕B\n\nCarry 분석:\n  (0,0)→0, (0,1)→0, (1,0)→0, (1,1)→1\n  → AND 진리표 → Carry = A·B</div>',
+tip:{title:'전가산기',text:'Cin 포함: Sum=A⊕B⊕Cin, Cout=AB+(A⊕B)·Cin. 반가산기 2개+OR 1개.'}},
+
+// Q10
+{id:10,pts:10,cat:'민텀·정규형',catC:'#a060ff',
+title:'최소항의 합(SOP) 최소화',
+body:'<p>F(A,B,C) = Σm(3, 5, 6, 7)을 최소화하시오.<br>민텀: m3=011, m5=101, m6=110, m7=111</p>',
+opts:['A·B + A·C + B·C','A + B·C','A·B·C','A·C + B','B + A·C'],
+ans:0,
+concept:{key:'카르노 맵 3변수 묶기',val:'m6,m7 → AB (C소거). m5,m7 → AC (B소거). m3,m7 → BC (A소거).'},
+expl:'<div class="step">3변수 카르노 맵 배치:\n  m0(000)=0, m1(001)=0\n  m2(010)=0, m3(011)=1\n  m4(100)=0, m5(101)=1\n  m6(110)=1, m7(111)=1\n\n묶기:\n  m6,m7: AB=11, C=0,1 → A·B\n  m5,m7: A=1, BC=01,11 → A·C\n  m3,m7: B=1, AC=01,11 → B·C\n\nF = A·B + A·C + B·C\n(다수결 함수: 셋 중 둘 이상이 1이면 1)</div>',
+tip:{title:'다수결 함수',text:'A·B+A·C+B·C: 세 입력 중 2개 이상이 1이면 출력 1. 투표 회로, 오류 수정 코드에 활용.'}},
+
+// Q11
+{id:11,pts:10,cat:'NOR·완전성',catC:'#00e5ff',
+title:'NOR 게이트로 AND 구현',
+body:'<p>NOR(A,B) = (A+B)\' 게이트만으로 AND(A,B) = A·B를 구현하시오.</p>',
+opts:['NOR(NOR(A,A), NOR(B,B))','NOR(A, B)','NOR(NOR(A,B), NOR(A,B))','NOR(A, NOR(B,B))','NOR(NOR(A,A), B)'],
+ans:0,
+concept:{key:'NOR로 AND 구현',val:'A·B=(A\'+B\')\' (드모르간). A\'=NOR(A,A). NOR(A\',B\')=(A\'+B\')\'=A·B.'},
+expl:'<div class="step">드모르간: A·B = (A\'+B\')\'\n\n구현:\n  A\' = NOR(A,A)  [NOR(A,A)=(A+A)\'=A\']\n  B\' = NOR(B,B)\n  (A\'+B\')\'=NOR(A\',B\')\n          =NOR(NOR(A,A), NOR(B,B))\n\n검증 A=1,B=1:\n  A\'=NOR(1,1)=0\n  B\'=NOR(1,1)=0\n  NOR(0,0)=1 = 1·1 ✓</div>',
+tip:{title:'NOR 완전 집합',text:'NOT=NOR(A,A). OR=NOR(NOR(A,B),NOR(A,B)). AND=NOR(NOR(A,A),NOR(B,B)).'}},
+
+// Q12
+{id:12,pts:10,cat:'불대수 오류 찾기',catC:'#00e080',
+title:'잘못된 불 대수 법칙 찾기',
+body:'<p>다음 불 대수 식 중 <strong>틀린 것</strong>은?</p>',
+opts:['A + A·B = A','A·(A\' + B) = A·B','A + A\' = 0','(A·B)\' = A\' + B\'','A ⊕ A = 0'],
+ans:2,
+concept:{key:'보수 법칙',val:'A + A\' = 1 (항상 참). A·A\' = 0 (항상 거짓). ③에서 0이라고 했으므로 틀림.'},
+expl:'<div class="step">③ A + A\' = 0 이라 주장:\n  A=0: 0+1=1 ≠ 0 ✗\n  A=1: 1+0=1 ≠ 0 ✗\n  → 실제: A + A\' = 1 (보수 법칙)\n\n나머지 검증:\n  ① A+AB=A·(1+B)=A ✓ 흡수\n  ② A·(A\'+B)=AA\'+AB=0+AB=AB ✓\n  ④ (AB)\'=A\'+B\' ✓ 드모르간\n  ⑤ A⊕A=0 ✓</div>',
+tip:{title:'보수 법칙 암기',text:'A+A\'=1 (OR로 합치면 항상 참). A·A\'=0 (AND로 곱하면 항상 거짓). 회로에서 확정 신호(항상1, 항상0) 생성에 활용.'}},
+
+// Q13
+{id:13,pts:12,cat:'카르노 맵·4변수',catC:'#ffaa00',
+title:'4변수 카르노 맵 최소화',
+body:'<p>F(A,B,C,D) = Σm(0,1,2,3,8,9,10,11) — AB=00과 AB=10인 행 전체.</p><table class="ttable"><tr><th>AB\\CD</th><th>00</th><th>01</th><th>11</th><th>10</th></tr><tr><td>00</td><td class="t">1</td><td class="t">1</td><td class="t">1</td><td class="t">1</td></tr><tr><td>01</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>11</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>10</td><td class="t">1</td><td class="t">1</td><td class="t">1</td><td class="t">1</td></tr></table>',
+opts:['B\'','A\'·B\'','A·B','A XNOR B','A\' + B\''],
+ans:0,
+concept:{key:'8개 묶음 = 변수 1개',val:'AB=00과 AB=10 두 행(8셀). A는 0과 1 모두, C,D 모두. B=0만 고정 → B\'.'},
+expl:'<div class="step">F=1: AB=00행(m0,1,2,3)과 AB=10행(m8,9,10,11)\n\n8개 묶음:\n  AB=00: A=0, B=0\n  AB=10: A=1, B=0\n  A: 0과 1 모두 → 소거\n  B: 항상 0 → B\'\n  C,D: 0과 1 모두 → 소거\n\nF = B\'</div>',
+tip:{title:'4변수 맵 팁',text:'8개 묶음 → 1개 문자만 남음. 16개 전부 1이면 F=1 (상수). 모서리, 가장자리도 인접 처리.'}},
+
+// Q14
+{id:14,pts:12,cat:'멀티플렉서 MUX',catC:'#00e5ff',
+title:'2:1 MUX 함수 구현',
+body:'<p>2:1 MUX 논리식: <strong>Y = S\'·I0 + S·I1</strong><br>S=선택 신호, I0·I1=입력.</p><div class="scene"><div class="scene-t">🔀 MUX 연결</div><p>S = A, I0 = 0, I1 = B</p></div><p>출력 Y는?</p>',
+opts:['A·B','A + B','A⊕B','A\'·B','A·B + A\''],
+ans:0,
+concept:{key:'MUX 함수 대입',val:'Y=S\'·I0+S·I1에 S=A, I0=0, I1=B 대입: Y=A\'·0+A·B=0+AB=AB.'},
+expl:'<div class="step">Y = S\'·I0 + S·I1\n  = A\'·0 + A·B\n  = 0 + A·B\n  = A·B\n\n검증:\n  A=0: I0=0 선택 → Y=0 = 0·B ✓\n  A=1: I1=B 선택 → Y=B = 1·B ✓</div>',
+tip:{title:'MUX = 범용 게이트',text:'S=상수 또는 변수, I0,I1을 적절히 설정하면 임의의 논리 함수 구현 가능.'}},
+
+// Q15
+{id:15,pts:12,cat:'패리티 검사',catC:'#a060ff',
+title:'3비트 패리티 생성기',
+body:'<p>3비트 데이터 A,B,C의 <strong>짝수 패리티 비트 P</strong>: A+B+C+P의 1의 개수가 짝수.</p><div class="scene"><div class="scene-t">🔍 짝수 패리티 규칙</div><p>A,B,C의 1 개수가 홀수 → P=1 (짝수로 만들기)<br>A,B,C의 1 개수가 짝수 → P=0</p></div><p>패리티 비트 P의 논리식은?</p>',
+opts:['A⊕B⊕C','A·B·C','A + B + C','A\'⊕B⊕C','(A+B+C)\''],
+ans:0,
+concept:{key:'패리티 = XOR 연쇄',val:'짝수 패리티: P = A⊕B⊕C. 전체(A,B,C,P)의 XOR=0이 되게 함.'},
+expl:'<div class="step">짝수 패리티 조건: A⊕B⊕C⊕P = 0\n→ P = A⊕B⊕C\n\n검증:\n  A=1,B=1,C=0: 1⊕1⊕0=0 → P=0, 전체 1수=2(짝수) ✓\n  A=1,B=0,C=0: 1⊕0⊕0=1 → P=1, 전체 1수=2(짝수) ✓\n  A=1,B=1,C=1: 1⊕1⊕1=1 → P=1, 전체 1수=4(짝수) ✓</div>',
+tip:{title:'패리티 비트 활용',text:'짝수 패리티: P=A⊕B⊕C. 홀수 패리티: P=(A⊕B⊕C)\'. USB, UART 등 1비트 오류 탐지에 사용.'}}
+
+]; // END QS
+
+
+// 정답 수정 없음 (모두 정확히 설정됨)
+
+// STATE & ENGINE
+// ══════════════════════════════════════════════════════════════
+var S={cur:0,chosen:new Array(QS.length).fill(null),done:new Array(QS.length).fill(false),elapsed:0,timer:null,total:60*60};
+
+function startExam(){
+  document.getElementById('splash').classList.add('out');
+  document.getElementById('hdr').style.display='block';
+  document.getElementById('pbar').style.display='block';
+  document.getElementById('app').style.display='block';
+  buildDots(); render(0);
+  S.timer=setInterval(tick,1000);
+}
+function tick(){
+  S.elapsed++;
+  var rem=S.total-S.elapsed;
+  if(rem<=0){clearInterval(S.timer);showResult();return;}
+  var m=Math.floor(rem/60),s=rem%60;
+  var el=document.getElementById('tmr');
+  el.textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+  if(rem<=300)el.classList.add('warn');
+}
+function buildDots(){
+  var c=document.getElementById('qdots');c.innerHTML='';
+  QS.forEach(function(_,i){
+    var d=document.createElement('div');
+    d.className='qdot'+(i===0?' cur':'');d.id='dot'+i;d.title=(i+1)+'번';
+    d.onclick=(function(ii){return function(){go(ii);};})(i);
+    c.appendChild(d);
+  });
+}
+function isOk(i){return S.chosen[i]===QS[i].ans;}
+function calcScore(){return QS.reduce(function(s,q,i){return s+(S.done[i]&&isOk(i)?q.pts:0);},0);}
+
+function render(idx){
+  S.cur=idx;updateDots();updatePts();
+  var q=QS[idx];
+  var app=document.getElementById('app');
+  var card=document.createElement('div');card.className='qcard on';
+
+  // header
+  var hdr=document.createElement('div');hdr.className='qhdr';
+  var meta=document.createElement('div');meta.className='qmeta';
+  var nt=document.createElement('div');nt.className='qnum-tag';nt.textContent='문제 '+String(idx+1).padStart(2,'0')+' / '+QS.length;
+  var nb=document.createElement('div');nb.className='qnum-big';nb.textContent=String(idx+1).padStart(2,'0');
+  meta.appendChild(nt);meta.appendChild(nb);
+  var badges=document.createElement('div');badges.className='qbadges';
+  var cb=document.createElement('div');cb.className='qcat-b';cb.style.color=q.catC;cb.style.borderColor=q.catC;cb.textContent=q.cat;
+  var pb=document.createElement('div');pb.className='qpts-b';pb.textContent='+'+q.pts+'점';
+  badges.appendChild(cb);badges.appendChild(pb);
+  hdr.appendChild(meta);hdr.appendChild(badges);card.appendChild(hdr);
+
+  var title=document.createElement('div');title.className='qtitle';title.textContent=q.title;card.appendChild(title);
+  var body=document.createElement('div');body.className='qbody';body.innerHTML=q.body;card.appendChild(body);
+
+  // options
+  var opts=document.createElement('div');opts.className='opts';
+  q.opts.forEach(function(o,oi){
+    var cls='opt';
+    if(S.done[idx]){if(oi===q.ans)cls+=' ok';else if(oi===S.chosen[idx])cls+=' ng';cls+=' off';}
+    else if(oi===S.chosen[idx])cls+=' sel';
+    var btn=document.createElement('button');btn.className=cls;
+    btn.onclick=(function(qi,oi2){return function(){pick(qi,oi2);};})(idx,oi);
+    var n=document.createElement('span');n.className='opt-n';n.textContent=LBLS[oi];
+    var t=document.createElement('span');t.textContent=o;
+    btn.appendChild(n);btn.appendChild(t);
+    if(S.done[idx]&&oi===q.ans){var ck=document.createElement('span');ck.className='opt-ck';ck.textContent='✓';btn.appendChild(ck);}
+    if(S.done[idx]&&oi===S.chosen[idx]&&oi!==q.ans){var ck2=document.createElement('span');ck2.className='opt-ck';ck2.textContent='✗';btn.appendChild(ck2);}
+    opts.appendChild(btn);
+  });
+  card.appendChild(opts);
+
+  // explanation
+  var expl=document.createElement('div');expl.className='expl'+(S.done[idx]?' on':'');
+  var etop=document.createElement('div');etop.className='expl-top';
+  var eicon=document.createElement('div');eicon.className='expl-icon';eicon.textContent='解';
+  var elbl=document.createElement('span');elbl.className='expl-lbl';elbl.textContent='풀이 해설';
+  etop.appendChild(eicon);etop.appendChild(elbl);
+  if(S.done[idx]){var vd=document.createElement('span');vd.className=isOk(idx)?'v-ok':'v-ng';vd.textContent=isOk(idx)?'✓ 정답!':'✗ 오답';etop.appendChild(vd);}
+  expl.appendChild(etop);
+  if(q.concept){
+    var conc=document.createElement('div');conc.className='concept-bar';
+    var ct=document.createElement('div');ct.className='concept-tag';ct.textContent=q.concept.key;
+    var cd=document.createElement('div');cd.className='concept-desc';cd.textContent=q.concept.val;
+    conc.appendChild(ct);conc.appendChild(cd);expl.appendChild(conc);
+  }
+  var aw=document.createElement('div');aw.className='ans-wrap';
+  var ap=document.createElement('div');ap.className='ans-pill';ap.textContent='정답: '+LBLS[q.ans]+' '+q.opts[q.ans];
+  aw.appendChild(ap);expl.appendChild(aw);
+  var eb=document.createElement('div');eb.className='expl-body';eb.innerHTML=q.expl;
+  if(q.tip){var tb=document.createElement('div');tb.className='tip';var tt=document.createElement('div');tt.className='tip-t';tt.textContent='💡 '+q.tip.title;var tx=document.createElement('div');tx.textContent=q.tip.text;tb.appendChild(tt);tb.appendChild(tx);eb.appendChild(tb);}
+  expl.appendChild(eb);card.appendChild(expl);
+
+  // nav
+  var nav=document.createElement('div');nav.className='nav-row';
+  var prev=document.createElement('button');prev.className='nb';prev.textContent='← 이전';prev.disabled=(idx===0);
+  prev.onclick=(function(ii){return function(){go(ii-1);};})(idx);nav.appendChild(prev);
+  var right=document.createElement('div');right.style.cssText='display:flex;gap:8px';
+  if(!S.done[idx]){var sbtn=document.createElement('button');sbtn.className='nb sub';sbtn.textContent='제출하기';sbtn.onclick=(function(ii){return function(){sub(ii);};})(idx);right.appendChild(sbtn);}
+  if(idx===QS.length-1){var eb2=document.createElement('button');eb2.className='nb end';eb2.textContent='🏁 채점 완료';eb2.onclick=showResult;right.appendChild(eb2);}
+  else{var nb2=document.createElement('button');nb2.className='nb';nb2.textContent='다음 →';nb2.onclick=(function(ii){return function(){go(ii+1);};})(idx);right.appendChild(nb2);}
+  nav.appendChild(right);card.appendChild(nav);
+  app.innerHTML='';app.appendChild(card);
+}
+
+function updateDots(){
+  QS.forEach(function(_,i){
+    var d=document.getElementById('dot'+i);if(!d)return;
+    d.className='qdot';
+    if(i===S.cur)d.classList.add('cur');
+    else if(S.done[i])d.classList.add(isOk(i)?'ok':'ng');
+    else if(S.chosen[i]!==null)d.classList.add('ans');
+  });
+}
+function updatePts(){
+  document.getElementById('pfill').style.width=((S.cur+1)/QS.length*100)+'%';
+  document.getElementById('hpts').textContent=calcScore()+' / 150점';
+}
+function pick(qi,oi){if(S.done[qi])return;S.chosen[qi]=oi;render(qi);}
+function sub(qi){if(S.chosen[qi]===null)return;S.done[qi]=true;render(qi);}
+function go(i){if(i<0||i>=QS.length)return;render(i);}
+
+function showResult(){
+  clearInterval(S.timer);
+  var score=calcScore();
+  var ok=QS.filter(function(_,i){return S.done[i]&&isOk(i);}).length;
+  var ng=QS.filter(function(_,i){return S.done[i]&&!isOk(i);}).length;
+  var m=Math.floor(S.elapsed/60),s=S.elapsed%60;
+  var pct=score/150;
+  document.getElementById('rscore').textContent=score;
+  document.getElementById('rn-ok').textContent=ok;
+  document.getElementById('rn-ng').textContent=ng;
+  document.getElementById('rn-t').textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+  var arc=document.getElementById('arc');
+  arc.style.strokeDashoffset=465-(465*pct);
+  arc.setAttribute('stroke',pct>=.8?'#6ec898':pct>=.6?'#e8c547':'#e07070');
+  var grade='',gc='';
+  if(pct>=.93){grade='🏆 최우수 — 금상 수준';gc='#e8c547';}
+  else if(pct>=.8){grade='✨ 우수 — 은상 수준';gc='#94a3b8';}
+  else if(pct>=.67){grade='💎 양호 — 동상 수준';gc='#c87828';}
+  else if(pct>=.5){grade='📘 보통 — 계속 도전';gc='#78b0f0';}
+  else{grade='💪 분발! — 다시 시도하자';gc='#8a8460';}
+  var rg=document.getElementById('rgrade');rg.textContent=grade;rg.style.color=gc;
+  var list=document.getElementById('rlist');list.innerHTML='';
+  QS.forEach(function(q,i){
+    var ok2=S.done[i]&&isOk(i),ng2=S.done[i]&&!isOk(i);
+    var d=document.createElement('div');
+    d.className='rev-row'+(ok2?' ok':'')+(ng2?' ng':'');
+    d.innerHTML='<div class="rev-num">Q'+String(i+1).padStart(2,'0')+'<br>'+q.pts+'점</div>'+
+      '<div class="rev-ttl"><span style="font-family:JetBrains Mono,monospace;font-size:10px;color:'+q.catC+'">'+q.cat+'</span><br>'+q.title+'</div>'+
+      '<div class="rev-mk">'+(ok2?'✅':ng2?'❌':'⬜')+'</div>';
+    d.onclick=(function(ii){return function(){document.getElementById('result').classList.remove('on');render(ii);};})(i);
+    list.appendChild(d);
+  });
+  document.getElementById('result').classList.add('on');
+}
+function restartExam(){
+  S={cur:0,chosen:new Array(QS.length).fill(null),done:new Array(QS.length).fill(false),elapsed:0,timer:null,total:60*60};
+  document.getElementById('result').classList.remove('on');
+  document.getElementById('tmr').textContent='60:00';
+  document.getElementById('tmr').classList.remove('warn');
+  buildDots();render(0);
+  S.timer=setInterval(tick,1000);
+}
+</script>
+</body>
+</html>

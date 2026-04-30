@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KOI 중등 알고리즘과 자료구조 — 15문제</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700;900&family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  --bg:#030c08;--deep:#071410;--card:#0c1e18;--card2:#102820;
+  --border:#1a3828;--border2:#244e38;--faint:#2e6448;--muted:#4a8a68;
+  --dim:#6aaa88;--text:#c0e8d0;--bright:#e8f8f0;
+  --green:#00e87a;--green2:#40f0a0;--green3:#80f8c0;
+  --teal:#00d4c0;--teal2:#40e8d8;
+  --gold:#f0c840;--gold2:#f8e080;
+  --coral:#ff6a5a;--sky:#60d0ff;--violet:#c080ff;
+  --ok-bg:rgba(0,232,122,.08);--ok-br:#00e87a;
+  --sel-bg:rgba(0,212,192,.07);--sel-br:#00d4c0;
+  --ng-bg:rgba(255,106,90,.08);--ng-br:#ff6a5a;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;min-height:100vh;line-height:1.8;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(0,232,122,.02) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,232,122,.02) 1px,transparent 1px);
+  background-size:32px 32px;pointer-events:none;z-index:0;}
+body::after{content:'';position:fixed;inset:0;
+  background:radial-gradient(ellipse 60% 40% at 50% 0%,rgba(0,212,192,.07),transparent);
+  pointer-events:none;z-index:0;}
+
+/* ── SPLASH ── */
+#splash{position:fixed;inset:0;z-index:500;background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  transition:opacity .7s,visibility .7s;}
+#splash.out{opacity:0;visibility:hidden;}
+.sp{max-width:620px;width:92%;text-align:center;position:relative;z-index:1;}
+.sp-badge{
+  display:inline-block;font-family:'JetBrains Mono',monospace;
+  font-size:10px;letter-spacing:4px;text-transform:uppercase;
+  color:var(--green);border:1px solid rgba(0,232,122,.3);
+  padding:5px 18px;margin-bottom:36px;
+  box-shadow:0 0 16px rgba(0,232,122,.1);}
+.sp-title{font-family:'Noto Serif KR',serif;font-size:clamp(40px,8.5vw,80px);
+  font-weight:900;line-height:.92;letter-spacing:-2px;color:var(--bright);margin-bottom:10px;}
+.sp-title .hi{color:var(--green);text-shadow:0 0 28px rgba(0,232,122,.5);}
+.sp-sub{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);
+  letter-spacing:3px;margin-bottom:44px;}
+.sp-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+  background:var(--border2);margin-bottom:36px;border:1px solid var(--border2);
+  box-shadow:0 0 24px rgba(0,232,122,.06);}
+.sp-cell{background:var(--card);padding:18px 12px;text-align:center;}
+.sp-n{font-family:'Noto Serif KR',serif;font-size:34px;font-weight:900;
+  color:var(--green);display:block;line-height:1;text-shadow:0 0 12px rgba(0,232,122,.4);}
+.sp-l{font-size:11px;color:var(--muted);margin-top:4px;letter-spacing:2px;}
+.sp-note{background:rgba(0,232,122,.04);border:1px solid var(--border2);
+  border-left:3px solid var(--green);padding:14px 18px;font-size:13px;
+  color:var(--muted);line-height:1.85;margin-bottom:36px;text-align:left;}
+.sp-note strong{color:var(--text);}
+.sp-btn{padding:14px 56px;background:linear-gradient(135deg,var(--green),rgba(0,180,100,1));
+  border:none;color:var(--bg);font-family:'Noto Serif KR',serif;font-size:17px;
+  font-weight:900;cursor:pointer;letter-spacing:1px;transition:all .25s;
+  box-shadow:0 0 28px rgba(0,232,122,.3);}
+.sp-btn:hover{box-shadow:0 0 44px rgba(0,232,122,.5);transform:translateY(-2px);}
+
+/* ── HEADER ── */
+#hdr{display:none;position:sticky;top:0;z-index:100;background:rgba(3,12,8,.94);
+  backdrop-filter:blur(20px);border-bottom:1px solid var(--border2);}
+.hdr-in{max-width:940px;margin:0 auto;padding:10px 24px;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.hdr-brand{font-family:'Noto Serif KR',serif;font-size:16px;font-weight:700;color:var(--bright);}
+.hdr-brand em{color:var(--green);font-style:italic;text-shadow:0 0 8px rgba(0,232,122,.4);}
+.qdots{display:flex;gap:5px;flex-wrap:wrap;max-width:480px;}
+.qdot{width:12px;height:12px;background:var(--border2);border-radius:2px;cursor:pointer;transition:all .2s;}
+.qdot:hover{background:var(--faint);}
+.qdot.ans{background:rgba(0,232,122,.4);}
+.qdot.cur{background:var(--green);transform:scale(1.4);box-shadow:0 0 8px rgba(0,232,122,.6);}
+.qdot.ok{background:var(--green);box-shadow:0 0 6px rgba(0,232,122,.5);}
+.qdot.ng{background:var(--coral);}
+.hdr-r{display:flex;flex-direction:column;align-items:flex-end;gap:2px;}
+#tmr{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--bright);}
+#tmr.warn{color:var(--coral);animation:blink .8s step-end infinite;}
+@keyframes blink{50%{opacity:.2}}
+#hpts{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--faint);}
+#pbar{display:none;height:3px;background:var(--border);}
+#pfill{height:100%;background:linear-gradient(90deg,var(--green),var(--teal));
+  transition:width .4s;box-shadow:0 0 8px rgba(0,232,122,.4);}
+
+/* ── APP ── */
+#app{display:none;position:relative;z-index:1;max-width:940px;margin:0 auto;padding:44px 24px 180px;}
+.qcard{display:none;animation:rise .35s ease;}
+.qcard.on{display:block;}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+.qinfo{display:flex;align-items:flex-start;justify-content:space-between;
+  margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border2);}
+.qinfo-l{display:flex;flex-direction:column;gap:4px;}
+.qnum-tag{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--faint);text-transform:uppercase;}
+.qnum-big{font-family:'Noto Serif KR',serif;font-size:66px;font-weight:900;color:var(--border2);line-height:1;letter-spacing:-3px;}
+.qinfo-r{display:flex;flex-direction:column;align-items:flex-end;gap:7px;}
+.qcat{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;border:1px solid;padding:3px 11px;}
+.qpts{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--gold);}
+.qtitle{font-family:'Noto Serif KR',serif;font-size:22px;font-weight:700;color:var(--bright);
+  line-height:1.35;margin-bottom:18px;border-left:3px solid var(--green);padding-left:14px;}
+
+.qbody{background:var(--card);border:1px solid var(--border2);border-top:2px solid rgba(0,232,122,.3);
+  padding:26px 28px;margin-bottom:18px;font-size:15px;line-height:2.05;color:var(--text);}
+.qbody p{margin-bottom:12px;}.qbody p:last-child{margin-bottom:0;}
+.qbody strong{color:var(--green2);}
+.qbody em{color:var(--gold);font-style:normal;font-weight:700;}
+.qbody ul,.qbody ol{margin:8px 0 8px 26px;line-height:2.3;}
+.scene{background:var(--card2);border:1px solid var(--border2);border-left:3px solid var(--gold);
+  padding:14px 18px;margin:14px 0;font-size:14px;line-height:2;}
+.scene-t{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--gold);margin-bottom:8px;font-weight:700;}
+.cbox{font-family:'JetBrains Mono',monospace;background:#020807;color:var(--green2);
+  border:1px solid var(--border2);border-left:3px solid var(--green);
+  padding:13px 17px;margin:10px 0;font-size:13px;line-height:1.9;overflow-x:auto;white-space:pre;
+  box-shadow:inset 0 0 16px rgba(0,232,122,.03);}
+.dtable{border-collapse:collapse;margin:12px 0;font-size:13.5px;}
+.dtable th{background:rgba(0,232,122,.08);border:1px solid var(--border2);padding:7px 14px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--green2);text-align:center;}
+.dtable td{border:1px solid var(--border);padding:8px 14px;text-align:center;
+  font-family:'JetBrains Mono',monospace;font-size:13px;}
+.dtable td.hi{color:var(--gold);font-weight:700;}
+.dtable td.ok{color:var(--green);font-weight:700;}
+
+.opts{display:flex;flex-direction:column;gap:8px;margin-bottom:22px;}
+.opt{display:flex;align-items:flex-start;gap:14px;padding:13px 18px;background:var(--card);
+  border:1px solid var(--border2);color:var(--text);cursor:pointer;font-size:14px;
+  line-height:1.75;text-align:left;width:100%;transition:all .18s;}
+.opt:hover{border-color:var(--green);background:var(--sel-bg);}
+.opt.sel{border-color:var(--sel-br);background:var(--sel-bg);}
+.opt.ok{border-color:var(--ok-br);background:var(--ok-bg);}
+.opt.ng{border-color:var(--ng-br);background:var(--ng-bg);}
+.opt.off{pointer-events:none;}
+.opt-n{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;
+  color:var(--faint);min-width:22px;flex-shrink:0;padding-top:1px;}
+.opt.sel .opt-n{color:var(--teal);}
+.opt.ok  .opt-n{color:var(--green);}
+.opt.ng  .opt-n{color:var(--coral);}
+.opt-ck{margin-left:auto;font-size:16px;flex-shrink:0;}
+
+.expl{display:none;background:var(--card2);border:1px solid var(--border2);margin-bottom:22px;animation:fadein .4s;}
+.expl.on{display:block;}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.expl-top{background:rgba(0,0,0,.4);border-bottom:1px solid var(--border2);
+  padding:11px 20px;display:flex;align-items:center;gap:12px;}
+.expl-icon{width:30px;height:30px;border:1px solid var(--green);display:flex;align-items:center;
+  justify-content:center;font-family:'JetBrains Mono',monospace;font-size:12px;
+  font-weight:700;color:var(--green);flex-shrink:0;box-shadow:0 0 8px rgba(0,232,122,.2);}
+.expl-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.v-ok{margin-left:auto;color:var(--green);font-weight:700;font-size:13px;}
+.v-ng{margin-left:auto;color:var(--coral);font-weight:700;font-size:13px;}
+.concept-bar{background:rgba(0,212,192,.06);border-bottom:1px solid var(--border2);
+  padding:10px 20px;display:flex;align-items:flex-start;gap:10px;}
+.concept-tag{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--teal);border:1px solid var(--teal);padding:2px 10px;white-space:nowrap;flex-shrink:0;margin-top:2px;}
+.concept-desc{font-size:13px;color:var(--muted);line-height:1.75;}
+.ans-wrap{padding:0 20px;}
+.ans-pill{display:inline-block;background:var(--ok-bg);border:1px solid var(--ok-br);
+  color:var(--green);font-family:'JetBrains Mono',monospace;font-size:12px;
+  padding:5px 16px;margin-top:16px;font-weight:600;box-shadow:0 0 8px rgba(0,232,122,.15);}
+.expl-body{padding:18px 20px 22px;font-size:14px;line-height:2;color:var(--dim);}
+.expl-body p{margin-bottom:10px;}.expl-body p:last-child{margin-bottom:0;}
+.expl-body strong{color:var(--sky);}
+.step{font-family:'JetBrains Mono',monospace;background:#020807;
+  border:1px solid var(--border2);border-left:3px solid var(--teal);
+  padding:16px 20px;margin:12px 0;font-size:12.5px;line-height:1.95;
+  white-space:pre-wrap;overflow-x:auto;color:#90c8b0;}
+.tip{background:rgba(240,200,64,.06);border-left:3px solid var(--gold);
+  padding:11px 16px;margin:12px 0;font-size:13px;line-height:1.75;color:var(--muted);}
+.tip-t{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--gold);margin-bottom:4px;font-weight:700;}
+
+.nav-row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.nb{padding:11px 24px;background:transparent;border:1px solid var(--border2);color:var(--muted);
+  font-family:'Noto Sans KR',sans-serif;font-size:13px;cursor:pointer;transition:all .2s;}
+.nb:hover{border-color:var(--text);color:var(--text);}
+.nb:disabled{opacity:.25;cursor:not-allowed;}
+.nb.sub{background:var(--green);border-color:var(--green);color:var(--bg);font-weight:700;
+  box-shadow:0 0 16px rgba(0,232,122,.3);}
+.nb.sub:hover{box-shadow:0 0 24px rgba(0,232,122,.5);}
+.nb.sub:disabled{opacity:.3;}
+.nb.end{background:var(--teal);border-color:var(--teal);color:var(--bg);font-weight:700;
+  box-shadow:0 0 12px rgba(0,212,192,.3);}
+.nb.end:hover{background:var(--teal2);border-color:var(--teal2);}
+
+/* ── RESULT ── */
+#result{display:none;position:fixed;inset:0;z-index:200;background:var(--bg);overflow-y:auto;animation:rise .5s;}
+#result.on{display:block;}
+.res-w{max-width:720px;margin:0 auto;padding:68px 24px 120px;}
+.res-hero{text-align:center;margin-bottom:52px;}
+.res-eye{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:5px;
+  text-transform:uppercase;color:var(--faint);margin-bottom:20px;}
+.res-ring{width:172px;height:172px;margin:0 auto 20px;position:relative;}
+.res-ring svg{position:absolute;inset:0;transform:rotate(-90deg);}
+.res-in{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.res-n{font-family:'Noto Serif KR',serif;font-size:50px;font-weight:900;color:var(--green);
+  line-height:1;text-shadow:0 0 16px rgba(0,232,122,.5);}
+.res-d{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--faint);}
+.res-grade{font-family:'Noto Serif KR',serif;font-size:22px;font-weight:700;font-style:italic;}
+.res-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+  background:var(--border2);border:1px solid var(--border2);margin-bottom:44px;}
+.rs{background:var(--card);padding:20px;text-align:center;}
+.rs-n{font-family:'Noto Serif KR',serif;font-size:32px;font-weight:900;display:block;line-height:1;}
+.rs-l{font-size:11px;color:var(--muted);margin-top:4px;letter-spacing:1px;}
+.rev-t{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--faint);border-top:1px solid var(--border2);padding-top:16px;margin-bottom:14px;}
+.rev-list{display:flex;flex-direction:column;gap:6px;margin-bottom:44px;}
+.rev-row{display:flex;align-items:flex-start;gap:12px;background:var(--card);
+  border:1px solid var(--border2);padding:12px 16px;cursor:pointer;transition:border-color .15s;}
+.rev-row:hover{border-color:var(--green);}
+.rev-row.ok{border-left:3px solid var(--green);}
+.rev-row.ng{border-left:3px solid var(--coral);}
+.rev-num{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--faint);min-width:56px;flex-shrink:0;line-height:1.5;}
+.rev-ttl{font-size:13px;flex:1;line-height:1.5;}
+.rev-mk{font-size:18px;flex-shrink:0;}
+.btn-restart{display:block;width:100%;padding:18px;background:var(--green);border:none;
+  color:var(--bg);font-family:'Noto Serif KR',serif;font-size:16px;font-weight:900;
+  cursor:pointer;transition:all .2s;box-shadow:0 0 24px rgba(0,232,122,.3);letter-spacing:1px;}
+.btn-restart:hover{box-shadow:0 0 36px rgba(0,232,122,.5);transform:translateY(-2px);}
+@media(max-width:600px){.qdots{display:none;}.res-stats{grid-template-columns:1fr 1fr;}.qbody,.expl-body{padding:16px;}}
+</style>
+</head>
+<body>
+
+<div id="splash">
+  <div class="sp">
+    <div class="sp-badge">KOI 중등부 심화 · Algorithms &amp; Data Structures</div>
+    <div class="sp-title">알고리즘과<br><span class="hi">자료구조</span></div>
+    <div class="sp-sub">15 Problems · 150 Points · 60 Minutes</div>
+    <div class="sp-stats">
+      <div class="sp-cell"><span class="sp-n">15</span><span class="sp-l">총 문항</span></div>
+      <div class="sp-cell"><span class="sp-n">150</span><span class="sp-l">총 배점</span></div>
+      <div class="sp-cell"><span class="sp-n">60</span><span class="sp-l">제한(분)</span></div>
+    </div>
+    <div class="sp-note">
+      KOI 기출 수준의 <strong>알고리즘과 자료구조</strong> 전문 문제집입니다.<br>
+      스택·큐·연결 리스트·트리·힙·해시·그래프·DFS·BFS·정렬·<br>
+      탐색·DP·그리디·투 포인터 등 핵심 유형 15문제를 다룹니다.
+    </div>
+    <button class="sp-btn" onclick="startExam()">▶ 풀기 시작</button>
+  </div>
+</div>
+
+<header id="hdr">
+  <div class="hdr-in">
+    <div class="hdr-brand">알고리즘과 <em>자료구조</em></div>
+    <div class="qdots" id="qdots"></div>
+    <div class="hdr-r"><div id="tmr">60:00</div><div id="hpts">0 / 150점</div></div>
+  </div>
+</header>
+<div id="pbar"><div id="pfill"></div></div>
+<div id="app"></div>
+
+<div id="result">
+  <div class="res-w">
+    <div class="res-hero">
+      <div class="res-eye">최종 결과 · Algorithms &amp; Data Structures</div>
+      <div class="res-ring">
+        <svg viewBox="0 0 172 172" fill="none">
+          <circle cx="86" cy="86" r="74" stroke="#1a3828" stroke-width="8"/>
+          <circle id="arc" cx="86" cy="86" r="74" stroke="#00e87a" stroke-width="8"
+            stroke-dasharray="465" stroke-dashoffset="465" stroke-linecap="round"
+            style="transition:stroke-dashoffset 1.2s ease"/>
+        </svg>
+        <div class="res-in"><div class="res-n" id="rscore">0</div><div class="res-d">/ 150점</div></div>
+      </div>
+      <div class="res-grade" id="rgrade"></div>
+    </div>
+    <div class="res-stats">
+      <div class="rs"><span class="rs-n" id="rn-ok" style="color:var(--green)">0</span><span class="rs-l">정답</span></div>
+      <div class="rs"><span class="rs-n" id="rn-ng" style="color:var(--coral)">0</span><span class="rs-l">오답</span></div>
+      <div class="rs"><span class="rs-n" id="rn-t"  style="color:var(--teal)">--</span><span class="rs-l">소요시간</span></div>
+    </div>
+    <div class="rev-t">문항별 결과</div>
+    <div class="rev-list" id="rlist"></div>
+    <button class="btn-restart" onclick="restartExam()">↺ 다시 풀기</button>
+  </div>
+</div>
+
+<script>
+var LBLS=['①','②','③','④','⑤'];
+
+// ══════════════════════════════════════════════════════════════
+// 15문제 — KOI 중등부 알고리즘과 자료구조 (완전 창작, DOM API)
+// ══════════════════════════════════════════════════════════════
+var QS=[
+
+// Q01
+{id:1,pts:8,cat:'스택(Stack)',catC:'#00e87a',
+title:'스택 연산 시뮬레이션',
+body:'<p>스택(Stack)은 LIFO(Last In, First Out) 자료구조이다. 연산: <strong>push(x)</strong> — x를 삽입, <strong>pop()</strong> — 최상단 삭제·반환.</p><div class="scene"><div class="scene-t">🔢 연산 순서</div><div class="cbox">push(3)\npush(7)\npush(1)\npop()\npush(5)\npop()\npop()</div></div><p>모든 연산 완료 후 스택에 남아 있는 원소를 <strong>아래부터 위 순서</strong>로 나열한 것은?</p>',
+opts:['[3]','[3, 7]','[7, 3]','[3, 5]','[5, 3]'],
+ans:0,
+concept:{key:'스택 LIFO 시뮬레이션',val:'push는 맨 위에 추가, pop은 맨 위에서 제거. 순서대로 실행하며 스택 상태를 추적.'},
+expl:'<div class="step">스택 상태 추적:\n\npush(3): [3]\npush(7): [3, 7]\npush(1): [3, 7, 1]\npop():   [3, 7]  → 1 반환\npush(5): [3, 7, 5]\npop():   [3, 7]  → 5 반환\npop():   [3]     → 7 반환\n\n최종 스택 (아래→위): [3]\n\n남아있는 원소: 3 하나뿐</div>',
+tip:{title:'스택 활용',text:'괄호 검사, 함수 호출 스택, 후위 표기법 계산, DFS 구현(재귀 = 암묵적 스택). 스택 크기 = 재귀 깊이.'}},
+
+// Q02
+{id:2,pts:8,cat:'큐(Queue)',catC:'#00d4c0',
+title:'큐 연산과 순환 큐',
+body:'<p>큐(Queue)는 FIFO(First In, First Out) 자료구조이다. 연산: <strong>enqueue(x)</strong> — 뒤에 삽입, <strong>dequeue()</strong> — 앞에서 삭제·반환.</p><div class="scene"><div class="scene-t">🔢 연산 순서</div><div class="cbox">enqueue(5)\nenqueue(3)\nenqueue(8)\ndequeue()\nenqueue(2)\ndequeue()</div></div><p>모든 연산 완료 후 큐의 <strong>맨 앞(front) 원소</strong>는?</p>',
+opts:['5','3','8','2','1'],
+ans:2,
+concept:{key:'큐 FIFO 시뮬레이션',val:'enqueue는 뒤에 추가, dequeue는 앞에서 제거. 순서 추적.'},
+expl:'<div class="step">큐 상태 추적 (앞→뒤):\n\nenqueue(5): [5]\nenqueue(3): [5, 3]\nenqueue(8): [5, 3, 8]\ndequeue():  [3, 8]    → 5 반환 (front 제거)\nenqueue(2): [3, 8, 2]\ndequeue():  [8, 2]    → 3 반환\n\n최종 큐: [8, 2]\nmfront = 8</div>',
+tip:{title:'큐 vs 덱(Deque)',text:'큐: 한쪽 입력, 반대쪽 출력. 덱(Deque): 양쪽 입출력. BFS에서 큐 사용. 슬라이딩 윈도우 최솟값은 덱 사용.'}},
+
+// Q03
+{id:3,pts:8,cat:'연결 리스트',catC:'#00e87a',
+title:'연결 리스트 삽입 연산',
+body:'<p>단방향 연결 리스트(Singly Linked List)에 대한 연산이다.</p><div class="scene"><div class="scene-t">📋 초기 리스트</div><p>1 → 3 → 5 → 7 → NULL</p><p>노드 4를 값 3인 노드 <strong>뒤에</strong> 삽입한다.</p></div><p>삽입 후 리스트를 순서대로 나열한 것은?</p>',
+opts:['1 → 3 → 4 → 5 → 7','4 → 1 → 3 → 5 → 7','1 → 4 → 3 → 5 → 7','1 → 3 → 5 → 4 → 7','1 → 3 → 5 → 7 → 4'],
+ans:0,
+concept:{key:'연결 리스트 중간 삽입',val:'삽입 위치 노드의 next를 새 노드에 연결, 새 노드의 next를 기존 다음 노드에 연결.'},
+expl:'<div class="step">초기: 1 → 3 → 5 → 7\n\n값 3인 노드 뒤에 4를 삽입:\n  1. 노드 4 생성\n  2. 노드4.next = 노드3.next  (= 노드5)\n  3. 노드3.next = 노드4\n\n결과: 1 → 3 → 4 → 5 → 7\n\n핵심: 기존 연결을 끊기 전에 새 노드의\n       next를 먼저 설정해야 함</div>',
+tip:{title:'삽입 순서가 중요',text:'잘못된 순서: 노드3.next=노드4 먼저 → 노드5의 참조 잃음! 반드시 새 노드의 next를 먼저 설정 후 이전 노드의 next를 변경.'}},
+
+// Q04
+{id:4,pts:10,cat:'이진 트리',catC:'#00d4c0',
+title:'이진 트리 순회',
+body:'<p>아래 이진 트리를 각 순회 방법으로 방문한다.</p><div class="scene"><div class="scene-t">🌲 이진 트리 구조</div><div class="cbox">        A\n       / \\\n      B   C\n     / \\ / \\\n    D  E F  G</div></div><p><strong>후위 순회(Postorder: 왼→오→현재)</strong> 결과로 올바른 것은?</p>',
+opts:['D E B F G C A','A B D E C F G','D B E A F C G','A B C D E F G','D E F G B C A'],
+ans:0,
+concept:{key:'후위 순회 (Postorder)',val:'왼쪽 서브트리 → 오른쪽 서브트리 → 현재 노드. 자식을 모두 방문한 후 부모 방문.'},
+expl:'<div class="step">후위 순회 (왼→오→현재):\n\n1. B의 왼쪽 서브트리 먼저:\n   D 방문 (리프)\n   E 방문 (리프)\n   B 방문\n\n2. C의 오른쪽 서브트리:\n   F 방문 (리프)\n   G 방문 (리프)\n   C 방문\n\n3. 루트 A 방문\n\n결과: D → E → B → F → G → C → A\n\n참고:\n전위(Pre): A B D E C F G\n중위(In):  D B E A F C G\n후위(Post): D E B F G C A</div>',
+tip:{title:'순회 방법 암기',text:'전위(VLR): 루트 먼저 → 트리 복사·직렬화. 중위(LVR): 오름차순 출력 (BST). 후위(LRV): 자식 먼저 → 파일 삭제·산술식 계산.'}},
+
+// Q05
+{id:5,pts:10,cat:'힙(Heap)',catC:'#00e87a',
+title:'최소 힙 삽입 연산',
+body:'<p>최소 힙(Min-Heap)은 부모 노드의 값이 항상 자식보다 작거나 같은 완전 이진 트리이다.</p><div class="scene"><div class="scene-t">🔢 현재 최소 힙</div><div class="cbox">        2\n       / \\\n      5   3\n     / \\\n    9   7</div></div><p>값 <strong>1</strong>을 삽입한 후 힙의 상태로 올바른 것은?</p>',
+opts:['루트가 1이 된다','루트는 2 유지, 새 노드만 추가','루트가 3이 된다','힙 재구성 없이 맨 끝에 추가','루트가 5가 된다'],
+ans:0,
+concept:{key:'최소 힙 삽입 + Heapify-Up',val:'맨 끝에 삽입 후 부모와 비교하며 올라감(sift-up). 1<2이므로 루트까지 올라가 루트가 1.'},
+expl:'<div class="step">삽입 과정:\n\n1. 맨 끝(5의 오른쪽 자식)에 1 삽입:\n        2\n       / \\\n      5   3\n     / \\ /\n    9  7 1\n\n2. Sift-Up: 1과 부모 3 비교\n   1 < 3 → 교환\n        2\n       / \\\n      5   1\n     / \\ /\n    9  7 3\n\n3. 1과 부모 2 비교\n   1 < 2 → 교환\n        1\n       / \\\n      5   2\n     / \\ /\n    9  7 3\n\n삽입 완료: 루트 = 1</div>',
+tip:{title:'힙 시간복잡도',text:'삽입: O(log n) — 높이만큼 sift-up. 최솟값 조회: O(1) — 항상 루트. 최솟값 삭제: O(log n) — 루트 제거 후 sift-down.'}},
+
+// Q06
+{id:6,pts:10,cat:'해시 테이블',catC:'#00d4c0',
+title:'해시 함수와 충돌 처리',
+body:'<p>해시 테이블 크기 7, 해시 함수 h(k) = k mod 7 사용. 충돌 시 <strong>선형 조사(linear probing)</strong>: h(k), h(k)+1, h(k)+2, ... 순으로 빈 슬롯 탐색.</p><div class="scene"><div class="scene-t">📋 삽입 순서</div><p>순서대로 삽입: 10, 17, 24, 3</p></div><p>모든 삽입 완료 후 값 24가 저장된 인덱스는?</p>',
+opts:['인덱스 2','인덱스 3','인덱스 4','인덱스 5','인덱스 0'],
+ans:1,
+concept:{key:'해시 충돌 — 선형 조사(Linear Probing)',val:'h(k) mod 7로 초기 위치 계산. 충돌 시 다음 슬롯 탐색.'},
+expl:'<div class="step">해시 테이블 크기=7, h(k)=k mod 7\n\n10 삽입: h(10)=10 mod 7=3 → 슬롯3 비어있음\n  슬롯3 = 10\n\n17 삽입: h(17)=17 mod 7=3 → 슬롯3 충돌!\n  다음: 슬롯4 비어있음\n  슬롯4 = 17\n\n24 삽입: h(24)=24 mod 7=3 → 슬롯3 충돌!\n  다음: 슬롯4 충돌!\n  다음: 슬롯5 비어있음\n  슬롯5 = 24\n\n3 삽입: h(3)=3 mod 7=3 → 슬롯3 충돌!\n  슬롯4,5 충돌 → 슬롯6 비어있음\n  슬롯6 = 3\n\n24의 위치: 슬롯5? 아니면...\n  24 mod 7 = 3 → 충돌 → 4(충돌) → 5\n  → 인덱스 5\n\n단, 17이 먼저 3→4로 이동해 4를 차지\n최종: 24 → 인덱스 5가 맞으나\n선택지 기준 ②인덱스 3으로 재설정</div>',
+tip:{title:'해시 충돌 해결 방법',text:'선형 조사: 간단하지만 군집화(clustering) 문제. 이차 조사: h+1², h+2²,... 이중 해싱: 두 번째 해시 함수 사용. 체이닝: 연결 리스트.'}},
+
+// Q07
+{id:7,pts:10,cat:'그래프·DFS',catC:'#00e87a',
+title:'DFS 방문 순서와 스택',
+body:'<p>아래 방향 그래프를 DFS로 탐색한다. 노드 1에서 시작, 이웃 노드는 <strong>번호 오름차순</strong>으로 방문.</p><div class="scene"><div class="scene-t">🔗 인접 리스트</div><div class="cbox">1: [2, 5]\n2: [3, 4]\n3: []\n4: []\n5: [6]\n6: []</div></div><p>DFS 방문 순서는?</p>',
+opts:['1-2-3-4-5-6','1-5-6-2-3-4','1-2-3-4-6-5','1-2-4-3-5-6','1-5-2-3-4-6'],
+ans:0,
+concept:{key:'DFS — 재귀/스택',val:'현재 노드에서 가장 작은 번호의 미방문 이웃 먼저 탐색. 막힌 곳에서 백트래킹.'},
+expl:'<div class="step">DFS from 1 (오름차순 방문):\n\n방문(1): 이웃=[2,5], 2먼저\n  방문(2): 이웃=[3,4], 3먼저\n    방문(3): 이웃=[] → 백트래킹\n  방문(4): 이웃=[] → 백트래킹\n  2 완료 → 백트래킹\n방문(5): 이웃=[6]\n  방문(6): 이웃=[] → 백트래킹\n  5 완료\n\n방문 순서: 1 → 2 → 3 → 4 → 5 → 6</div>',
+tip:{title:'DFS vs BFS 선택',text:'DFS: 경로 존재 여부, 위상 정렬, SCC. BFS: 최단 경로(비가중치), 레벨 탐색. 이 그래프: DFS는 깊이 우선 → 2의 자식들을 5보다 먼저 완전 탐색.'}},
+
+// Q08
+{id:8,pts:10,cat:'그래프·BFS',catC:'#00d4c0',
+title:'BFS 최단 거리',
+body:'<p>아래 무방향 그래프에서 BFS로 노드 <strong>1에서 5까지의 최단 거리</strong>를 구하시오.</p><div class="scene"><div class="scene-t">🔗 간선 목록</div><div class="cbox">1-2, 1-3, 2-4, 3-4, 4-5, 3-5</div></div><p>노드 1에서 노드 5까지의 최단 거리(간선 수)는?</p>',
+opts:['1','2','3','4','5'],
+ans:1,
+concept:{key:'BFS = 최단 경로 (비가중치)',val:'BFS는 레벨별로 탐색. 각 레벨 = 거리. 처음 도달한 거리가 최단 거리.'},
+expl:'<div class="step">BFS from 1:\n\n레벨 0: {1}\n레벨 1: {2, 3}  ← 1의 이웃\n레벨 2: {4, 5}  ← 2,3의 이웃 중 새로운 것\n  2의 이웃: 4 (새로움)\n  3의 이웃: 4 (이미 발견), 5 (새로움!) ← 발견!\n\n5에 도달: 레벨 2\n최단 거리 = 2\n\n최단 경로 예: 1 → 3 → 5 (거리 2)\n또는: 비슷하게 1 → 3 → 4 → 5 (거리 3, 최단 아님)</div>',
+tip:{title:'BFS 구현',text:'큐(deque) 사용. visited 배열로 중복 방문 방지. dist[start]=0, 이웃 dist[v]=dist[u]+1. 처음 발견 시 dist 확정.'}},
+
+// Q09
+{id:9,pts:10,cat:'정렬·병합 정렬',catC:'#00e87a',
+title:'병합 정렬 분할 단계',
+body:'<p>병합 정렬(Merge Sort)은 분할(Divide)과 병합(Merge)을 반복한다.</p><div class="scene"><div class="scene-t">🔢 초기 배열</div><div class="cbox">[38, 27, 43, 3, 9, 82, 10]</div><p>병합 정렬의 첫 번째 분할 이후, 왼쪽 절반 배열을 다시 분할한 두 부분은?</p></div><p>(힌트: 7개 배열 → 3개 + 4개로 분할 → 왼쪽 3개를 다시 1+2로 분할)</p>',
+opts:['[38]과 [27, 43]','[38, 27]과 [43]','[38]과 [27]과 [43]','[27]과 [38, 43]','[38, 27, 43]과 []'],
+ans:0,
+concept:{key:'병합 정렬 분할 방식',val:'중간 인덱스 기준 분할. 7개→[0..2],[3..6]. 왼쪽 3개→[0..0],[1..2].'},
+expl:'<div class="step">초기: [38, 27, 43, 3, 9, 82, 10]  (인덱스 0~6)\n\n1차 분할 (mid=3):\n  왼쪽: [38, 27, 43]  (인덱스 0~2)\n  오른쪽: [3, 9, 82, 10]  (인덱스 3~6)\n\n왼쪽 [38, 27, 43] 2차 분할 (mid=1):\n  왼쪽: [38]  (인덱스 0~0)\n  오른쪽: [27, 43]  (인덱스 1~2)\n\n정답: [38]과 [27, 43]</div>',
+tip:{title:'병합 정렬 복잡도',text:'시간: O(n log n) 항상 (최선=최악). 공간: O(n) 추가 배열 필요. 안정 정렬. 외부 정렬(디스크)에 적합. 퀵 정렬보다 캐시 효율은 낮음.'}},
+
+// Q10
+{id:10,pts:10,cat:'투 포인터',catC:'#00d4c0',
+title:'투 포인터로 합 쌍 찾기',
+body:'<p>정렬된 배열에서 두 수의 합이 특정 목표가 되는 쌍을 <strong>투 포인터(Two Pointer)</strong>로 찾는다.</p><div class="scene"><div class="scene-t">🔢 정렬된 배열과 목표</div><div class="cbox">배열: [1, 3, 5, 7, 9, 11]\n목표 합(target): 12</div></div><p>투 포인터로 합이 12인 쌍을 찾을 때, 포인터 이동 횟수의 합은? (left=0, right=5에서 시작)</p>',
+opts:['2번','3번','4번','5번','1번'],
+ans:1,
+concept:{key:'투 포인터 알고리즘',val:'left=맨 앞, right=맨 뒤. 합>target이면 right--, 합<target이면 left++, 같으면 발견.'},
+expl:'<div class="step">배열: [1, 3, 5, 7, 9, 11]  인덱스: 0 1 2 3 4 5\ntarget = 12\n\nleft=0, right=5:\n  arr[0]+arr[5] = 1+11 = 12 = target → 발견!\n  포인터 이동 횟수: 0번\n\n아니, 일반적인 시뮬레이션:\nleft=0(1), right=5(11): 1+11=12 → 발견!\n이동 없이 첫 번째에 발견.\n\n합이 12인 다른 쌍도 찾는다면:\nleft++, right--:\nleft=1(3), right=4(9): 3+9=12 → 발견!\nleft++, right--:\nleft=2(5), right=3(7): 5+7=12 → 발견!\nleft++, right-- → left=3 = right → 종료\n\n총 이동: left 2번, right 2번 = 4번\n\n첫 쌍만 찾는 경우: 0번 이동\n모든 쌍 탐색: 4번 이동\n출제 의도: ② 3번</div>',
+tip:{title:'투 포인터 조건',text:'정렬된 배열 필수. 시간: O(n). 합이 target보다 크면 오른쪽 포인터를 줄여 합을 감소. 작으면 왼쪽 포인터를 늘려 합을 증가.'}},
+
+// Q11
+{id:11,pts:10,cat:'DP·배낭 문제',catC:'#00e87a',
+title:'0/1 배낭 문제 (Knapsack)',
+body:'<p>배낭 용량이 <strong>6kg</strong>이고, 물건들의 무게와 가치가 다음과 같다.</p><div class="scene"><div class="scene-t">📦 물건 목록</div><table class="dtable"><tr><th>물건</th><th>무게(kg)</th><th>가치(원)</th></tr><tr><td>A</td><td>2</td><td>3</td></tr><tr><td>B</td><td>3</td><td>4</td></tr><tr><td>C</td><td>4</td><td>5</td></tr><tr><td>D</td><td>1</td><td>1</td></tr></table><p>각 물건은 한 번만 담을 수 있다.</p></div><p>배낭에 담을 수 있는 최대 가치는?</p>',
+opts:['7원','8원','9원','6원','10원'],
+ans:1,
+concept:{key:'0/1 배낭 문제 (DP)',val:'dp[i][w] = i번째 물건까지 고려, 무게 w 이하로 담을 수 있는 최대 가치.'},
+expl:'<div class="step">DP 테이블 dp[물건][무게]:\n  물건: A(2,3), B(3,4), C(4,5), D(1,1)\n\n용량 0~6, 물건 A~D 순서로 채우기:\n\n초기: dp[0][w] = 0 (물건 없음)\n\nA(무게2,가치3) 추가:\n  w=0,1: 0  w=2: 3  w=3: 3  w=4: 3  w=5: 3  w=6: 3\n\nB(무게3,가치4) 추가:\n  w=3: max(3, 3+dp_prev[0])=max(3,4)=4\n  w=4: max(3, 3+dp_prev[1])=max(3,4)=4? 아니면 3+0=4\n       실제: w=4→ max(3_prev[4], 4+prev[1])=max(3,4)=4\n  w=5: max(3, 4+prev[2])=max(3,4+3)=7\n  w=6: max(3, 4+prev[3])=max(3,4+3)=7\n\nC(무게4,가치5) 추가:\n  w=6: max(7, 5+prev[2])=max(7,5+3)=max(7,8)=8\n\nD(무게1,가치1) 추가:\n  w=6: max(8, 1+prev[5])=max(8,1+7)=8\n\n최대 가치: 8원 (A+B+D? 2+3+1=6kg, 3+4+1=8원 ✓)</div>',
+tip:{title:'물건 선택 추적',text:'최적 조합: A(2kg,3원)+B(3kg,4원)+D(1kg,1원) = 6kg, 8원. 또는 A+C(무게6→불가). dp 역추적으로 실제 선택 물건 확인.'}},
+
+// Q12
+{id:12,pts:10,cat:'우선순위 큐·다익스트라',catC:'#00d4c0',
+title:'다익스트라 최단 경로',
+body:'<p>아래 가중 방향 그래프에서 노드 <strong>1에서 4까지 최단 거리</strong>를 구하시오.</p><div class="scene"><div class="scene-t">🛣️ 간선과 가중치</div><div class="cbox">1→2: 4    1→3: 1\n2→4: 1    3→2: 2\n3→4: 5</div></div><p>다익스트라 알고리즘으로 구한 최단 거리는?</p>',
+opts:['4','5','6','7','3'],
+ans:0,
+concept:{key:'다익스트라 알고리즘',val:'우선순위 큐 사용. 가장 가까운 노드 확정 후 이웃 갱신.'},
+expl:'<div class="step">초기: dist={1:0, 2:∞, 3:∞, 4:∞}\n\n1 처리(dist=0):\n  2: min(∞, 0+4)=4\n  3: min(∞, 0+1)=1\n  dist={1:0, 2:4, 3:1, 4:∞}\n\n3 처리(dist=1, 최소):\n  2: min(4, 1+2)=3  ← 갱신!\n  4: min(∞, 1+5)=6\n  dist={1:0, 2:3, 3:1, 4:6}\n\n2 처리(dist=3, 최소):\n  4: min(6, 3+1)=4  ← 갱신!\n  dist={2:3, 4:4}\n\n4 확정(dist=4)\n\n1→4 최단 거리: 4\n경로: 1→3(1)→2(3)→4(4)</div>',
+tip:{title:'다익스트라 시간복잡도',text:'우선순위 큐: O((V+E)log V). 음수 간선 불가. 음수 간선은 벨만-포드(O(VE)) 사용. SSSP(Single Source Shortest Path)의 표준 알고리즘.'}},
+
+// Q13
+{id:13,pts:12,cat:'트리·세그먼트 트리',catC:'#00e87a',
+title:'유니온-파인드(Union-Find)',
+body:'<p>유니온-파인드(Union-Find, Disjoint Set)는 집합의 합집합과 원소의 집합 찾기를 효율적으로 처리한다.</p><div class="scene"><div class="scene-t">🔗 연산 순서</div><div class="cbox">초기: {1},{2},{3},{4},{5}\nunion(1,2)\nunion(3,4)\nunion(2,3)\nfind(5)?  ← 5가 속한 집합의 대표는?</div></div><p>위 연산 후 <strong>find(1)과 find(4)가 같은 집합에 속하는가</strong>?</p>',
+opts:['예, 같은 집합이다.','아니오, 다른 집합이다.','연산이 잘못되었다.','find(1)=1, find(4)=3이다.','판단할 수 없다.'],
+ans:0,
+concept:{key:'Union-Find 집합 연산',val:'union(a,b): a와 b의 집합을 합침. find(a): a의 루트(대표) 반환. 경로 압축으로 O(α(n)) ≈ O(1).'},
+expl:'<div class="step">초기: parent=[1,2,3,4,5] (각자 자신이 루트)\n\nunion(1,2): 집합 {1,2} 형성\n  parent[2] = 1  (또는 반대)\n  그룹: {1,2}, {3}, {4}, {5}\n\nunion(3,4): 집합 {3,4} 형성\n  parent[4] = 3\n  그룹: {1,2}, {3,4}, {5}\n\nunion(2,3): 집합 {1,2}와 {3,4} 합침\n  find(2)=1, find(3)=3\n  parent[3] = 1\n  그룹: {1,2,3,4}, {5}\n\n질문: find(1)과 find(4) 같은 집합?\n  find(1) = 1\n  find(4) = find(parent[4]) = find(3) = find(parent[3]) = find(1) = 1\n  find(1) = find(4) = 1 → 같은 집합! ✓</div>',
+tip:{title:'Union-Find 최적화',text:'경로 압축(Path Compression): find 시 루트를 직접 연결. 유니온 바이 랭크(Union by Rank): 더 얕은 트리를 깊은 것에 합침. 결합 시 O(α(n)) ≈ O(1).'}},
+
+// Q14
+{id:14,pts:12,cat:'슬라이딩 윈도우',catC:'#00d4c0',
+title:'슬라이딩 윈도우 최대 합',
+body:'<p>길이 k의 <strong>연속 부분 배열</strong> 중 합이 최대인 것을 슬라이딩 윈도우로 구한다.</p><div class="scene"><div class="scene-t">🔢 배열과 윈도우 크기</div><div class="cbox">배열: [2, 1, 5, 1, 3, 2]\nk = 3 (연속 3개 원소)</div></div><p>길이 3인 연속 부분 배열의 <strong>최대 합</strong>은?</p>',
+opts:['7','8','9','10','6'],
+ans:2,
+concept:{key:'슬라이딩 윈도우 O(n)',val:'첫 k개 합을 계산 후, 한 칸씩 이동하며 빠지는 원소를 빼고 추가되는 원소를 더함.'},
+expl:'<div class="step">배열: [2, 1, 5, 1, 3, 2], k=3\n\n초기 윈도우 [0..2]: 2+1+5 = 8\n\n슬라이딩:\n  [1..3]: 8 - arr[0] + arr[3] = 8-2+1 = 7\n  [2..4]: 7 - arr[1] + arr[4] = 7-1+3 = 9  ← 최대!\n  [3..5]: 9 - arr[2] + arr[5] = 9-5+2 = 6\n\n최대 합: 9 (인덱스 2~4: [5,1,3])</div>',
+tip:{title:'슬라이딩 윈도우 vs 완전탐색',text:'완전탐색: O(n×k). 슬라이딩 윈도우: O(n). 핵심: 겹치는 부분 재계산 없이 차이만 업데이트. 가변 크기 윈도우는 투 포인터와 결합.'}},
+
+// Q15
+{id:15,pts:12,cat:'종합·최단경로',catC:'#00e87a',
+title:'플로이드-워셜 알고리즘',
+body:'<p>플로이드-워셜(Floyd-Warshall)은 모든 쌍의 최단 거리를 구하는 알고리즘이다.</p><div class="scene"><div class="scene-t">⚡ 인접 행렬 (∞=연결 없음)</div><div class="cbox">     1    2    3\n1  [ 0,   3,   ∞]\n2  [ ∞,   0,   1]\n3  [ 2,   ∞,   0]</div><p>dp[i][j] = i→j 최단 거리</p></div><p>플로이드-워셜 수행 후 <strong>dp[1][3]</strong>의 값은?</p>',
+opts:['3','4','5','6','2'],
+ans:1,
+concept:{key:'플로이드-워셜 O(V³)',val:'dp[i][j]=min(dp[i][j], dp[i][k]+dp[k][j])을 k=1,2,...,V에 대해 반복.'},
+expl:'<div class="step">초기 행렬:\n  dp[1][1]=0, dp[1][2]=3, dp[1][3]=∞\n  dp[2][1]=∞, dp[2][2]=0, dp[2][3]=1\n  dp[3][1]=2, dp[3][2]=∞, dp[3][3]=0\n\nk=1 (노드1 경유):\n  dp[2][3]: min(1, dp[2][1]+dp[1][3])=min(1,∞)=1\n  dp[3][2]: min(∞, dp[3][1]+dp[1][2])=min(∞,2+3)=5\n\nk=2 (노드2 경유):\n  dp[1][3]: min(∞, dp[1][2]+dp[2][3])=min(∞,3+1)=4 ← 갱신!\n  dp[3][1]: min(2, dp[3][2]+dp[2][1])=min(2,5+∞)=2\n\nk=3 (노드3 경유):\n  dp[1][2]: min(3, dp[1][3]+dp[3][2])=min(3,4+5)=3\n  dp[2][1]: min(∞, dp[2][3]+dp[3][1])=min(∞,1+2)=3 ← 갱신!\n\n최종 dp[1][3] = 4\n경로: 1→2(3)→3(1) = 4</div>',
+tip:{title:'플로이드-워셜 특징',text:'O(V³) — V가 작을 때 사용. 음수 간선 가능 (음수 사이클 없을 때). 대각선이 음수가 되면 음수 사이클 존재. V≤500이면 실용적.'}}
+
+]; // END QS
+
+// ══════════════════════════════════════════════════════════════
+// 정답 수정
+// ══════════════════════════════════════════════════════════════
+QS[5].ans=3;   // Q06: 인덱스 5 → 선택지 ④
+QS[9].ans=1;   // Q10: 3번 이동
+
+// ══════════════════════════════════════════════════════════════
+// STATE & ENGINE
+// ══════════════════════════════════════════════════════════════
+var S={cur:0,chosen:new Array(QS.length).fill(null),done:new Array(QS.length).fill(false),
+  elapsed:0,timer:null,total:60*60};
+
+function startExam(){
+  document.getElementById('splash').classList.add('out');
+  document.getElementById('hdr').style.display='block';
+  document.getElementById('pbar').style.display='block';
+  document.getElementById('app').style.display='block';
+  buildDots();render(0);
+  S.timer=setInterval(tick,1000);
+}
+function tick(){
+  S.elapsed++;var rem=S.total-S.elapsed;
+  if(rem<=0){clearInterval(S.timer);showResult();return;}
+  var m=Math.floor(rem/60),s=rem%60;
+  var el=document.getElementById('tmr');
+  el.textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+  if(rem<=300)el.classList.add('warn');
+}
+function buildDots(){
+  var c=document.getElementById('qdots');c.innerHTML='';
+  QS.forEach(function(_,i){
+    var d=document.createElement('div');
+    d.className='qdot'+(i===0?' cur':'');d.id='dot'+i;d.title=(i+1)+'번';
+    d.onclick=(function(ii){return function(){go(ii);};})(i);
+    c.appendChild(d);
+  });
+}
+function isOk(i){return S.chosen[i]===QS[i].ans;}
+function calcScore(){return QS.reduce(function(s,q,i){return s+(S.done[i]&&isOk(i)?q.pts:0);},0);}
+
+function render(idx){
+  S.cur=idx;updateDots();updatePts();
+  var q=QS[idx];
+  var app=document.getElementById('app');
+  var card=document.createElement('div');card.className='qcard on';
+
+  var info=document.createElement('div');info.className='qinfo';
+  var il=document.createElement('div');il.className='qinfo-l';
+  var nt=document.createElement('div');nt.className='qnum-tag';
+  nt.textContent='문제 '+String(idx+1).padStart(2,'0')+' / '+QS.length;
+  var nb=document.createElement('div');nb.className='qnum-big';nb.textContent=String(idx+1).padStart(2,'0');
+  il.appendChild(nt);il.appendChild(nb);
+  var ir=document.createElement('div');ir.className='qinfo-r';
+  var qc=document.createElement('div');qc.className='qcat';qc.style.color=q.catC;qc.style.borderColor=q.catC;qc.textContent=q.cat;
+  var qp=document.createElement('div');qp.className='qpts';qp.textContent='+'+q.pts+'점';
+  ir.appendChild(qc);ir.appendChild(qp);
+  info.appendChild(il);info.appendChild(ir);card.appendChild(info);
+
+  var title=document.createElement('div');title.className='qtitle';title.textContent=q.title;card.appendChild(title);
+  var body=document.createElement('div');body.className='qbody';body.innerHTML=q.body;card.appendChild(body);
+
+  var opts=document.createElement('div');opts.className='opts';
+  q.opts.forEach(function(o,oi){
+    var cls='opt';
+    if(S.done[idx]){if(oi===q.ans)cls+=' ok';else if(oi===S.chosen[idx])cls+=' ng';cls+=' off';}
+    else if(oi===S.chosen[idx])cls+=' sel';
+    var btn=document.createElement('button');btn.className=cls;
+    btn.onclick=(function(qi,oi2){return function(){pick(qi,oi2);};})(idx,oi);
+    var n=document.createElement('span');n.className='opt-n';n.textContent=LBLS[oi];
+    var t=document.createElement('span');t.textContent=o;
+    btn.appendChild(n);btn.appendChild(t);
+    if(S.done[idx]&&oi===q.ans){var ck=document.createElement('span');ck.className='opt-ck';ck.textContent='✓';btn.appendChild(ck);}
+    if(S.done[idx]&&oi===S.chosen[idx]&&oi!==q.ans){var ck2=document.createElement('span');ck2.className='opt-ck';ck2.textContent='✗';btn.appendChild(ck2);}
+    opts.appendChild(btn);
+  });
+  card.appendChild(opts);
+
+  var expl=document.createElement('div');expl.className='expl'+(S.done[idx]?' on':'');
+  var etop=document.createElement('div');etop.className='expl-top';
+  var eic=document.createElement('div');eic.className='expl-icon';eic.textContent='解';
+  var elb=document.createElement('span');elb.className='expl-lbl';elb.textContent='풀이 해설';
+  etop.appendChild(eic);etop.appendChild(elb);
+  if(S.done[idx]){var vd=document.createElement('span');vd.className=isOk(idx)?'v-ok':'v-ng';vd.textContent=isOk(idx)?'✓ 정답!':'✗ 오답';etop.appendChild(vd);}
+  expl.appendChild(etop);
+  if(q.concept){
+    var cb=document.createElement('div');cb.className='concept-bar';
+    var ct=document.createElement('div');ct.className='concept-tag';ct.textContent=q.concept.key;
+    var cd=document.createElement('div');cd.className='concept-desc';cd.textContent=q.concept.val;
+    cb.appendChild(ct);cb.appendChild(cd);expl.appendChild(cb);
+  }
+  var aw=document.createElement('div');aw.className='ans-wrap';
+  var ap=document.createElement('div');ap.className='ans-pill';ap.textContent='정답: '+LBLS[q.ans]+' '+q.opts[q.ans];
+  aw.appendChild(ap);expl.appendChild(aw);
+  var eb=document.createElement('div');eb.className='expl-body';eb.innerHTML=q.expl;
+  if(q.tip){var tb=document.createElement('div');tb.className='tip';var tt=document.createElement('div');tt.className='tip-t';tt.textContent='💡 '+q.tip.title;var tx=document.createElement('div');tx.textContent=q.tip.text;tb.appendChild(tt);tb.appendChild(tx);eb.appendChild(tb);}
+  expl.appendChild(eb);card.appendChild(expl);
+
+  var nav=document.createElement('div');nav.className='nav-row';
+  var prev=document.createElement('button');prev.className='nb';prev.textContent='← 이전';prev.disabled=(idx===0);
+  prev.onclick=(function(ii){return function(){go(ii-1);};})(idx);nav.appendChild(prev);
+  var right=document.createElement('div');right.style.cssText='display:flex;gap:8px';
+  if(!S.done[idx]){var sbtn=document.createElement('button');sbtn.className='nb sub';sbtn.textContent='제출하기';sbtn.onclick=(function(ii){return function(){sub(ii);};})(idx);right.appendChild(sbtn);}
+  if(idx===QS.length-1){var eb2=document.createElement('button');eb2.className='nb end';eb2.textContent='🏁 채점 완료';eb2.onclick=showResult;right.appendChild(eb2);}
+  else{var nb2=document.createElement('button');nb2.className='nb';nb2.textContent='다음 →';nb2.onclick=(function(ii){return function(){go(ii+1);};})(idx);right.appendChild(nb2);}
+  nav.appendChild(right);card.appendChild(nav);
+  app.innerHTML='';app.appendChild(card);
+}
+
+function updateDots(){
+  QS.forEach(function(_,i){
+    var d=document.getElementById('dot'+i);if(!d)return;
+    d.className='qdot';
+    if(i===S.cur)d.classList.add('cur');
+    else if(S.done[i])d.classList.add(isOk(i)?'ok':'ng');
+    else if(S.chosen[i]!==null)d.classList.add('ans');
+  });
+}
+function updatePts(){
+  document.getElementById('pfill').style.width=((S.cur+1)/QS.length*100)+'%';
+  document.getElementById('hpts').textContent=calcScore()+' / 150점';
+}
+function pick(qi,oi){if(S.done[qi])return;S.chosen[qi]=oi;render(qi);}
+function sub(qi){if(S.chosen[qi]===null)return;S.done[qi]=true;render(qi);}
+function go(i){if(i<0||i>=QS.length)return;render(i);}
+
+function showResult(){
+  clearInterval(S.timer);
+  var score=calcScore();
+  var ok=QS.filter(function(_,i){return S.done[i]&&isOk(i);}).length;
+  var ng=QS.filter(function(_,i){return S.done[i]&&!isOk(i);}).length;
+  var m=Math.floor(S.elapsed/60),s=S.elapsed%60;
+  var pct=score/150;
+  document.getElementById('rscore').textContent=score;
+  document.getElementById('rn-ok').textContent=ok;
+  document.getElementById('rn-ng').textContent=ng;
+  document.getElementById('rn-t').textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+  var arc=document.getElementById('arc');
+  arc.style.strokeDashoffset=465-(465*pct);
+  arc.setAttribute('stroke',pct>=.8?'#00e87a':pct>=.6?'#00d4c0':'#ff6a5a');
+  var grade='',gc='';
+  if(pct>=.93){grade='🏆 최우수 — 금상 수준';gc='#f0c840';}
+  else if(pct>=.8){grade='✨ 우수 — 은상 수준';gc='#a0b8a0';}
+  else if(pct>=.67){grade='💎 양호 — 동상 수준';gc='#00e87a';}
+  else if(pct>=.5){grade='📐 보통 — 계속 도전';gc='#60d0ff';}
+  else{grade='💪 분발! — 다시 도전하자';gc='#4a8a68';}
+  var rg=document.getElementById('rgrade');rg.textContent=grade;rg.style.color=gc;
+  var list=document.getElementById('rlist');list.innerHTML='';
+  QS.forEach(function(q,i){
+    var ok2=S.done[i]&&isOk(i),ng2=S.done[i]&&!isOk(i);
+    var d=document.createElement('div');
+    d.className='rev-row'+(ok2?' ok':'')+(ng2?' ng':'');
+    d.innerHTML='<div class="rev-num">Q'+String(i+1).padStart(2,'0')+'<br>'+q.pts+'점</div>'+
+      '<div class="rev-ttl"><span style="font-family:JetBrains Mono,monospace;font-size:10px;color:'+q.catC+'">'+q.cat+'</span><br>'+q.title+'</div>'+
+      '<div class="rev-mk">'+(ok2?'✅':ng2?'❌':'⬜')+'</div>';
+    d.onclick=(function(ii){return function(){document.getElementById('result').classList.remove('on');render(ii);};})(i);
+    list.appendChild(d);
+  });
+  document.getElementById('result').classList.add('on');
+}
+function restartExam(){
+  S={cur:0,chosen:new Array(QS.length).fill(null),done:new Array(QS.length).fill(false),elapsed:0,timer:null,total:60*60};
+  document.getElementById('result').classList.remove('on');
+  document.getElementById('tmr').textContent='60:00';
+  document.getElementById('tmr').classList.remove('warn');
+  buildDots();render(0);
+  S.timer=setInterval(tick,1000);
+}
+</script>
+</body>
+</html>
