@@ -3,442 +3,236 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>세영코딩 알고리즘 & 수학 통합 허브</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;800&display=swap" rel="stylesheet">
+    <title>SY LAB | 통합 학습 플랫폼</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
     <style>
         :root {
             --primary: #2563eb;
-            --primary-light: #dbeafe;
-            --dark: #0f172a;
-            --bg: #f8fafc;
-            --card: #ffffff;
-            --accent: #f59e0b;
-            --sidebar-width: 280px;
+            --bg: #f1f5f9;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-sub: #64748b;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Pretendard', sans-serif; background: var(--bg); color: var(--text-main); line-height: 1.6; }
 
-        body {
-            font-family: 'Pretendard', sans-serif;
-            background-color: var(--bg);
-            color: var(--dark);
-            display: flex;
-            min-height: 100vh;
-        }
+        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+        
+        header { text-align: center; margin-bottom: 50px; }
+        header h1 { font-size: 2.2rem; color: var(--primary); margin-bottom: 10px; }
+        header p { color: var(--text-sub); }
 
-        /* --- 사이드바 --- */
-        nav {
-            width: var(--sidebar-width);
-            background-color: var(--dark);
-            color: white;
-            padding: 30px 20px;
-            position: fixed;
-            height: 100vh;
-            overflow-y: auto;
-            z-index: 100;
-        }
-
-        nav h2 {
-            font-size: 1.5rem;
-            font-weight: 800;
-            margin-bottom: 40px;
-            color: var(--primary-light);
-            text-align: center;
-        }
-
-        .nav-group {
-            margin-bottom: 30px;
-        }
-
-        .nav-group-title {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #64748b;
-            margin-bottom: 10px;
-            padding-left: 10px;
-        }
-
-        nav a {
-            display: flex;
+        /* 아코디언 스타일 */
+        .category-group { margin-bottom: 20px; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }
+        
+        .category-header { 
+            background: var(--card-bg); 
+            padding: 20px 25px; 
+            cursor: pointer; 
+            display: flex; 
+            justify-content: space-between; 
             align-items: center;
-            padding: 12px 15px;
-            color: #cbd5e1;
-            text-decoration: none;
-            border-radius: 8px;
-            margin-bottom: 5px;
-            transition: all 0.2s;
+            transition: background 0.3s;
         }
-
-        nav a i {
-            margin-right: 12px;
-            width: 20px;
-            text-align: center;
-        }
-
-        nav a:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            color: white;
-        }
-
-        /* --- 메인 콘텐츠 --- */
-        main {
-            margin-left: var(--sidebar-width);
-            flex: 1;
-            padding: 40px;
-            width: calc(100% - var(--sidebar-width));
-        }
-
-        .header-banner {
-            background: linear-gradient(135deg, var(--primary), #1e40af);
-            padding: 60px 40px;
-            border-radius: 24px;
-            color: white;
-            margin-bottom: 40px;
-            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.2);
-        }
-
-        .header-banner h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-        }
-
-        /* --- 섹션 스타일 --- */
-        section {
-            margin-bottom: 60px;
-            scroll-margin-top: 40px;
-        }
-
-        .section-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 25px;
-            gap: 15px;
-        }
-
-        .section-header h2 {
-            font-size: 1.8rem;
-            font-weight: 800;
-        }
-
-        .section-header .line {
-            flex: 1;
-            height: 2px;
-            background: #e2e8f0;
-        }
-
-        /* --- 그리드 레이아웃 --- */
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
-        /* --- 카드 컴포넌트 --- */
-        .card {
-            background: var(--card);
-            border-radius: 16px;
-            padding: 24px;
-            border: 1px solid #e2e8f0;
-            text-decoration: none;
-            color: inherit;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.06);
-            border-color: var(--primary);
-        }
-
-        .card-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 15px;
-        }
-
-        .card-icon {
-            width: 45px;
-            height: 45px;
-            background: var(--primary-light);
-            color: var(--primary);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-        }
-
-        .card-tag {
-            font-size: 0.75rem;
-            font-weight: 600;
-            padding: 4px 10px;
-            border-radius: 20px;
-            background: #f1f5f9;
-            color: #64748b;
-        }
-
-        .card h3 {
-            font-size: 1.2rem;
-            margin-bottom: 10px;
-            line-height: 1.4;
-        }
-
-        .card p {
-            color: #64748b;
-            font-size: 0.95rem;
-            margin-bottom: 20px;
-        }
-
-        .card-footer {
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        /* --- 확장형 메뉴 (Accordion) 스타일 --- */
-        .expand-list {
-            list-style: none;
-        }
-
-        .expand-item {
-            background: white;
-            border-radius: 12px;
-            margin-bottom: 10px;
-            border: 1px solid #e2e8f0;
-            overflow: hidden;
-        }
-
-        .expand-trigger {
-            padding: 18px 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .expand-trigger:hover { background: #f8fafc; }
-
-        .expand-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: all 0.3s ease-out;
+        .category-header:hover { background: #f8fafc; }
+        .category-header h2 { font-size: 1.25rem; display: flex; align-items: center; gap: 15px; }
+        .category-header i.main-icon { color: var(--primary); width: 25px; }
+        
+        .category-content { 
+            max-height: 0; 
+            overflow: hidden; 
+            transition: max-height 0.5s ease-out; 
             background: #fafafa;
         }
+        
+        /* 메뉴 활성화 상태 (Hover 또는 클래스 추가 시) */
+        .category-group:hover .category-content { max-height: 1500px; padding-bottom: 20px; }
+        .category-group:hover .arrow { transform: rotate(180deg); }
 
-        .expand-item:hover .expand-content {
-            max-height: 500px;
-            padding: 20px 25px;
-            border-top: 1px solid #f1f5f9;
+        .link-grid { display: grid; grid-template-columns: 1fr; gap: 10px; padding: 0 20px; }
+        .link-item { 
+            text-decoration: none; 
+            color: var(--text-main); 
+            background: white; 
+            padding: 15px 20px; 
+            border-radius: 10px; 
+            border: 1px solid #e2e8f0; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            transition: all 0.2s;
         }
+        .link-item:hover { border-color: var(--primary); background: var(--primary); color: white; transform: translateX(10px); }
+        .link-item i { font-size: 0.8rem; opacity: 0.7; }
+        .badge { font-size: 0.7rem; padding: 3px 8px; border-radius: 5px; background: #e2e8f0; color: #475569; margin-left: 10px; }
+        .link-item:hover .badge { background: rgba(255,255,255,0.2); color: white; }
 
-        /* --- 반응형 --- */
-        @media (max-width: 1024px) {
-            nav { width: 80px; padding: 20px 10px; }
-            nav h2, .nav-group-title, nav a span { display: none; }
-            nav a { justify-content: center; padding: 15px; }
-            nav a i { margin-right: 0; font-size: 1.2rem; }
-            main { margin-left: 80px; width: calc(100% - 80px); padding: 20px; }
-            .sidebar-width { --sidebar-width: 80px; }
-        }
+        .arrow { transition: transform 0.3s; color: var(--text-sub); }
 
-        @media (max-width: 640px) {
-            nav { display: none; } /* 모바일에서는 하단 바 또는 햄버거 메뉴가 적합하지만 여기서는 본문 집중 */
-            main { margin-left: 0; width: 100%; }
-            .header-banner { padding: 40px 25px; }
-            .header-banner h1 { font-size: 1.8rem; }
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.6rem; }
         }
     </style>
 </head>
 <body>
 
-    <nav>
-        <h2>SY LAB Hub</h2>
-        
-        <div class="nav-group">
-            <div class="nav-group-title">Programming</div>
-            <a href="#section-c"><i class="fa-solid fa-code"></i> <span>C Programming</span></a>
+<div class="container">
+    <header>
+        <h1>SY LAB 통합 학습 센터</h1>
+        <p>카테고리를 선택하면 모든 학습 링크가 나타납니다.</p>
+    </header>
+
+    <!-- 1. C언어 마스터 -->
+    <div class="category-group">
+        <div class="category-header">
+            <h2><i class="fa-solid fa-code main-icon"></i> C언어 프로그래밍</h2>
+            <i class="fa-solid fa-chevron-down arrow"></i>
         </div>
-
-        <div class="nav-group">
-            <div class="nav-group-title">Algorithms</div>
-            <a href="#section-graph"><i class="fa-solid fa-diagram-project"></i> <span>Graph & Tree</span></a>
-            <a href="#section-math"><i class="fa-solid fa-infinity"></i> <span>Discrete Math</span></a>
+        <div class="category-content">
+            <div class="link-grid">
+                <a href="https://iioiinet-spec.github.io/SCM/" class="link-item">C 기본 / 입출력 / 제어문 <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="https://iioiinet-spec.github.io/SCM/arrp/" class="link-item">배열패턴 1 <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="https://iioiinet-spec.github.io/SCM/arrp2/" class="link-item">배열패턴 2 <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="https://iioiinet-spec.github.io/SCM/func/" class="link-item">함수 (func) <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="https://iioiinet-spec.github.io/SCM/pointer/" class="link-item">포인터 (pointer) <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="https://iioiinet-spec.github.io/SCM/struct/" class="link-item">구조체 기초 <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="https://iioiinet-spec.github.io/SCM/ts/" class="link-item">typedef struct <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="https://iioiinet-spec.github.io/SCM/sarr/" class="link-item">구조체 배열 <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="https://iioiinet-spec.github.io/SCM/tsf/" class="link-item">구조체 함수 전달 <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
         </div>
+    </div>
 
-        <div class="nav-group">
-            <div class="nav-group-title">Exams & Practice</div>
-            <a href="#section-exams"><i class="fa-solid fa-file-signature"></i> <span>KOI Mock Exams</span></a>
-            <a href="#section-practice"><i class="fa-solid fa-pen-to-square"></i> <span>Practice Sets</span></a>
+    <!-- 2. 그래프 & 트리 -->
+    <div class="category-group">
+        <div class="category-header">
+            <h2><i class="fa-solid fa-diagram-project main-icon"></i> 그래프 & 트리</h2>
+            <i class="fa-solid fa-chevron-down arrow"></i>
         </div>
-
-        <div class="nav-group">
-            <div class="nav-group-title">Community</div>
-            <a href="#section-vibe"><i class="fa-solid fa-palette"></i> <span>Vibe Coding</span></a>
+        <div class="category-content">
+            <div class="link-grid">
+                <a href="https://iioiinet-spec.github.io/G/" class="link-item">그래프 이론 Note <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="https://iioiinet-spec.github.io/GB/" class="link-item">그래프 기초 문제 <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="https://iioiinet-spec.github.io/G/gt30/" class="link-item">트리/그래프 문제 30선 <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="https://iioiinet-spec.github.io/study/dfsd/" class="link-item">DFS 서술형 대비 10선 <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="https://iioiinet-spec.github.io/study/bfsd/" class="link-item">BFS 서술형 대비 10선 <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="https://iioiinet-spec.github.io/study/1bfs/" class="link-item">BFS 기초 5문제 <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="https://iioiinet-spec.github.io/T/" class="link-item">트리 이론 Note <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="https://iioiinet-spec.github.io/graph/" class="link-item">기본 개념 완전 정복 <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="https://iioiinet-spec.github.io/tree/" class="link-item">증명 유형별 핵심본 <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
         </div>
-    </nav>
+    </div>
 
-    <main>
-        <header class="header-banner">
-            <h1>Learning Management Hub</h1>
-            <p>세영코딩연구소의 알고리즘, 이산수학, C언어 통합 학습 포털입니다.</p>
-        </header>
+    <!-- 3. 이산수학 이론 -->
+    <div class="category-group">
+        <div class="category-header">
+            <h2><i class="fa-solid fa-infinity main-icon"></i> 이산수학 이론</h2>
+            <i class="fa-solid fa-chevron-down arrow"></i>
+        </div>
+        <div class="category-content">
+            <div class="link-grid">
+                <a href="https://iioiinet-spec.github.io/dmath" class="link-item"><b>[메인] 이산수학 홈</b> <i class="fa-solid fa-house"></i></a>
+                <a href="https://iioiinet-spec.github.io/dmath/a" class="link-item">01. 정수론_기초 산술 <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="https://iioiinet-spec.github.io/dmath/b" class="link-item">02. 조합론 (Combinatorics) <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="https://iioiinet-spec.github.io/dmath/c" class="link-item">03. 그래프_트리 이론 <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="https://iioiinet-spec.github.io/dmath/d" class="link-item">04. 논리_알고리즘 사고 <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
 
-        <section id="section-c">
-            <div class="section-header">
-                <h2>C Programming Master</h2>
-                <div class="line"></div>
+    <!-- 4. 연습문제 (D0 ~ D9) -->
+    <div class="category-group">
+        <div class="category-header">
+            <h2><i class="fa-solid fa-book-open main-icon"></i> 이산수학 연습문제 (D0-D9)</h2>
+            <i class="fa-solid fa-chevron-down arrow"></i>
+        </div>
+        <div class="category-content">
+            <div class="link-grid">
+                <a href="https://iioiinet-spec.github.io/dmath/d0.html" class="link-item">D0. 기본문제 <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="https://iioiinet-spec.github.io/dmath/d1.html" class="link-item">D1. 경우의 수 <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="https://iioiinet-spec.github.io/dmath/d2.html" class="link-item">D2. 그래프이론 <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="https://iioiinet-spec.github.io/dmath/d3.html" class="link-item">D3. 논리 및 게임정리 <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="https://iioiinet-spec.github.io/dmath/d4.html" class="link-item">D4. 논리와 불대수 <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="https://iioiinet-spec.github.io/dmath/d5.html" class="link-item">D5. 수학규칙과 알고리즘 <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="https://iioiinet-spec.github.io/dmath/d6.html" class="link-item">D6. 수학규칙과 알고리즘 2 <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="https://iioiinet-spec.github.io/dmath/d7.html" class="link-item">D7. 알고리즘과 자료구조 <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="https://iioiinet-spec.github.io/dmath/d8.html" class="link-item">D8. 정수론 <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="https://iioiinet-spec.github.io/dmath/d9.html" class="link-item">D9. 조합론 <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="https://iioiinet-spec.github.io/dmath/d10.html" class="link-item">집합과 관계정리 <i class="fa-solid fa-arrow-right"></i></a>
             </div>
-            <div class="card-grid">
-                <a href="https://iioiinet-spec.github.io/SCM/" class="card" target="_blank">
-                    <div class="card-top"><div class="card-icon"><i class="fa-solid fa-terminal"></i></div><span class="card-tag">Step 1</span></div>
-                    <div><h3>C 기본 및 입출력</h3><p>변수, 입출력 함수, 조건문, 반복문 등 프로그래밍의 기초를 다집니다.</p></div>
-                    <div class="card-footer">학습하기 <i class="fa-solid fa-chevron-right"></i></div>
-                </a>
-                <a href="https://iioiinet-spec.github.io/SCM/func/" class="card" target="_blank">
-                    <div class="card-top"><div class="card-icon"><i class="fa-solid fa-gears"></i></div><span class="card-tag">Step 2</span></div>
-                    <div><h3>함수와 포인터</h3><p>코드의 재사용성을 높이는 함수 정의와 C언어의 핵심인 메모리 접근을 배웁니다.</p></div>
-                    <div class="card-footer">학습하기 <i class="fa-solid fa-chevron-right"></i></div>
-                </a>
-                <a href="https://iioiinet-spec.github.io/SCM/struct/" class="card" target="_blank">
-                    <div class="card-top"><div class="card-icon"><i class="fa-solid fa-box-archive"></i></div><span class="card-tag">Step 3</span></div>
-                    <div><h3>구조체와 심화</h3><p>사용자 정의 데이터 타입인 구조체와 구조체 배열, 함수 전달을 마스터합니다.</p></div>
-                    <div class="card-footer">학습하기 <i class="fa-solid fa-chevron-right"></i></div>
-                </a>
-            </div>
-        </section>
+        </div>
+    </div>
 
-        <section id="section-graph">
-            <div class="section-header">
-                <h2>Graph & Tree Theory</h2>
-                <div class="line"></div>
+    <!-- 5. KOI 모의고사 -->
+    <div class="category-group">
+        <div class="category-header">
+            <h2><i class="fa-solid fa-file-signature main-icon"></i> KOI 실전 모의고사</h2>
+            <i class="fa-solid fa-chevron-down arrow"></i>
+        </div>
+        <div class="category-content">
+            <div class="link-grid">
+                <a href="https://iioiinet-spec.github.io/koi" class="link-item"><b>[메인] 모의고사 홈</b> <i class="fa-solid fa-house"></i></a>
+                <a href="https://iioiinet-spec.github.io/koi/e1" class="link-item">제 1회 모의고사 <i class="fa-solid fa-pen"></i></a>
+                <a href="https://iioiinet-spec.github.io/koi/e2" class="link-item">제 2회 모의고사 <i class="fa-solid fa-pen"></i></a>
+                <a href="https://iioiinet-spec.github.io/koi/e3" class="link-item">제 3회 모의고사 <i class="fa-solid fa-pen"></i></a>
+                <a href="https://iioiinet-spec.github.io/koi/e4" class="link-item">제 4회 모의고사 <i class="fa-solid fa-pen"></i></a>
             </div>
-            <div class="card-grid">
-                <a href="https://iioiinet-spec.github.io/G/" class="card" target="_blank">
-                    <div class="card-top"><div class="card-icon"><i class="fa-solid fa-circle-nodes"></i></div><span class="card-tag">Theory</span></div>
-                    <div><h3>그래프 이론 Note</h3><p>그래프의 정의, 인접 행렬, 인접 리스트 등 핵심 이론 요약본입니다.</p></div>
-                    <div class="card-footer">자료보기 <i class="fa-solid fa-chevron-right"></i></div>
-                </a>
-                <a href="https://iioiinet-spec.github.io/T/" class="card" target="_blank">
-                    <div class="card-top"><div class="card-icon"><i class="fa-solid fa-tree"></i></div><span class="card-tag">Theory</span></div>
-                    <div><h3>트리 이론 Note</h3><p>계층적 구조인 트리의 성질과 순회 방법(Pre/In/Post order)을 학습합니다.</p></div>
-                    <div class="card-footer">자료보기 <i class="fa-solid fa-chevron-right"></i></div>
-                </a>
-                <a href="https://iioiinet-spec.github.io/study/bfsd/" class="card" target="_blank">
-                    <div class="card-top"><div class="card-icon"><i class="fa-solid fa-magnifying-glass"></i></div><span class="card-tag">Practice</span></div>
-                    <div><h3>DFS & BFS 서술형 대비</h3><p>정올 서술형 문제를 위한 탐색 알고리즘 완벽 대비 10선입니다.</p></div>
-                    <div class="card-footer">문제풀기 <i class="fa-solid fa-chevron-right"></i></div>
-                </a>
-            </div>
-        </section>
+        </div>
+    </div>
 
-        <section id="section-math">
-            <div class="section-header">
-                <h2>Discrete Math Theory</h2>
-                <div class="line"></div>
+    <!-- 6. 이산수학 기타 -->
+    <div class="category-group">
+        <div class="category-header">
+            <h2><i class="fa-solid fa-calculator main-icon"></i> 진법 & 비트 & 조합론</h2>
+            <i class="fa-solid fa-chevron-down arrow"></i>
+        </div>
+        <div class="category-content">
+            <div class="link-grid">
+                <a href="https://iioiinet-spec.github.io/base/" class="link-item">진법 변환 문제집 <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="https://iioiinet-spec.github.io/study/sbs/" class="link-item">진수/비트마스크/부분집합 <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="https://iioiinet-spec.github.io/study/sbs2/" class="link-item">진수변환 + 비트연산 <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="https://iioiinet-spec.github.io/base/pc1/" class="link-item">그래프 + 경우의 수 30 <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="https://iioiinet-spec.github.io/base/pc2/" class="link-item">Graph & Combinatorics 30 <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="https://iioiinet-spec.github.io/GTP/" class="link-item">GTP 자료실 <i class="fa-solid fa-arrow-right"></i></a>
             </div>
-            <div class="expand-list">
-                <div class="expand-item">
-                    <div class="expand-trigger"><span>01. 정수론 (Number Theory)</span> <i class="fa-solid fa-chevron-down"></i></div>
-                    <div class="expand-content">
-                        <p>소수, 최대공약수, 합동식 등 기초 산술 원리</p>
-                        <a href="https://iioiinet-spec.github.io/dmath/a" style="color:var(--primary); text-decoration:none; font-weight:600;">강의 바로가기 →</a>
-                    </div>
-                </div>
-                <div class="expand-item">
-                    <div class="expand-trigger"><span>02. 조합론 (Combinatorics)</span> <i class="fa-solid fa-chevron-down"></i></div>
-                    <div class="expand-content">
-                        <p>순열, 조합, 포함-배제의 원리 등 경우의 수 계산</p>
-                        <a href="https://iioiinet-spec.github.io/dmath/b" style="color:var(--primary); text-decoration:none; font-weight:600;">강의 바로가기 →</a>
-                    </div>
-                </div>
-                <div class="expand-item">
-                    <div class="expand-trigger"><span>03. 논리 및 알고리즘 사고</span> <i class="fa-solid fa-chevron-down"></i></div>
-                    <div class="expand-content">
-                        <p>명제 논리, 수학적 귀납법, 알고리즘 증명</p>
-                        <a href="https://iioiinet-spec.github.io/dmath/d" style="color:var(--primary); text-decoration:none; font-weight:600;">강의 바로가기 →</a>
-                    </div>
-                </div>
-            </div>
-        </section>
+        </div>
+    </div>
 
-        <section id="section-exams">
-            <div class="section-header">
-                <h2>KOI Mock Exams & Practice</h2>
-                <div class="line"></div>
+    <!-- 7. 작품 전시회 -->
+    <div class="category-group">
+        <div class="category-header">
+            <h2><i class="fa-solid fa-palette main-icon"></i> 4월 바이브코딩 전시회</h2>
+            <i class="fa-solid fa-chevron-down arrow"></i>
+        </div>
+        <div class="category-content">
+            <div class="link-grid" style="grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));">
+                <a href="http://iioiinet-spec.github.io/v4/" class="link-item"><b>전체보기</b></a>
+                <a href="http://iioiinet-spec.github.io/v4/q1" class="link-item">1. 신*우</a>
+                <a href="http://iioiinet-spec.github.io/v4/q2" class="link-item">2. 김*빈</a>
+                <a href="http://iioiinet-spec.github.io/v4/q3" class="link-item">3. 조*든</a>
+                <a href="http://iioiinet-spec.github.io/v4/q4" class="link-item">4. 김*환</a>
+                <a href="http://iioiinet-spec.github.io/v4/q5" class="link-item">5. 박*성</a>
+                <a href="http://iioiinet-spec.github.io/v4/q6" class="link-item">6. 성*준</a>
+                <a href="http://iioiinet-spec.github.io/v4/q7" class="link-item">7. 박*환</a>
+                <a href="http://iioiinet-spec.github.io/v4/q8" class="link-item">8. 최*원</a>
+                <a href="http://iioiinet-spec.github.io/v4/q9" class="link-item">9. 석*린</a>
+                <a href="http://iioiinet-spec.github.io/v4/q10" class="link-item">10. 김*겸</a>
+                <a href="http://iioiinet-spec.github.io/v4/q11" class="link-item">11. 김*빈</a>
+                <a href="http://iioiinet-spec.github.io/v4/q12" class="link-item">12. 이*조</a>
+                <a href="http://iioiinet-spec.github.io/v4/q13" class="link-item">13. 김*빈</a>
+                <a href="http://iioiinet-spec.github.io/v4/q14" class="link-item">14. 유*빈</a>
+                <a href="http://iioiinet-spec.github.io/v4/q15" class="link-item">15. 백*호</a>
+                <a href="http://iioiinet-spec.github.io/v4/q16" class="link-item">16. 기*성</a>
             </div>
-            <div class="card-grid">
-                <a href="https://iioiinet-spec.github.io/koi" class="card" target="_blank" style="background: #eff6ff;">
-                    <div class="card-top"><div class="card-icon" style="background:#fff;"><i class="fa-solid fa-file-lines"></i></div><span class="card-tag">Special</span></div>
-                    <div><h3>정올 모의고사 시리즈</h3><p>제1회부터 제4회까지 실전 대비 이산수학 모의고사 모음입니다.</p></div>
-                    <div class="card-footer">응시하기 <i class="fa-solid fa-chevron-right"></i></div>
-                </a>
-                <a href="https://iioiinet-spec.github.io/dmath/d0.html" class="card" target="_blank">
-                    <div class="card-top"><div class="card-icon"><i class="fa-solid fa-list-check"></i></div><span class="card-tag">Set</span></div>
-                    <div><h3>문제집 D0 ~ D9</h3><p>기본문제부터 정수론, 조합론, 알고리즘 등 유형별 연습문제 세트입니다.</p></div>
-                    <div class="card-footer">전체보기 <i class="fa-solid fa-chevron-right"></i></div>
-                </a>
-                <a href="https://iioiinet-spec.github.io/base/" class="card" target="_blank">
-                    <div class="card-top"><div class="card-icon"><i class="fa-solid fa-calculator"></i></div><span class="card-tag">Math</span></div>
-                    <div><h3>진법 및 비트 연산</h3><p>진법 변환, 비트마스크, 부분집합 생성 등 필수 수학 테크닉입니다.</p></div>
-                    <div class="card-footer">학습하기 <i class="fa-solid fa-chevron-right"></i></div>
-                </a>
-            </div>
-        </section>
+        </div>
+    </div>
 
-        <section id="section-vibe">
-            <div class="section-header">
-                <h2>April Vibe Coding Exhibition</h2>
-                <div class="line"></div>
-            </div>
-            <div class="card-grid" style="grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));">
-                <a href="http://iioiinet-spec.github.io/v4/q1" class="card" target="_blank">
-                    <div><h3 style="font-size:1rem;">신*우 - 미디어아트</h3><p style="font-size:0.8rem;">예술적 감각의 코딩 작품</p></div>
-                </a>
-                <a href="http://iioiinet-spec.github.io/v4/q3" class="card" target="_blank">
-                    <div><h3 style="font-size:1rem;">조*든 - 큐브</h3><p style="font-size:0.8rem;">3D 공간 지각 작품</p></div>
-                </a>
-                <a href="http://iioiinet-spec.github.io/v4/q9" class="card" target="_blank">
-                    <div><h3 style="font-size:1rem;">석*린 - 타로</h3><p style="font-size:0.8rem;">창의적인 타로 게임</p></div>
-                </a>
-                <a href="http://iioiinet-spec.github.io/v4/" class="card" target="_blank" style="border-style: dashed; background: transparent;">
-                    <div style="text-align:center; padding: 10px;">전체 작품 보러가기 <i class="fa-solid fa-arrow-right"></i></div>
-                </a>
-            </div>
-        </section>
+    <footer style="text-align:center; margin-top:50px; color:var(--text-sub); font-size:0.9rem;">
+        &copy; 2024 Seyoung Coding Lab. All Rights Reserved.
+    </footer>
+</div>
 
-        <footer style="margin-top: 100px; padding-top: 40px; border-top: 1px solid #e2e8f0; text-align: center; color: #94a3b8; font-size: 0.9rem;">
-            <p>&copy; 2024 Seyoung Coding Lab. All rights reserved.</p>
-        </footer>
-    </main>
-
-    <script>
-        // 부드러운 스크롤 이동
-        document.querySelectorAll('nav a').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const targetId = this.getAttribute('href');
-                document.querySelector(targetId).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
-    </script>
 </body>
 </html>
