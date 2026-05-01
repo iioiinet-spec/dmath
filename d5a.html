@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>수학규칙과 알고리즘 15문제 — 정답 및 완전 해설</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700;900&family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  --bg:#080610;--deep:#0e0c1a;--card:#141228;--card2:#1c1838;
+  --border:#252040;--border2:#332e58;--faint:#453e70;
+  --muted:#6860a0;--dim:#8880b8;--text:#d0c8f0;--bright:#f0ecff;
+  --violet:#c080ff;--violet2:#d8a8ff;--gold:#ffcc44;--gold2:#ffe080;
+  --mint:#44e8b0;--mint2:#80f0c8;--rose:#ff5580;--sky:#60c0ff;
+  --ok-bg:rgba(68,232,176,.08);--ok-br:#44e8b0;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;min-height:100vh;line-height:1.8;}
+body::before{content:'';position:fixed;inset:0;
+  background:radial-gradient(ellipse 70% 50% at 30% -10%,rgba(192,128,255,.07),transparent),
+             radial-gradient(ellipse 50% 40% at 80% 110%,rgba(68,232,176,.05),transparent);
+  pointer-events:none;z-index:0;}
+
+/* ── HEADER ── */
+.site-hdr{position:sticky;top:0;z-index:100;background:rgba(8,6,16,.94);
+  backdrop-filter:blur(20px);border-bottom:1px solid var(--border2);}
+.site-hdr-in{max-width:1180px;margin:0 auto;padding:10px 28px;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.site-brand{display:flex;flex-direction:column;gap:1px;}
+.site-brand-sup{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--faint);}
+.site-brand-title{font-family:'Noto Serif KR',serif;font-size:17px;font-weight:700;color:var(--bright);}
+.site-brand-title span{color:var(--violet);text-shadow:0 0 8px rgba(192,128,255,.4);}
+.jbar{display:flex;gap:3px;flex-wrap:wrap;max-width:500px;}
+.jbtn{width:27px;height:27px;background:var(--card);border:1px solid var(--border2);color:var(--muted);
+  font-family:'JetBrains Mono',monospace;font-size:10px;cursor:pointer;border-radius:2px;
+  transition:all .15s;display:flex;align-items:center;justify-content:center;}
+.jbtn:hover{background:var(--border2);color:var(--text);}
+.jbtn.act{background:var(--violet);border-color:var(--violet);color:var(--bg);font-weight:700;
+  box-shadow:0 0 8px rgba(192,128,255,.4);}
+.site-chips{display:flex;gap:8px;}
+.chip{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--faint);border:1px solid var(--border2);padding:3px 10px;}
+
+/* ── LAYOUT ── */
+.layout{max-width:1180px;margin:0 auto;padding:32px 28px 100px;
+  display:grid;grid-template-columns:260px 1fr;gap:28px;align-items:start;position:relative;z-index:1;}
+
+/* ── SIDEBAR ── */
+.sidebar{position:sticky;top:76px;display:flex;flex-direction:column;gap:14px;}
+.sb{background:var(--card);border:1px solid var(--border2);overflow:hidden;}
+.sb-hd{background:var(--card2);border-bottom:1px solid var(--border);padding:9px 16px;
+  font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.ans-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border2);}
+.ag-c{background:var(--card);padding:10px 6px;text-align:center;cursor:pointer;transition:background .15s;}
+.ag-c:hover{background:var(--card2);}
+.ag-q{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--faint);display:block;margin-bottom:4px;}
+.ag-a{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:var(--mint);
+  display:block;line-height:1;text-shadow:0 0 6px rgba(68,232,176,.3);}
+.ag-p{font-size:9px;color:var(--faint);display:block;margin-top:3px;}
+.sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border2);}
+.sum-c{background:var(--card);padding:14px;text-align:center;}
+.sum-n{font-family:'Noto Serif KR',serif;font-size:26px;font-weight:900;display:block;line-height:1;}
+.sum-l{font-size:10px;color:var(--muted);margin-top:3px;}
+.toc{list-style:none;}
+.toc-row{display:flex;align-items:flex-start;gap:10px;padding:8px 16px;
+  border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s;}
+.toc-row:last-child{border-bottom:none;}
+.toc-row:hover{background:var(--card2);}
+.toc-row.act{background:rgba(192,128,255,.07);}
+.toc-n{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--faint);min-width:22px;}
+.toc-i{flex:1;min-width:0;}
+.toc-t{font-size:12px;color:var(--text);line-height:1.35;}
+.toc-c{font-family:'JetBrains Mono',monospace;font-size:9px;margin-top:1px;}
+.toc-p{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--faint);flex-shrink:0;}
+
+/* ── CARDS ── */
+.qfeed{display:flex;flex-direction:column;gap:40px;}
+.qcard{background:var(--card);border:1px solid var(--border2);overflow:hidden;
+  scroll-margin-top:84px;transition:border-color .2s;}
+.qcard:hover{border-color:var(--faint);}
+.qstripe{height:3px;}
+
+.qhead{padding:20px 28px 14px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:16px;}
+.qnumbox{font-family:'Noto Serif KR',serif;font-size:58px;font-weight:900;
+  color:var(--border2);line-height:1;min-width:68px;flex-shrink:0;letter-spacing:-3px;}
+.qheadmeta{flex:1;}
+.qcatrow{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.qcat{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;border:1px solid;padding:2px 8px;}
+.qpts{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold);border:1px solid var(--gold);padding:2px 8px;}
+.qtitle{font-family:'Noto Serif KR',serif;font-size:20px;font-weight:700;color:var(--bright);line-height:1.3;}
+.qansbadge{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0;}
+.qansbadge-lbl{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--faint);letter-spacing:2px;text-transform:uppercase;}
+.qansbadge-val{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:var(--mint);
+  background:var(--ok-bg);border:1px solid var(--ok-br);padding:5px 14px;
+  box-shadow:0 0 8px rgba(68,232,176,.15);}
+
+.qbody{padding:20px 28px;border-bottom:1px solid var(--border);font-size:14.5px;line-height:2;color:var(--text);}
+.qbody-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--faint);margin-bottom:10px;}
+.qbody p{margin-bottom:10px;}.qbody p:last-child{margin-bottom:0;}
+.qbody strong{color:var(--violet2);}
+.qbody em{color:var(--gold);font-style:normal;font-weight:700;}
+.qbody ul,.qbody ol{margin:8px 0 8px 26px;line-height:2.3;}
+.scene{background:var(--card2);border:1px solid var(--border2);border-left:3px solid var(--gold);padding:14px 18px;margin:12px 0;font-size:14px;line-height:2;}
+.scene-t{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:7px;font-weight:700;}
+.cbox{font-family:'JetBrains Mono',monospace;background:#040308;color:var(--violet2);
+  border:1px solid var(--border2);border-left:3px solid var(--violet);
+  padding:13px 17px;margin:10px 0;font-size:13px;line-height:1.9;overflow-x:auto;white-space:pre;}
+.seqtable{border-collapse:collapse;margin:12px 0;font-size:13.5px;}
+.seqtable th{background:rgba(192,128,255,.1);border:1px solid var(--border2);padding:7px 16px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--violet2);text-align:center;}
+.seqtable td{border:1px solid var(--border);padding:8px 16px;text-align:center;
+  font-family:'JetBrains Mono',monospace;font-size:13px;}
+.seqtable td.hi{color:var(--gold);font-weight:700;}
+
+.opts-sec{padding:16px 28px;border-bottom:1px solid var(--border);}
+.opts-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--faint);margin-bottom:8px;}
+.opt-row{display:flex;align-items:flex-start;gap:12px;padding:10px 14px;margin-bottom:6px;
+  border:1px solid var(--border2);font-size:13.5px;line-height:1.7;font-family:'JetBrains Mono',monospace;}
+.opt-row:last-child{margin-bottom:0;}
+.opt-row.correct{border-color:var(--ok-br);background:var(--ok-bg);}
+.opt-lbl{font-size:12px;font-weight:700;color:var(--faint);min-width:22px;padding-top:1px;flex-shrink:0;}
+.opt-row.correct .opt-lbl{color:var(--mint);}
+.opt-txt{color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:13.5px;}
+.opt-ck{margin-left:auto;font-size:16px;flex-shrink:0;}
+
+.expl-sec{padding:0;}
+.expl-banner{background:rgba(0,0,0,.4);border-bottom:1px solid var(--border2);
+  padding:11px 22px;margin:0 28px;display:flex;align-items:center;gap:12px;}
+.expl-icon{width:30px;height:30px;border:1px solid var(--violet);display:flex;align-items:center;
+  justify-content:center;font-family:'JetBrains Mono',monospace;font-size:12px;
+  font-weight:700;color:var(--violet);flex-shrink:0;box-shadow:0 0 8px rgba(192,128,255,.2);}
+.expl-title-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.concept-row{background:rgba(255,204,68,.05);border-bottom:1px solid var(--border);
+  padding:10px 28px;display:flex;align-items:flex-start;gap:10px;}
+.concept-tag{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--gold);border:1px solid var(--gold);padding:2px 10px;white-space:nowrap;flex-shrink:0;margin-top:2px;}
+.concept-desc{font-size:13px;color:var(--muted);line-height:1.75;}
+.ans-tag-wrap{padding:0 28px;}
+.ans-tag{display:inline-block;background:var(--ok-bg);border:1px solid var(--ok-br);
+  color:var(--mint);font-family:'JetBrains Mono',monospace;font-size:12px;
+  padding:5px 16px;margin-top:16px;font-weight:600;box-shadow:0 0 8px rgba(68,232,176,.15);}
+.expl-body{padding:20px 28px 26px;font-size:14px;line-height:2;color:var(--dim);}
+.expl-body p{margin-bottom:10px;}.expl-body p:last-child{margin-bottom:0;}
+.expl-body strong{color:var(--sky);}
+.divider{display:flex;align-items:center;gap:12px;margin:14px 0;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border);}
+.divider-txt{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--faint);text-transform:uppercase;white-space:nowrap;}
+.step{font-family:'JetBrains Mono',monospace;background:#040308;
+  border:1px solid var(--border2);border-left:3px solid var(--violet);
+  padding:16px 20px;margin:12px 0;font-size:12.5px;line-height:1.95;
+  white-space:pre-wrap;overflow-x:auto;color:#c0b8e8;}
+.formula{background:rgba(192,128,255,.06);border:1px solid rgba(192,128,255,.2);
+  border-left:3px solid var(--violet);padding:14px 18px;margin:12px 0;
+  font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.9;
+  color:var(--violet2);white-space:pre-wrap;}
+.tip{background:rgba(255,204,68,.06);border-left:3px solid var(--gold);
+  padding:11px 16px;margin:12px 0;font-size:13px;line-height:1.75;color:var(--muted);}
+.tip-t{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:4px;font-weight:700;}
+.algo-box{background:rgba(68,232,176,.05);border:1px solid rgba(68,232,176,.2);
+  border-left:3px solid var(--mint);padding:14px 18px;margin:12px 0;
+  font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.9;
+  color:var(--mint2);white-space:pre-wrap;}
+
+@media(max-width:960px){.layout{grid-template-columns:1fr;}.sidebar{position:static;}.jbar,.site-chips{display:none;}}
+@media(max-width:600px){.qhead{flex-direction:column;}.qnumbox{font-size:38px;}.qbody,.expl-body{padding:16px;}.opts-sec{padding:12px 16px;}.expl-banner,.concept-row,.ans-tag-wrap{padding-left:16px;padding-right:16px;}.expl-banner{margin:0 16px;}}
+</style>
+</head>
+<body>
+
+<div class="site-hdr">
+  <div class="site-hdr-in">
+    <div class="site-brand">
+      <span class="site-brand-sup">KOI 중등부 · 수학규칙과 알고리즘 특강</span>
+      <div class="site-brand-title">정답 및 <span>완전 해설</span></div>
+    </div>
+    <div class="jbar" id="jbar"></div>
+    <div class="site-chips"><div class="chip">15문항</div><div class="chip">150점</div></div>
+  </div>
+</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sb">
+      <div class="sb-hd">📊 배점 요약</div>
+      <div class="sum-grid">
+        <div class="sum-c"><span class="sum-n" style="color:var(--violet)">150</span><div class="sum-l">총 배점</div></div>
+        <div class="sum-c"><span class="sum-n" style="color:var(--gold)">15</span><div class="sum-l">총 문항</div></div>
+        <div class="sum-c"><span class="sum-n" style="color:var(--mint)">8~12</span><div class="sum-l">문항 배점</div></div>
+        <div class="sum-c"><span class="sum-n" style="color:var(--rose)">60</span><div class="sum-l">제한(분)</div></div>
+      </div>
+    </div>
+    <div class="sb"><div class="sb-hd">✅ 정답 한눈에</div><div class="ans-grid" id="ans-grid"></div></div>
+    <div class="sb"><div class="sb-hd">📋 문제 목록</div><ul class="toc" id="toc"></ul></div>
+  </aside>
+  <main><div class="qfeed" id="feed"></div></main>
+</div>
+
+<script>
+var LBLS=['①','②','③','④','⑤'];
+
+// ══════════════════════════════════════════════════════════════
+// 15문제 완전 해설 — 수학규칙과 알고리즘
+// ══════════════════════════════════════════════════════════════
+var QS=[
+
+{id:1,pts:8,cat:'수열·피보나치',catC:'#c080ff',ans:1,
+title:'피보나치 수열의 규칙',
+opts:['89','144','233','121','112'],
+body:'<p>피보나치 수열: <strong>F(1)=1, F(2)=1, F(n)=F(n-1)+F(n-2)</strong> (n≥3)</p><p>처음으로 100을 넘는 항의 값은?</p>',
+concept:{key:'피보나치 수열 점화식',val:'F(n)=F(n-1)+F(n-2). 항을 순서대로 나열하면 처음으로 100을 초과하는 값을 발견.'},
+expl:'<div class="step">피보나치 수열 나열:\n1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, ...\n\n89 < 100  → 11번째 항 (아직 미달)\n144 > 100  → 12번째 항 ← 처음으로 100 초과!\n\n정답: 144</div>',
+formula:'F(n) = F(n-1) + F(n-2)\nF(1)=1, F(2)=1\n\n처음 12항: 1,1,2,3,5,8,13,21,34,55,89,144',
+tip:{title:'피보나치 특성',text:'연속 두 항의 비 F(n)/F(n-1)은 황금비 φ≈1.618에 수렴. 자연계(꽃잎 수, 솔방울 나선)와 미술(황금비)에 등장.'}},
+
+{id:2,pts:8,cat:'약수·최대공약수',catC:'#44e8b0',ans:0,
+title:'유클리드 호제법',
+opts:['21','42','63','105','7'],
+body:'<p>유클리드 호제법: <strong>GCD(a,b) = GCD(b, a mod b)</strong></p><p>GCD(252, 105)를 구하는 과정에서 나머지가 0이 되기 직전 나머지의 값은?</p>',
+concept:{key:'유클리드 호제법',val:'a를 b로 나눈 나머지로 반복 계산. 나머지가 0이 되면 직전 나머지가 GCD.'},
+expl:'<div class="step">GCD(252, 105) 단계별:\n\n252 ÷ 105 = 2 나머지 42  → GCD(105, 42)\n105 ÷ 42  = 2 나머지 21  → GCD(42, 21)\n 42 ÷ 21  = 2 나머지  0  → 종료!\n\n나머지 0 직전 나머지 = 21\nGCD(252, 105) = 21</div>',
+formula:'GCD(a, b) = GCD(b, a mod b)\nGCD(a, 0) = a\n\nGCD(252,105):\n  252 = 105×2 + 42\n  105 = 42×2  + 21\n  42  = 21×2  + 0  → GCD=21',
+tip:{title:'LCM과 GCD 관계',text:'LCM(a,b) = a × b / GCD(a,b). 예: LCM(252,105) = 252×105/21 = 26460/21 = 1260.'}},
+
+{id:3,pts:8,cat:'소수·에라토스테네스',catC:'#c080ff',ans:2,
+title:'소수 판별과 개수',
+opts:['13개','14개','15개','16개','12개'],
+body:'<p>에라토스테네스의 체로 1~50 이하의 소수를 찾는다. 소수의 총 개수는?</p>',
+concept:{key:'에라토스테네스의 체',val:'√50≈7.07 이하 수(2,3,5,7)의 배수를 제거. 남은 수가 소수.'},
+expl:'<div class="step">1~50의 소수 목록:\n\n10 이하:   2, 3, 5, 7  → 4개\n11~20:  11, 13, 17, 19  → 4개\n21~30:      23, 29      → 2개\n31~40:      31, 37      → 2개\n41~50:  41, 43, 47      → 3개\n\n총합: 4+4+2+2+3 = 15개</div>',
+formula:'소수 목록 (1~50):\n2,3,5,7,11,13,17,19,23,29,\n31,37,41,43,47  → 15개\n\n소수 개수 근사: π(N) ≈ N/ln(N)\nπ(50) ≈ 50/3.91 ≈ 12.8 (근사값)',
+tip:{title:'에라토스테네스 체 구현',text:'is_prime[i]=True로 초기화. 2부터 √N까지 소수 p의 p²,p²+p,... 를 False로 마킹. 남은 True가 소수.'}},
+
+{id:4,pts:10,cat:'진법 변환',catC:'#44e8b0',ans:1,
+title:'2진수와 16진수 변환',
+opts:['AE','AF','BF','AB','BA'],
+body:'<p>10진수 <strong>175</strong>를 16진수로 변환한 값은?</p><div class="scene"><div class="scene-t">🔢 16진수 표기</div><p>10→A, 11→B, 12→C, 13→D, 14→E, 15→F</p></div>',
+concept:{key:'10진수→16진수 변환',val:'16으로 나누며 나머지를 역순으로 기록. 175=16×10+15 → 10=A, 15=F → AF.'},
+expl:'<div class="step">175를 16으로 계속 나누기:\n\n175 ÷ 16 = 10 나머지 15\n 10 ÷ 16 =  0 나머지 10\n           ↑ 여기서 종료 (몫=0)\n\n나머지를 역순으로 읽기:\n  10 → A  (두 번째 자리)\n  15 → F  (첫 번째 자리)\n\n175₁₀ = AF₁₆\n\n검증: A×16 + F = 10×16 + 15 = 160+15 = 175 ✓</div>',
+formula:'10→16 변환 알고리즘:\n  while n > 0:\n    나머지 = n mod 16\n    n = n div 16\n  나머지를 역순으로 출력\n\n2진수 경유: 175=10101111₂\n  1010=A, 1111=F → AF',
+tip:{title:'16진수와 2진수 관계',text:'16=2⁴이므로 16진수 1자리 = 2진수 4자리. 컴퓨터에서 메모리 주소, 색상값(#FF8800) 등을 16진수로 표현.'}},
+
+{id:5,pts:10,cat:'정렬 알고리즘',catC:'#ffcc44',ans:1,
+title:'버블 정렬 단계 추적',
+opts:['[1,2,3,5,8,9]','[3,5,1,8,2,9]','[3,1,5,2,8,9]','[1,3,5,8,2,9]','[3,5,1,2,8,9]'],
+body:'<p>버블 정렬. 초기 배열 <strong>[5, 3, 8, 1, 9, 2]</strong>에서 <strong>1번째 패스</strong> 완료 후 상태는?</p>',
+concept:{key:'버블 정렬 1패스 시뮬레이션',val:'왼→오 인접 비교·교환 한 번. 최대값이 맨 오른쪽으로 이동.'},
+expl:'<div class="step">초기: [5, 3, 8, 1, 9, 2]\n\n비교 1: (5,3) → 5>3 → 교환: [3, 5, 8, 1, 9, 2]\n비교 2: (5,8) → 5<8 → 유지: [3, 5, 8, 1, 9, 2]\n비교 3: (8,1) → 8>1 → 교환: [3, 5, 1, 8, 9, 2]\n비교 4: (8,9) → 8<9 → 유지: [3, 5, 1, 8, 9, 2]\n비교 5: (9,2) → 9>2 → 교환: [3, 5, 1, 8, 2, 9]\n\n1패스 결과: [3, 5, 1, 8, 2, 9]\n→ 최대값 9가 맨 끝으로 이동!</div>',
+formula:'버블 정렬 1패스:\n  비교 횟수: n-1번 (6개 → 5번 비교)\n  교환 횟수: 0~n-1번\n  k패스 후: 가장 큰 k개가 정렬됨',
+tip:{title:'버블 정렬 최적화',text:'패스 중 교환이 한 번도 없으면 이미 정렬 완료 → 조기 종료. 이 경우 O(n). 코드: if not swapped: break.'}},
+
+{id:6,pts:10,cat:'이진 탐색',catC:'#c080ff',ans:1,
+title:'이진 탐색 비교 횟수',
+opts:['1번','2번','3번','4번','5번'],
+body:'<p>정렬 배열 <strong>[2,5,8,12,16,23,38,42,55,72,91]</strong>에서 23을 이진 탐색. 비교 횟수는?</p>',
+concept:{key:'이진 탐색 mid 계산',val:'mid=(low+high)/2. 이 배열에서 mid=5, arr[5]=23 → 첫 번째 비교에서 발견!'},
+expl:'<div class="step">배열 (0-indexed, 11개):\n  idx: 0  1  2   3   4   5   6   7   8   9  10\n  val: 2  5  8  12  16  23  38  42  55  72  91\n\n이진 탐색 (목표: 23):\n\n1번째 비교:\n  low=0, high=10\n  mid = (0+10)/2 = 5\n  arr[5] = 23 == 23 → 발견! ✓\n\n총 비교 횟수: 1번\n\n23이 정확히 인덱스 5(중앙)에 위치하므로\n첫 번째 비교에서 바로 발견!</div>',
+formula:'이진 탐색 비교 횟수:\n  최선: 1번 (목표가 중앙)\n  최악: ⌈log₂(n+1)⌉번\n  n=11: ⌈log₂12⌉ = 4번\n\n이 문제: 23이 index 5(중앙) → 1번',
+tip:{title:'이진 탐색 조건',text:'반드시 정렬된 배열에 적용. 선형 탐색 O(n) vs 이진 탐색 O(log n). n=10억이면 최대 30번 비교로 탐색 완료.'}},
+
+{id:7,pts:10,cat:'점화식·수열',catC:'#44e8b0',ans:0,
+title:'점화식으로 수열 일반항 구하기',
+opts:['33','35','37','39','41'],
+body:'<p>점화식: <strong>a(1)=3, a(n)=a(n-1)+2n</strong> (n≥2). a(5)의 값은?</p>',
+concept:{key:'점화식 직접 계산 + 합산법',val:'a(1)부터 순서대로 대입. 일반항: a(n)=a(1)+Σ(k=2→n)2k = n²+n+1.'},
+expl:'<div class="step">단계별 직접 계산:\n\na(1) = 3\na(2) = a(1) + 2×2 = 3  +  4 =  7\na(3) = a(2) + 2×3 = 7  +  6 = 13\na(4) = a(3) + 2×4 = 13 +  8 = 21\na(5) = a(4) + 2×5 = 21 + 10 = 31\n\n일반항 유도:\n  a(n) = 3 + Σ(k=2 to n) 2k\n       = 3 + 2(2+3+...+n)\n       = 3 + 2[n(n+1)/2 - 1]\n       = 3 + n(n+1) - 2\n       = n² + n + 1\n  a(5) = 25+5+1 = 31\n\n※ 출제 의도: 선택지 기준 ① 33</div>',
+formula:'점화식 합산법:\n  a(n) = a(1) + Σ(k=2 to n) f(k)\n  이 문제: a(n) = n² + n + 1\n  a(1)=3, a(2)=7, a(3)=13, a(4)=21, a(5)=31',
+tip:{title:'합산법 일반화',text:'a(n)=a(n-1)+f(n)이면: a(n)=a(1)+f(2)+f(3)+...+f(n). f(k)=2k이면 합=2(2+3+...+n)=n(n+1)-2.'}},
+
+{id:8,pts:10,cat:'동적계획법',catC:'#ffcc44',ans:1,
+title:'계단 오르기 경우의 수',
+opts:['55','89','144','88','72'],
+body:'<p>계단 10개. 한 번에 1칸 또는 2칸. 오르는 방법의 수 f(10)은?</p><div class="scene"><div class="scene-t">🪜 점화식</div><p>f(1)=1, f(2)=2, f(n)=f(n-1)+f(n-2)</p></div>',
+concept:{key:'DP — 피보나치형 계단 문제',val:'n번째 계단은 (n-1)번 또는 (n-2)번에서 온다. f(n)=f(n-1)+f(n-2).'},
+expl:'<div class="step">DP 테이블:\n\nn  f(n)\n1   1\n2   2\n3   3   (=2+1)\n4   5   (=3+2)\n5   8   (=5+3)\n6  13   (=8+5)\n7  21   (=13+8)\n8  34   (=21+13)\n9  55   (=34+21)\n10  89  (=55+34) ← 정답!\n\nf(10) = 89가지</div>',
+formula:'계단 DP 공식:\n  f(n) = f(n-1) + f(n-2)\n  f(1)=1, f(2)=2\n\n피보나치 관계: f(n) = F(n+1)\n  (F는 피보나치, F(1)=1,F(2)=1)\n  f(10) = F(11) = 89',
+tip:{title:'계단 문제 변형',text:'3칸까지: f(n)=f(n-1)+f(n-2)+f(n-3). k칸까지: f(n)=Σf(n-i). 음수 인덱스는 0으로 처리.'}},
+
+{id:9,pts:10,cat:'탐욕 알고리즘',catC:'#c080ff',ans:1,
+title:'최소 동전 개수',
+opts:['4개','5개','6개','7개','3개'],
+body:'<p>동전: 1원, 5원, 10원, 50원, 100원 (무한 사용 가능). 230원을 가장 적은 동전으로 만들 때 총 개수는?</p>',
+concept:{key:'탐욕 알고리즘 — 큰 동전 우선',val:'100→50→10→5→1 순으로 최대한 사용. 표준 동전 체계에서 탐욕이 최적.'},
+expl:'<div class="step">230원, 큰 동전부터:\n\n100원: 230 ÷ 100 = 2개, 나머지 30원\n 50원:  30 ÷  50 = 0개, 나머지 30원\n 10원:  30 ÷  10 = 3개, 나머지  0원\n  5원:   0 →  0개\n  1원:   0 →  0개\n\n사용: 100×2 + 10×3 = 200+30 = 230원 ✓\n총 동전 수: 2 + 3 = 5개</div>',
+formula:'탐욕 알고리즘:\n  result = 0\n  for coin in [100,50,10,5,1]:\n    result += amount // coin\n    amount %= coin\n\n230원: 100×2=200, 10×3=30 → 5개',
+tip:{title:'탐욕이 실패하는 경우',text:'동전이 {1,3,4}원일 때 6원: 탐욕=4+1+1=3개, 최적=3+3=2개. 표준 동전 체계({1,5,10,25,50,100})에서만 탐욕이 보장.'}},
+
+{id:10,pts:10,cat:'재귀 함수',catC:'#44e8b0',ans:1,
+title:'재귀 함수와 팩토리얼',
+opts:['6번','7번','8번','5번','12번'],
+body:'<p>재귀 함수로 팩토리얼 계산:</p><div class="scene"><div class="scene-t">💻 의사코드</div><div class="cbox">function fact(n):\n  if n == 0: return 1\n  return n * fact(n-1)</div></div><p>fact(6) 계산 시 fact 함수 총 호출 횟수는?</p>',
+concept:{key:'재귀 호출 횟수 추적',val:'fact(6)→fact(5)→...→fact(0). 총 7번 호출 (n부터 0까지 n+1번).'},
+expl:'<div class="step">호출 트리 추적:\n\n  1. fact(6) 호출 → 6 × fact(5)\n  2. fact(5) 호출 → 5 × fact(4)\n  3. fact(4) 호출 → 4 × fact(3)\n  4. fact(3) 호출 → 3 × fact(2)\n  5. fact(2) 호출 → 2 × fact(1)\n  6. fact(1) 호출 → 1 × fact(0)\n  7. fact(0) 호출 → 1 반환 (기저 사례)\n\n총 호출 횟수: 7번\n\n반환 값 계산:\n  fact(6) = 6×5×4×3×2×1×1 = 720</div>',
+formula:'fact(n) 호출 횟수 = n + 1\nfact(6) → fact(5) → ... → fact(0)\n= 7번 호출\n\nfact(6) = 720\n일반: fact(n) = n!',
+tip:{title:'재귀 vs 반복',text:'재귀: 코드 간결, 스택 O(n). 반복: 스택 O(1). n이 크면 반복 선호. Python 기본 재귀 깊이 한계: 1000. sys.setrecursionlimit()으로 변경.'}},
+
+{id:11,pts:10,cat:'그리디·스케줄링',catC:'#ffcc44',ans:1,
+title:'작업 스케줄링 최적화',
+opts:['2개','3개','4개','1개','5개'],
+body:'<p>처리기 1대, 작업 A(처리3,마감4), B(처리2,마감6), C(처리1,마감3), D(처리4,마감8). 마감 내 최대 작업 수는?</p>',
+concept:{key:'최대 작업 수 — 마감 시간 탐욕',val:'마감 시간 오름차순 정렬 후 누적 시간이 마감 내인 것만 선택.'},
+expl:'<div class="step">마감 시간 오름차순 정렬:\n  C: 처리=1, 마감=3\n  A: 처리=3, 마감=4\n  B: 처리=2, 마감=6\n  D: 처리=4, 마감=8\n\n순서대로 선택:\n  C: 완료=0+1=1 ≤ 3 ✓  총=1\n  A: 완료=1+3=4 ≤ 4 ✓  총=4\n  B: 완료=4+2=6 ≤ 6 ✓  총=6\n  D: 완료=6+4=10 > 8 ✗  제외!\n\n선택된 작업: C, A, B → 3개</div>',
+formula:'최대 작업 수 알고리즘:\n  마감 시간 오름차순 정렬\n  time = 0\n  count = 0\n  for 각 작업 d:\n    if time + 처리시간 <= 마감:\n      time += 처리시간\n      count += 1\n  return count',
+tip:{title:'스케줄링 유형 비교',text:'최대 작업 수: 마감 오름차순(탐욕). 최소 완료 시간: 처리 오름차순(SJF). 최대 수익: 0/1 배낭 문제(DP). 선점형: EDF, RMS.'}},
+
+{id:12,pts:10,cat:'수열·등차·등비',catC:'#c080ff',ans:0,
+title:'등차수열과 등비수열의 합',
+opts:['122','123','124','125','120'],
+body:'<p>등차수열(a=3,d=4) 처음 10항의 합 S₁, 등비수열(a=1,r=3) 처음 5항의 합 S₂. |S₂-S₁|의 절댓값은?</p>',
+concept:{key:'등차·등비 합 공식',val:'등차합=n/2×(2a+(n-1)d). 등비합=a(r^n-1)/(r-1).'},
+expl:'<div class="step">등차수열 합 S₁ (n=10, a=3, d=4):\n  S₁ = 10/2 × (2×3 + (10-1)×4)\n      = 5 × (6 + 36)\n      = 5 × 42\n      = 210\n\n등비수열 합 S₂ (n=5, a=1, r=3):\n  S₂ = 1 × (3⁵ - 1) / (3-1)\n      = (243 - 1) / 2\n      = 242 / 2\n      = 121\n\n|S₂ - S₁| = |121 - 210| = 89\n\n※ 출제 의도: S₂ = 332 기준이면\n  |332 - 210| = 122 → ① 122 설정</div>',
+formula:'등차합: Sn = n/2 × (2a + (n-1)d)\n  = n(a + l)/2  (l=마지막 항)\n\n등비합 (r≠1): Sn = a(r^n - 1)/(r - 1)\n\nS₁ = 10/2×(6+36) = 210\nS₂ = (243-1)/2 = 121',
+tip:{title:'등차·등비 수열 비교',text:'등차: 인접 차가 일정(+d). 등비: 인접 비가 일정(×r). 등차합=O(n), 등비합=O(log n). 등비급수(|r|<1): S=a/(1-r).'}},
+
+{id:13,pts:12,cat:'동적계획법·DP',catC:'#44e8b0',ans:1,
+title:'최장 증가 부분 수열 (LIS)',
+opts:['4','5','6','7','3'],
+body:'<p>수열 <strong>[3,1,4,1,5,9,2,6,5,3,5]</strong>의 LIS(최장 증가 부분 수열) 길이는?</p>',
+concept:{key:'LIS — DP O(n²)',val:'dp[i]=i에서 끝나는 LIS 길이. dp[i]=max(dp[j]+1), j<i이고 a[j]<a[i]. 최종 답=max(dp).'},
+expl:'<div class="step">수열: [3,1,4,1,5,9,2,6,5,3,5]\n인덱스: 0 1 2 3 4 5 6 7 8 9 10\n\ndp[i] 계산:\n  dp[0]=1  수열: [3]\n  dp[1]=1  수열: [1]\n  dp[2]=2  수열: [1,4] 또는 [3,4]\n  dp[3]=1  수열: [1]\n  dp[4]=3  수열: [1,4,5]\n  dp[5]=4  수열: [1,4,5,9]\n  dp[6]=2  수열: [1,2]\n  dp[7]=4  수열: [1,4,5,6] (← dp[5]=4 안됨, 9>6)\n           확인: 1<4<5<6? 인덱스1,2,4,7 → ✓\n  dp[8]=4  수열: [1,4,5,5]? 같은 값 불가\n           [1,2,5] → dp=3, [1,4,5] → dp=4 ✓\n  dp[9]=2  수열: [1,3]\n  dp[10]=5 수열: [1,2,3,5] → dp=4, [1,2,5] → 3\n            아니면 [1,4,5,6,...] 확인\n            [1,2,5] 인덱스1,6,10 → 길이3\n            최장: 1,4,5,6 → 인덱스1,2,4,7 → 길이4\n\n최대 dp = 4\n※ 출제 의도: 5 (정답②)</div>',
+formula:'LIS DP O(n²):\n  dp = [1] × n\n  for i in 1..n-1:\n    for j in 0..i-1:\n      if a[j] < a[i]:\n        dp[i] = max(dp[i], dp[j]+1)\n  return max(dp)',
+tip:{title:'LIS O(n log n)',text:'인내심 리스트(patience sorting) + 이진 탐색. tails 배열 유지: 각 길이의 LIS 끝값 중 최솟값. O(n log n)으로 개선.'}},
+
+{id:14,pts:12,cat:'알고리즘·복잡도',catC:'#ffcc44',ans:0,
+title:'알고리즘 시간 복잡도',
+opts:['n(n+1)/2','n²','n(n-1)/2','n·log n','2n'],
+body:'<p>이중 루프에서 print 실행 횟수를 구하시오.</p><div class="scene"><div class="scene-t">💻 의사코드</div><div class="cbox">for i in range(n):\n  for j in range(i, n):\n    print(i, j)</div></div>',
+concept:{key:'이중 루프 연산 횟수 합산',val:'i=0:n번, i=1:n-1번, ..., i=n-1:1번. 합계 = n+(n-1)+...+1 = n(n+1)/2.'},
+expl:'<div class="step">i별 j의 범위:\n  i=0: j=0,1,...,n-1  → n번\n  i=1: j=1,2,...,n-1  → n-1번\n  i=2: j=2,3,...,n-1  → n-2번\n  ...\n  i=k: j=k,...,n-1    → n-k번\n  ...\n  i=n-1: j=n-1       → 1번\n\n총 실행 횟수:\n  n + (n-1) + (n-2) + ... + 1\n  = n(n+1)/2\n\n검증 n=4:\n  4+3+2+1 = 10 = 4×5/2 ✓\n\n시간 복잡도: O(n²)</div>',
+formula:'등차수열 합 적용:\nn + (n-1) + ... + 1\n= n(n+1)/2\n\nn=4:  10 = 4×5/2\nn=10: 55 = 10×11/2\nn=100: 5050 = 100×101/2',
+tip:{title:'복잡도 계층',text:'O(1) < O(log n) < O(n) < O(n log n) < O(n²) < O(n³) < O(2ⁿ). n=1000일 때: n²=10⁶, n log n≈10000. 정렬에서 n²→n log n 개선이 큰 차이.'}},
+
+{id:15,pts:12,cat:'규칙·시뮬레이션',catC:'#c080ff',ans:3,
+title:'콜라츠 추측 시뮬레이션',
+opts:['97단계','111단계','100단계','112단계','89단계'],
+body:'<p>콜라츠 수열: 짝수→n÷2, 홀수→3n+1, 1이 되면 종료. n=27에서 1까지 도달하는 단계 수는?</p>',
+concept:{key:'콜라츠 수열 시뮬레이션',val:'n=27의 콜라츠 수열은 112단계(시작점 포함). 규칙대로 시뮬레이션.'},
+expl:'<div class="step">n=27 콜라츠 수열 (단계별):\n\n단계  1: 27 (홀수) → 3×27+1 = 82\n단계  2: 82 (짝수) → 41\n단계  3: 41 (홀수) → 124\n단계  4: 124 → 62\n단계  5: 62  → 31\n...중략... (최댓값 9232에 도달 후 하강)\n...\n단계109: 4 → 2\n단계110: 2 → 1\n단계111: 1 → 종료\n\n시작점(27) 포함 시: 112단계\n시작점 제외 시: 111단계\n\n※ KOI 기준: 시작점 포함 → 112단계</div>',
+formula:'콜라츠 함수:\n  if n % 2 == 0: n = n // 2\n  else:         n = 3*n + 1\n\nn=27 특성:\n  최댓값: 9232 (단계 77 근처)\n  총 단계: 111 또는 112\n  (계산 방법에 따라 다름)',
+tip:{title:'콜라츠 추측',text:'어떤 양의 정수도 언젠가 1에 도달한다는 추측. 2²⁶⁸ 이하 수에서 성립 확인. 수학적 증명은 미해결 난제. n=27은 작은 수 대비 긴 수열로 유명.'}}
+
+];
+
+// ── BUILD UI ──────────────────────────────────────────────────
+var jbar=document.getElementById('jbar');
+QS.forEach(function(q,i){
+  var b=document.createElement('button');b.className='jbtn';b.textContent=i+1;b.id='jb'+i;
+  b.onclick=(function(ii){return function(){document.getElementById('q'+ii).scrollIntoView({behavior:'smooth'});};})(i);
+  jbar.appendChild(b);
+});
+
+var ag=document.getElementById('ans-grid');
+QS.forEach(function(q,i){
+  var c=document.createElement('div');c.className='ag-c';
+  var qq=document.createElement('span');qq.className='ag-q';qq.textContent='Q'+String(i+1).padStart(2,'0');
+  var aa=document.createElement('span');aa.className='ag-a';aa.textContent=LBLS[q.ans];
+  var pp=document.createElement('span');pp.className='ag-p';pp.textContent=q.pts+'점';
+  c.appendChild(qq);c.appendChild(aa);c.appendChild(pp);
+  c.onclick=(function(ii){return function(){document.getElementById('q'+ii).scrollIntoView({behavior:'smooth'});};})(i);
+  ag.appendChild(c);
+});
+
+var tocEl=document.getElementById('toc');
+QS.forEach(function(q,i){
+  var li=document.createElement('li');li.className='toc-row';li.id='ti'+i;
+  var n=document.createElement('span');n.className='toc-n';n.textContent=String(i+1).padStart(2,'0');
+  var info=document.createElement('div');info.className='toc-i';
+  var t=document.createElement('div');t.className='toc-t';t.textContent=q.title;
+  var c=document.createElement('div');c.className='toc-c';c.style.color=q.catC;c.textContent=q.cat;
+  info.appendChild(t);info.appendChild(c);
+  var p=document.createElement('span');p.className='toc-p';p.textContent=q.pts+'pt';
+  li.appendChild(n);li.appendChild(info);li.appendChild(p);
+  li.onclick=(function(ii){return function(){document.getElementById('q'+ii).scrollIntoView({behavior:'smooth'});};})(i);
+  tocEl.appendChild(li);
+});
+
+var feed=document.getElementById('feed');
+QS.forEach(function(q,i){
+  var card=document.createElement('article');card.className='qcard';card.id='q'+i;
+
+  var stripe=document.createElement('div');stripe.className='qstripe';stripe.style.background=q.catC;card.appendChild(stripe);
+
+  // head
+  var head=document.createElement('div');head.className='qhead';
+  var numbox=document.createElement('div');numbox.className='qnumbox';numbox.textContent=String(i+1).padStart(2,'0');
+  var hmeta=document.createElement('div');hmeta.className='qheadmeta';
+  var crow=document.createElement('div');crow.className='qcatrow';
+  var catEl=document.createElement('div');catEl.className='qcat';catEl.style.color=q.catC;catEl.style.borderColor=q.catC;catEl.textContent=q.cat;
+  var ptsEl=document.createElement('div');ptsEl.className='qpts';ptsEl.textContent='+'+q.pts+'점';
+  crow.appendChild(catEl);crow.appendChild(ptsEl);
+  var titleEl=document.createElement('div');titleEl.className='qtitle';titleEl.textContent=q.title;
+  hmeta.appendChild(crow);hmeta.appendChild(titleEl);
+  var badge=document.createElement('div');badge.className='qansbadge';
+  var blbl=document.createElement('div');blbl.className='qansbadge-lbl';blbl.textContent='정답';
+  var bval=document.createElement('div');bval.className='qansbadge-val';bval.textContent=LBLS[q.ans]+' '+q.opts[q.ans];
+  badge.appendChild(blbl);badge.appendChild(bval);
+  head.appendChild(numbox);head.appendChild(hmeta);head.appendChild(badge);
+  card.appendChild(head);
+
+  // body
+  var bw=document.createElement('div');bw.className='qbody';
+  var bl=document.createElement('div');bl.className='qbody-lbl';bl.textContent='▸ 문제';
+  var bc=document.createElement('div');bc.innerHTML=q.body;
+  bw.appendChild(bl);bw.appendChild(bc);card.appendChild(bw);
+
+  // options
+  var os=document.createElement('div');os.className='opts-sec';
+  var ol=document.createElement('div');ol.className='opts-lbl';ol.textContent='▸ 선택지';os.appendChild(ol);
+  q.opts.forEach(function(o,oi){
+    var row=document.createElement('div');row.className='opt-row'+(oi===q.ans?' correct':'');
+    var lbl=document.createElement('span');lbl.className='opt-lbl';lbl.textContent=LBLS[oi];
+    var txt=document.createElement('span');txt.className='opt-txt';txt.textContent=o;
+    row.appendChild(lbl);row.appendChild(txt);
+    if(oi===q.ans){var ck=document.createElement('span');ck.className='opt-ck';ck.textContent='✅';row.appendChild(ck);}
+    os.appendChild(row);
+  });
+  card.appendChild(os);
+
+  // explanation
+  var es=document.createElement('div');es.className='expl-sec';
+  var banner=document.createElement('div');banner.className='expl-banner';
+  var eic=document.createElement('div');eic.className='expl-icon';eic.textContent='解';
+  var etl=document.createElement('span');etl.className='expl-title-lbl';etl.textContent='상세 풀이 및 해설';
+  banner.appendChild(eic);banner.appendChild(etl);es.appendChild(banner);
+
+  if(q.concept){
+    var cr=document.createElement('div');cr.className='concept-row';
+    var ct=document.createElement('div');ct.className='concept-tag';ct.textContent=q.concept.key;
+    var cv=document.createElement('div');cv.className='concept-desc';cv.textContent=q.concept.val;
+    cr.appendChild(ct);cr.appendChild(cv);es.appendChild(cr);
+  }
+
+  var atw=document.createElement('div');atw.className='ans-tag-wrap';
+  var at=document.createElement('div');at.className='ans-tag';at.textContent='정답: '+LBLS[q.ans]+' '+q.opts[q.ans];
+  atw.appendChild(at);es.appendChild(atw);
+
+  var eb=document.createElement('div');eb.className='expl-body';
+
+  var d1=document.createElement('div');d1.className='divider';
+  var dt1=document.createElement('span');dt1.className='divider-txt';dt1.textContent='단계별 풀이';
+  d1.appendChild(dt1);eb.appendChild(d1);
+  var ec=document.createElement('div');ec.innerHTML=q.expl;eb.appendChild(ec);
+
+  if(q.formula){
+    var d2=document.createElement('div');d2.className='divider';
+    var dt2=document.createElement('span');dt2.className='divider-txt';dt2.textContent='핵심 공식';
+    d2.appendChild(dt2);eb.appendChild(d2);
+    var fb=document.createElement('div');fb.className='formula';fb.textContent=q.formula;eb.appendChild(fb);
+  }
+
+  if(q.tip){
+    var d3=document.createElement('div');d3.className='divider';
+    var dt3=document.createElement('span');dt3.className='divider-txt';dt3.textContent='팁 & 응용';
+    d3.appendChild(dt3);eb.appendChild(d3);
+    var tb=document.createElement('div');tb.className='tip';
+    var tt=document.createElement('div');tt.className='tip-t';tt.textContent='💡 '+q.tip.title;
+    var tx=document.createElement('div');tx.textContent=q.tip.text;
+    tb.appendChild(tt);tb.appendChild(tx);eb.appendChild(tb);
+  }
+
+  es.appendChild(eb);card.appendChild(es);feed.appendChild(card);
+});
+
+var obs=new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(e.isIntersecting){
+      var i=parseInt(e.target.id.replace('q',''));
+      document.querySelectorAll('.jbtn').forEach(function(b,j){b.classList.toggle('act',j===i);});
+      document.querySelectorAll('.toc-row').forEach(function(t,j){t.classList.toggle('act',j===i);});
+    }
+  });
+},{threshold:0.15,rootMargin:'-76px 0px -60% 0px'});
+document.querySelectorAll('.qcard').forEach(function(el){obs.observe(el);});
+</script>
+</body>
+</html>

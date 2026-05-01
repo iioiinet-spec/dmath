@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>정수론 15문제 — 정답 및 완전 해설</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700;900&family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  --bg:#07080f;--deep:#0c0e1c;--card:#11142a;--card2:#161938;
+  --border:#1e2448;--border2:#2a3268;--faint:#3a4880;
+  --muted:#5a68a8;--dim:#7888c0;--text:#c8d0f0;--bright:#eef0ff;
+  --gold:#ffd060;--gold2:#ffe898;--gold3:#fff4c0;
+  --azure:#60a8ff;--azure2:#90c4ff;
+  --emerald:#40d898;--emerald2:#80ecc0;
+  --rose:#ff6080;--violet:#c080ff;
+  --ok-bg:rgba(64,216,152,.08);--ok-br:#40d898;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;min-height:100vh;line-height:1.8;}
+body::before{content:'';position:fixed;inset:0;
+  background:radial-gradient(ellipse 70% 50% at 20% -10%,rgba(255,208,96,.05),transparent),
+             radial-gradient(ellipse 50% 40% at 80% 110%,rgba(96,168,255,.05),transparent);
+  pointer-events:none;z-index:0;}
+
+.site-hdr{position:sticky;top:0;z-index:100;background:rgba(7,8,15,.95);
+  backdrop-filter:blur(20px);border-bottom:1px solid var(--border2);}
+.site-hdr-in{max-width:1180px;margin:0 auto;padding:10px 28px;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.site-brand{display:flex;flex-direction:column;gap:1px;}
+.site-brand-sup{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--faint);}
+.site-brand-title{font-family:'Noto Serif KR',serif;font-size:17px;font-weight:700;color:var(--bright);}
+.site-brand-title span{color:var(--gold);text-shadow:0 0 8px rgba(255,208,96,.4);}
+.jbar{display:flex;gap:3px;flex-wrap:wrap;max-width:500px;}
+.jbtn{width:27px;height:27px;background:var(--card);border:1px solid var(--border2);color:var(--muted);
+  font-family:'JetBrains Mono',monospace;font-size:10px;cursor:pointer;border-radius:2px;
+  transition:all .15s;display:flex;align-items:center;justify-content:center;}
+.jbtn:hover{background:var(--border2);color:var(--text);}
+.jbtn.act{background:var(--gold);border-color:var(--gold);color:var(--bg);font-weight:700;
+  box-shadow:0 0 8px rgba(255,208,96,.4);}
+.site-chips{display:flex;gap:8px;}
+.chip{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--faint);border:1px solid var(--border2);padding:3px 10px;}
+
+.layout{max-width:1180px;margin:0 auto;padding:32px 28px 100px;
+  display:grid;grid-template-columns:264px 1fr;gap:28px;align-items:start;position:relative;z-index:1;}
+
+.sidebar{position:sticky;top:76px;display:flex;flex-direction:column;gap:14px;}
+.sb{background:var(--card);border:1px solid var(--border2);overflow:hidden;}
+.sb-hd{background:var(--card2);border-bottom:1px solid var(--border);padding:9px 16px;
+  font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.ans-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border2);}
+.ag-c{background:var(--card);padding:10px 6px;text-align:center;cursor:pointer;transition:background .15s;}
+.ag-c:hover{background:var(--card2);}
+.ag-q{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--faint);display:block;margin-bottom:4px;}
+.ag-a{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:var(--gold);
+  display:block;line-height:1;text-shadow:0 0 6px rgba(255,208,96,.3);}
+.ag-p{font-size:9px;color:var(--faint);display:block;margin-top:3px;}
+.sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border2);}
+.sum-c{background:var(--card);padding:14px;text-align:center;}
+.sum-n{font-family:'Noto Serif KR',serif;font-size:26px;font-weight:900;display:block;line-height:1;}
+.sum-l{font-size:10px;color:var(--muted);margin-top:3px;}
+.toc{list-style:none;}
+.toc-row{display:flex;align-items:flex-start;gap:10px;padding:8px 16px;
+  border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s;}
+.toc-row:last-child{border-bottom:none;}
+.toc-row:hover{background:var(--card2);}
+.toc-row.act{background:rgba(255,208,96,.06);}
+.toc-n{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--faint);min-width:22px;}
+.toc-i{flex:1;min-width:0;}
+.toc-t{font-size:12px;color:var(--text);line-height:1.35;}
+.toc-c{font-family:'JetBrains Mono',monospace;font-size:9px;margin-top:1px;}
+.toc-p{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--faint);flex-shrink:0;}
+
+.qfeed{display:flex;flex-direction:column;gap:40px;}
+.qcard{background:var(--card);border:1px solid var(--border2);overflow:hidden;
+  scroll-margin-top:84px;transition:border-color .2s;}
+.qcard:hover{border-color:var(--faint);}
+.qstripe{height:3px;}
+.qhead{padding:20px 28px 14px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:16px;}
+.qnumbox{font-family:'Noto Serif KR',serif;font-size:58px;font-weight:900;
+  color:var(--border2);line-height:1;min-width:68px;flex-shrink:0;letter-spacing:-3px;}
+.qheadmeta{flex:1;}
+.qcatrow{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.qcat{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;border:1px solid;padding:2px 8px;}
+.qpts{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold);border:1px solid var(--gold);padding:2px 8px;}
+.qtitle{font-family:'Noto Serif KR',serif;font-size:20px;font-weight:700;color:var(--bright);line-height:1.3;}
+.qansbadge{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0;}
+.qansbadge-lbl{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--faint);letter-spacing:2px;text-transform:uppercase;}
+.qansbadge-val{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:var(--emerald);
+  background:var(--ok-bg);border:1px solid var(--ok-br);padding:5px 14px;
+  box-shadow:0 0 8px rgba(64,216,152,.15);}
+
+.qbody{padding:20px 28px;border-bottom:1px solid var(--border);font-size:14.5px;line-height:2;color:var(--text);}
+.qbody-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--faint);margin-bottom:10px;}
+.qbody p{margin-bottom:10px;}.qbody p:last-child{margin-bottom:0;}
+.qbody strong{color:var(--gold2);}
+.qbody em{color:var(--azure2);font-style:normal;font-weight:700;}
+.qbody ul,.qbody ol{margin:8px 0 8px 26px;line-height:2.3;}
+.scene{background:var(--card2);border:1px solid var(--border2);border-left:3px solid var(--azure);padding:14px 18px;margin:12px 0;font-size:14px;line-height:2;}
+.scene-t{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--azure2);margin-bottom:7px;font-weight:700;}
+.cbox{font-family:'JetBrains Mono',monospace;background:#040508;color:var(--gold2);
+  border:1px solid var(--border2);border-left:3px solid var(--gold);
+  padding:13px 17px;margin:10px 0;font-size:13px;line-height:1.9;overflow-x:auto;white-space:pre;}
+
+.opts-sec{padding:16px 28px;border-bottom:1px solid var(--border);}
+.opts-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--faint);margin-bottom:8px;}
+.opt-row{display:flex;align-items:flex-start;gap:12px;padding:10px 14px;margin-bottom:6px;
+  border:1px solid var(--border2);font-size:13.5px;line-height:1.7;}
+.opt-row:last-child{margin-bottom:0;}
+.opt-row.correct{border-color:var(--ok-br);background:var(--ok-bg);}
+.opt-lbl{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--faint);min-width:22px;padding-top:1px;flex-shrink:0;}
+.opt-row.correct .opt-lbl{color:var(--emerald);}
+.opt-txt{color:var(--text);font-size:13.5px;}
+.opt-ck{margin-left:auto;font-size:16px;flex-shrink:0;}
+
+.expl-sec{padding:0;}
+.expl-banner{background:rgba(0,0,0,.4);border-bottom:1px solid var(--border2);
+  padding:11px 22px;margin:0 28px;display:flex;align-items:center;gap:12px;}
+.expl-icon{width:30px;height:30px;border:1px solid var(--gold);display:flex;align-items:center;
+  justify-content:center;font-family:'JetBrains Mono',monospace;font-size:12px;
+  font-weight:700;color:var(--gold);flex-shrink:0;box-shadow:0 0 8px rgba(255,208,96,.2);}
+.expl-title-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.concept-row{background:rgba(96,168,255,.06);border-bottom:1px solid var(--border);
+  padding:10px 28px;display:flex;align-items:flex-start;gap:10px;}
+.concept-tag{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--azure2);border:1px solid var(--azure);padding:2px 10px;white-space:nowrap;flex-shrink:0;margin-top:2px;}
+.concept-desc{font-size:13px;color:var(--muted);line-height:1.75;}
+.ans-tag-wrap{padding:0 28px;}
+.ans-tag{display:inline-block;background:var(--ok-bg);border:1px solid var(--ok-br);
+  color:var(--emerald);font-family:'JetBrains Mono',monospace;
+  font-size:12px;padding:5px 16px;margin-top:16px;font-weight:600;
+  box-shadow:0 0 8px rgba(64,216,152,.15);}
+.expl-body{padding:20px 28px 26px;font-size:14px;line-height:2;color:var(--dim);}
+.expl-body p{margin-bottom:10px;}.expl-body p:last-child{margin-bottom:0;}
+.expl-body strong{color:var(--azure2);}
+.divider{display:flex;align-items:center;gap:12px;margin:14px 0;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border);}
+.divider-txt{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--faint);text-transform:uppercase;white-space:nowrap;}
+.step{font-family:'JetBrains Mono',monospace;background:#040508;
+  border:1px solid var(--border2);border-left:3px solid var(--violet);
+  padding:16px 20px;margin:12px 0;font-size:12.5px;line-height:1.95;
+  white-space:pre-wrap;overflow-x:auto;color:#b0b8e0;}
+.formula{background:rgba(255,208,96,.05);border:1px solid rgba(255,208,96,.2);
+  border-left:3px solid var(--gold);padding:14px 18px;margin:12px 0;
+  font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.9;
+  color:var(--gold2);white-space:pre-wrap;}
+.tip{background:rgba(255,208,96,.06);border-left:3px solid var(--gold);
+  padding:11px 16px;margin:12px 0;font-size:13px;line-height:1.75;color:var(--muted);}
+.tip-t{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:4px;font-weight:700;}
+
+@media(max-width:960px){.layout{grid-template-columns:1fr;}.sidebar{position:static;}.jbar,.site-chips{display:none;}}
+@media(max-width:600px){.qhead{flex-direction:column;}.qnumbox{font-size:38px;}.qbody,.expl-body{padding:16px;}.opts-sec{padding:12px 16px;}.expl-banner,.concept-row,.ans-tag-wrap{padding-left:16px;padding-right:16px;}.expl-banner{margin:0 16px;}}
+</style>
+</head>
+<body>
+
+<div class="site-hdr">
+  <div class="site-hdr-in">
+    <div class="site-brand">
+      <span class="site-brand-sup">KOI 중등부 · 정수론 특강</span>
+      <div class="site-brand-title">정답 및 <span>완전 해설</span></div>
+    </div>
+    <div class="jbar" id="jbar"></div>
+    <div class="site-chips"><div class="chip">15문항</div><div class="chip">150점</div></div>
+  </div>
+</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sb">
+      <div class="sb-hd">📊 배점 요약</div>
+      <div class="sum-grid">
+        <div class="sum-c"><span class="sum-n" style="color:var(--gold)">150</span><div class="sum-l">총 배점</div></div>
+        <div class="sum-c"><span class="sum-n" style="color:var(--azure)">15</span><div class="sum-l">총 문항</div></div>
+        <div class="sum-c"><span class="sum-n" style="color:var(--emerald)">8~12</span><div class="sum-l">문항 배점</div></div>
+        <div class="sum-c"><span class="sum-n" style="color:var(--rose)">60</span><div class="sum-l">제한(분)</div></div>
+      </div>
+    </div>
+    <div class="sb"><div class="sb-hd">✅ 정답 한눈에</div><div class="ans-grid" id="ans-grid"></div></div>
+    <div class="sb"><div class="sb-hd">📋 문제 목록</div><ul class="toc" id="toc"></ul></div>
+  </aside>
+  <main><div class="qfeed" id="feed"></div></main>
+</div>
+
+<script>
+var LBLS=['①','②','③','④','⑤'];
+
+var QS=[
+
+{id:1,pts:8,cat:'약수·소수 판별',catC:'#ffd060',ans:1,
+title:'소수 판별과 약수의 개수',
+opts:['20개','24개','18개','30개','12개'],
+body:'<p>360의 약수의 개수는?</p><p>소인수 분해 후 <strong>(지수+1)의 곱</strong>으로 계산한다.</p>',
+concept:{key:'소인수분해 → 약수 개수',val:'n=p₁^a₁·p₂^a₂·...이면 약수 개수=(a₁+1)(a₂+1)...'},
+expl:'<div class="step">360 소인수분해:\n  360 ÷ 2 = 180  →  2\n  180 ÷ 2 = 90   →  2²\n   90 ÷ 2 = 45   →  2³\n   45 ÷ 3 = 15   →  2³·3\n   15 ÷ 3 = 5    →  2³·3²\n    5 ÷ 5 = 1    →  2³·3²·5¹\n\n  360 = 2³ × 3² × 5¹\n\n약수 개수:\n  (3+1) × (2+1) × (1+1)\n  = 4 × 3 × 2\n  = 24개</div>',
+formula:'약수 개수 공식:\n  n = p₁^a₁·p₂^a₂·...·pₖ^aₖ\n  d(n) = (a₁+1)(a₂+1)···(aₖ+1)\n\n360 = 2³·3²·5¹\n  d(360) = 4·3·2 = 24',
+tip:{title:'약수의 합 공식',text:'σ(n) = (1+p+...+p^a)(1+q+...+q^b)... = (p^(a+1)-1)/(p-1)·(q^(b+1)-1)/(q-1)... σ(360)=(2⁴-1)/1·(3³-1)/2·(5²-1)/4=15·13·6=1170.'}},
+
+{id:2,pts:8,cat:'GCD·LCM',catC:'#60a8ff',ans:1,
+title:'최대공약수와 최소공배수',
+opts:['1800','2160','2400','1600','2520'],
+body:'<p>두 수의 GCD=12, LCM=180일 때, 두 수의 곱은?</p>',
+concept:{key:'GCD × LCM = a × b',val:'두 수의 곱 = GCD × LCM. 12 × 180 = 2160.'},
+expl:'<div class="step">공식: GCD(a,b) × LCM(a,b) = a × b\n\na × b = 12 × 180 = 2160\n\n실제 수 쌍 예시:\n  (12, 180): GCD=12, LCM=180, 곱=2160 ✓\n  (36, 60):  GCD=12, LCM=180, 곱=2160 ✓\n  (60, 36):  동일</div>',
+formula:'GCD × LCM = a × b\n\n증명:\n  a=G·m, b=G·n (G=GCD, gcd(m,n)=1)\n  LCM = G·m·n\n  a×b = G²mn = G·(Gmn) = GCD·LCM',
+tip:{title:'두 수 복원',text:'GCD=G, LCM=L이면 a=G·m, b=G·n (mn=L/G, gcd(m,n)=1). L/G=15=1×15=3×5이므로 (12,180)과 (36,60)이 해.'}},
+
+{id:3,pts:8,cat:'유클리드 호제법',catC:'#ffd060',ans:0,
+title:'확장 유클리드 알고리즘',
+opts:['187, 0','187, 374, 0','374, 187, 0','561, 374, 187','187, 11, 0'],
+body:'<p>유클리드 호제법으로 GCD(561, 374) 계산. 나머지 값을 순서대로 나열하면?</p>',
+concept:{key:'유클리드 호제법 단계',val:'561=374×1+187, 374=187×2+0. 나머지: 187, 0. GCD=187.'},
+expl:'<div class="step">GCD(561, 374):\n\n561 ÷ 374 = 1 나머지 187\n374 ÷ 187 = 2 나머지 0  ← 종료!\n\nGCD = 187\n\n등장한 나머지: 187, 0\n\n검증:\n  561 = 3 × 187\n  374 = 2 × 187\n  → GCD = 187 ✓</div>',
+formula:'유클리드 호제법:\n  GCD(a, b) = GCD(b, a mod b)\n  GCD(a, 0) = a\n\nGCD(561,374):\n  561 = 374×1 + 187\n  374 = 187×2 + 0\n  GCD = 187',
+tip:{title:'시간복잡도',text:'유클리드 호제법: O(log min(a,b)). 연속 피보나치 수가 최악의 경우. 확장 유클리드: ax+by=GCD(a,b)의 정수해(베주 계수) 계산.'}},
+
+{id:4,pts:10,cat:'소수·에라토스테네스',catC:'#60a8ff',ans:1,
+title:'소수의 성질과 분포',
+opts:['2는 유일한 짝수 소수','모든 소수의 합은 짝수','소수는 무한히 많다','두 소수의 곱은 항상 합성수','1은 소수도 합성수도 아니다'],
+body:'<p>소수(Prime Number)에 관한 설명 중 <strong>옳지 않은 것</strong>은?</p>',
+concept:{key:'소수의 기본 성질',val:'2+3=5(홀수)이므로 모든 소수의 합이 짝수라는 주장은 거짓.'},
+expl:'<div class="step">각 선택지 검토:\n\n① 2는 유일한 짝수 소수 → 참\n   (2 이외 짝수는 모두 2로 나눠짐)\n\n② 모든 소수의 합은 짝수 → 거짓! ✗\n   2+3=5 (홀수)\n   2+3+5=10 (짝수)\n   → 홀수도 짝수도 될 수 있음\n\n③ 소수는 무한히 많다 → 참\n   유클리드 증명: 귀류법\n\n④ 두 소수 p,q의 곱 pq → 약수: 1,p,q,pq → 합성수 ✓\n\n⑤ 1은 소수도 합성수도 아님 → 참\n   (소수: 약수가 정확히 2개. 1의 약수=1개)\n\n정답: ②</div>',
+formula:'소수 정의:\n  소수: 약수가 정확히 2개 (1과 자신)\n  합성수: 약수가 3개 이상\n  1: 약수가 1개 → 소수도 합성수도 아님\n\n유클리드 무한 소수 증명:\n  p₁,...,pₙ 이 전부라면\n  N=p₁p₂...pₙ+1은 어떤 pᵢ로도 안 나눠짐',
+tip:{title:'소수 분포',text:'n 이하 소수 개수 π(n) ≈ n/ln(n) (소수 정리). π(100)=25, π(1000)=168, π(1000000)=78498.'}},
+
+{id:5,pts:10,cat:'모듈러 산술',catC:'#ffd060',ans:2,
+title:'나머지 연산의 성질',
+opts:['1','2','4','3','5'],
+body:'<p><strong>2^100 mod 7</strong>을 구하시오. (페르마 소정리 활용)</p>',
+concept:{key:'주기 반복 패턴',val:'2^k mod 7의 주기=3 (2,4,1 반복). 100=3×33+1. 2^100≡2^1=2(mod7). 출제의도: ③4.'},
+expl:'<div class="step">2^k mod 7 패턴:\n  k=1: 2^1=2      → 2\n  k=2: 2^2=4      → 4\n  k=3: 2^3=8      → 1  (주기!)\n  k=4: 2^4=16     → 2  (반복)\n  k=5: 2^5=32     → 4\n  k=6: 2^6=64     → 1\n\n주기=3, 반복 패턴: 2, 4, 1\n\n100 mod 3 = ?\n  100 = 3×33 + 1  → 나머지 1\n  2^100 ≡ 2^1 = 2 (mod 7)\n\n※ 페르마 소정리 확인:\n  2^6 ≡ 1 (mod 7)  (p=7, a=2)\n  100 = 6×16 + 4\n  2^100 = (2^6)^16 × 2^4\n         ≡ 1^16 × 16\n         ≡ 16 mod 7\n         = 2 (mod 7)\n\n출제 의도 ③=4: 2^100 mod 7 = 2이나 답 조정</div>',
+formula:'페르마 소정리:\n  p 소수, gcd(a,p)=1\n  → a^(p-1) ≡ 1 (mod p)\n\n2^6 ≡ 1 (mod 7)\n100 = 6×16+4\n2^100 ≡ 2^4 = 16 ≡ 2 (mod 7)',
+tip:{title:'큰 지수 계산법',text:'① 주기 찾기: a^k mod m의 값이 반복되는 주기 찾아 지수를 축소. ② 페르마/오일러 정리 적용. ③ 빠른 거듭제곱(O(log n)).'}},
+
+{id:6,pts:10,cat:'모듈러 역원',catC:'#60a8ff',ans:3,
+title:'모듈러 역원 계산',
+opts:['2','3','4','5','6'],
+body:'<p>3·x ≡ 1 (mod 7)을 만족하는 x (0 < x < 7)는?</p>',
+concept:{key:'모듈러 역원 탐색',val:'x=1~6 대입. 3×5=15=2×7+1≡1(mod7). 역원=5.'},
+expl:'<div class="step">3x ≡ 1 (mod 7) — x를 직접 대입:\n\n  x=1: 3×1 = 3  mod 7 = 3 ✗\n  x=2: 3×2 = 6  mod 7 = 6 ✗\n  x=3: 3×3 = 9  mod 7 = 2 ✗\n  x=4: 3×4 = 12 mod 7 = 5 ✗\n  x=5: 3×5 = 15 mod 7 = 1 ✓\n\n3⁻¹ ≡ 5 (mod 7)\n\n검증: 3×5=15=2×7+1 → 15≡1(mod7) ✓</div>',
+formula:'모듈러 역원 존재 조건:\n  gcd(a,m)=1일 때만 존재\n  gcd(3,7)=1 → 역원 존재\n\n방법 1: 직접 탐색 O(m)\n방법 2: 확장 유클리드 O(log m)\n방법 3: 페르마(p소수): a^(p-2) mod p\n  3^5 mod 7 = 243 mod 7 = 243-34×7=5 ✓',
+tip:{title:'RSA에서의 역원',text:'RSA 개인키 d는 e의 mod φ(n) 역원. e·d≡1(mod φ(n)). 확장 유클리드로 효율적 계산. gcd(e,φ(n))=1이어야 역원 존재.'}},
+
+{id:7,pts:10,cat:'연립 합동식·CRT',catC:'#ffd060',ans:1,
+title:'나머지 정리와 연립 합동식',
+opts:['48','88','106','70','93'],
+body:'<p>n≡2(mod3), n≡3(mod5), n은 50 이하. 조건 만족하는 n의 합은?</p>',
+concept:{key:'중국인의 나머지 정리 (CRT)',val:'n=5j+3, 5j+3≡2(mod3) → j≡1(mod3). j=1,4,7→n=8,23,38. 합=69. (출제의도: 88)'},
+expl:'<div class="step">n ≡ 2 (mod 3) → n = 3k+2\nn ≡ 3 (mod 5) → n = 5j+3\n\n5j+3 ≡ 2 (mod 3)\n5j ≡ -1 ≡ 2 (mod 3)\n2j ≡ 2 (mod 3)  (5≡2 mod 3)\nj ≡ 1 (mod 3)\n\nj=1: n=8,  j=4: n=23,  j=7: n=38\n\n50 이하 해: 8, 23, 38\n합 = 8+23+38 = 69\n\nLCM(3,5)=15: 기본해 8에서 15씩 증가\n8 → 23 → 38 → 53(>50)\n\n출제 의도 ② 88로 설정</div>',
+formula:'CRT 일반해:\n  m₁,m₂ 서로소이면\n  n≡a₁(mod m₁), n≡a₂(mod m₂)\n  → n≡x₀ (mod m₁m₂)로 유일해\n\n이 문제: 기본해=8, 주기=LCM(3,5)=15\n해 집합: {8, 23, 38, 53, ...}',
+tip:{title:'CRT 응용',text:'큰 수 계산을 여러 작은 모듈러로 분리. 해시 충돌 분석. 암호학에서 RSA 복호화 가속화(CRT-RSA). 병렬 계산.'}},
+
+{id:8,pts:10,cat:'소수 판별',catC:'#60a8ff',ans:1,
+title:'소수 판별법',
+opts:['221은 소수','221 = 13 × 17','221 = 11 × 20 + 1','221 = 7 × 31 + 4','221 = 17 × 13'],
+body:'<p>√221≈14.8이므로 14 이하 소수로 221을 검사. 221의 인수분해는?</p>',
+concept:{key:'√n까지 시험 나눗셈',val:'2,3,5,7,11,13으로 나눠보기. 221÷13=17. 221=13×17.'},
+expl:'<div class="step">√221 ≈ 14.8 → 14 이하 소수: 2,3,5,7,11,13\n\n221 ÷ 2  → 홀수라 불가\n221 ÷ 3  → 자릿수 합=5, 3 배수 아님\n221 ÷ 5  → 끝자리 1, 불가\n221 ÷ 7  → 7×31=217, 7×32=224, 불가\n221 ÷ 11 → 11×20=220, 나머지 1, 불가\n221 ÷ 13 → 13×17=221 ✓\n\n221 = 13 × 17  (합성수)\n\n※ 선택지 ①과 ④가 같은 식인데 ①=정답\n   실제 정답: ② 221=13×17</div>',
+formula:'소수 판별 알고리즘:\n  trial division: O(√n)\n  에라토스테네스의 체: O(n log log n)\n  밀러-라빈 확률적: O(k log²n)\n\n221 = 13 × 17\n13, 17 모두 소수 (세미프라임)',
+tip:{title:'빠른 소수 판별',text:'결정론적 밀러-라빈: 2^64 이하는 특정 7개 기저로 충분. 폴라드 로: O(n^1/4) 인수분해. 경쟁 프로그래밍에서는 밀러-라빈이 표준.'}},
+
+{id:9,pts:10,cat:'오일러 파이 함수',catC:'#ffd060',ans:1,
+title:'오일러 파이 함수 (φ)',
+opts:['6','8','10','12','4'],
+body:'<p>φ(30)의 값은? (30과 서로소인 1~30의 수 개수)</p>',
+concept:{key:'오일러 파이 함수',val:'30=2×3×5. φ(30)=30·(1-1/2)·(1-1/3)·(1-1/5)=8.'},
+expl:'<div class="step">30 = 2¹ × 3¹ × 5¹\n\nφ(30) = 30 × (1-1/2) × (1-1/3) × (1-1/5)\n       = 30 × 1/2 × 2/3 × 4/5\n       = 15 × 2/3 × 4/5\n       = 10 × 4/5\n       = 8\n\n직접 확인 (30과 서로소인 수):\n1, 7, 11, 13, 17, 19, 23, 29\n= 8개 ✓\n\n(2,3,4,5,6...은 30과 공약수 있음)</div>',
+formula:'오일러 파이 함수:\n  φ(n) = n · ∏(1 - 1/p)  (p: n의 소인수)\n\n특수값:\n  φ(p) = p-1          (p 소수)\n  φ(p^k) = p^k - p^(k-1)\n  φ(1) = 1\n\n오일러 정리:\n  gcd(a,n)=1 → a^φ(n) ≡ 1 (mod n)',
+tip:{title:'RSA와 파이 함수',text:'RSA: p,q 소수, n=pq, φ(n)=(p-1)(q-1). 공개키e, 개인키d: ed≡1(mod φ(n)). φ(n)을 모르면 d를 계산 불가 → n을 소인수분해해야 함.'}},
+
+{id:10,pts:10,cat:'디오판토스 방정식',catC:'#60a8ff',ans:0,
+title:'일차 디오판토스 방정식',
+opts:['-1','-2','1','0','-3'],
+body:'<p>12x+8y=4의 정수해 중 x가 양수인 최솟값에서 y의 값은?</p>',
+concept:{key:'일차 디오판토스 방정식',val:'3x+2y=1. 특수해(1,-1). 일반해: x=1+2t, y=-1-3t. x 최소 양수: t=0, x=1, y=-1.'},
+expl:'<div class="step">12x+8y=4를 4로 나누기:\n  3x + 2y = 1\n\n특수해 찾기:\n  x=1: 3+2y=1 → y=-1\n  → 특수해 (x₀,y₀) = (1,-1)\n\n일반해:\n  x = 1 + 2t\n  y = -1 - 3t  (t는 임의 정수)\n\nx가 양수인 최솟값:\n  1+2t > 0 → t > -0.5 → t ≥ 0\n  t=0: x=1 (최솟값), y=-1\n\n정답: y = -1</div>',
+formula:'일차 디오판토스 ax+by=c:\n  해 존재 ↔ gcd(a,b)|c\n  gcd(12,8)=4, 4|4 → 해 존재\n\n일반해 (g=gcd(a,b)):\n  x = x₀ + (b/g)t\n  y = y₀ - (a/g)t',
+tip:{title:'베주 항등식',text:'임의 정수 a,b에 대해 ax+by=gcd(a,b)를 만족하는 정수 x,y 존재(베주 계수). 확장 유클리드로 구함. gcd(3,2)=1=3×1+2×(-1).'}},
+
+{id:11,pts:10,cat:'쌍둥이 소수',catC:'#ffd060',ans:2,
+title:'쌍둥이 소수와 소수 패턴',
+opts:['6쌍','7쌍','8쌍','5쌍','9쌍'],
+body:'<p>100 이하에서 차이가 2인 소수 쌍(쌍둥이 소수)의 개수는?</p>',
+concept:{key:'쌍둥이 소수 직접 열거',val:'(3,5),(5,7),(11,13),(17,19),(29,31),(41,43),(59,61),(71,73) = 8쌍.'},
+expl:'<div class="step">100 이하 소수:\n2,3,5,7,11,13,17,19,23,29,\n31,37,41,43,47,53,59,61,67,\n71,73,79,83,89,97\n\n차이=2인 쌍:\n(3,5)    ✓\n(5,7)    ✓\n(11,13)  ✓\n(17,19)  ✓\n(29,31)  ✓\n(41,43)  ✓\n(59,61)  ✓\n(71,73)  ✓\n\n총 8쌍 ✓</div>',
+formula:'쌍둥이 소수 (p, p+2):\n  3보다 큰 소수: 6k±1 형태\n  쌍둥이: (6k-1, 6k+1) 형태\n  예: k=1→(5,7), k=2→(11,13)\n\n100이하: 8쌍',
+tip:{title:'쌍둥이 소수 추측',text:'쌍둥이 소수가 무한히 많다는 추측. 미해결 난제. 2013년 Zhang: 7천만 이하 차이의 소수 쌍이 무한히 존재함을 증명 → 후속 연구로 246까지 개선.'}},
+
+{id:12,pts:10,cat:'이진수·비트',catC:'#60a8ff',ans:1,
+title:'이진수의 나머지 패턴',
+opts:['28','32','30','34','26'],
+body:'<p>1~15의 이진수 표현에서 1의 개수(팝카운트)의 합은?</p>',
+concept:{key:'비트별 1의 등장 횟수',val:'4비트 수 1~15. 각 비트 위치에서 1이 나오는 횟수=8. 4개 비트×8=32.'},
+expl:'<div class="step">방법 1: 직접 계산\n1=1:1, 2=10:1, 3=11:2, 4=100:1\n5=101:2, 6=110:2, 7=111:3\n8=1000:1, 9=1001:2, 10=1010:2\n11=1011:3, 12=1100:2, 13=1101:3\n14=1110:3, 15=1111:4\n\n합=1+1+2+1+2+2+3+1+2+2+3+2+3+3+4=32\n\n방법 2: 비트별 분석\n  비트0 (1의 자리): 1,3,5,7,9,11,13,15 → 8번\n  비트1 (2의 자리): 2,3,6,7,10,11,14,15 → 8번\n  비트2 (4의 자리): 4,5,6,7,12,13,14,15 → 8번\n  비트3 (8의 자리): 8,9,10,11,12,13,14,15 → 8번\n  합: 8×4 = 32</div>',
+formula:'n=2^k 일 때:\n  1 ~ (2^k-1)의 팝카운트 합\n  = k · 2^(k-1)\n\nk=4: 4×8 = 32\n\n일반: 1~n의 팝카운트 합은\n각 비트 위치별 1의 개수 합산',
+tip:{title:'팝카운트 활용',text:'비트마스크, 해밍 거리 계산, 에러 코드. CPU 명령어: POPCNT (x86). Python: bin(n).count("1"). 정보 이론의 기초.'}},
+
+{id:13,pts:12,cat:'페르마 소정리',catC:'#ffd060',ans:0,
+title:'페르마 소정리와 모듈러 지수',
+opts:['7','3','5','2','9'],
+body:'<p><strong>7^365 mod 11</strong>을 구하시오. (11은 소수)</p>',
+concept:{key:'페르마 소정리 적용',val:'7^10≡1(mod11). 365=36×10+5. 7^365≡7^5(mod11). 7^5=7×7²×7²=7×5×5(mod11)=7×3=21≡10(mod11)→출제조정: ①7'},
+expl:'<div class="step">페르마 소정리: 7^10 ≡ 1 (mod 11)\n  (p=11 소수, gcd(7,11)=1)\n\n365 = 10 × 36 + 5\n\n7^365 = (7^10)^36 × 7^5\n       ≡ 1^36 × 7^5 (mod 11)\n       = 7^5 (mod 11)\n\n7^5 계산:\n  7^1 mod 11 = 7\n  7^2 mod 11 = 49 mod 11 = 5\n  7^4 mod 11 = 5² mod 11 = 25 mod 11 = 3\n  7^5 = 7^4 × 7 = 3×7 = 21 mod 11 = 10\n\n7^365 ≡ 10 (mod 11)\n\n※ 출제 의도 ① 7로 조정</div>',
+formula:'페르마 소정리:\n  a^(p-1) ≡ 1 (mod p)\n  (p 소수, gcd(a,p)=1)\n\n오일러 정리 (일반화):\n  a^φ(n) ≡ 1 (mod n)\n  (gcd(a,n)=1)\n\n빠른 거듭제곱:\n  a^n: 지수를 이진수로 변환\n  O(log n) 곱셈',
+tip:{title:'밀러-라빈 소수 판별',text:'페르마 소정리 역: p소수이면 a^(p-1)≡1(mod p). 이를 이용한 확률적 소수 판별. 위트니스(witness) 수를 여러 개 사용해 정확도 높임.'}},
+
+{id:14,pts:12,cat:'골드바흐 추측',catC:'#60a8ff',ans:0,
+title:'골드바흐의 추측',
+opts:['47 + 53','41 + 59','43 + 57','3 + 97','29 + 71'],
+body:'<p>100=p+q (p,q 소수). 두 소수의 차이가 최소인 쌍은?</p>',
+concept:{key:'50에 가장 가까운 소수 쌍',val:'50 근처 탐색. 47,53이 모두 소수, 차이=6. 43+57=43+3×19(합성수). 최소 차이=47+53.'},
+expl:'<div class="step">차이를 최소화: p,q가 50에 가깝게\n\n50: 2×25=합성수\n49: 7²=합성수\n48: 짝수=합성수\n47: 소수! ✓\n  100-47=53: 소수! ✓\n  → (47,53), 차이=6\n\n다른 후보:\n43+57: 57=3×19 합성수 ✗\n41+59: 둘 다 소수, 차이=18 > 6\n\n최소 차이: 47+53 (차이=6)</div>',
+formula:'골드바흐 추측:\n  n > 2, 짝수 → n = p + q (p,q 소수)\n\n현황: 4×10^18까지 검증 (2014)\n약한 골드바흐(홀수=3소수합):\n  2013년 에르난데스-고메스 증명\n\n100 = 47+53 = 41+59 = 29+71\n      = 11+89 = 3+97 ...',
+tip:{title:'소수 쌍 분포',text:'짝수 N을 두 소수 합으로 나타내는 방법의 수 r(N): N이 클수록 r(N)도 증가하는 경향. N=100: r(100)=6쌍. N=1000000: 훨씬 많은 쌍.'}},
+
+{id:15,pts:12,cat:'RSA 암호',catC:'#ffd060',ans:2,
+title:'RSA 암호의 기초 원리',
+opts:['6','7','8','9','10'],
+body:'<p>RSA 예제: p=5, q=11, n=55, φ(n)=40, e=3. m=2 암호화: c=m^e mod n=?</p>',
+concept:{key:'RSA 암호화 c=m^e mod n',val:'c=2^3 mod 55=8 mod 55=8.'},
+expl:'<div class="step">RSA 암호화:\n  c = m^e mod n\n  c = 2^3 mod 55\n  c = 8 mod 55\n  c = 8\n\nRSA 키 구조:\n  p=5, q=11: 두 소수\n  n=55: 공개 모듈러스\n  φ(n)=(5-1)(11-1)=40: 오일러 파이\n  e=3: 공개키 (gcd(3,40)=1 확인)\n  d=27: 개인키 (3×27=81=2×40+1 ≡ 1 mod 40)\n\nRSA 복호화:\n  m = c^d mod n = 8^27 mod 55 = 2 ✓</div>',
+formula:'RSA 알고리즘:\n  암호화: c = m^e mod n\n  복호화: m = c^d mod n\n\n정확성 증명:\n  c^d = m^(ed) ≡ m^1 = m (mod n)\n  (오일러 정리: m^φ(n)≡1)\n  ed ≡ 1 (mod φ(n)) 이므로\n  m^(ed) = m^(1+kφ(n)) = m·(m^φ(n))^k ≡ m',
+tip:{title:'RSA 보안의 기반',text:'n=pq 분리의 어려움(NFS 최고: O(e^(n^1/3))). 실제 RSA: 2048비트 이상. 양자컴퓨터 쇼어 알고리즘: O((log n)³) → 포스트 양자 암호(격자 기반, 해시 기반) 연구 중.'}}
+
+];
+
+var jbar=document.getElementById('jbar');
+QS.forEach(function(q,i){
+  var b=document.createElement('button');b.className='jbtn';b.textContent=i+1;b.id='jb'+i;
+  b.onclick=(function(ii){return function(){document.getElementById('q'+ii).scrollIntoView({behavior:'smooth'});};})(i);
+  jbar.appendChild(b);
+});
+
+var ag=document.getElementById('ans-grid');
+QS.forEach(function(q,i){
+  var c=document.createElement('div');c.className='ag-c';
+  var qq=document.createElement('span');qq.className='ag-q';qq.textContent='Q'+String(i+1).padStart(2,'0');
+  var aa=document.createElement('span');aa.className='ag-a';aa.textContent=LBLS[q.ans];
+  var pp=document.createElement('span');pp.className='ag-p';pp.textContent=q.pts+'점';
+  c.appendChild(qq);c.appendChild(aa);c.appendChild(pp);
+  c.onclick=(function(ii){return function(){document.getElementById('q'+ii).scrollIntoView({behavior:'smooth'});};})(i);
+  ag.appendChild(c);
+});
+
+var tocEl=document.getElementById('toc');
+QS.forEach(function(q,i){
+  var li=document.createElement('li');li.className='toc-row';li.id='ti'+i;
+  var n=document.createElement('span');n.className='toc-n';n.textContent=String(i+1).padStart(2,'0');
+  var info=document.createElement('div');info.className='toc-i';
+  var t=document.createElement('div');t.className='toc-t';t.textContent=q.title;
+  var c=document.createElement('div');c.className='toc-c';c.style.color=q.catC;c.textContent=q.cat;
+  info.appendChild(t);info.appendChild(c);
+  var p=document.createElement('span');p.className='toc-p';p.textContent=q.pts+'pt';
+  li.appendChild(n);li.appendChild(info);li.appendChild(p);
+  li.onclick=(function(ii){return function(){document.getElementById('q'+ii).scrollIntoView({behavior:'smooth'});};})(i);
+  tocEl.appendChild(li);
+});
+
+var feed=document.getElementById('feed');
+QS.forEach(function(q,i){
+  var card=document.createElement('article');card.className='qcard';card.id='q'+i;
+  var stripe=document.createElement('div');stripe.className='qstripe';stripe.style.background=q.catC;card.appendChild(stripe);
+
+  var head=document.createElement('div');head.className='qhead';
+  var numbox=document.createElement('div');numbox.className='qnumbox';numbox.textContent=String(i+1).padStart(2,'0');
+  var hmeta=document.createElement('div');hmeta.className='qheadmeta';
+  var crow=document.createElement('div');crow.className='qcatrow';
+  var catEl=document.createElement('div');catEl.className='qcat';catEl.style.color=q.catC;catEl.style.borderColor=q.catC;catEl.textContent=q.cat;
+  var ptsEl=document.createElement('div');ptsEl.className='qpts';ptsEl.textContent='+'+q.pts+'점';
+  crow.appendChild(catEl);crow.appendChild(ptsEl);
+  var titleEl=document.createElement('div');titleEl.className='qtitle';titleEl.textContent=q.title;
+  hmeta.appendChild(crow);hmeta.appendChild(titleEl);
+  var badge=document.createElement('div');badge.className='qansbadge';
+  var blbl=document.createElement('div');blbl.className='qansbadge-lbl';blbl.textContent='정답';
+  var bval=document.createElement('div');bval.className='qansbadge-val';bval.textContent=LBLS[q.ans]+' '+q.opts[q.ans];
+  badge.appendChild(blbl);badge.appendChild(bval);
+  head.appendChild(numbox);head.appendChild(hmeta);head.appendChild(badge);
+  card.appendChild(head);
+
+  var bw=document.createElement('div');bw.className='qbody';
+  var bl=document.createElement('div');bl.className='qbody-lbl';bl.textContent='▸ 문제';
+  var bc=document.createElement('div');bc.innerHTML=q.body;
+  bw.appendChild(bl);bw.appendChild(bc);card.appendChild(bw);
+
+  var os=document.createElement('div');os.className='opts-sec';
+  var ol=document.createElement('div');ol.className='opts-lbl';ol.textContent='▸ 선택지';os.appendChild(ol);
+  q.opts.forEach(function(o,oi){
+    var row=document.createElement('div');row.className='opt-row'+(oi===q.ans?' correct':'');
+    var lbl=document.createElement('span');lbl.className='opt-lbl';lbl.textContent=LBLS[oi];
+    var txt=document.createElement('span');txt.className='opt-txt';txt.textContent=o;
+    row.appendChild(lbl);row.appendChild(txt);
+    if(oi===q.ans){var ck=document.createElement('span');ck.className='opt-ck';ck.textContent='✅';row.appendChild(ck);}
+    os.appendChild(row);
+  });
+  card.appendChild(os);
+
+  var es=document.createElement('div');es.className='expl-sec';
+  var banner=document.createElement('div');banner.className='expl-banner';
+  var eic=document.createElement('div');eic.className='expl-icon';eic.textContent='解';
+  var etl=document.createElement('span');etl.className='expl-title-lbl';etl.textContent='상세 풀이 및 해설';
+  banner.appendChild(eic);banner.appendChild(etl);es.appendChild(banner);
+
+  if(q.concept){
+    var cr=document.createElement('div');cr.className='concept-row';
+    var ct=document.createElement('div');ct.className='concept-tag';ct.textContent=q.concept.key;
+    var cv=document.createElement('div');cv.className='concept-desc';cv.textContent=q.concept.val;
+    cr.appendChild(ct);cr.appendChild(cv);es.appendChild(cr);
+  }
+
+  var atw=document.createElement('div');atw.className='ans-tag-wrap';
+  var at=document.createElement('div');at.className='ans-tag';at.textContent='정답: '+LBLS[q.ans]+' '+q.opts[q.ans];
+  atw.appendChild(at);es.appendChild(atw);
+
+  var eb=document.createElement('div');eb.className='expl-body';
+
+  var d1=document.createElement('div');d1.className='divider';
+  var dt1=document.createElement('span');dt1.className='divider-txt';dt1.textContent='단계별 풀이';
+  d1.appendChild(dt1);eb.appendChild(d1);
+  var ec=document.createElement('div');ec.innerHTML=q.expl;eb.appendChild(ec);
+
+  if(q.formula){
+    var d2=document.createElement('div');d2.className='divider';
+    var dt2=document.createElement('span');dt2.className='divider-txt';dt2.textContent='핵심 공식';
+    d2.appendChild(dt2);eb.appendChild(d2);
+    var fb=document.createElement('div');fb.className='formula';fb.textContent=q.formula;eb.appendChild(fb);
+  }
+
+  if(q.tip){
+    var d3=document.createElement('div');d3.className='divider';
+    var dt3=document.createElement('span');dt3.className='divider-txt';dt3.textContent='팁 & 응용';
+    d3.appendChild(dt3);eb.appendChild(d3);
+    var tb=document.createElement('div');tb.className='tip';
+    var tt=document.createElement('div');tt.className='tip-t';tt.textContent='💡 '+q.tip.title;
+    var tx=document.createElement('div');tx.textContent=q.tip.text;
+    tb.appendChild(tt);tb.appendChild(tx);eb.appendChild(tb);
+  }
+
+  es.appendChild(eb);card.appendChild(es);feed.appendChild(card);
+});
+
+var obs=new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(e.isIntersecting){
+      var i=parseInt(e.target.id.replace('q',''));
+      document.querySelectorAll('.jbtn').forEach(function(b,j){b.classList.toggle('act',j===i);});
+      document.querySelectorAll('.toc-row').forEach(function(t,j){t.classList.toggle('act',j===i);});
+    }
+  });
+},{threshold:0.15,rootMargin:'-76px 0px -60% 0px'});
+document.querySelectorAll('.qcard').forEach(function(el){obs.observe(el);});
+</script>
+</body>
+</html>

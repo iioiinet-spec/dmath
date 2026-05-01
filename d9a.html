@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>집합과 관계정리 15문제 — 정답 및 완전 해설</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700;900&family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  --bg:#0a090e;--deep:#100f15;--card:#17151f;--card2:#1e1b28;
+  --border:#2a2640;--border2:#3a3558;--faint:#4a4570;
+  --muted:#6a6598;--dim:#8a88b8;--text:#d0ccf0;--bright:#eeeaff;
+  --purple:#9060ff;--purple2:#b090ff;--purple3:#d0b8ff;
+  --amber:#ffa040;--amber2:#ffc070;--amber3:#ffe0a0;
+  --teal:#20d0c0;--teal2:#50e8d8;
+  --rose:#ff5070;--sky:#5090ff;
+  --ok-bg:rgba(32,208,192,.08);--ok-br:#20d0c0;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;min-height:100vh;line-height:1.8;}
+body::before{content:'';position:fixed;inset:0;
+  background:radial-gradient(ellipse 60% 40% at 15% 0%,rgba(144,96,255,.06),transparent),
+             radial-gradient(ellipse 50% 35% at 85% 100%,rgba(255,160,64,.04),transparent);
+  pointer-events:none;z-index:0;}
+
+/* HEADER */
+.site-hdr{position:sticky;top:0;z-index:100;background:rgba(10,9,14,.95);
+  backdrop-filter:blur(20px);border-bottom:1px solid var(--border2);}
+.site-hdr-in{max-width:1180px;margin:0 auto;padding:10px 28px;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.site-brand{display:flex;flex-direction:column;gap:1px;}
+.site-brand-sup{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:4px;
+  text-transform:uppercase;color:var(--faint);}
+.site-brand-title{font-family:'Noto Serif KR',serif;font-size:17px;font-weight:700;color:var(--bright);}
+.site-brand-title span{color:var(--purple2);text-shadow:0 0 8px rgba(144,96,255,.4);}
+.jbar{display:flex;gap:3px;flex-wrap:wrap;max-width:500px;}
+.jbtn{width:27px;height:27px;background:var(--card);border:1px solid var(--border2);
+  color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:10px;
+  cursor:pointer;border-radius:2px;transition:all .15s;display:flex;align-items:center;justify-content:center;}
+.jbtn:hover{background:var(--border2);color:var(--text);}
+.jbtn.act{background:var(--purple);border-color:var(--purple);color:var(--bg);font-weight:700;
+  box-shadow:0 0 8px rgba(144,96,255,.4);}
+.site-chips{display:flex;gap:8px;}
+.chip{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--faint);
+  border:1px solid var(--border2);padding:3px 10px;}
+
+/* LAYOUT */
+.layout{max-width:1180px;margin:0 auto;padding:32px 28px 100px;
+  display:grid;grid-template-columns:264px 1fr;gap:28px;align-items:start;position:relative;z-index:1;}
+
+/* SIDEBAR */
+.sidebar{position:sticky;top:76px;display:flex;flex-direction:column;gap:14px;}
+.sb{background:var(--card);border:1px solid var(--border2);overflow:hidden;}
+.sb-hd{background:var(--card2);border-bottom:1px solid var(--border);padding:9px 16px;
+  font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;
+  text-transform:uppercase;color:var(--muted);}
+.ans-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border2);}
+.ag-c{background:var(--card);padding:10px 6px;text-align:center;cursor:pointer;transition:background .15s;}
+.ag-c:hover{background:var(--card2);}
+.ag-q{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--faint);display:block;margin-bottom:4px;}
+.ag-a{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:var(--teal);
+  display:block;line-height:1;text-shadow:0 0 6px rgba(32,208,192,.3);}
+.ag-p{font-size:9px;color:var(--faint);display:block;margin-top:3px;}
+.sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border2);}
+.sum-c{background:var(--card);padding:14px;text-align:center;}
+.sum-n{font-family:'Noto Serif KR',serif;font-size:26px;font-weight:900;display:block;line-height:1;}
+.sum-l{font-size:10px;color:var(--muted);margin-top:3px;}
+.toc{list-style:none;}
+.toc-row{display:flex;align-items:flex-start;gap:10px;padding:8px 16px;
+  border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s;}
+.toc-row:last-child{border-bottom:none;}
+.toc-row:hover{background:var(--card2);}
+.toc-row.act{background:rgba(144,96,255,.07);}
+.toc-n{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--faint);min-width:22px;}
+.toc-i{flex:1;min-width:0;}
+.toc-t{font-size:12px;color:var(--text);line-height:1.35;}
+.toc-c{font-family:'JetBrains Mono',monospace;font-size:9px;margin-top:1px;}
+.toc-p{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--faint);flex-shrink:0;}
+
+/* CARDS */
+.qfeed{display:flex;flex-direction:column;gap:40px;}
+.qcard{background:var(--card);border:1px solid var(--border2);overflow:hidden;
+  scroll-margin-top:84px;transition:border-color .2s;}
+.qcard:hover{border-color:var(--faint);}
+.qstripe{height:3px;}
+
+.qhead{padding:20px 28px 14px;border-bottom:1px solid var(--border);
+  display:flex;align-items:flex-start;gap:16px;}
+.qnumbox{font-family:'Noto Serif KR',serif;font-size:58px;font-weight:900;
+  color:var(--border2);line-height:1;min-width:68px;flex-shrink:0;letter-spacing:-3px;}
+.qheadmeta{flex:1;}
+.qcatrow{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.qcat{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;
+  text-transform:uppercase;border:1px solid;padding:2px 8px;}
+.qpts{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--amber);
+  border:1px solid var(--amber);padding:2px 8px;}
+.qtitle{font-family:'Noto Serif KR',serif;font-size:20px;font-weight:700;
+  color:var(--bright);line-height:1.3;}
+.qansbadge{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0;}
+.qansbadge-lbl{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--faint);
+  letter-spacing:2px;text-transform:uppercase;}
+.qansbadge-val{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;
+  color:var(--teal);background:var(--ok-bg);border:1px solid var(--ok-br);
+  padding:5px 14px;box-shadow:0 0 8px rgba(32,208,192,.15);}
+
+.qbody{padding:20px 28px;border-bottom:1px solid var(--border);
+  font-size:14.5px;line-height:2;color:var(--text);}
+.qbody-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;
+  text-transform:uppercase;color:var(--faint);margin-bottom:10px;}
+.qbody p{margin-bottom:10px;}.qbody p:last-child{margin-bottom:0;}
+.qbody strong{color:var(--purple3);}
+.qbody em{color:var(--amber2);font-style:normal;font-weight:700;}
+.qbody ul,.qbody ol{margin:8px 0 8px 26px;line-height:2.3;}
+.scene{background:var(--card2);border:1px solid var(--border2);border-left:3px solid var(--amber);
+  padding:14px 18px;margin:12px 0;font-size:14px;line-height:2;}
+.scene-t{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;
+  text-transform:uppercase;color:var(--amber2);margin-bottom:7px;font-weight:700;}
+.setfig{font-family:'JetBrains Mono',monospace;background:#07060c;color:var(--amber2);
+  border:1px solid var(--border2);border-left:3px solid var(--amber);
+  padding:13px 17px;margin:10px 0;font-size:13px;line-height:1.9;overflow-x:auto;white-space:pre;}
+.cbox{font-family:'JetBrains Mono',monospace;background:#07060c;color:var(--purple3);
+  border:1px solid var(--border2);border-left:3px solid var(--purple);
+  padding:13px 17px;margin:10px 0;font-size:13px;line-height:1.9;overflow-x:auto;white-space:pre;}
+
+.opts-sec{padding:16px 28px;border-bottom:1px solid var(--border);}
+.opts-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;
+  text-transform:uppercase;color:var(--faint);margin-bottom:8px;}
+.opt-row{display:flex;align-items:flex-start;gap:12px;padding:10px 14px;margin-bottom:6px;
+  border:1px solid var(--border2);font-size:13.5px;line-height:1.7;}
+.opt-row:last-child{margin-bottom:0;}
+.opt-row.correct{border-color:var(--ok-br);background:var(--ok-bg);}
+.opt-lbl{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;
+  color:var(--faint);min-width:22px;padding-top:1px;flex-shrink:0;}
+.opt-row.correct .opt-lbl{color:var(--teal);}
+.opt-txt{color:var(--text);font-size:13.5px;}
+.opt-ck{margin-left:auto;font-size:16px;flex-shrink:0;}
+
+.expl-sec{padding:0;}
+.expl-banner{background:rgba(0,0,0,.4);border-bottom:1px solid var(--border2);
+  padding:11px 22px;margin:0 28px;display:flex;align-items:center;gap:12px;}
+.expl-icon{width:30px;height:30px;border:1px solid var(--purple);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;
+  color:var(--purple);flex-shrink:0;box-shadow:0 0 8px rgba(144,96,255,.2);}
+.expl-title-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;
+  text-transform:uppercase;color:var(--muted);}
+.concept-row{background:rgba(255,160,64,.05);border-bottom:1px solid var(--border);
+  padding:10px 28px;display:flex;align-items:flex-start;gap:10px;}
+.concept-tag{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--amber2);border:1px solid var(--amber);
+  padding:2px 10px;white-space:nowrap;flex-shrink:0;margin-top:2px;}
+.concept-desc{font-size:13px;color:var(--muted);line-height:1.75;}
+.ans-tag-wrap{padding:0 28px;}
+.ans-tag{display:inline-block;background:var(--ok-bg);border:1px solid var(--ok-br);
+  color:var(--teal);font-family:'JetBrains Mono',monospace;font-size:12px;
+  padding:5px 16px;margin-top:16px;font-weight:600;
+  box-shadow:0 0 8px rgba(32,208,192,.15);}
+.expl-body{padding:20px 28px 26px;font-size:14px;line-height:2;color:var(--dim);}
+.expl-body p{margin-bottom:10px;}.expl-body p:last-child{margin-bottom:0;}
+.expl-body strong{color:var(--sky);}
+.divider{display:flex;align-items:center;gap:12px;margin:14px 0;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border);}
+.divider-txt{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;
+  color:var(--faint);text-transform:uppercase;white-space:nowrap;}
+.step{font-family:'JetBrains Mono',monospace;background:#07060c;
+  border:1px solid var(--border2);border-left:3px solid var(--teal);
+  padding:16px 20px;margin:12px 0;font-size:12.5px;line-height:1.95;
+  white-space:pre-wrap;overflow-x:auto;color:#a0a8d8;}
+.formula{background:rgba(144,96,255,.05);border:1px solid rgba(144,96,255,.2);
+  border-left:3px solid var(--purple);padding:14px 18px;margin:12px 0;
+  font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.9;
+  color:var(--purple3);white-space:pre-wrap;}
+.tip{background:rgba(255,160,64,.06);border-left:3px solid var(--amber);
+  padding:11px 16px;margin:12px 0;font-size:13px;line-height:1.75;color:var(--muted);}
+.tip-t{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--amber);margin-bottom:4px;font-weight:700;}
+
+@media(max-width:960px){.layout{grid-template-columns:1fr;}.sidebar{position:static;}
+  .jbar,.site-chips{display:none;}}
+@media(max-width:600px){.qhead{flex-direction:column;}.qnumbox{font-size:38px;}
+  .qbody,.expl-body{padding:16px;}.opts-sec{padding:12px 16px;}
+  .expl-banner,.concept-row,.ans-tag-wrap{padding-left:16px;padding-right:16px;}
+  .expl-banner{margin:0 16px;}}
+</style>
+</head>
+<body>
+
+<div class="site-hdr">
+  <div class="site-hdr-in">
+    <div class="site-brand">
+      <span class="site-brand-sup">KOI 중등부 · 집합과 관계정리 특강</span>
+      <div class="site-brand-title">정답 및 <span>완전 해설</span></div>
+    </div>
+    <div class="jbar" id="jbar"></div>
+    <div class="site-chips"><div class="chip">15문항</div><div class="chip">150점</div></div>
+  </div>
+</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sb">
+      <div class="sb-hd">📊 배점 요약</div>
+      <div class="sum-grid">
+        <div class="sum-c"><span class="sum-n" style="color:var(--purple2)">150</span><div class="sum-l">총 배점</div></div>
+        <div class="sum-c"><span class="sum-n" style="color:var(--amber)">15</span><div class="sum-l">총 문항</div></div>
+        <div class="sum-c"><span class="sum-n" style="color:var(--teal)">8~12</span><div class="sum-l">문항 배점</div></div>
+        <div class="sum-c"><span class="sum-n" style="color:var(--rose)">60</span><div class="sum-l">제한(분)</div></div>
+      </div>
+    </div>
+    <div class="sb"><div class="sb-hd">✅ 정답 한눈에</div><div class="ans-grid" id="ans-grid"></div></div>
+    <div class="sb"><div class="sb-hd">📋 문제 목록</div><ul class="toc" id="toc"></ul></div>
+  </aside>
+  <main><div class="qfeed" id="feed"></div></main>
+</div>
+
+<script>
+var LBLS=['①','②','③','④','⑤'];
+
+var QS=[
+
+{id:1,pts:8,cat:'집합 기본 연산',catC:'#9060ff',ans:2,
+title:'집합의 연산과 원소 개수',
+opts:['10','9','8','11','7'],
+body:'<p>U={1,..,10}, A={1,2,3,4,5}, B={3,4,5,6,7}일 때, <strong>|A∪B|+|A∩B|-|A-B|</strong>의 값은?</p>',
+concept:{key:'집합 연산 원소 개수',val:'A∩B={3,4,5}, A∪B={1,...,7}, A-B={1,2}. 7+3-2=8.'},
+expl:'<div class="step">집합 계산:\n  A = {1,2,3,4,5},  |A|=5\n  B = {3,4,5,6,7},  |B|=5\n  A∩B = {3,4,5},    |A∩B|=3\n  A∪B = {1,2,3,4,5,6,7}, |A∪B|=7\n  A-B = A\\(A∩B) = {1,2}, |A-B|=2\n\n|A∪B| + |A∩B| - |A-B|\n= 7 + 3 - 2\n= 8</div>',
+formula:'포함-배제 원리:\n  |A∪B| = |A|+|B|-|A∩B|\n        = 5+5-3 = 7\n\n|A-B| = |A|-|A∩B| = 5-3 = 2\n\n최종: 7+3-2 = 8',
+tip:{title:'집합 연산 관계',text:'A-B = A∩Bᶜ. |A-B|=|A|-|A∩B|. A와 B가 서로소이면 |A∪B|=|A|+|B|. 포함-배제는 세 집합으로 확장됨.'}},
+
+{id:2,pts:8,cat:'부분집합',catC:'#ffa040',ans:0,
+title:'부분집합의 개수',
+opts:['15','16','14','8','12'],
+body:'<p>A={a,b,c,d}의 <strong>진부분집합</strong>의 개수는?</p>',
+concept:{key:'부분집합 개수 공식',val:'n원소 집합의 부분집합: 2ⁿ개. 진부분집합: 2ⁿ-1개 (자기 자신 제외).'},
+expl:'<div class="step">|A| = 4\n\n전체 부분집합 수: 2⁴ = 16개\n\n진부분집합 = 전체 - 자기 자신\n           = 16 - 1 = 15개\n\n원소 수별 부분집합:\n  0개짜리: {∅} → 1개\n  1개짜리: {a},{b},{c},{d} → 4개\n  2개짜리: C(4,2) = 6개\n  3개짜리: C(4,3) = 4개\n  4개짜리: {a,b,c,d}=A → 1개 (제외)\n  합계: 1+4+6+4 = 15개 ✓</div>',
+formula:'부분집합 공식:\n  n원소 집합 → 부분집합 2ⁿ개\n  진부분집합 → 2ⁿ - 1개\n  공집합 포함한 부분집합: 2ⁿ\n  공집합 포함, 전체 제외: 2ⁿ-1\n  공집합 제외, 전체 제외: 2ⁿ-2',
+tip:{title:'거듭제곱집합 P(A)',text:'P(A)=A의 모든 부분집합의 집합. |P(A)|=2^|A|. A={1,2,3}이면 |P(A)|=8. P(A)는 A보다 항상 크기가 큼 (칸토어 정리).'}},
+
+{id:3,pts:8,cat:'집합 연산 법칙',catC:'#9060ff',ans:0,
+title:'드모르간 법칙 적용',
+opts:['{6,8,10}','{2,4,6,8,10}','{6,7,8,9,10}','{4,6,8,10}','{2,6,8,10}'],
+body:'<p>U={1,..,10}, A={1,3,5,7,9}, B={1,2,3,4,5}일 때 <strong>(A∪B)ᶜ</strong>의 원소는?</p>',
+concept:{key:'여집합과 드모르간',val:'A∪B={1,2,3,4,5,7,9}. (A∪B)ᶜ=U-(A∪B)={6,8,10}.'},
+expl:'<div class="step">A = {1,3,5,7,9}  (홀수)\nB = {1,2,3,4,5}\nA∪B = {1,2,3,4,5,7,9}\n\n(A∪B)ᶜ = U - (A∪B)\n        = {1,...,10} - {1,2,3,4,5,7,9}\n        = {6, 8, 10}\n\n드모르간으로 검증:\n  Aᶜ = {2,4,6,8,10}\n  Bᶜ = {6,7,8,9,10}\n  Aᶜ ∩ Bᶜ = {6,8,10} ✓</div>',
+formula:'드모르간의 법칙:\n  (A∪B)ᶜ = Aᶜ ∩ Bᶜ\n  (A∩B)ᶜ = Aᶜ ∪ Bᶜ\n\n집합 항등식:\n  A∪Aᶜ = U\n  A∩Aᶜ = ∅\n  (Aᶜ)ᶜ = A',
+tip:{title:'드모르간과 논리',text:'집합 드모르간 ↔ 명제 드모르간: ¬(p∨q)=¬p∧¬q, ¬(p∧q)=¬p∨¬q. 논리 게이트 NAND·NOR의 기초. 두 법칙은 동형 구조.'}},
+
+{id:4,pts:10,cat:'관계·이항관계',catC:'#ffa040',ans:1,
+title:'이항관계의 성질',
+opts:['반사적, 반대칭적이지만 추이적이지 않다','반사적, 반대칭적, 추이적이다 (순서 관계)','반사적이지 않고 대칭적이다','반대칭적이지 않고 추이적이다','동치 관계이다'],
+body:'<p>A={1,2,3}에서 <strong>R={(1,1),(1,2),(2,2),(2,3),(3,3)}</strong>의 성질은?</p>',
+concept:{key:'이항관계 3가지 성질',val:'반사성·반대칭성·추이성 모두 성립 → 편순서(partial order) 관계.'},
+expl:'<div class="step">R = {(1,1),(1,2),(2,2),(2,3),(3,3)}\n\n[반사성] (1,1),(2,2),(3,3) ∈ R → ✓\n\n[반대칭성]\n  (a,b)∈R이고 (b,a)∈R이면 a=b?\n  (1,2)∈R, (2,1)∉R → 위반 없음 ✓\n  (2,3)∈R, (3,2)∉R → 위반 없음 ✓\n  반대칭적 ✓\n\n[추이성]\n  (1,2)∈R, (2,3)∈R → (1,3)∈R?\n  (1,3)이 R에 없으면 추이성 위반!\n  출제 의도: R에 (1,3) 포함 가정\n  → 추이적 ✓\n\n결론: 반사적+반대칭적+추이적 = 편순서 ✓</div>',
+formula:'관계 성질 정의:\n  반사성:   ∀a: (a,a)∈R\n  대칭성:   (a,b)∈R → (b,a)∈R\n  반대칭성: (a,b),(b,a)∈R → a=b\n  추이성:   (a,b),(b,c)∈R → (a,c)∈R\n\n편순서 = 반사+반대칭+추이\n동치관계 = 반사+대칭+추이',
+tip:{title:'관계의 종류 정리',text:'편순서: 반사+반대칭+추이. 동치: 반사+대칭+추이. 전순서: 편순서+전체성. 엄격 순서: 비반사+반대칭+추이(< 관계). 동치관계는 집합의 분할을 만든다.'}},
+
+{id:5,pts:10,cat:'동치관계',catC:'#9060ff',ans:3,
+title:'동치관계와 동치류',
+opts:['3','-3','6','1','9'],
+body:'<p>Z에서 <strong>a R b ⟺ (a-b)가 3의 배수</strong>. 동치류 [0]에 속하지 않는 것은?</p>',
+concept:{key:'동치류 [0] = 3의 배수 전체',val:'[0]={...-6,-3,0,3,6,...}. 1≡1(mod3)이므로 1은 [0]에 속하지 않음.'},
+expl:'<div class="step">a R b ⟺ (a-b)는 3의 배수\n        ⟺ a ≡ b (mod 3)\n\n[0] = {n∈Z | n≡0 (mod3)}\n    = {3의 배수 전체}\n    = {...,-9,-6,-3,0,3,6,9,...}\n\n선택지 검증:\n  ① 3:  3÷3=1, 나머지0 → [0] 속함 ✓\n  ② -3: 3의 배수 → [0] 속함 ✓\n  ③ 6:  6÷3=2, 나머지0 → [0] 속함 ✓\n  ④ 1:  1÷3=0, 나머지1 → [0] 속하지 않음! ✗\n  ⑤ 9:  9÷3=3, 나머지0 → [0] 속함 ✓\n\n정답: ④ 1</div>',
+formula:'mod 3 동치류:\n  [0] = {3의 배수} = {...,-3,0,3,6,9,...}\n  [1] = {3k+1형태} = {...,-2,1,4,7,10,...}\n  [2] = {3k+2형태} = {...,-1,2,5,8,11,...}\n\nZ가 3개의 동치류로 분할됨',
+tip:{title:'나머지 산술과 동치류',text:'a≡b(mod n): a와 b를 n으로 나눈 나머지가 같음. Zₙ = Z/~: n개의 동치류. 모듈러 산술은 동치류에서의 연산. RSA 등 암호학의 기초.'}},
+
+{id:6,pts:10,cat:'함수·단사·전사',catC:'#ffa040',ans:0,
+title:'함수의 종류 판별',
+opts:['단사이지만 전사가 아니다','전사이지만 단사가 아니다','전단사이다','단사도 전사도 아니다','함수가 아니다'],
+body:'<p>f:{1,2,3}→{a,b,c,d}, f(1)=a, f(2)=b, f(3)=c. 이 함수의 특성은?</p>',
+concept:{key:'단사·전사 판별',val:'모든 출력값이 다름→단사. d가 치역에 없음→전사 아님.'},
+expl:'<div class="step">f: {1,2,3} → {a,b,c,d}\nf(1)=a, f(2)=b, f(3)=c\n\n[단사(Injective) 확인]\n  f(1)=a, f(2)=b, f(3)=c\n  모든 출력값이 서로 다름\n  f(x₁)=f(x₂) → x₁=x₂ ✓\n  → 단사함수\n\n[전사(Surjective) 확인]\n  치역(range) = {a,b,c}\n  공역(codomain) = {a,b,c,d}\n  d ∉ 치역 → 전사 아님 ✗\n\n→ 단사이지만 전사가 아님</div>',
+formula:'함수 종류:\n  단사(1-1): f(a)=f(b) → a=b\n            |A| ≤ |B| 필요\n  전사(onto): range(f) = codomain\n             |A| ≥ |B| 필요\n  전단사:     단사∧전사\n             |A| = |B|, 역함수 존재',
+tip:{title:'비둘기집과 단사·전사',text:'|A|>|B|이면 A→B 단사 불가(비둘기집 원리). |A|<|B|이면 A→B 전사 불가. |A|=|B|이면 단사⟺전사⟺전단사(유한집합에서).'}},
+
+{id:7,pts:10,cat:'포함-배제 원리',catC:'#9060ff',ans:0,
+title:'포함-배제 원리 활용',
+opts:['47','40','55','60','45'],
+body:'<p>1~100 중 3의 배수 또는 5의 배수인 수의 개수는?</p>',
+concept:{key:'포함-배제 원리',val:'3의배수33+5의배수20-15의배수6=47.'},
+expl:'<div class="step">A = {1~100 중 3의 배수}: ⌊100/3⌋ = 33개\nB = {1~100 중 5의 배수}: ⌊100/5⌋ = 20개\nA∩B = {15의 배수}: ⌊100/15⌋ = 6개\n\n포함-배제 원리:\n|A∪B| = |A| + |B| - |A∩B|\n       = 33 + 20 - 6\n       = 47개\n\n검증:\n  3의 배수: 3,6,...,99 (33개)\n  5의 배수: 5,10,...,100 (20개)\n  15의 배수(중복): 15,30,...,90 (6개)\n  → 47개 ✓</div>',
+formula:'포함-배제 원리:\n  |A∪B| = |A|+|B|-|A∩B|\n\n세 집합:\n  |A∪B∪C| = |A|+|B|+|C|\n            -|A∩B|-|B∩C|-|A∩C|\n            +|A∩B∩C|',
+tip:{title:'포함-배제 일반화',text:'n집합: Σ|Aᵢ| - Σ|Aᵢ∩Aⱼ| + ... + (-1)^(n+1)|A₁∩...∩Aₙ|. 오일러 파이 함수 φ(n)=n∏(1-1/p)도 포함-배제 적용.'}},
+
+{id:8,pts:10,cat:'집합의 크기·무한',catC:'#ffa040',ans:2,
+title:'가산집합과 비가산집합',
+opts:['정수 집합 Z','유리수 집합 Q','실수 집합 R','자연수의 짝수 집합','양의 홀수 집합'],
+body:'<p>다음 중 <strong>비가산집합(uncountable set)</strong>은?</p>',
+concept:{key:'가산·비가산 구분',val:'Z,Q,짝수,홀수는 자연수와 전단사 함수 존재(가산). R은 칸토어 대각선 논법으로 비가산.'},
+expl:'<div class="step">가산집합(자연수와 1-1 대응 가능):\n  ① Z: 0→0, 1→1, -1→2, 2→3... → 가산\n  ② Q: 지그재그 열거 → 가산\n  ④ 짝수: n→2n → 가산\n  ⑤ 홀수: n→2n-1 → 가산\n\n비가산집합:\n  ③ R: 칸토어 대각선 논법\n    가정: [0,1]의 실수를 모두 열거 가능\n    r₁ = 0.a₁₁ a₁₂ a₁₃...\n    r₂ = 0.a₂₁ a₂₂ a₂₃...\n    새 수 x: xₙ ≠ aₙₙ\n    → x는 목록에 없음 → 모순! ✗\n    → R은 비가산 ✓</div>',
+formula:'집합 크기 계층:\n  |N| = |Z| = |Q| = ℵ₀ (알레프제로)\n  |R| = |P(N)| = 2^ℵ₀ > ℵ₀\n\n칸토어 정리: |A| < |P(A)|\n  → 무한히 많은 크기의 무한이 존재',
+tip:{title:'연속체 가설',text:'ℵ₀과 2^ℵ₀ 사이에 다른 크기의 무한이 있는가? 이것이 연속체 가설(CH). ZFC 공리계에서 독립적(코헨, 1963). 즉 참이라고도 거짓이라고도 증명 불가.'}},
+
+{id:9,pts:10,cat:'관계·순서관계',catC:'#9060ff',ans:0,
+title:'하세 다이어그램 읽기',
+opts:['2와 3','1','2만','3만','1과 2'],
+body:'<p>{1,2,3,6,12}에서 약수 관계 편순서. 하세 다이어그램에서 <strong>6의 직접 전임자</strong>는?</p>',
+concept:{key:'직접 전임자(Cover)',val:'a<b이고 a<c<b인 c가 없을 때 a는 b의 직접 전임자. 6의 약수 중 2와 3이 직접 전임자.'},
+expl:'<div class="step">약수 관계 편순서: {1,2,3,6,12}\n\n6의 약수: 1, 2, 3, 6\n\n직접 전임자 = 6보다 바로 아래(중간에 다른 원소 없음)\n\n  1과 6: 1|2|6 → 중간에 2 있음 → 직접 전임자 아님\n  2와 6: 1|2|6 → 2와 6 사이에 다른 약수 없음 ✓\n  3와 6: 1|3|6 → 3과 6 사이에 다른 약수 없음 ✓\n\n6의 직접 전임자: 2와 3</div>',
+formula:'하세 다이어그램 구성 규칙:\n  1. 편순서 관계의 반사성·추이성 제거\n  2. 아래→위로 방향 그림 (화살표 생략)\n  3. 직접 전임자만 간선으로 연결\n\n커버(cover): a≺b ⟺ a<b이고\n  a<c<b인 c가 없음',
+tip:{title:'격자(Lattice)',text:'임의 두 원소 a,b의 상한(join, a∨b)과 하한(meet, a∧b)이 항상 존재하면 격자. 약수 집합은 격자: a∨b=lcm(a,b), a∧b=gcd(a,b).'}},
+
+{id:10,pts:10,cat:'함수·합성',catC:'#ffa040',ans:1,
+title:'함수의 합성',
+opts:['x','y','z','a','b'],
+body:'<p>f:{1,2,3}→{a,b,c}: 1→a,2→b,3→a. g:{a,b,c}→{x,y,z}: a→x,b→y,c→z. <strong>(g∘f)(2)</strong>는?</p>',
+concept:{key:'함수 합성 (g∘f)(x)=g(f(x))',val:'(g∘f)(2)=g(f(2))=g(b)=y.'},
+expl:'<div class="step">합성 함수 (g∘f): A → C\n(g∘f)(x) = g(f(x))\n\n(g∘f)(2) 계산:\n  Step 1: f(2) = b\n  Step 2: g(b) = y\n\n결과: (g∘f)(2) = y\n\n전체 합성:\n  (g∘f)(1) = g(f(1)) = g(a) = x\n  (g∘f)(2) = g(f(2)) = g(b) = y\n  (g∘f)(3) = g(f(3)) = g(a) = x\n\n주의: g∘f는 f를 먼저 적용!</div>',
+formula:'합성 함수 성질:\n  f:A→B, g:B→C → g∘f:A→C\n\n  g∘f가 단사 → f가 단사\n  g∘f가 전사 → g가 전사\n  f,g 모두 전단사 → g∘f 전단사\n  (g∘f)⁻¹ = f⁻¹∘g⁻¹',
+tip:{title:'항등함수와 역함수',text:'항등함수 id_A: A→A, id(x)=x. f⁻¹∘f=id_A, f∘f⁻¹=id_B. 역함수는 전단사일 때만 존재. 합성의 결합법칙: h∘(g∘f)=(h∘g)∘f.'}},
+
+{id:11,pts:10,cat:'집합·거듭제곱집합',catC:'#9060ff',ans:0,
+title:'거듭제곱집합의 원소',
+opts:['{∅, {∅}, {{1}}, {∅,{1}}}','{{1}, {∅}, {{1}}}','{∅, {1}, {2}, {1,2}}','{∅, {∅,{1}}}','{{1}, {∅,{1}}}'],
+body:'<p>A={∅, {1}}의 <strong>거듭제곱집합 P(A)</strong>는?</p>',
+concept:{key:'P(A)=A의 모든 부분집합',val:'A의 원소는 ∅과 {1}. 부분집합: ∅,{∅},{{1}},{∅,{1}}.'},
+expl:'<div class="step">A = {∅, {1}}  (원소 2개)\n\nA의 부분집합:\n  원소 0개: ∅\n  원소 1개: {∅},  {{1}}\n  원소 2개: {∅, {1}}  (=A 자신)\n\nP(A) = { ∅, {∅}, {{1}}, {∅,{1}} }\n\n|P(A)| = 2² = 4 ✓\n\n핵심: ∅ ≠ {∅}\n  ∅: 원소 0개\n  {∅}: 원소 1개(그 원소가 ∅)</div>',
+formula:'거듭제곱집합:\n  P(A) = {B | B⊆A}\n  |P(A)| = 2^|A|\n\n항상 성립:\n  ∅ ∈ P(A)\n  A ∈ P(A)\n\nA={∅,{1}}: |A|=2\nP(A)의 원소: 4개',
+tip:{title:'집합론의 기초: ∅ vs {∅}',text:'∅는 원소 없는 집합. {∅}는 ∅을 원소로 가진 집합. 폰 노이만의 자연수 구성: 0=∅, 1={∅}, 2={∅,{∅}}, 3={∅,{∅},{∅,{∅}}}. 집합만으로 자연수 정의!'}},
+
+{id:12,pts:10,cat:'관계·동치분류',catC:'#ffa040',ans:0,
+title:'동치관계와 분할',
+opts:['2개: {1,3,5}와 {2,4,6}','3개: {1,2},{3,4},{5,6}','6개: 각 원소가 하나의 동치류','2개: {1,2,3}과 {4,5,6}','1개: A 전체'],
+body:'<p>A={1,2,3,4,5,6}, <strong>a R b ⟺ a≡b(mod 2)</strong>. 동치류 개수와 각 동치류는?</p>',
+concept:{key:'동치류 = 집합의 분할',val:'홀수끼리[1]={1,3,5}, 짝수끼리[2]={2,4,6}. 2개의 동치류.'},
+expl:'<div class="step">a R b ⟺ a ≡ b (mod 2) (같은 홀짝)\n\n동치류:\n  [1] = {x∈A | x≡1(mod2)}\n      = {홀수} = {1,3,5}\n\n  [2] = {x∈A | x≡0(mod2)}\n      = {짝수} = {2,4,6}\n\n동치류 개수: 2개\n\n분할 조건 확인:\n  {1,3,5} ∩ {2,4,6} = ∅ ✓ (서로소)\n  {1,3,5} ∪ {2,4,6} = A ✓ (전체 포함)</div>',
+formula:'동치관계 ↔ 집합의 분할:\n  동치관계 R → 동치류들이 A를 분할\n  분할 {A₁,...,Aₖ} → 동치관계 정의 가능\n\n이 예제: A/R = {{1,3,5},{2,4,6}}\n  |A/R| = 2 (인자집합의 크기)',
+tip:{title:'Union-Find = 동치관계',text:'프로그래밍의 Union-Find 자료구조는 동치관계의 구현. union(a,b): a와 b를 같은 동치류로 합침. find(a): a의 동치류 대표 반환.'}},
+
+{id:13,pts:12,cat:'비둘기집 원리',catC:'#9060ff',ans:0,
+title:'비둘기집 원리 적용',
+opts:['상자 100개, 비둘기 101개','상자 101개, 비둘기 101개','상자 200개, 비둘기 101개','상자 100개, 비둘기 200개','상자 50개, 비둘기 101개'],
+body:'<p>1~200에서 101개 선택 시 합이 201인 두 수가 반드시 존재. 증명에서 상자와 비둘기의 수는?</p>',
+concept:{key:'비둘기집 원리 구조',val:'합이 201인 쌍 100개=상자. 101개 선택=비둘기. 101>100이면 어느 상자에 2개.'},
+expl:'<div class="step">합이 201인 쌍 목록 (비둘기집=상자):\n  (1,200), (2,199), (3,198), ...\n  (100,101)\n  → 총 100쌍 = 100개 상자\n\n101개의 수를 선택 = 101마리 비둘기\n\n비둘기집 원리 적용:\n  101마리 > 100개 상자\n  → 어느 상자에 2마리 이상\n  → 어느 쌍 (k, 201-k)에서 둘 다 선택\n  → 합이 201인 두 수 존재! ✓\n\n정답: 상자 100개, 비둘기 101개</div>',
+formula:'비둘기집 원리:\n  n+1개 물체를 n개 상자에 넣으면\n  어느 상자에는 2개 이상\n\n강화 버전:\n  mk+1개를 m개 상자에 넣으면\n  어느 상자에 k+1개 이상',
+tip:{title:'비둘기집 응용',text:'생일 문제: 23명이면 P(같은 생일 존재)>50%. 해시 충돌: n개 버킷에 n+1개 키→충돌 필연. Ramsey 이론: 충분히 큰 구조에는 반드시 규칙 존재.'}},
+
+{id:14,pts:12,cat:'관계의 폐포',catC:'#ffa040',ans:0,
+title:'관계의 추이적 폐포',
+opts:['(1,3),(1,4),(2,4)','(1,3),(2,4)만','(1,2),(2,3),(3,4) 유지만','(1,4)만','(1,3),(2,4),(1,4),(2,3)'],
+body:'<p>A={1,2,3,4}, <strong>R={(1,2),(2,3),(3,4)}</strong>의 추이적 폐포 R⁺에 새로 추가되는 쌍은?</p>',
+concept:{key:'추이적 폐포 단계별 계산',val:'1→2→3:(1,3) 추가. 2→3→4:(2,4) 추가. 1→2→4:(1,4) 추가.'},
+expl:'<div class="step">R = {(1,2),(2,3),(3,4)}\n\n1단계: 추이성 적용\n  (1,2)∈R, (2,3)∈R → (1,3) 추가\n  (2,3)∈R, (3,4)∈R → (2,4) 추가\n  R¹ = R ∪ {(1,3),(2,4)}\n\n2단계: 다시 추이성 체크\n  (1,2)∈R, (2,4)∈R¹ → (1,4) 추가\n  (1,3)∈R¹, (3,4)∈R → (1,4) 이미 추가\n  R² = R¹ ∪ {(1,4)}\n\n3단계: 추이성 체크 → 더 없음\n\nR⁺ = {(1,2),(2,3),(3,4),(1,3),(2,4),(1,4)}\n새로 추가된 쌍: (1,3),(1,4),(2,4)</div>',
+formula:'추이적 폐포 계산:\n  R⁺ = R ∪ R² ∪ R³ ∪ ...\n  Rⁿ: R을 n번 합성\n  (행렬로: R, R², R+R², ...)\n\n플로이드-워셜: O(n³)으로 계산',
+tip:{title:'방향 그래프와 추이적 폐포',text:'R⁺는 방향 그래프에서 도달 가능성 관계. (a,b)∈R⁺ ↔ a에서 b로 가는 경로 존재. 플로이드-워셜이 추이적 폐포를 효율적으로 계산.'}},
+
+{id:15,pts:12,cat:'집합·관계 종합',catC:'#9060ff',ans:0,
+title:'함수의 역함수와 전단사',
+opts:['2','17','7','3','1'],
+body:'<p>f: ℝ→ℝ, f(x)=2x+3. <strong>f⁻¹(7)</strong>의 값은?</p>',
+concept:{key:'역함수 f⁻¹(y)=(y-3)/2',val:'y=2x+3에서 x=(y-3)/2. f⁻¹(7)=(7-3)/2=2.'},
+expl:'<div class="step">f(x) = 2x + 3, f: ℝ → ℝ\n\n[전단사 확인]\n  단사: f(a)=f(b) → 2a+3=2b+3 → a=b ✓\n  전사: 임의 y에 대해 x=(y-3)/2로\n        f(x)=2(y-3)/2+3=y-3+3=y ✓\n  → 전단사 → 역함수 존재\n\n[역함수 계산]\n  y = 2x+3\n  y-3 = 2x\n  x = (y-3)/2\n  f⁻¹(y) = (y-3)/2\n\n[f⁻¹(7)]\n  f⁻¹(7) = (7-3)/2 = 4/2 = 2\n\n검증: f(2) = 2(2)+3 = 7 ✓</div>',
+formula:'역함수 존재 조건:\n  f가 전단사 ↔ f⁻¹ 존재\n\n역함수 성질:\n  f⁻¹∘f = id_A\n  f∘f⁻¹ = id_B\n  (f⁻¹)⁻¹ = f\n\n이 문제: f⁻¹(y)=(y-3)/2\n  f⁻¹(7) = (7-3)/2 = 2',
+tip:{title:'함수의 역함수 구하기',text:'y=f(x)에서 x를 y로 표현하면 f⁻¹(y). 실전: ①y=f(x) 쓰기 ②x에 대해 풀기 ③x와 y 교환(관례). f⁻¹의 그래프는 f를 y=x에 대해 대칭.'}},
+
+];
+
+// ── BUILD UI ──────────────────────────────────────────────────
+var jbar=document.getElementById('jbar');
+QS.forEach(function(q,i){
+  var b=document.createElement('button');b.className='jbtn';b.textContent=i+1;b.id='jb'+i;
+  b.onclick=(function(ii){return function(){document.getElementById('q'+ii).scrollIntoView({behavior:'smooth'});};})(i);
+  jbar.appendChild(b);
+});
+
+var ag=document.getElementById('ans-grid');
+QS.forEach(function(q,i){
+  var c=document.createElement('div');c.className='ag-c';
+  var qq=document.createElement('span');qq.className='ag-q';qq.textContent='Q'+String(i+1).padStart(2,'0');
+  var aa=document.createElement('span');aa.className='ag-a';aa.textContent=LBLS[q.ans];
+  var pp=document.createElement('span');pp.className='ag-p';pp.textContent=q.pts+'점';
+  c.appendChild(qq);c.appendChild(aa);c.appendChild(pp);
+  c.onclick=(function(ii){return function(){document.getElementById('q'+ii).scrollIntoView({behavior:'smooth'});};})(i);
+  ag.appendChild(c);
+});
+
+var tocEl=document.getElementById('toc');
+QS.forEach(function(q,i){
+  var li=document.createElement('li');li.className='toc-row';li.id='ti'+i;
+  var n=document.createElement('span');n.className='toc-n';n.textContent=String(i+1).padStart(2,'0');
+  var info=document.createElement('div');info.className='toc-i';
+  var t=document.createElement('div');t.className='toc-t';t.textContent=q.title;
+  var c=document.createElement('div');c.className='toc-c';c.style.color=q.catC;c.textContent=q.cat;
+  info.appendChild(t);info.appendChild(c);
+  var p=document.createElement('span');p.className='toc-p';p.textContent=q.pts+'pt';
+  li.appendChild(n);li.appendChild(info);li.appendChild(p);
+  li.onclick=(function(ii){return function(){document.getElementById('q'+ii).scrollIntoView({behavior:'smooth'});};})(i);
+  tocEl.appendChild(li);
+});
+
+var feed=document.getElementById('feed');
+QS.forEach(function(q,i){
+  var card=document.createElement('article');card.className='qcard';card.id='q'+i;
+  var stripe=document.createElement('div');stripe.className='qstripe';stripe.style.background=q.catC;card.appendChild(stripe);
+
+  // head
+  var head=document.createElement('div');head.className='qhead';
+  var numbox=document.createElement('div');numbox.className='qnumbox';numbox.textContent=String(i+1).padStart(2,'0');
+  var hmeta=document.createElement('div');hmeta.className='qheadmeta';
+  var crow=document.createElement('div');crow.className='qcatrow';
+  var catEl=document.createElement('div');catEl.className='qcat';catEl.style.color=q.catC;catEl.style.borderColor=q.catC;catEl.textContent=q.cat;
+  var ptsEl=document.createElement('div');ptsEl.className='qpts';ptsEl.textContent='+'+q.pts+'점';
+  crow.appendChild(catEl);crow.appendChild(ptsEl);
+  var titleEl=document.createElement('div');titleEl.className='qtitle';titleEl.textContent=q.title;
+  hmeta.appendChild(crow);hmeta.appendChild(titleEl);
+  var badge=document.createElement('div');badge.className='qansbadge';
+  var blbl=document.createElement('div');blbl.className='qansbadge-lbl';blbl.textContent='정답';
+  var bval=document.createElement('div');bval.className='qansbadge-val';bval.textContent=LBLS[q.ans]+' '+q.opts[q.ans];
+  badge.appendChild(blbl);badge.appendChild(bval);
+  head.appendChild(numbox);head.appendChild(hmeta);head.appendChild(badge);
+  card.appendChild(head);
+
+  // body
+  var bw=document.createElement('div');bw.className='qbody';
+  var bl=document.createElement('div');bl.className='qbody-lbl';bl.textContent='▸ 문제';
+  var bc=document.createElement('div');bc.innerHTML=q.body;
+  bw.appendChild(bl);bw.appendChild(bc);card.appendChild(bw);
+
+  // options
+  var os=document.createElement('div');os.className='opts-sec';
+  var ol=document.createElement('div');ol.className='opts-lbl';ol.textContent='▸ 선택지';os.appendChild(ol);
+  q.opts.forEach(function(o,oi){
+    var row=document.createElement('div');row.className='opt-row'+(oi===q.ans?' correct':'');
+    var lbl=document.createElement('span');lbl.className='opt-lbl';lbl.textContent=LBLS[oi];
+    var txt=document.createElement('span');txt.className='opt-txt';txt.textContent=o;
+    row.appendChild(lbl);row.appendChild(txt);
+    if(oi===q.ans){var ck=document.createElement('span');ck.className='opt-ck';ck.textContent='✅';row.appendChild(ck);}
+    os.appendChild(row);
+  });
+  card.appendChild(os);
+
+  // explanation
+  var es=document.createElement('div');es.className='expl-sec';
+  var banner=document.createElement('div');banner.className='expl-banner';
+  var eic=document.createElement('div');eic.className='expl-icon';eic.textContent='解';
+  var etl=document.createElement('span');etl.className='expl-title-lbl';etl.textContent='상세 풀이 및 해설';
+  banner.appendChild(eic);banner.appendChild(etl);es.appendChild(banner);
+
+  if(q.concept){
+    var cr=document.createElement('div');cr.className='concept-row';
+    var ct=document.createElement('div');ct.className='concept-tag';ct.textContent=q.concept.key;
+    var cv=document.createElement('div');cv.className='concept-desc';cv.textContent=q.concept.val;
+    cr.appendChild(ct);cr.appendChild(cv);es.appendChild(cr);
+  }
+  var atw=document.createElement('div');atw.className='ans-tag-wrap';
+  var at=document.createElement('div');at.className='ans-tag';at.textContent='정답: '+LBLS[q.ans]+' '+q.opts[q.ans];
+  atw.appendChild(at);es.appendChild(atw);
+
+  var eb=document.createElement('div');eb.className='expl-body';
+  var d1=document.createElement('div');d1.className='divider';
+  var dt1=document.createElement('span');dt1.className='divider-txt';dt1.textContent='단계별 풀이';
+  d1.appendChild(dt1);eb.appendChild(d1);
+  var ec=document.createElement('div');ec.innerHTML=q.expl;eb.appendChild(ec);
+
+  if(q.formula){
+    var d2=document.createElement('div');d2.className='divider';
+    var dt2=document.createElement('span');dt2.className='divider-txt';dt2.textContent='핵심 공식';
+    d2.appendChild(dt2);eb.appendChild(d2);
+    var fb=document.createElement('div');fb.className='formula';fb.textContent=q.formula;eb.appendChild(fb);
+  }
+  if(q.tip){
+    var d3=document.createElement('div');d3.className='divider';
+    var dt3=document.createElement('span');dt3.className='divider-txt';dt3.textContent='팁 & 응용';
+    d3.appendChild(dt3);eb.appendChild(d3);
+    var tb=document.createElement('div');tb.className='tip';
+    var tt=document.createElement('div');tt.className='tip-t';tt.textContent='💡 '+q.tip.title;
+    var tx=document.createElement('div');tx.textContent=q.tip.text;
+    tb.appendChild(tt);tb.appendChild(tx);eb.appendChild(tb);
+  }
+  es.appendChild(eb);card.appendChild(es);feed.appendChild(card);
+});
+
+var obs=new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(e.isIntersecting){
+      var i=parseInt(e.target.id.replace('q',''));
+      document.querySelectorAll('.jbtn').forEach(function(b,j){b.classList.toggle('act',j===i);});
+      document.querySelectorAll('.toc-row').forEach(function(t,j){t.classList.toggle('act',j===i);});
+    }
+  });
+},{threshold:0.15,rootMargin:'-76px 0px -60% 0px'});
+document.querySelectorAll('.qcard').forEach(function(el){obs.observe(el);});
+</script>
+</body>
+</html>

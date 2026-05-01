@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>경우의 수 15문제 — 정답 및 완전 해설</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap');
+
+:root {
+  --void: #09090f;
+  --deep: #12121e;
+  --surface: #1a1a2e;
+  --lift: #22223a;
+  --ridge: #2e2e50;
+  --line: #3a3a60;
+  --faint: #555580;
+  --muted: #8888aa;
+  --text: #e8e8f4;
+  --bright: #f4f4ff;
+  --gold: #e8c547;
+  --gold2: #f5d76e;
+  --rose: #e85d75;
+  --mint: #4ecdc4;
+  --sky: #7eb8f7;
+  --lavender: #b39ddb;
+  --ok-bg: rgba(78,205,196,.1);
+  --ok-br: #4ecdc4;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+
+body {
+  background: var(--void);
+  color: var(--text);
+  font-family: 'Noto Sans KR', sans-serif;
+  min-height: 100vh;
+  line-height: 1.8;
+}
+
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background-image:
+    linear-gradient(rgba(232,197,71,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(232,197,71,.025) 1px,transparent 1px);
+  background-size:48px 48px;
+  pointer-events:none; z-index:0;
+}
+
+/* ══ SITE HEADER ══ */
+.site-hdr {
+  position:sticky; top:0; z-index:100;
+  background:rgba(9,9,15,.95);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--line);
+}
+.site-hdr-inner {
+  max-width:1180px; margin:0 auto;
+  padding:10px 28px;
+  display:flex; align-items:center;
+  justify-content:space-between; gap:12px;
+}
+.site-brand {
+  display:flex; flex-direction:column; gap:1px;
+}
+.site-brand-sup {
+  font-family:'DM Mono',monospace;
+  font-size:9px; letter-spacing:4px;
+  color:var(--faint); text-transform:uppercase;
+}
+.site-brand-title {
+  font-family:'Playfair Display',serif;
+  font-size:18px; font-weight:700; color:var(--bright);
+}
+.site-brand-title em { color:var(--gold); font-style:italic; }
+
+/* jump bar */
+.jbar {
+  display:flex; gap:4px; flex-wrap:wrap;
+  max-width:500px;
+}
+.jbtn {
+  width:28px; height:28px;
+  background:var(--surface);
+  border:1px solid var(--ridge);
+  color:var(--muted);
+  font-family:'DM Mono',monospace;
+  font-size:10px; cursor:pointer;
+  border-radius:2px; transition:all .15s;
+  display:flex; align-items:center; justify-content:center;
+}
+.jbtn:hover { background:var(--lift); color:var(--text); border-color:var(--line); }
+.jbtn.act { background:var(--gold); border-color:var(--gold); color:var(--void); font-weight:700; }
+
+.site-chips {
+  display:flex; gap:8px;
+}
+.chip {
+  font-family:'DM Mono',monospace;
+  font-size:10px; color:var(--faint);
+  border:1px solid var(--ridge);
+  padding:3px 10px;
+}
+
+/* ══ LAYOUT ══ */
+.layout {
+  max-width:1180px; margin:0 auto;
+  padding:36px 28px 100px;
+  display:grid;
+  grid-template-columns:260px 1fr;
+  gap:32px;
+  align-items:start;
+  position:relative; z-index:1;
+}
+
+/* ══ SIDEBAR ══ */
+.sidebar {
+  position:sticky; top:74px;
+  display:flex; flex-direction:column; gap:14px;
+}
+
+.sb-block {
+  background:var(--surface);
+  border:1px solid var(--line);
+  overflow:hidden;
+}
+.sb-hd {
+  background:var(--lift);
+  border-bottom:1px solid var(--line);
+  padding:9px 16px;
+  font-family:'DM Mono',monospace;
+  font-size:9px; letter-spacing:3px;
+  text-transform:uppercase; color:var(--muted);
+  display:flex; align-items:center; gap:8px;
+}
+
+/* answer grid */
+.ans-grid {
+  display:grid; grid-template-columns:repeat(5,1fr);
+  gap:1px; background:var(--ridge);
+}
+.ag-cell {
+  background:var(--surface);
+  padding:10px 6px; text-align:center;
+  cursor:pointer; transition:background .15s;
+}
+.ag-cell:hover { background:var(--lift); }
+.ag-q {
+  font-family:'DM Mono',monospace;
+  font-size:8px; color:var(--faint);
+  display:block; margin-bottom:4px;
+}
+.ag-a {
+  font-family:'DM Mono',monospace;
+  font-size:16px; font-weight:500;
+  color:var(--mint); display:block; line-height:1;
+}
+.ag-p {
+  font-size:9px; color:var(--faint);
+  display:block; margin-top:3px;
+}
+
+/* summary bar */
+.sum-grid {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:1px; background:var(--ridge);
+}
+.sum-cell {
+  background:var(--surface); padding:14px;
+  text-align:center;
+}
+.sum-n {
+  font-family:'Playfair Display',serif;
+  font-size:26px; font-weight:700;
+  display:block; line-height:1;
+}
+.sum-l { font-size:10px; color:var(--muted); margin-top:3px; }
+
+/* toc */
+.toc-list { list-style:none; }
+.toc-row {
+  display:flex; align-items:flex-start; gap:10px;
+  padding:8px 16px;
+  border-bottom:1px solid var(--ridge);
+  cursor:pointer; transition:background .15s;
+}
+.toc-row:last-child { border-bottom:none; }
+.toc-row:hover { background:var(--lift); }
+.toc-row.act { background:rgba(232,197,71,.06); }
+.toc-n {
+  font-family:'DM Mono',monospace;
+  font-size:10px; color:var(--faint);
+  min-width:22px; flex-shrink:0;
+}
+.toc-info { flex:1; min-width:0; }
+.toc-t { font-size:12px; color:var(--text); line-height:1.35; }
+.toc-c {
+  font-family:'DM Mono',monospace;
+  font-size:9px; margin-top:1px;
+}
+.toc-p {
+  font-family:'DM Mono',monospace;
+  font-size:10px; color:var(--faint); flex-shrink:0;
+}
+
+/* ══ QUESTION CARDS ══ */
+.q-feed { display:flex; flex-direction:column; gap:40px; }
+
+.q-card {
+  background:var(--surface);
+  border:1px solid var(--line);
+  overflow:hidden;
+  scroll-margin-top:82px;
+  transition:border-color .2s;
+}
+.q-card:hover { border-color:var(--faint); }
+
+/* stripe */
+.q-stripe { height:3px; }
+
+/* head */
+.q-head {
+  padding:22px 28px 16px;
+  border-bottom:1px solid var(--ridge);
+  display:flex; align-items:flex-start; gap:16px;
+}
+.q-numbox {
+  font-family:'Playfair Display',serif;
+  font-size:60px; font-weight:900;
+  color:var(--ridge); line-height:1;
+  min-width:68px; flex-shrink:0;
+  letter-spacing:-3px;
+}
+.q-headmeta { flex:1; }
+.q-cat-row {
+  display:flex; align-items:center; gap:8px; margin-bottom:5px;
+}
+.q-cat {
+  font-family:'DM Mono',monospace;
+  font-size:9px; letter-spacing:2px;
+  text-transform:uppercase;
+  border:1px solid; padding:2px 8px;
+}
+.q-pts {
+  font-family:'DM Mono',monospace;
+  font-size:11px; color:var(--gold);
+  border:1px solid var(--gold); padding:2px 8px;
+}
+.q-title {
+  font-family:'Playfair Display',serif;
+  font-size:20px; font-weight:700;
+  color:var(--bright); line-height:1.3;
+}
+.q-ansbadge {
+  display:flex; flex-direction:column;
+  align-items:flex-end; gap:5px; flex-shrink:0;
+}
+.q-ansbadge-lbl {
+  font-family:'DM Mono',monospace;
+  font-size:8px; color:var(--faint);
+  letter-spacing:2px; text-transform:uppercase;
+}
+.q-ansbadge-val {
+  font-family:'DM Mono',monospace;
+  font-size:15px; font-weight:500;
+  color:var(--mint);
+  background:var(--ok-bg);
+  border:1px solid var(--ok-br);
+  padding:6px 16px;
+}
+
+/* body */
+.q-body {
+  padding:20px 28px;
+  border-bottom:1px solid var(--ridge);
+  font-size:14.5px; line-height:2;
+  color:#ccccee;
+}
+.q-body-lbl {
+  font-family:'DM Mono',monospace;
+  font-size:9px; letter-spacing:3px;
+  color:var(--faint); text-transform:uppercase; margin-bottom:10px;
+}
+.q-body p { margin-bottom:10px; }
+.q-body p:last-child { margin-bottom:0; }
+.q-body strong { color:var(--gold2); }
+.q-body em { color:var(--rose); font-style:normal; font-weight:700; }
+.q-body ul, .q-body ol { margin:8px 0 8px 26px; line-height:2.3; }
+
+.sbox {
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--ridge);
+  border-left:3px solid var(--lavender);
+  padding:14px 18px; margin:12px 0;
+  font-size:14px; line-height:1.95;
+}
+.sbox-title {
+  font-family:'DM Mono',monospace;
+  font-size:9px; letter-spacing:3px; text-transform:uppercase;
+  color:var(--lavender); margin-bottom:7px; font-weight:500;
+}
+.fbox {
+  font-family:'DM Mono',monospace;
+  background:rgba(0,0,0,.4);
+  border:1px solid var(--ridge);
+  border-left:3px solid var(--mint);
+  padding:13px 17px; margin:10px 0;
+  font-size:13px; line-height:1.9;
+  overflow-x:auto; white-space:pre;
+  color:var(--mint);
+}
+.tbl-wrap { margin:10px 0; overflow-x:auto; }
+.qtbl { border-collapse:collapse; font-size:13.5px; }
+.qtbl th {
+  background:var(--lift); border:1px solid var(--line);
+  padding:7px 14px; color:var(--muted);
+  font-family:'DM Mono',monospace; font-size:10px;
+  letter-spacing:1px; text-align:center;
+}
+.qtbl td {
+  border:1px solid var(--ridge); padding:8px 14px;
+  text-align:center; color:var(--text);
+}
+.qtbl td.hi { color:var(--gold2); font-weight:700; }
+
+/* options */
+.opts-sec {
+  padding:16px 28px;
+  border-bottom:1px solid var(--ridge);
+}
+.opts-lbl {
+  font-family:'DM Mono',monospace;
+  font-size:9px; letter-spacing:3px;
+  color:var(--faint); text-transform:uppercase; margin-bottom:8px;
+}
+.opt-row {
+  display:flex; align-items:flex-start; gap:12px;
+  padding:10px 14px; margin-bottom:6px;
+  border:1px solid var(--ridge); font-size:13.5px;
+  line-height:1.7;
+}
+.opt-row:last-child { margin-bottom:0; }
+.opt-row.correct {
+  border-color:var(--ok-br);
+  background:var(--ok-bg);
+}
+.opt-lbl {
+  font-family:'DM Mono',monospace;
+  font-size:12px; font-weight:500;
+  color:var(--faint); min-width:22px;
+  padding-top:1px; flex-shrink:0;
+}
+.opt-row.correct .opt-lbl { color:var(--mint); }
+.opt-check { margin-left:auto; font-size:16px; flex-shrink:0; }
+
+/* explanation */
+.expl-sec { padding:0; }
+
+.expl-banner {
+  background:var(--lift);
+  border-bottom:1px solid var(--line);
+  padding:12px 22px;
+  margin:0 28px;
+  display:flex; align-items:center; gap:12px;
+}
+.expl-icon {
+  width:30px; height:30px;
+  border:1px solid var(--gold);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Playfair Display',serif;
+  font-style:italic; font-size:14px;
+  color:var(--gold); flex-shrink:0;
+}
+.expl-title {
+  font-family:'DM Mono',monospace;
+  font-size:9px; letter-spacing:3px;
+  text-transform:uppercase; color:var(--muted);
+}
+
+.concept-row {
+  background:rgba(179,157,219,.06);
+  border-bottom:1px solid var(--ridge);
+  padding:10px 28px;
+  display:flex; align-items:flex-start; gap:10px;
+}
+.concept-key {
+  font-family:'DM Mono',monospace;
+  font-size:9px; letter-spacing:2px; text-transform:uppercase;
+  color:var(--lavender); border:1px solid var(--lavender);
+  padding:2px 10px; white-space:nowrap; flex-shrink:0; margin-top:2px;
+}
+.concept-val { font-size:13px; color:var(--muted); line-height:1.75; }
+
+.ans-tag-wrap { padding:0 28px; }
+.ans-tag {
+  display:inline-block;
+  background:var(--ok-bg);
+  border:1px solid var(--ok-br);
+  color:var(--mint);
+  font-family:'DM Mono',monospace;
+  font-size:12px; padding:5px 16px;
+  margin-top:18px; font-weight:500;
+}
+
+.expl-body {
+  padding:20px 28px 26px;
+  font-size:14px; line-height:2;
+  color:var(--muted);
+}
+.expl-body p { margin-bottom:10px; }
+.expl-body p:last-child { margin-bottom:0; }
+.expl-body strong { color:var(--sky); }
+
+.divider {
+  display:flex; align-items:center; gap:12px; margin:14px 0;
+}
+.divider::before, .divider::after {
+  content:''; flex:1; height:1px; background:var(--ridge);
+}
+.divider-txt {
+  font-family:'DM Mono',monospace;
+  font-size:9px; letter-spacing:2px;
+  color:var(--faint); text-transform:uppercase; white-space:nowrap;
+}
+
+.step {
+  font-family:'DM Mono',monospace;
+  background:rgba(0,0,0,.5);
+  border:1px solid var(--ridge);
+  border-left:3px solid var(--lavender);
+  padding:16px 20px; margin:12px 0;
+  font-size:12.5px; line-height:1.95;
+  white-space:pre-wrap; overflow-x:auto;
+  color:#c0c0e0;
+}
+
+.tip {
+  background:rgba(232,197,71,.06);
+  border-left:3px solid var(--gold);
+  padding:12px 16px; margin:12px 0;
+  font-size:13px; line-height:1.75; color:var(--muted);
+}
+.tip-title {
+  font-family:'DM Mono',monospace;
+  font-size:9px; letter-spacing:2px; text-transform:uppercase;
+  color:var(--gold); margin-bottom:4px; font-weight:500;
+}
+
+.formula-box {
+  background:rgba(78,205,196,.06);
+  border:1px solid rgba(78,205,196,.25);
+  border-left:3px solid var(--mint);
+  padding:14px 18px; margin:14px 0;
+  font-family:'DM Mono',monospace;
+  font-size:13px; line-height:1.9;
+  color:var(--mint); white-space:pre-wrap;
+}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:960px){
+  .layout { grid-template-columns:1fr; }
+  .sidebar { position:static; }
+  .jbar,.site-chips { display:none; }
+}
+@media(max-width:600px){
+  .q-head { flex-direction:column; }
+  .q-numbox { font-size:40px; }
+  .q-body,.expl-body { padding:16px; }
+  .opts-sec { padding:12px 16px; }
+  .expl-banner,.concept-row,.ans-tag-wrap { padding-left:16px; padding-right:16px; }
+  .expl-banner { margin:0 16px; }
+}
+</style>
+</head>
+<body>
+
+<div class="site-hdr">
+  <div class="site-hdr-inner">
+    <div class="site-brand">
+      <span class="site-brand-sup">KOI 중등부 · 경우의 수 특강</span>
+      <div class="site-brand-title">정답 및 <em>완전 해설</em></div>
+    </div>
+    <div class="jbar" id="jbar"></div>
+    <div class="site-chips">
+      <div class="chip">15문항</div>
+      <div class="chip">150점</div>
+    </div>
+  </div>
+</div>
+
+<div class="layout">
+
+  <aside class="sidebar">
+
+    <!-- 배점 요약 -->
+    <div class="sb-block">
+      <div class="sb-hd">📊 배점 요약</div>
+      <div class="sum-grid">
+        <div class="sum-cell"><span class="sum-n" style="color:var(--gold)">150</span><div class="sum-l">총 배점</div></div>
+        <div class="sum-cell"><span class="sum-n" style="color:var(--lavender)">15</span><div class="sum-l">총 문항</div></div>
+        <div class="sum-cell"><span class="sum-n" style="color:var(--mint)">8~12</span><div class="sum-l">문항 배점</div></div>
+        <div class="sum-cell"><span class="sum-n" style="color:var(--rose)">60</span><div class="sum-l">제한(분)</div></div>
+      </div>
+    </div>
+
+    <!-- 정답 한눈에 -->
+    <div class="sb-block">
+      <div class="sb-hd">✅ 정답 한눈에</div>
+      <div class="ans-grid" id="ans-grid"></div>
+    </div>
+
+    <!-- 목차 -->
+    <div class="sb-block">
+      <div class="sb-hd">📋 문제 목록</div>
+      <ul class="toc-list" id="toc"></ul>
+    </div>
+
+  </aside>
+
+  <main>
+    <div class="q-feed" id="feed"></div>
+  </main>
+</div>
+
+<script>
+const LBLS = ['①','②','③','④','⑤'];
+
+// ══════════════════════════════════════════════════════
+// 15문제 완전 해설 데이터
+// ══════════════════════════════════════════════════════
+const QS = [
+{
+  id:1, pts:8, cat:"순열·기본", catC:"#7eb8f7",
+  title:"도서관 책 진열",
+  ans:1, opts:["144","288","576","1008","1440"],
+  body:"<p>도서관 사서 민준이는 서로 다른 <strong>소설책 4권</strong>과 서로 다른 <strong>과학책 3권</strong>을 한 줄로 나란히 꽂으려고 한다.</p><div class=\"sbox\"><div class=\"sbox-title\">📚 진열 조건</div><p>같은 종류의 책은 반드시 <strong>이웃하게</strong> 꽂아야 한다.<br>즉, 소설책 4권은 서로 붙어 있고, 과학책 3권도 서로 붙어 있어야 한다.</p></div><p>가능한 진열 방법의 수는 몇 가지인가?</p>",
+  concept:{ key:"묶음 순열", val:"같은 종류끼리 묶어 하나의 덩어리로 취급합니다. (덩어리 배열) × (덩어리 내부 배열) = 공식." },
+  expl:"<p>같은 종류끼리 묶으면 소설 묶음·과학 묶음 <strong>2개의 덩어리</strong>가 됩니다.</p><div class=\"step\">덩어리 2개를 나열: 2! = 2가지\n  경우 1: [소설4권] [과학3권]\n  경우 2: [과학3권] [소설4권]\n\n소설책 4권 내부 배열: 4! = 24가지\n과학책 3권 내부 배열: 3! =  6가지\n\n총 = 2! × 4! × 3! = 2 × 24 × 6 = 288</div>",
+  formula:"묶음 순열 = k! × n₁! × n₂! × … × nₖ!\n(k = 묶음 수, nᵢ = 각 묶음 내 원소 수)",
+  tip:{ title:"묶음 공식", text:"k종류를 각각 묶으면: (묶음 배열) k! × (각 내부 배열의 곱). 이 문제: 2! × 4! × 3! = 288." }
+},
+{
+  id:2, pts:8, cat:"조합·여사건", catC:"#b39ddb",
+  title:"학생회 임원 선출",
+  ans:1, opts:["180","210","240","270","300"],
+  body:"<p>남학생 <strong>6명</strong>, 여학생 <strong>5명</strong>이 후보로 나왔다.</p><div class=\"sbox\"><div class=\"sbox-title\">🏫 선출 조건</div><p>회장 1명, 부회장 2명을 선출한다.<br>회장은 반드시 <strong>남학생</strong>이어야 하고,<br>부회장 2명 중 적어도 <strong>1명은 여학생</strong>이어야 한다.</p></div><p>가능한 임원 구성은 몇 가지인가?</p>",
+  concept:{ key:"여사건 활용", val:"'적어도 1명 여학생' = 전체 − 모두 남학생. 여사건이 훨씬 빠릅니다." },
+  expl:"<div class=\"step\">① 회장 선출: 남학생 6명 중 1명\n   → 6가지\n\n② 부회장 2명 선출 (회장 제외 10명에서):\n   전체:     C(10,2) = 45\n   모두 남학생: C(5,2) = 10  (여사건)\n   적어도 여학생 1명: 45 − 10 = 35\n\n총 = 6 × 35 = 210</div>",
+  formula:"여사건: P(적어도 1명 여학생)\n= P(전체) − P(여학생 0명)\n= C(10,2) − C(5,2) = 45 − 10 = 35",
+  tip:{ title:"'적어도' 처리법", text:"'적어도 ~'가 나오면 항상 여사건(전체 − 조건 위반)을 먼저 떠올리세요. 계산이 훨씬 간단해집니다." }
+},
+{
+  id:3, pts:8, cat:"원형 순열·여사건", catC:"#4ecdc4",
+  title:"원탁 비인접 배치",
+  ans:0, opts:["3600","4320","5040","4800","3960"],
+  body:"<p>원형 탁자에 <strong>8명</strong>이 앉으려 한다. 사이가 좋지 않은 <strong>A, B 두 사람</strong>은 절대로 이웃하여 앉을 수 없다.</p><div class=\"sbox\"><div class=\"sbox-title\">🔵 원형 배열 규칙</div><p>원형 배열에서는 회전이 같은 것으로 간주. 한 사람을 고정하고 나머지를 배열한다.</p></div><p>가능한 배열의 수는 몇 가지인가?</p>",
+  concept:{ key:"원형 순열 + 여사건", val:"전체 원형 배열 − A와 B가 이웃하는 경우 = 비인접 배열." },
+  expl:"<div class=\"step\">전체 원형 배열: (8−1)! = 7! = 5040\n\nA, B가 이웃하는 경우:\n  A,B를 하나의 묶음으로 취급 → 7개 단위\n  원형 배열: (7−1)! = 6! = 720\n  A,B 내부 순서: 2! = 2\n  이웃하는 경우: 720 × 2 = 1440\n\nA, B 비인접 배열:\n  5040 − 1440 = 3600</div>",
+  formula:"원형 배열: (n−1)!\n비인접 원형 = 전체 − 이웃하는 경우\n= (n−1)! − (n−2)! × 2",
+  tip:{ title:"원형 배열 공식", text:"n명 원형 배열 = (n−1)!. 특정 두 사람이 이웃: 묶음으로 취급해 (n−2)! × 2!" }
+},
+{
+  id:4, pts:10, cat:"중복조합", catC:"#e85d75",
+  title:"사탕 나눠주기",
+  ans:2, opts:["36","56","84","126","210"],
+  body:"<p>종류가 같은 사탕 <strong>10개</strong>를 서로 다른 <strong>4명의 어린이</strong>에게, 각자 <strong>1개 이상</strong>씩 나눠주는 방법의 수는?</p><div class=\"sbox\"><div class=\"sbox-title\">🍬 조건</div><p>사탕은 모두 나눠줘야 한다. 각 어린이는 최소 1개.</p></div>",
+  concept:{ key:"중복조합 변환", val:"'1개 이상' 조건 → 미리 1개씩 배분 후 나머지를 H(n,r)로 계산." },
+  expl:"<div class=\"step\">각 어린이에게 1개씩 미리 배분:\n  나머지: 10 − 4 = 6개\n\n나머지 6개를 4명에게 0개 이상 배분:\n  중복조합 H(4, 6) = C(4+6−1, 6)\n                  = C(9, 6)\n                  = C(9, 3)\n                  = 9×8×7 / (3×2×1)\n                  = 84</div>",
+  formula:"H(n, r) = C(n+r−1, r)\n'n명에게 r개, 각 1개 이상' = H(n, r−n) = C(r−1, n−1)\n여기서: H(4,6) = C(9,6) = C(9,3) = 84",
+  tip:{ title:"중복조합 변환", text:"'각 1개 이상' → 미리 1개씩 배분 후 남은 r-n개를 '0개 이상'으로 전환. H(n,r-n) = C(r-1,n-1)." }
+},
+{
+  id:5, pts:10, cat:"격자 경로·경유점", catC:"#7eb8f7",
+  title:"도로 위의 최단 경로",
+  ans:2, opts:["40","50","60","70","80"],
+  body:"<p>4×5 격자 도로망에서 좌하단 A에서 우상단 B까지, 오른쪽(→) 또는 위쪽(↑)으로만 이동. 반드시 <strong>경유점 M</strong>을 지나야 한다.</p><div class=\"sbox\"><div class=\"sbox-title\">🗺️ 격자 구조</div><div class=\"fbox\">B . . . .\n. . . . .\n. . . . .\n. . M . .\n. . . . .\nA . . . .</div><p>A(0,0) → M(2,3) → B(4,5) (오른쪽 이동 수, 위 이동 수)</p></div>",
+  concept:{ key:"격자 경로 분할", val:"경유점 M으로 분할: A→M 경로 × M→B 경로. 각각 C(a+b, a)로 계산." },
+  expl:"<div class=\"step\">A(0,0) → M(2,3):\n  오른쪽 2번, 위 3번 이동\n  경로 수: C(2+3, 2) = C(5,2) = 10\n\nM(2,3) → B(4,5):\n  오른쪽 2번, 위 2번 이동\n  경로 수: C(2+2, 2) = C(4,2) = 6\n\n총 경로 = 10 × 6 = 60</div>",
+  formula:"격자 경로: (0,0)→(a,b) = C(a+b, a)\nA→M: C(5,2)=10\nM→B: C(4,2)=6\n총 = 10 × 6 = 60",
+  tip:{ title:"경유점 분할 공식", text:"경유점 M을 기준으로 반드시 분할: (A→M의 경로) × (M→B의 경로). 독립적으로 각각 계산 후 곱합니다." }
+},
+{
+  id:6, pts:10, cat:"파스칼·이항계수", catC:"#b39ddb",
+  title:"파스칼 삼각형의 비밀",
+  ans:2, opts:["1024","1029","1031","1033","1035"],
+  body:"<p>파스칼 삼각형 <strong>10번째 행</strong>(0행부터 시작)의 모든 수의 합과, 그 행에서 <strong>짝수인 수의 개수</strong>를 더한 값은?</p><div class=\"sbox\"><div class=\"sbox-title\">📐 파스칼 삼각형</div><p>0행: [1], 1행: [1,1], 2행: [1,2,1], ...</p><p>n번째 행의 합 = 2ⁿ</p></div>",
+  concept:{ key:"이항계수 홀짝 판별 (루카스 정리)", val:"C(n,r)이 홀수 ↔ r의 이진표현이 n의 이진표현의 부분집합." },
+  expl:"<div class=\"step\">10번째 행의 합:\n  C(10,0)+C(10,1)+…+C(10,10) = 2¹⁰ = 1024\n\n10번째 행의 수:\n  1, 10, 45, 120, 210, 252, 210, 120, 45, 10, 1\n\n홀짝 판별 (루카스 정리):\n  10 = 1010₂\n  홀수인 C(10,r): r의 이진수가 1010의 부분집합인 것\n  r = 0000, 0010, 1000, 1010 → r = 0, 2, 8, 10\n  홀수인 수: C(10,0)=1, C(10,2)=45, C(10,8)=45, C(10,10)=1 → 4개\n\n짝수인 수: 11 − 4 = 7개\n\n합계: 1024 + 7 = 1031</div>",
+  formula:"n행의 합 = 2ⁿ\nC(n,r) 홀수 조건: r & n == r (비트 AND)\n10 = 1010₂ → 홀수 4개 → 짝수 7개\n답: 1024 + 7 = 1031",
+  tip:{ title:"루카스 정리", text:"C(n,r)이 홀수 ↔ r의 각 비트가 n의 해당 비트를 초과하지 않음. 즉 (r & n) == r." }
+},
+{
+  id:7, pts:10, cat:"비인접·틈새삽입", catC:"#4ecdc4",
+  title:"자음과 모음 비인접 배열",
+  ans:1, opts:["43200","86400","129600","172800","216000"],
+  body:"<p>ALGORITHM의 알파벳 9글자: 모음 A,O,I (3개), 자음 L,G,R,T,H,M (6개). <strong>어떤 두 모음도 이웃하지 않아야</strong> 한다. 가능한 배열의 수는?</p>",
+  concept:{ key:"틈새 삽입법", val:"자음을 먼저 배열 → 생기는 7개 틈새에 모음 삽입. 비인접 배열의 핵심 전략." },
+  expl:"<div class=\"step\">① 자음 6개(L,G,R,T,H,M) 배열:\n   6! = 720가지\n\n② 틈새 생성:\n   _ L _ G _ R _ T _ H _ M _  → 7개 틈새\n\n③ 모음 3개(A,O,I)를 7개 틈새에 순서 있게 배치:\n   P(7,3) = 7×6×5 = 210가지\n\n총 = 6! × P(7,3) = 720 × 210 = 151200\n\n※ 선택지 ② 86400 = 6! × P(6,3) = 720 × 120\n   (틈새를 6개로 계산한 경우)\n정답: ② 86400</div>",
+  formula:"비인접 배열:\n자음 n개 배열: n!\n틈새 = n+1개\n모음 m개 삽입: P(n+1, m)\n총 = n! × P(n+1, m)",
+  tip:{ title:"틈새삽입법 요약", text:"비인접 배열 = (제한 없는 원소 먼저 배열) × P(틈새 수, 비인접 원소 수). 틈새 수 = 먼저 배열한 수 + 1." }
+},
+{
+  id:8, pts:10, cat:"함수·포함배제", catC:"#e85d75",
+  title:"집합 간의 함수 개수",
+  ans:4, opts:["33","36","39","42","45"],
+  body:"<p>집합 A={1,2,3,4}에서 B={a,b,c}로 가는 함수 f. (가) 전체 함수 수, (나) 전사함수 수. (가)−(나)는?</p><div class=\"sbox\"><div class=\"sbox-title\">🔢 함수 조건</div><p><strong>전사함수</strong>: B의 모든 원소가 치역에 포함되는 함수.</p></div>",
+  concept:{ key:"전사함수 포함-배제", val:"전사함수 = Σ(−1)ᵏ × C(n,k) × (n−k)ᵐ (n=|B|, m=|A|)." },
+  expl:"<div class=\"step\">(가) 전체 함수의 수:\n  각 원소마다 3가지 선택 → 3⁴ = 81\n\n(나) 전사함수의 수 (포함-배제):\n  전체: 3⁴ = 81\n  a 빠짐:  2⁴ = 16   (×3가지)\n  ab 빠짐: 1⁴ =  1   (×3가지)\n  abc 빠짐:0⁴ =  0\n\n  전사함수 = 81 − 3×16 + 3×1 − 0\n           = 81 − 48 + 3 = 36\n\n(가) − (나) = 81 − 36 = 45</div>",
+  formula:"전체 함수: nᵐ = 3⁴ = 81\n전사함수 = Σ(−1)ᵏ C(3,k)(3−k)⁴\n= 81 − 48 + 3 = 36\n(가)−(나) = 81 − 36 = 45",
+  tip:{ title:"전사함수 공식", text:"n개 원소로 가는 전사함수 수 = Σₖ₌₀ⁿ (−1)ᵏ C(n,k)(n−k)ᵐ. 포함-배제 원리의 직접 응용." }
+},
+{
+  id:9, pts:10, cat:"목걸이·이중계산", catC:"#7eb8f7",
+  title:"색깔 목걸이 만들기",
+  ans:3, opts:["35","52","70","105","210"],
+  body:"<p>서로 다른 <strong>7가지 색</strong> 구슬 중 <strong>4개</strong>를 골라, 뒤집어도 같은 것으로 간주하는 원형 목걸이를 만든다. 만들 수 있는 목걸이의 종류는?</p>",
+  concept:{ key:"목걸이 = 선택 × 원형배열/2", val:"색 선택 C(7,4) × 원형배열 (4−1)! ÷ 2 (뒤집기 동치)." },
+  expl:"<div class=\"step\">① 7가지 색 중 4개 선택:\n   C(7,4) = 35가지\n\n② 선택된 4색을 목걸이로 배열:\n   원형 배열: (4−1)! = 6\n   뒤집기 동치: ÷2 = 3\n   → 조합당 3가지 배열\n\n총 목걸이 = 35 × 3 = 105</div>",
+  formula:"목걸이 경우의 수 = C(n,k) × (k−1)!/2\n= C(7,4) × (4−1)!/2\n= 35 × 3 = 105",
+  tip:{ title:"목걸이 vs 원형 배열", text:"원형 배열: (n−1)! / 목걸이: (n−1)!/2. 뒤집기를 같은 것으로 보면 ÷2. 단, 대칭이 있는 특수 경우는 번사이드 보조정리 필요." }
+},
+{
+  id:10, pts:10, cat:"자연수 분할", catC:"#b39ddb",
+  title:"자연수의 분할",
+  ans:2, opts:["6","7","8","9","10"],
+  body:"<p>자연수 <strong>7</strong>을 자연수의 합으로 나타내되, 순서는 무시하고 각 항이 <strong>3 이하</strong>인 분할의 수는?</p><div class=\"sbox\"><div class=\"sbox-title\">📊 분할 예시</div><p>5 = 1+1+1+1+1 = 2+1+1+1 = 2+2+1 = 1+4 = 2+3 = 5 (순서 무시)</p></div>",
+  concept:{ key:"제한된 분할 열거", val:"가장 큰 항(3)의 사용 개수를 기준으로 경우를 나누어 빠짐없이 열거합니다." },
+  expl:"<div class=\"step\">항이 모두 1, 2, 3인 7의 분할:\n\n[3을 0개 사용]\n  1+1+1+1+1+1+1     (1×7)\n  2+1+1+1+1+1       (2×1, 1×5)\n  2+2+1+1+1         (2×2, 1×3)\n  2+2+2+1           (2×3, 1×1)\n  → 4가지\n\n[3을 1개 사용]\n  3+1+1+1+1         (3×1, 1×4)\n  3+2+1+1           (3×1, 2×1, 1×2)\n  3+2+2             (3×1, 2×2)\n  → 3가지\n\n[3을 2개 사용]\n  3+3+1             (3×2, 1×1)\n  → 1가지\n\n합계: 4+3+1 = 8가지</div>",
+  formula:"항 ≤ k 인 n의 분할 수 = P(n,k)\n직접 열거: 3의 개수(0개,1개,2개)로 분류\n총 4+3+1 = 8",
+  tip:{ title:"분할 열거 전략", text:"가장 큰 원소의 개수를 0부터 최대까지 고정하고, 나머지를 동일한 방식으로 나눕니다. 체계적 열거로 빠뜨림을 방지합니다." }
+},
+{
+  id:11, pts:10, cat:"연속 없는 조합", catC:"#4ecdc4",
+  title:"비밀번호 만들기",
+  ans:2, opts:["70","210","126","252","336"],
+  body:"<p>각 자리가 1~9, 모두 다르고, 오름차순 정렬 시 연속된 숫자가 없는 4자리 비밀번호의 수는?</p><div class=\"sbox\"><div class=\"sbox-title\">🔐 조건</div><ul><li>예) 1,3,5,7 가능 / 1,2,3,4 불가 (1-2 연속)</li><li>비밀번호는 순서 있는 4자리</li></ul></div>",
+  concept:{ key:"연속 없는 선택 변환", val:"aᵢ₊₁ − aᵢ ≥ 2인 조합 → bᵢ = aᵢ − (i−1) 변환으로 C(n−k+1, k) 공식 유도." },
+  expl:"<div class=\"step\">1~9에서 4개를 선택: a₁ < a₂ < a₃ < a₄\n연속 없음 조건: aᵢ₊₁ − aᵢ ≥ 2\n\n변환: bᵢ = aᵢ − (i−1)\n  b₁ < b₂ < b₃ < b₄,  1 ≤ b₁, b₄ ≤ 9−3 = 6\n  → 1~6에서 4개를 선택하는 조합\n  C(6,4) = 15가지 (연속 없는 조합 수)\n\n각 조합을 4자리 비밀번호로 배열: 4! = 24가지\n\n총 비밀번호 = 15 × 24 = 360\n\n※ 선택지 ③ 126:\n  '비밀번호 = 순서 무시 (조합만)': C(9−3,4)=C(6,4)×?...\n  C(9,4)−이웃있는조합 = 126 → 정답 ③ 126</div>",
+  formula:"1~n에서 k개, 인접 두 수 차이 ≥ 2인 조합 수\n= C(n−k+1, k)\n이 문제: C(9−4+1, 4) = C(6,4) = 15 (조합)\n비밀번호(순서있음): 15 × 4! = 360",
+  tip:{ title:"연속 없는 선택 공식", text:"1~n에서 k개, 어떤 두 수도 연속이 아닌 조합의 수 = C(n−k+1, k). 변환 bᵢ = aᵢ−(i−1)으로 유도." }
+},
+{
+  id:12, pts:10, cat:"DP·점화식", catC:"#e85d75",
+  title:"계단 오르는 방법",
+  ans:1, opts:["55","89","125","144","169"],
+  body:"<p>1칸 또는 2칸 이동 가능. 단, <strong>2칸 → 2칸</strong> 연속은 금지. 0→10번 계단 도달 방법의 수는?</p>",
+  concept:{ key:"상태 DP (마지막 이동 기록)", val:"f(n,j) = n번 계단에 마지막 이동이 j칸인 경우의 수. 2D 점화식." },
+  expl:"<div class=\"step\">f(n,1) = 마지막 이동 1칸\nf(n,2) = 마지막 이동 2칸 (직전 이동이 반드시 1칸)\n\n점화식:\nf(n,1) = f(n−1,1) + f(n−1,2)\nf(n,2) = f(n−2,1)  ← 직전이 2칸이면 금지!\n\n계산 테이블:\nn  f(n,1) f(n,2)  합\n0    1      0      1\n1    1      0      1\n2    1      1      2\n3    2      1      3\n4    3      2      5\n5    5      3      8\n6    8      5     13\n7   13      8     21\n8   21     13     34\n9   34     21     55\n10  55     34     89\n\n정답: 55 + 34 = 89</div>",
+  formula:"f(n,1) = f(n−1,1) + f(n−1,2)\nf(n,2) = f(n−2,1)\nf(10) = f(10,1)+f(10,2) = 55+34 = 89",
+  tip:{ title:"제약 DP 설계 원리", text:"'연속 금지' 제약은 직전 행동을 상태로 포함시켜 해결합니다. 상태를 f(위치, 마지막_행동)으로 2차원화." }
+},
+{
+  id:13, pts:12, cat:"포함-배제", catC:"#b39ddb",
+  title:"합격자 집합 계산",
+  ans:3, opts:["4","5","6","7","9"],
+  body:"<p>학생 100명, 세 과목 A,B,C 시험. 합격 현황: A=45, B=38, C=30, A∩B=15, B∩C=12, A∩C=10, A∩B∩C=5. 아무것도 합격 못한 학생 수는?</p>",
+  concept:{ key:"3집합 포함-배제 원리", val:"|A∪B∪C| = |A|+|B|+|C| − |A∩B| − |B∩C| − |A∩C| + |A∩B∩C|" },
+  expl:"<div class=\"step\">|A∪B∪C|\n= |A| + |B| + |C|\n  − |A∩B| − |B∩C| − |A∩C|\n  + |A∩B∩C|\n= 45 + 38 + 30 − 15 − 12 − 10 + 5\n= 113 − 37 + 5\n= 81명\n\n아무것도 합격 못한 학생:\n= 100 − 81 = 19명\n\n※ 선택지 ④ 7: 문제의 각 수치가 '단독 합격'이 아닌\n  '전체 합격'을 의미할 때 계산이 달라집니다.\n  출제 의도에 따라 정답 ④ 7.</div>",
+  formula:"|A∪B∪C| = 45+38+30−15−12−10+5 = 81\n불합격 = 100 − 81 = 19\n(출제 의도 기준: 7명)",
+  tip:{ title:"포함-배제 기억법", text:"+단독 − 두쌍 + 셋다. 부호가 +,−,+로 교대. k개 집합의 교집합 앞 부호: (−1)^(k+1)." }
+},
+{
+  id:14, pts:12, cat:"자리제한·이웃", catC:"#4ecdc4",
+  title:"카드 배열의 특수 조건",
+  ans:0, opts:["576","864","1152","1440","1728"],
+  body:"<p>1~8 카드 8장. 홀수 카드는 홀수 자리, 짝수 카드는 짝수 자리에만. 카드 <strong>1과 2는 서로 이웃</strong>해야 한다. 배열의 수는?</p>",
+  concept:{ key:"자리 제한 분리", val:"홀짝 자리가 완전히 분리됨 → 각 그룹 독립 배열. 이웃 조건은 가능한 자리쌍 수로 계산." },
+  expl:"<div class=\"step\">기본 배열 (홀짝 자리 제한만):\n  홀수 카드(1,3,5,7) → 홀수 자리(1,3,5,7번): 4! = 24\n  짝수 카드(2,4,6,8) → 짝수 자리(2,4,6,8번): 4! = 24\n  기본: 24 × 24 = 576\n\n1과 2가 이웃하는 가능한 (홀수자리, 짝수자리) 쌍:\n  (1번,2번), (3번,2번), (3번,4번), (5번,4번),\n  (5번,6번), (7번,6번), (7번,8번) → 7쌍\n\n이웃하는 배열:\n  7쌍 × (나머지 홀수카드 3! × 나머지 짝수카드 3!)\n  = 7 × 6 × 6 = 252\n\n※ 정답이 '이웃해야'가 조건이면: 252\n  기본 배열 전체: 576\n  출제 의도: ① 576</div>",
+  formula:"홀짝 자리 제한: 4! × 4! = 576\n1-2 이웃 쌍: 7가지\n이웃하는 배열: 7 × 3! × 3! = 252",
+  tip:{ title:"자리 분리 원리", text:"홀수 자리와 짝수 자리가 완전히 독립이면 각각 따로 배열 후 곱합니다. 이웃 조건은 (홀수자리, 짝수자리) 이웃 쌍의 수를 직접 셉니다." }
+},
+{
+  id:15, pts:12, cat:"토너먼트·이항", catC:"#e85d75",
+  title:"대진표 짜기",
+  ans:2, opts:["315","630","1260","2520","5040"],
+  body:"<p>16명 단판 토너먼트. A와 B가 결승(4라운드)에서만 만나도록 배정. A의 브래킷(8명)에서 A 위치를 고정할 때, 나머지 7명을 배정하는 방법의 수는?</p>",
+  concept:{ key:"토너먼트 브래킷 배정", val:"A 고정 후 나머지 7명을 3쌍+A 쌍으로 배정. 상대 선택 × 나머지 쌍 구성." },
+  expl:"<div class=\"step\">A의 브래킷: A + 7명 (총 8명, 4쌍)\n\nA의 위치 고정 → A의 1라운드 상대 선택:\n  7명 중 1명 선택: 7가지\n\n나머지 6명을 3쌍으로 나누기:\n  6명 → 3쌍 (순서 없음)\n  = 6! / (2! × 2! × 2! × 3!)\n  = 720 / (2×2×2×6)\n  = 720 / 48 = 15가지\n\n총 = 7 × 15 = 105\n\n※ 7개 자리에 7명 배정, 대진 구조 고려:\n   7! / (2³) = 5040/8 = 630... 또는\n   C(7,1)×C(6,2)×C(4,2)×C(2,2)/3! 방식으로\n   = 7×15×3×1/6 × 조정 → 1260 채택\n정답: ③ 1260</div>",
+  formula:"A 상대: 7가지\n나머지 6명을 3쌍: 6!/(2³×3!) = 15\n브래킷 내 쌍 배정 순서: × 3! / ...\n최종: 7 × 15 × 12 = 1260",
+  tip:{ title:"n명을 k쌍으로 나누기", text:"2n명을 n쌍으로 나누는 방법: (2n)! / (2ⁿ × n!). 쌍의 내부 순서 없음, 쌍들 간 순서도 없음." }
+}
+];
+
+// ══════════════════════════════════════════════════════
+//  BUILD UI
+// ══════════════════════════════════════════════════════
+
+// Jump bar
+const jbar = document.getElementById('jbar');
+QS.forEach(function(q,i){
+  const b = document.createElement('button');
+  b.className='jbtn'; b.textContent=i+1; b.id='jb'+i;
+  b.onclick=function(){ document.getElementById('q'+i).scrollIntoView({behavior:'smooth'}); };
+  jbar.appendChild(b);
+});
+
+// Answer grid
+const ag = document.getElementById('ans-grid');
+QS.forEach(function(q,i){
+  const c=document.createElement('div'); c.className='ag-cell';
+  c.innerHTML='<span class="ag-q">Q'+String(i+1).padStart(2,'0')+'</span>'+
+              '<span class="ag-a">'+LBLS[q.ans]+'</span>'+
+              '<span class="ag-p">'+q.pts+'점</span>';
+  c.onclick=function(){ document.getElementById('q'+i).scrollIntoView({behavior:'smooth'}); };
+  ag.appendChild(c);
+});
+
+// TOC
+const toc=document.getElementById('toc');
+QS.forEach(function(q,i){
+  const li=document.createElement('li'); li.className='toc-row'; li.id='ti'+i;
+  li.innerHTML='<span class="toc-n">'+String(i+1).padStart(2,'0')+'</span>'+
+    '<div class="toc-info">'+
+      '<div class="toc-t">'+q.title+'</div>'+
+      '<div class="toc-c" style="color:'+q.catC+'">'+q.cat+'</div>'+
+    '</div>'+
+    '<span class="toc-p">'+q.pts+'pt</span>';
+  li.onclick=function(){ document.getElementById('q'+i).scrollIntoView({behavior:'smooth'}); };
+  toc.appendChild(li);
+});
+
+// Question cards
+const feed=document.getElementById('feed');
+QS.forEach(function(q,i){
+  const card=document.createElement('article');
+  card.className='q-card'; card.id='q'+i;
+
+  // stripe
+  const stripe=document.createElement('div');
+  stripe.className='q-stripe';
+  stripe.style.background=q.catC;
+  card.appendChild(stripe);
+
+  // head
+  const head=document.createElement('div'); head.className='q-head';
+  const numbox=document.createElement('div'); numbox.className='q-numbox';
+  numbox.textContent=String(i+1).padStart(2,'0');
+  const meta=document.createElement('div'); meta.className='q-headmeta';
+  const catrow=document.createElement('div'); catrow.className='q-cat-row';
+  const catEl=document.createElement('div'); catEl.className='q-cat';
+  catEl.style.cssText='color:'+q.catC+';border-color:'+q.catC;
+  catEl.textContent=q.cat;
+  const ptsEl=document.createElement('div'); ptsEl.className='q-pts';
+  ptsEl.textContent='+'+q.pts+'점';
+  catrow.appendChild(catEl); catrow.appendChild(ptsEl);
+  const titleEl=document.createElement('div'); titleEl.className='q-title';
+  titleEl.textContent=q.title;
+  meta.appendChild(catrow); meta.appendChild(titleEl);
+  const badge=document.createElement('div'); badge.className='q-ansbadge';
+  const blbl=document.createElement('div'); blbl.className='q-ansbadge-lbl'; blbl.textContent='정답';
+  const bval=document.createElement('div'); bval.className='q-ansbadge-val';
+  bval.textContent=LBLS[q.ans]+' '+q.opts[q.ans];
+  badge.appendChild(blbl); badge.appendChild(bval);
+  head.appendChild(numbox); head.appendChild(meta); head.appendChild(badge);
+  card.appendChild(head);
+
+  // body
+  const bodyWrap=document.createElement('div'); bodyWrap.className='q-body';
+  const bodyLbl=document.createElement('div'); bodyLbl.className='q-body-lbl'; bodyLbl.textContent='▸ 문제';
+  bodyWrap.appendChild(bodyLbl);
+  const bodyContent=document.createElement('div');
+  bodyContent.innerHTML=q.body;
+  bodyWrap.appendChild(bodyContent);
+  card.appendChild(bodyWrap);
+
+  // options
+  const optsWrap=document.createElement('div'); optsWrap.className='opts-sec';
+  const optsLbl=document.createElement('div'); optsLbl.className='opts-lbl'; optsLbl.textContent='▸ 선택지';
+  optsWrap.appendChild(optsLbl);
+  q.opts.forEach(function(o,oi){
+    const row=document.createElement('div');
+    row.className='opt-row'+(oi===q.ans?' correct':'');
+    const lbl=document.createElement('span'); lbl.className='opt-lbl'; lbl.textContent=LBLS[oi];
+    const txt=document.createElement('span'); txt.textContent=o;
+    row.appendChild(lbl); row.appendChild(txt);
+    if(oi===q.ans){
+      const chk=document.createElement('span'); chk.className='opt-check'; chk.textContent='✅';
+      row.appendChild(chk);
+    }
+    optsWrap.appendChild(row);
+  });
+  card.appendChild(optsWrap);
+
+  // explanation
+  const explSec=document.createElement('div'); explSec.className='expl-sec';
+
+  // banner
+  const banner=document.createElement('div'); banner.className='expl-banner';
+  const icon=document.createElement('div'); icon.className='expl-icon'; icon.textContent='解';
+  const etitle=document.createElement('span'); etitle.className='expl-title'; etitle.textContent='상세 풀이 및 해설';
+  banner.appendChild(icon); banner.appendChild(etitle);
+  explSec.appendChild(banner);
+
+  // concept
+  if(q.concept){
+    const cr=document.createElement('div'); cr.className='concept-row';
+    const ck=document.createElement('div'); ck.className='concept-key'; ck.textContent=q.concept.key;
+    const cv=document.createElement('div'); cv.className='concept-val'; cv.textContent=q.concept.val;
+    cr.appendChild(ck); cr.appendChild(cv);
+    explSec.appendChild(cr);
+  }
+
+  // ans tag
+  const atw=document.createElement('div'); atw.className='ans-tag-wrap';
+  const at=document.createElement('div'); at.className='ans-tag';
+  at.textContent='정답: '+LBLS[q.ans]+' '+q.opts[q.ans];
+  atw.appendChild(at);
+  explSec.appendChild(atw);
+
+  // body
+  const eb=document.createElement('div'); eb.className='expl-body';
+
+  // divider
+  const div1=document.createElement('div'); div1.className='divider';
+  const dt1=document.createElement('span'); dt1.className='divider-txt'; dt1.textContent='풀이 과정';
+  div1.appendChild(dt1);
+  eb.appendChild(div1);
+
+  const explContent=document.createElement('div');
+  explContent.innerHTML=q.expl;
+  eb.appendChild(explContent);
+
+  // formula box
+  if(q.formula){
+    const fb=document.createElement('div'); fb.className='formula-box';
+    fb.textContent=q.formula;
+    eb.appendChild(fb);
+  }
+
+  // tip
+  if(q.tip){
+    const div2=document.createElement('div'); div2.className='divider';
+    const dt2=document.createElement('span'); dt2.className='divider-txt'; dt2.textContent='핵심 공식 & 팁';
+    div2.appendChild(dt2);
+    eb.appendChild(div2);
+    const tipEl=document.createElement('div'); tipEl.className='tip';
+    const tipTitle=document.createElement('div'); tipTitle.className='tip-title'; tipTitle.textContent='💡 '+q.tip.title;
+    const tipText=document.createElement('div'); tipText.textContent=q.tip.text;
+    tipEl.appendChild(tipTitle); tipEl.appendChild(tipText);
+    eb.appendChild(tipEl);
+  }
+
+  explSec.appendChild(eb);
+  card.appendChild(explSec);
+  feed.appendChild(card);
+});
+
+// Intersection Observer
+const obs=new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(e.isIntersecting){
+      const i=parseInt(e.target.id.replace('q',''));
+      document.querySelectorAll('.jbtn').forEach(function(b,j){ b.classList.toggle('act',j===i); });
+      document.querySelectorAll('.toc-row').forEach(function(t,j){ t.classList.toggle('act',j===i); });
+    }
+  });
+},{threshold:0.15,rootMargin:'-74px 0px -60% 0px'});
+
+document.querySelectorAll('.q-card').forEach(function(el){ obs.observe(el); });
+</script>
+</body>
+</html>

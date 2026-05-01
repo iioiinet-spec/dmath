@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SY LAB | 정답 확인 센터</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --sidebar-width: 260px;
+            --ans-primary: #10b981; /* 정답지 느낌의 에메랄드 컬러 */
+            --ans-dark: #064e3b;
+            --bg-gray: #f9fafb;
+            --card-white: #ffffff;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Pretendard', -apple-system, sans-serif; background: var(--bg-gray); display: flex; min-height: 100vh; overflow: hidden; }
+
+        /* --- 좌측 사이드바 프레임 --- */
+        nav {
+            width: var(--sidebar-width);
+            background: var(--ans-dark);
+            color: white;
+            height: 100vh;
+            position: fixed;
+            display: flex;
+            flex-direction: column;
+            padding: 30px 15px;
+            z-index: 100;
+        }
+
+        nav h2 { 
+            font-size: 1.3rem; 
+            text-align: center; 
+            margin-bottom: 40px; 
+            color: #a7f3d0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .nav-menu { flex: 1; overflow-y: auto; list-style: none; }
+        .nav-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: #d1fae5;
+            text-decoration: none;
+            border-radius: 10px;
+            margin-bottom: 5px;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+        .nav-menu a i { margin-right: 12px; font-size: 0.9rem; }
+        .nav-menu a:hover { background: rgba(255,255,255,0.1); color: white; }
+
+        /* --- 메인 콘텐츠 영역 --- */
+        main {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 40px;
+            scroll-behavior: smooth;
+        }
+
+        .ans-banner {
+            background: linear-gradient(135deg, var(--ans-primary), var(--ans-dark));
+            padding: 40px;
+            border-radius: 20px;
+            color: white;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.1);
+        }
+
+        .ans-banner h1 { font-size: 2rem; margin-bottom: 10px; }
+        .ans-banner p { opacity: 0.9; }
+
+        .section-title { 
+            font-size: 1.5rem; 
+            margin-bottom: 25px; 
+            color: var(--ans-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* --- 정답지 카드 그리드 --- */
+        .ans-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .ans-card {
+            background: var(--card-white);
+            padding: 20px 25px;
+            border-radius: 15px;
+            border: 1px solid #e5e7eb;
+            text-decoration: none;
+            color: #374151;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 600;
+        }
+
+        .ans-card:hover {
+            border-color: var(--ans-primary);
+            background: #ecfdf5;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.05);
+        }
+
+        .ans-card i { color: var(--ans-primary); font-size: 1.1rem; }
+        .badge { font-size: 0.7rem; background: #f3f4f6; padding: 3px 8px; border-radius: 6px; color: #6b7280; font-family: monospace; }
+
+        /* --- 반응형 설정 --- */
+        @media (max-width: 1024px) {
+            nav { width: 70px; padding: 20px 10px; }
+            nav h2 span, .nav-menu span { display: none; }
+            main { margin-left: 70px; padding: 20px; }
+        }
+
+        @media (max-width: 640px) {
+            nav { display: none; }
+            main { margin-left: 0; padding: 20px; }
+            .ans-banner h1 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <h2><i class="fa-solid fa-square-check"></i> <span>ANSWERS</span></h2>
+        <div class="nav-menu">
+            <a href="#ans-list"><i class="fa-solid fa-list-ul"></i> <span>정답지 목록</span></a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="ans-banner">
+            <h1>Answer Keys Portal</h1>
+            <p>이산수학 연습문제(D0~D9)의 정답을 확인할 수 있는 페이지입니다.</p>
+        </div>
+
+        <section id="ans-list">
+            <h2 class="section-title"><i class="fa-solid fa-file-circle-check"></i> 정답 확인하기</h2>
+            <div class="ans-grid">
+                <a href="https://iioiinet-spec.github.io/dmath/d0a.html" class="ans-card" target="_blank">
+                    <span><span class="badge">D0A</span> 경우의 수 정답</span>
+                    <i class="fa-solid fa-check-double"></i>
+                </a>
+
+                <a href="https://iioiinet-spec.github.io/dmath/d1a.html" class="ans-card" target="_blank">
+                    <span><span class="badge">D1A</span> 그래프이론 정답</span>
+                    <i class="fa-solid fa-check-double"></i>
+                </a>
+
+                <a href="https://iioiinet-spec.github.io/dmath/d2a.html" class="ans-card" target="_blank">
+                    <span><span class="badge">D2A</span> 논리 및 게임정리 정답</span>
+                    <i class="fa-solid fa-check-double"></i>
+                </a>
+
+                <a href="https://iioiinet-spec.github.io/dmath/d3a.html" class="ans-card" target="_blank">
+                    <span><span class="badge">D3A</span> 논리와 불대수 정답</span>
+                    <i class="fa-solid fa-check-double"></i>
+                </a>
+
+                <a href="https://iioiinet-spec.github.io/dmath/d5a.html" class="ans-card" target="_blank">
+                    <span><span class="badge">D5A</span> 수학규칙/알고리즘2 정답</span>
+                    <i class="fa-solid fa-check-double"></i>
+                </a>
+
+                <a href="https://iioiinet-spec.github.io/dmath/d6a.html" class="ans-card" target="_blank">
+                    <span><span class="badge">D6A</span> 알고리즘/자료구조 정답</span>
+                    <i class="fa-solid fa-check-double"></i>
+                </a>
+
+                <a href="https://iioiinet-spec.github.io/dmath/d7a.html" class="ans-card" target="_blank">
+                    <span><span class="badge">D7A</span> 정수론 정답</span>
+                    <i class="fa-solid fa-check-double"></i>
+                </a>
+
+                <a href="https://iioiinet-spec.github.io/dmath/d8a.html" class="ans-card" target="_blank">
+                    <span><span class="badge">D8A</span> 조합론 정답</span>
+                    <i class="fa-solid fa-check-double"></i>
+                </a>
+
+                <a href="https://iioiinet-spec.github.io/dmath/d9a.html" class="ans-card" target="_blank">
+                    <span><span class="badge">D9A</span> 집합과 관계정리 정답</span>
+                    <i class="fa-solid fa-check-double"></i>
+                </a>
+            </div>
+        </section>
+
+        <footer style="text-align: center; color: #94a3b8; padding: 40px 0; font-size: 0.9rem;">
+            &copy; 2026 Seyoung Coding Lab. 정답 확인용 대시보드
+        </footer>
+    </main>
+
+</body>
+</html>

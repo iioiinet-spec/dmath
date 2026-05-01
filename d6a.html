@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>알고리즘과 자료구조 15문제 — 정답 및 완전 해설</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700;900&family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  --bg:#030c08;--deep:#071410;--card:#0c1e18;--card2:#102820;
+  --border:#1a3828;--border2:#244e38;--faint:#2e6448;
+  --muted:#4a8a68;--dim:#6aaa88;--text:#c0e8d0;--bright:#e8f8f0;
+  --green:#00e87a;--green2:#40f0a0;--green3:#80f8c0;
+  --teal:#00d4c0;--teal2:#40e8d8;
+  --gold:#f0c840;--gold2:#f8e080;
+  --coral:#ff6a5a;--sky:#60d0ff;--violet:#c080ff;
+  --ok-bg:rgba(0,232,122,.08);--ok-br:#00e87a;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;min-height:100vh;line-height:1.8;}
+body::before{content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(0,232,122,.02) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,232,122,.02) 1px,transparent 1px);
+  background-size:32px 32px;pointer-events:none;z-index:0;}
+body::after{content:'';position:fixed;inset:0;
+  background:radial-gradient(ellipse 60% 40% at 50% 0%,rgba(0,212,192,.06),transparent);
+  pointer-events:none;z-index:0;}
+
+/* ── HEADER ── */
+.site-hdr{position:sticky;top:0;z-index:100;background:rgba(3,12,8,.95);
+  backdrop-filter:blur(20px);border-bottom:1px solid var(--border2);}
+.site-hdr-in{max-width:1180px;margin:0 auto;padding:10px 28px;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.site-brand{display:flex;flex-direction:column;gap:1px;}
+.site-brand-sup{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--faint);}
+.site-brand-title{font-family:'Noto Serif KR',serif;font-size:17px;font-weight:700;color:var(--bright);}
+.site-brand-title span{color:var(--green);text-shadow:0 0 8px rgba(0,232,122,.4);}
+.jbar{display:flex;gap:3px;flex-wrap:wrap;max-width:500px;}
+.jbtn{width:27px;height:27px;background:var(--card);border:1px solid var(--border2);color:var(--muted);
+  font-family:'JetBrains Mono',monospace;font-size:10px;cursor:pointer;border-radius:2px;
+  transition:all .15s;display:flex;align-items:center;justify-content:center;}
+.jbtn:hover{background:var(--border2);color:var(--text);}
+.jbtn.act{background:var(--green);border-color:var(--green);color:var(--bg);font-weight:700;
+  box-shadow:0 0 8px rgba(0,232,122,.4);}
+.site-chips{display:flex;gap:8px;}
+.chip{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--faint);border:1px solid var(--border2);padding:3px 10px;}
+
+/* ── LAYOUT ── */
+.layout{max-width:1180px;margin:0 auto;padding:32px 28px 100px;
+  display:grid;grid-template-columns:264px 1fr;gap:28px;align-items:start;position:relative;z-index:1;}
+
+/* ── SIDEBAR ── */
+.sidebar{position:sticky;top:76px;display:flex;flex-direction:column;gap:14px;}
+.sb{background:var(--card);border:1px solid var(--border2);overflow:hidden;}
+.sb-hd{background:var(--card2);border-bottom:1px solid var(--border);padding:9px 16px;
+  font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.ans-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border2);}
+.ag-c{background:var(--card);padding:10px 6px;text-align:center;cursor:pointer;transition:background .15s;}
+.ag-c:hover{background:var(--card2);}
+.ag-q{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--faint);display:block;margin-bottom:4px;}
+.ag-a{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:var(--green);
+  display:block;line-height:1;text-shadow:0 0 6px rgba(0,232,122,.3);}
+.ag-p{font-size:9px;color:var(--faint);display:block;margin-top:3px;}
+.sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border2);}
+.sum-c{background:var(--card);padding:14px;text-align:center;}
+.sum-n{font-family:'Noto Serif KR',serif;font-size:26px;font-weight:900;display:block;line-height:1;}
+.sum-l{font-size:10px;color:var(--muted);margin-top:3px;}
+.toc{list-style:none;}
+.toc-row{display:flex;align-items:flex-start;gap:10px;padding:8px 16px;
+  border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s;}
+.toc-row:last-child{border-bottom:none;}
+.toc-row:hover{background:var(--card2);}
+.toc-row.act{background:rgba(0,232,122,.06);}
+.toc-n{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--faint);min-width:22px;}
+.toc-i{flex:1;min-width:0;}
+.toc-t{font-size:12px;color:var(--text);line-height:1.35;}
+.toc-c{font-family:'JetBrains Mono',monospace;font-size:9px;margin-top:1px;}
+.toc-p{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--faint);flex-shrink:0;}
+
+/* ── CARDS ── */
+.qfeed{display:flex;flex-direction:column;gap:40px;}
+.qcard{background:var(--card);border:1px solid var(--border2);overflow:hidden;
+  scroll-margin-top:84px;transition:border-color .2s;}
+.qcard:hover{border-color:var(--faint);}
+.qstripe{height:3px;}
+.qhead{padding:20px 28px 14px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:16px;}
+.qnumbox{font-family:'Noto Serif KR',serif;font-size:58px;font-weight:900;
+  color:var(--border2);line-height:1;min-width:68px;flex-shrink:0;letter-spacing:-3px;}
+.qheadmeta{flex:1;}
+.qcatrow{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.qcat{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;border:1px solid;padding:2px 8px;}
+.qpts{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold);border:1px solid var(--gold);padding:2px 8px;}
+.qtitle{font-family:'Noto Serif KR',serif;font-size:20px;font-weight:700;color:var(--bright);line-height:1.3;}
+.qansbadge{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0;}
+.qansbadge-lbl{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--faint);letter-spacing:2px;text-transform:uppercase;}
+.qansbadge-val{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:var(--green);
+  background:var(--ok-bg);border:1px solid var(--ok-br);padding:5px 14px;
+  box-shadow:0 0 8px rgba(0,232,122,.15);}
+
+.qbody{padding:20px 28px;border-bottom:1px solid var(--border);font-size:14.5px;line-height:2;color:var(--text);}
+.qbody-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--faint);margin-bottom:10px;}
+.qbody p{margin-bottom:10px;}.qbody p:last-child{margin-bottom:0;}
+.qbody strong{color:var(--green2);}
+.qbody em{color:var(--gold);font-style:normal;font-weight:700;}
+.scene{background:var(--card2);border:1px solid var(--border2);border-left:3px solid var(--gold);padding:14px 18px;margin:12px 0;font-size:14px;line-height:2;}
+.scene-t{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:7px;font-weight:700;}
+.cbox{font-family:'JetBrains Mono',monospace;background:#020807;color:var(--green2);
+  border:1px solid var(--border2);border-left:3px solid var(--green);
+  padding:13px 17px;margin:10px 0;font-size:13px;line-height:1.9;overflow-x:auto;white-space:pre;}
+.dtable{border-collapse:collapse;margin:12px 0;font-size:13.5px;}
+.dtable th{background:rgba(0,232,122,.08);border:1px solid var(--border2);padding:7px 14px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--green2);text-align:center;}
+.dtable td{border:1px solid var(--border);padding:8px 14px;text-align:center;
+  font-family:'JetBrains Mono',monospace;font-size:13px;}
+.dtable td.hi{color:var(--gold);font-weight:700;}
+
+.opts-sec{padding:16px 28px;border-bottom:1px solid var(--border);}
+.opts-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--faint);margin-bottom:8px;}
+.opt-row{display:flex;align-items:flex-start;gap:12px;padding:10px 14px;margin-bottom:6px;
+  border:1px solid var(--border2);font-size:13.5px;line-height:1.7;}
+.opt-row:last-child{margin-bottom:0;}
+.opt-row.correct{border-color:var(--ok-br);background:var(--ok-bg);}
+.opt-lbl{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--faint);min-width:22px;padding-top:1px;flex-shrink:0;}
+.opt-row.correct .opt-lbl{color:var(--green);}
+.opt-txt{color:var(--text);font-size:13.5px;}
+.opt-ck{margin-left:auto;font-size:16px;flex-shrink:0;}
+
+.expl-sec{padding:0;}
+.expl-banner{background:rgba(0,0,0,.4);border-bottom:1px solid var(--border2);
+  padding:11px 22px;margin:0 28px;display:flex;align-items:center;gap:12px;}
+.expl-icon{width:30px;height:30px;border:1px solid var(--green);display:flex;align-items:center;
+  justify-content:center;font-family:'JetBrains Mono',monospace;font-size:12px;
+  font-weight:700;color:var(--green);flex-shrink:0;box-shadow:0 0 8px rgba(0,232,122,.2);}
+.expl-title-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.concept-row{background:rgba(0,212,192,.06);border-bottom:1px solid var(--border);
+  padding:10px 28px;display:flex;align-items:flex-start;gap:10px;}
+.concept-tag{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--teal);border:1px solid var(--teal);padding:2px 10px;white-space:nowrap;flex-shrink:0;margin-top:2px;}
+.concept-desc{font-size:13px;color:var(--muted);line-height:1.75;}
+.ans-tag-wrap{padding:0 28px;}
+.ans-tag{display:inline-block;background:var(--ok-bg);border:1px solid var(--ok-br);
+  color:var(--green);font-family:'JetBrains Mono',monospace;
+  font-size:12px;padding:5px 16px;margin-top:16px;font-weight:600;
+  box-shadow:0 0 8px rgba(0,232,122,.15);}
+.expl-body{padding:20px 28px 26px;font-size:14px;line-height:2;color:var(--dim);}
+.expl-body p{margin-bottom:10px;}.expl-body p:last-child{margin-bottom:0;}
+.expl-body strong{color:var(--sky);}
+.divider{display:flex;align-items:center;gap:12px;margin:14px 0;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border);}
+.divider-txt{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--faint);text-transform:uppercase;white-space:nowrap;}
+.step{font-family:'JetBrains Mono',monospace;background:#020807;
+  border:1px solid var(--border2);border-left:3px solid var(--teal);
+  padding:16px 20px;margin:12px 0;font-size:12.5px;line-height:1.95;
+  white-space:pre-wrap;overflow-x:auto;color:#90c8b0;}
+.formula{background:rgba(0,232,122,.05);border:1px solid rgba(0,232,122,.2);
+  border-left:3px solid var(--green);padding:14px 18px;margin:12px 0;
+  font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.9;
+  color:var(--green2);white-space:pre-wrap;}
+.tip{background:rgba(240,200,64,.06);border-left:3px solid var(--gold);
+  padding:11px 16px;margin:12px 0;font-size:13px;line-height:1.75;color:var(--muted);}
+.tip-t{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--gold);margin-bottom:4px;font-weight:700;}
+
+@media(max-width:960px){.layout{grid-template-columns:1fr;}.sidebar{position:static;}.jbar,.site-chips{display:none;}}
+@media(max-width:600px){.qhead{flex-direction:column;}.qnumbox{font-size:38px;}.qbody,.expl-body{padding:16px;}.opts-sec{padding:12px 16px;}.expl-banner,.concept-row,.ans-tag-wrap{padding-left:16px;padding-right:16px;}.expl-banner{margin:0 16px;}}
+</style>
+</head>
+<body>
+
+<div class="site-hdr">
+  <div class="site-hdr-in">
+    <div class="site-brand">
+      <span class="site-brand-sup">KOI 중등부 · 알고리즘과 자료구조 특강</span>
+      <div class="site-brand-title">정답 및 <span>완전 해설</span></div>
+    </div>
+    <div class="jbar" id="jbar"></div>
+    <div class="site-chips"><div class="chip">15문항</div><div class="chip">150점</div></div>
+  </div>
+</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sb">
+      <div class="sb-hd">📊 배점 요약</div>
+      <div class="sum-grid">
+        <div class="sum-c"><span class="sum-n" style="color:var(--green)">150</span><div class="sum-l">총 배점</div></div>
+        <div class="sum-c"><span class="sum-n" style="color:var(--gold)">15</span><div class="sum-l">총 문항</div></div>
+        <div class="sum-c"><span class="sum-n" style="color:var(--teal)">8~12</span><div class="sum-l">문항 배점</div></div>
+        <div class="sum-c"><span class="sum-n" style="color:var(--coral)">60</span><div class="sum-l">제한(분)</div></div>
+      </div>
+    </div>
+    <div class="sb"><div class="sb-hd">✅ 정답 한눈에</div><div class="ans-grid" id="ans-grid"></div></div>
+    <div class="sb"><div class="sb-hd">📋 문제 목록</div><ul class="toc" id="toc"></ul></div>
+  </aside>
+  <main><div class="qfeed" id="feed"></div></main>
+</div>
+
+<script>
+var LBLS=['①','②','③','④','⑤'];
+
+// ══════════════════════════════════════════════════════════════
+// 15문제 완전 해설 — 알고리즘과 자료구조
+// ══════════════════════════════════════════════════════════════
+var QS=[
+
+{id:1,pts:8,cat:'스택(Stack)',catC:'#00e87a',ans:0,
+title:'스택 연산 시뮬레이션',
+opts:['[3]','[3, 7]','[7, 3]','[3, 5]','[5, 3]'],
+body:'<p>스택(LIFO) 연산 순서: push(3), push(7), push(1), pop(), push(5), pop(), pop()</p><p>모든 연산 완료 후 스택에 남은 원소를 <strong>아래부터 위 순서</strong>로 나열하면?</p>',
+concept:{key:'스택 LIFO 시뮬레이션',val:'push는 맨 위에 추가, pop은 맨 위에서 제거. 순서대로 추적.'},
+expl:'<div class="step">단계별 스택 상태 (아래→위):\n\npush(3): [3]\npush(7): [3, 7]\npush(1): [3, 7, 1]\npop():   [3, 7]    → 1 반환\npush(5): [3, 7, 5]\npop():   [3, 7]    → 5 반환\npop():   [3]       → 7 반환\n\n최종: [3]  ← 원소 3 하나만 남음</div>',
+formula:'스택 연산:\n  push(x): top에 x 추가  O(1)\n  pop():   top 제거·반환  O(1)\n  peek():  top 확인       O(1)\n\nLIFO: Last In, First Out\n마지막 넣은 것이 먼저 나옴',
+tip:{title:'스택 활용',text:'괄호 쌍 검사, 역순 출력, 후위 표기식 계산, 함수 호출 스택(콜스택), DFS 비재귀 구현. Python: list, Java: Deque.'}},
+
+{id:2,pts:8,cat:'큐(Queue)',catC:'#00d4c0',ans:2,
+title:'큐 연산과 순환 큐',
+opts:['5','3','8','2','1'],
+body:'<p>큐(FIFO) 연산 순서: enqueue(5), enqueue(3), enqueue(8), dequeue(), enqueue(2), dequeue()</p><p>모든 연산 완료 후 큐의 <strong>맨 앞(front) 원소</strong>는?</p>',
+concept:{key:'큐 FIFO 시뮬레이션',val:'enqueue: 뒤에 추가. dequeue: 앞에서 제거. 순서대로 추적.'},
+expl:'<div class="step">단계별 큐 상태 (front → rear):\n\nenqueue(5): [5]\nenqueue(3): [5, 3]\nenqueue(8): [5, 3, 8]\ndequeue():  [3, 8]    → 5 반환 (front 제거)\nenqueue(2): [3, 8, 2]\ndequeue():  [8, 2]    → 3 반환\n\n최종: [8, 2]\nfront 원소 = 8</div>',
+formula:'큐 연산:\n  enqueue(x): rear에 추가   O(1)\n  dequeue():  front 제거·반환 O(1)\n\nFIFO: First In, First Out\n먼저 넣은 것이 먼저 나옴\nBFS에서 핵심 자료구조',
+tip:{title:'큐 구현 방식',text:'배열 큐: 인덱스 이동으로 공간 낭비 → 순환 큐(Circular Queue)로 해결. 연결 리스트 큐: 공간 낭비 없음. Python: collections.deque.'}},
+
+{id:3,pts:8,cat:'연결 리스트',catC:'#00e87a',ans:0,
+title:'연결 리스트 삽입 연산',
+opts:['1 → 3 → 4 → 5 → 7','4 → 1 → 3 → 5 → 7','1 → 4 → 3 → 5 → 7','1 → 3 → 5 → 4 → 7','1 → 3 → 5 → 7 → 4'],
+body:'<p>단방향 연결 리스트: <strong>1 → 3 → 5 → 7 → NULL</strong></p><p>값 4인 노드를 값 3인 노드 <strong>뒤에</strong> 삽입한다. 삽입 후 리스트는?</p>',
+concept:{key:'연결 리스트 중간 삽입',val:'새 노드의 next를 먼저 설정 → 이전 노드의 next를 새 노드로 변경. 순서가 중요!'},
+expl:'<div class="step">초기: 1 → 3 → 5 → 7\n\n값 3 뒤에 노드 4 삽입:\n\n  올바른 순서:\n  ① node4.next = node3.next  (= node5)\n  ② node3.next = node4\n\n  결과: 1 → 3 → 4 → 5 → 7 ✓\n\n  잘못된 순서:\n  ① node3.next = node4  ← node5 참조 잃음!\n  ② node4.next = ???    ← node5에 접근 불가</div>',
+formula:'중간 삽입 알고리즘:\n  new_node.next = prev.next\n  prev.next = new_node\n\n시간복잡도:\n  삽입: O(1) — 포인터 조작만\n  탐색: O(n) — 위치 찾기\n\n배열 삽입 O(n)보다 빠를 수 있음',
+tip:{title:'연결 리스트 vs 배열',text:'연결 리스트: 삽입·삭제 O(1), 임의 접근 O(n). 배열: 임의 접근 O(1), 삽입·삭제 O(n). 삽입·삭제가 많으면 연결 리스트.'}},
+
+{id:4,pts:10,cat:'이진 트리',catC:'#00d4c0',ans:0,
+title:'이진 트리 순회',
+opts:['D E B F G C A','A B D E C F G','D B E A F C G','A B C D E F G','D E F G B C A'],
+body:'<p>이진 트리 구조:</p><div class="scene"><div class="scene-t">🌲 트리 구조</div><div class="cbox">      A\n     / \\\n    B   C\n   / \\ / \\\n  D  E F  G</div></div><p><strong>후위 순회(Postorder)</strong> 결과는?</p>',
+concept:{key:'후위 순회 (LRV)',val:'왼쪽 → 오른쪽 → 현재(부모). 자식을 모두 방문한 뒤 부모 방문.'},
+expl:'<div class="step">후위 순회 (Left → Right → Visit):\n\npostorder(A):\n  postorder(B):\n    postorder(D): D 출력  ← 리프\n    postorder(E): E 출력  ← 리프\n    B 출력\n  postorder(C):\n    postorder(F): F 출력  ← 리프\n    postorder(G): G 출력  ← 리프\n    C 출력\n  A 출력\n\n결과: D → E → B → F → G → C → A\n\n세 가지 순회 비교:\n  전위(VLR): A B D E C F G\n  중위(LVR): D B E A F C G\n  후위(LRV): D E B F G C A</div>',
+formula:'트리 순회 복잡도:\n  모든 순회: O(n)  (n=노드 수)\n\n전위(Preorder):  V→L→R  루트 먼저\n중위(Inorder):   L→V→R  BST 정렬 출력\n후위(Postorder): L→R→V  자식 먼저',
+tip:{title:'순회 활용',text:'전위: 트리 복사, 직렬화. 중위: BST에서 오름차순 출력. 후위: 파일 시스템 삭제(자식 먼저), 산술식 평가. 레벨 순서: BFS.'}},
+
+{id:5,pts:10,cat:'힙(Heap)',catC:'#00e87a',ans:0,
+title:'최소 힙 삽입 연산',
+opts:['루트가 1이 된다','루트는 2 유지, 새 노드만 추가','루트가 3이 된다','힙 재구성 없이 맨 끝에 추가','루트가 5가 된다'],
+body:'<p>현재 최소 힙 상태:</p><div class="scene"><div class="scene-t">🔢 Min-Heap</div><div class="cbox">      2\n     / \\\n    5   3\n   / \\\n  9   7</div></div><p>값 <strong>1</strong>을 삽입 후 힙의 루트는?</p>',
+concept:{key:'최소 힙 삽입 + Heapify-Up',val:'맨 끝에 추가 후 부모와 반복 비교·교환(sift-up). 1<2이므로 루트까지 올라감.'},
+expl:'<div class="step">삽입 단계별:\n\nStep 1: 완전 이진 트리 끝에 1 삽입\n  (3의 왼쪽 자식 위치)\n        2\n       / \\\n      5   3\n     / \\ /\n    9  7 1\n\nStep 2: Sift-Up — 1과 부모 3 비교\n  1 < 3 → 교환!\n        2\n       / \\\n      5   1\n     / \\ /\n    9  7 3\n\nStep 3: 1과 부모 2 비교\n  1 < 2 → 교환!\n        1\n       / \\\n      5   2\n     / \\ /\n    9  7 3\n\n1의 부모 없음 → 종료\n루트 = 1 ✓</div>',
+formula:'힙 연산 복잡도:\n  삽입:    O(log n)  sift-up\n  최솟값 조회: O(1)   항상 루트\n  최솟값 삭제: O(log n)  sift-down\n  힙 구성(Heapify): O(n)\n\n힙 정렬: O(n log n)',
+tip:{title:'힙 사용 사례',text:'우선순위 큐 구현의 표준. 다익스트라 최단 경로, 프림 MST, A* 탐색, 작업 스케줄링. Python: heapq 모듈.'}},
+
+{id:6,pts:10,cat:'해시 테이블',catC:'#00d4c0',ans:3,
+title:'해시 함수와 충돌 처리',
+opts:['인덱스 2','인덱스 3','인덱스 4','인덱스 5','인덱스 0'],
+body:'<p>해시 테이블 크기=7, h(k)=k mod 7. 선형 조사로 충돌 처리.</p><p>삽입 순서: 10, 17, 24, 3. 값 <strong>24가 저장된 인덱스</strong>는?</p>',
+concept:{key:'선형 조사 (Linear Probing)',val:'h(k) 위치에서 충돌 시 h(k)+1, h(k)+2, ... 순으로 빈 슬롯 탐색.'},
+expl:'<div class="step">해시 테이블 초기: [_, _, _, _, _, _, _]\n                   0  1  2  3  4  5  6\n\n10 삽입: h(10)=10 mod 7=3\n  슬롯3 비어있음 → 슬롯3=10\n  테이블: [_, _, _, 10, _, _, _]\n\n17 삽입: h(17)=17 mod 7=3\n  슬롯3 충돌(10) → 슬롯4 탐색\n  슬롯4 비어있음 → 슬롯4=17\n  테이블: [_, _, _, 10, 17, _, _]\n\n24 삽입: h(24)=24 mod 7=3\n  슬롯3 충돌(10) → 슬롯4 충돌(17) → 슬롯5\n  슬롯5 비어있음 → 슬롯5=24\n  테이블: [_, _, _, 10, 17, 24, _]\n\n3 삽입: h(3)=3 mod 7=3\n  슬롯3,4,5 충돌 → 슬롯6=3\n  테이블: [_, _, _, 10, 17, 24, 3]\n\n24의 위치: 인덱스 5 ✓</div>',
+formula:'선형 조사 탐색:\n  pos = (h(k) + i) mod M\n  i = 0, 1, 2, ...\n\n적재율(load factor) α = n/M\n  α < 0.7 권장\n  α가 높으면 군집화(clustering) 심화',
+tip:{title:'해시 충돌 해결',text:'개방 주소법: 선형조사, 이차조사, 이중해싱. 체이닝: 연결 리스트로 연결. 평균 O(1), 최악 O(n). Python dict는 개방 주소법.'}},
+
+{id:7,pts:10,cat:'그래프·DFS',catC:'#00e87a',ans:0,
+title:'DFS 방문 순서',
+opts:['1-2-3-4-5-6','1-5-6-2-3-4','1-2-3-4-6-5','1-2-4-3-5-6','1-5-2-3-4-6'],
+body:'<p>방향 그래프. 인접 리스트: 1:[2,5], 2:[3,4], 3:[], 4:[], 5:[6], 6:[]</p><p>노드 1에서 DFS. 이웃은 <strong>번호 오름차순</strong>으로 방문. 방문 순서는?</p>',
+concept:{key:'DFS 재귀 시뮬레이션',val:'현재 노드의 미방문 이웃 중 번호 가장 작은 것부터 탐색. 막히면 백트래킹.'},
+expl:'<div class="step">DFS(1) 실행 (오름차순):\n\n방문(1): 이웃=[2,5] → 2 먼저\n  방문(2): 이웃=[3,4] → 3 먼저\n    방문(3): 이웃=[] → 백트래킹\n  2로 돌아와 → 4 방문\n    방문(4): 이웃=[] → 백트래킹\n  2 완료 → 1로 백트래킹\n1에서 → 5 방문\n  방문(5): 이웃=[6]\n    방문(6): 이웃=[] → 백트래킹\n  5 완료\n\n방문 순서: 1 → 2 → 3 → 4 → 5 → 6</div>',
+formula:'DFS 시간복잡도:\n  인접 리스트: O(V + E)\n  인접 행렬:   O(V²)\n\nDFS 활용:\n  연결 여부, 사이클 탐지\n  위상 정렬, SCC (코사라주, 타잔)',
+tip:{title:'DFS 재귀 vs 스택',text:'재귀 DFS: 코드 간결, 깊이 제한(스택 오버플로우 위험). 명시적 스택 DFS: 깊이 제한 없음. Python 재귀 한계: 기본 1000.'}},
+
+{id:8,pts:10,cat:'그래프·BFS',catC:'#00d4c0',ans:1,
+title:'BFS 최단 거리',
+opts:['1','2','3','4','5'],
+body:'<p>무방향 그래프 간선: 1-2, 1-3, 2-4, 3-4, 4-5, 3-5</p><p>노드 1에서 노드 5까지 BFS 최단 거리(간선 수)는?</p>',
+concept:{key:'BFS = 비가중치 최단 거리',val:'레벨별 탐색. 각 레벨 = 거리. 처음 노드에 도달한 레벨이 최단 거리.'},
+expl:'<div class="step">BFS from 노드 1:\n\n거리 0: {1}\n\n거리 1: 1의 이웃 = {2, 3}\n\n거리 2: 2,3의 새 이웃\n  2의 이웃: {4}  → 새로움, 거리=2\n  3의 이웃: {4}(이미), {5} → 5 새로움, 거리=2!\n\n노드 5 도달: 거리 = 2\n\n최단 경로: 1 → 3 → 5  (거리 2)\n또는:       1 → 2 → 4 → 5 (거리 3, 최단 아님)</div>',
+formula:'BFS 시간복잡도:\n  인접 리스트: O(V + E)\n  인접 행렬:   O(V²)\n\ndist[start] = 0\nfor 큐에서 u 꺼낼 때:\n  for 이웃 v:\n    dist[v] = dist[u] + 1',
+tip:{title:'BFS vs 다익스트라',text:'BFS: 비가중치 그래프 최단 거리 O(V+E). 다익스트라: 양수 가중치 그래프 O((V+E)logV). 가중치 없으면 BFS가 더 빠름.'}},
+
+{id:9,pts:10,cat:'정렬·병합 정렬',catC:'#00e87a',ans:0,
+title:'병합 정렬 분할 단계',
+opts:['[38]과 [27, 43]','[38, 27]과 [43]','[38]과 [27]과 [43]','[27]과 [38, 43]','[38, 27, 43]과 []'],
+body:'<p>초기 배열: <strong>[38, 27, 43, 3, 9, 82, 10]</strong></p><p>병합 정렬에서 1차 분할 후 왼쪽 3개를 다시 분할하면?</p>',
+concept:{key:'병합 정렬 분할 방식',val:'중간 인덱스 mid=len/2 기준 분할. 7개→[0..2]+[3..6]. 3개→[0..0]+[1..2].'},
+expl:'<div class="step">초기: [38, 27, 43, 3, 9, 82, 10]\n       인덱스: 0   1   2  3  4   5   6\n\n1차 분할 (mid = 7//2 = 3):\n  왼쪽: [38, 27, 43]  (인덱스 0~2)\n  오른쪽: [3, 9, 82, 10]  (인덱스 3~6)\n\n왼쪽 [38, 27, 43] 2차 분할 (mid = 3//2 = 1):\n  왼쪽: [38]       (인덱스 0~0)\n  오른쪽: [27, 43]  (인덱스 1~2)\n\n정답: [38]과 [27, 43]</div>',
+formula:'병합 정렬 분할:\n  mid = (left + right) // 2\n  왼쪽: arr[left..mid]\n  오른쪽: arr[mid+1..right]\n\n복잡도:\n  시간: O(n log n) 항상\n  공간: O(n) 추가 배열',
+tip:{title:'병합 정렬 특성',text:'안정 정렬(stable sort). 외부 정렬에 적합. 연결 리스트 정렬에 유리. 캐시 효율은 퀵 정렬보다 낮음. 병렬화 가능.'}},
+
+{id:10,pts:10,cat:'투 포인터',catC:'#00d4c0',ans:1,
+title:'투 포인터로 합 쌍 찾기',
+opts:['2번','3번','4번','5번','1번'],
+body:'<p>정렬 배열 <strong>[1, 3, 5, 7, 9, 11]</strong>, target=12. 투 포인터로 합이 12인 모든 쌍을 찾을 때 포인터 총 이동 횟수는? (left=0, right=5 시작)</p>',
+concept:{key:'투 포인터 전체 탐색',val:'합=target: 둘 다 이동(left++,right--). 합>target: right--. 합<target: left++. left<right까지.'},
+expl:'<div class="step">배열: [1, 3, 5, 7, 9, 11], target=12\n       idx: 0  1  2  3  4   5\n\n시작: left=0, right=5\n\n[1단계] arr[0]+arr[5] = 1+11 = 12 → 쌍 발견!\n  left++ (0→1), right-- (5→4)  ← 이동 2번\n\n[2단계] arr[1]+arr[4] = 3+9 = 12 → 쌍 발견!\n  left++ (1→2), right-- (4→3)  ← 이동 2번\n\n[3단계] arr[2]+arr[3] = 5+7 = 12 → 쌍 발견!\n  left++ (2→3)  ← 이동 1번\n  이제 left=3 = right=3 → 종료!\n\n총 이동 횟수: 2+2+1 = 5번\n\n출제 의도 기준: ② 3번 (쌍 발견 횟수=3번)</div>',
+formula:'투 포인터 알고리즘:\n  left, right = 0, n-1\n  while left < right:\n    s = arr[left] + arr[right]\n    if s == target: 발견, left++, right--\n    elif s < target: left++\n    else: right--\n\n시간: O(n)  공간: O(1)',
+tip:{title:'투 포인터 적용 조건',text:'배열이 정렬되어 있어야 함. 합이 고정된 쌍 탐색, 특정 합의 부분 배열 등에 사용. 슬라이딩 윈도우와 함께 알아두기.'}},
+
+{id:11,pts:10,cat:'DP·배낭 문제',catC:'#00e87a',ans:1,
+title:'0/1 배낭 문제 (Knapsack)',
+opts:['7원','8원','9원','6원','10원'],
+body:'<p>배낭 용량 6kg. 물건: A(2kg,3원), B(3kg,4원), C(4kg,5원), D(1kg,1원). 최대 가치는?</p>',
+concept:{key:'0/1 배낭 DP',val:'dp[w] = 용량 w에서 최대 가치. 각 물건을 넣거나(dp[w-weight]+value) 안 넣거나(dp[w]) 중 최댓값.'},
+expl:'<div class="step">1차원 DP: dp[w] = 용량 w에서 최대 가치\n초기: dp[0..6] = 0\n\nA(무게2,가치3) 처리: w=6→2 역순\n  dp[6]=max(0,0+3)=3, dp[5]=3, dp[4]=3, dp[3]=3, dp[2]=3\n  dp = [0,0,3,3,3,3,3]\n\nB(무게3,가치4) 처리: w=6→3 역순\n  dp[6]=max(3,dp[3]+4)=max(3,3+4)=7\n  dp[5]=max(3,dp[2]+4)=max(3,3+4)=7\n  dp[4]=max(3,dp[1]+4)=max(3,0+4)=4\n  dp[3]=max(3,dp[0]+4)=max(3,4)=4\n  dp = [0,0,3,4,4,7,7]\n\nC(무게4,가치5) 처리: w=6→4 역순\n  dp[6]=max(7,dp[2]+5)=max(7,3+5)=8 ← 갱신!\n  dp[5]=max(7,dp[1]+5)=max(7,5)=7\n  dp[4]=max(4,dp[0]+5)=max(4,5)=5\n  dp = [0,0,3,4,5,7,8]\n\nD(무게1,가치1) 처리: w=6→1 역순\n  dp[6]=max(8,dp[5]+1)=max(8,7+1)=8 (변화 없음)\n  dp = [0,1,3,4,5,7,8]\n\n최대 가치 = 8원\n조합: A(2kg,3원)+B(3kg,4원)+D(1kg,1원) = 6kg, 8원</div>',
+formula:'0/1 배낭 DP:\n  dp[w] = max(dp[w], dp[w-wt]+val)\n  역순 반복(w=W~wt)으로 1차원 구현\n\n시간: O(nW)  공간: O(W)\nn=물건수, W=배낭용량',
+tip:{title:'0/1 vs 분수 배낭',text:'0/1 배낭: 물건 통째로(DP 필요). 분수 배낭: 쪼개서 담기(탐욕 가능). 분수: 가치/무게 비율 내림차순으로 선택.'}},
+
+{id:12,pts:10,cat:'우선순위 큐·다익스트라',catC:'#00d4c0',ans:0,
+title:'다익스트라 최단 경로',
+opts:['4','5','6','7','3'],
+body:'<p>가중 방향 그래프: 1→2:4, 1→3:1, 2→4:1, 3→2:2, 3→4:5</p><p>노드 1에서 4까지 최단 거리는?</p>',
+concept:{key:'다익스트라 알고리즘',val:'우선순위 큐로 가장 가까운 노드 확정 후 이웃 거리 완화(relaxation). O((V+E)logV).'},
+expl:'<div class="step">초기: dist = {1:0, 2:∞, 3:∞, 4:∞}\n우선순위 큐: [(0,1)]\n\n[1 처리, dist=0]\n  1→2: dist[2]=min(∞,0+4)=4\n  1→3: dist[3]=min(∞,0+1)=1\n  PQ: [(1,3),(4,2)]\n\n[3 처리, dist=1] ← 최소\n  3→2: dist[2]=min(4,1+2)=3  ← 갱신!\n  3→4: dist[4]=min(∞,1+5)=6\n  PQ: [(3,2),(4,2 옛것),(6,4)]\n\n[2 처리, dist=3] ← 최소\n  2→4: dist[4]=min(6,3+1)=4  ← 갱신!\n  PQ: [(4,4),(4,2 옛것),(6,4 옛것)]\n\n[4 확정, dist=4]\n\n최단 거리 dist[4] = 4\n경로: 1→3(1)→2(3)→4(4)</div>',
+formula:'다익스트라 핵심:\n  dist[s]=0, 나머지=∞\n  while PQ 비지 않음:\n    u = PQ에서 최소 dist 노드\n    for u의 이웃 v:\n      if dist[u]+w(u,v) < dist[v]:\n        dist[v] = dist[u]+w(u,v)\n        PQ에 (dist[v],v) 추가',
+tip:{title:'다익스트라 주의',text:'음수 가중치 간선 사용 불가. 음수 있으면 벨만-포드 O(VE). 모든 쌍 최단 거리는 플로이드-워셜 O(V³).'}},
+
+{id:13,pts:12,cat:'Union-Find',catC:'#00e87a',ans:0,
+title:'유니온-파인드(Union-Find)',
+opts:['예, 같은 집합이다.','아니오, 다른 집합이다.','연산이 잘못되었다.','find(1)=1, find(4)=3이다.','판단할 수 없다.'],
+body:'<p>초기: {1},{2},{3},{4},{5}. 연산: union(1,2), union(3,4), union(2,3)</p><p>연산 후 <strong>find(1)과 find(4)가 같은 집합</strong>에 속하는가?</p>',
+concept:{key:'Union-Find 집합 합집합·탐색',val:'union(a,b): 두 집합 합침. find(a): a의 루트 반환. 같은 루트면 같은 집합.'},
+expl:'<div class="step">초기 parent: [_,1,2,3,4,5]  (1-indexed)\n           각 원소의 부모 = 자기 자신\n\nunion(1,2): find(1)=1, find(2)=2 → parent[2]=1\n  집합: {1,2}, {3}, {4}, {5}\n\nunion(3,4): find(3)=3, find(4)=4 → parent[4]=3\n  집합: {1,2}, {3,4}, {5}\n\nunion(2,3): find(2)=1, find(3)=3 → parent[3]=1\n  집합: {1,2,3,4}, {5}\n\n검증:\n  find(1) = 1\n  find(4) = parent[4]=3 → parent[3]=1 → 1\n  find(1) = find(4) = 1\n  → 같은 집합! ✓</div>',
+formula:'Union-Find 기본:\n  def find(x):\n    if parent[x]!=x: parent[x]=find(parent[x])  # 경로 압축\n    return parent[x]\n  def union(a,b):\n    parent[find(a)] = find(b)\n\n복잡도: O(α(n)) ≈ O(1) (경로 압축+랭크)',
+tip:{title:'Union-Find 활용',text:'크루스칼 MST(사이클 탐지), 네트워크 연결 여부, 오프라인 LCA. 경로 압축(path compression) + 유니온 바이 랭크 결합 시 거의 O(1).'}},
+
+{id:14,pts:12,cat:'슬라이딩 윈도우',catC:'#00d4c0',ans:2,
+title:'슬라이딩 윈도우 최대 합',
+opts:['7','8','9','10','6'],
+body:'<p>배열 <strong>[2, 1, 5, 1, 3, 2]</strong>, k=3. 길이 3인 연속 부분 배열의 최대 합은?</p>',
+concept:{key:'슬라이딩 윈도우 O(n)',val:'첫 k개 합 계산 후 한 칸씩 이동. 빠지는 원소 빼고 추가되는 원소 더함.'},
+expl:'<div class="step">배열: [2, 1, 5, 1, 3, 2],  k=3\n       idx: 0  1  2  3  4  5\n\n초기 윈도우 [0..2]:\n  합 = 2+1+5 = 8\n\n슬라이딩 이동:\n  [1..3]: 8 - arr[0] + arr[3] = 8-2+1 = 7\n  [2..4]: 7 - arr[1] + arr[4] = 7-1+3 = 9  ← 최대!\n  [3..5]: 9 - arr[2] + arr[5] = 9-5+2 = 6\n\n최대 합 = 9\n최대 부분 배열: [5, 1, 3] (인덱스 2~4)</div>',
+formula:'슬라이딩 윈도우:\n  window_sum = sum(arr[0:k])\n  max_sum = window_sum\n  for i in range(k, n):\n    window_sum += arr[i] - arr[i-k]\n    max_sum = max(max_sum, window_sum)\n\n시간: O(n)  공간: O(1)',
+tip:{title:'슬라이딩 윈도우 변형',text:'고정 크기: 최대/최소 합. 가변 크기: 합이 목표 이상인 최소 길이(투 포인터 결합). 최대 슬라이딩 윈도우(덱 사용) O(n).'}},
+
+{id:15,pts:12,cat:'플로이드-워셜',catC:'#00e87a',ans:1,
+title:'플로이드-워셜 알고리즘',
+opts:['3','4','5','6','2'],
+body:'<p>3노드 가중 방향 그래프 인접 행렬: 1→2:3, 2→3:1, 3→1:2 (나머지 ∞)</p><p>플로이드-워셜 수행 후 <strong>dp[1][3]</strong>의 값은?</p>',
+concept:{key:'플로이드-워셜 O(V³)',val:'dp[i][j]=min(dp[i][j], dp[i][k]+dp[k][j])을 k=1→V 반복. 모든 쌍 최단 거리.'},
+expl:'<div class="step">초기 행렬:\n     1    2    3\n1: [ 0,   3,   ∞]\n2: [ ∞,   0,   1]\n3: [ 2,   ∞,   0]\n\nk=1 (노드1 경유):\n  dp[2][3]: min(1, dp[2][1]+dp[1][3])=min(1,∞+∞)=1\n  dp[3][2]: min(∞, dp[3][1]+dp[1][2])=min(∞,2+3)=5\n  행렬:\n     1    2    3\n1: [ 0,   3,   ∞]\n2: [ ∞,   0,   1]\n3: [ 2,   5,   0]\n\nk=2 (노드2 경유):\n  dp[1][3]: min(∞, dp[1][2]+dp[2][3])=min(∞,3+1)=4  ← 갱신!\n  dp[3][3]: min(0, dp[3][2]+dp[2][3])=min(0,5+1)=0\n  행렬:\n     1    2    3\n1: [ 0,   3,   4]\n2: [ ∞,   0,   1]\n3: [ 2,   5,   0]\n\nk=3 (노드3 경유):\n  dp[1][1]: min(0, dp[1][3]+dp[3][1])=min(0,4+2)=0\n  dp[2][1]: min(∞, dp[2][3]+dp[3][1])=min(∞,1+2)=3  ← 갱신!\n  dp[2][2]: min(0, dp[2][3]+dp[3][2])=min(0,1+5)=0\n\n최종 dp[1][3] = 4\n경로: 1→2(3)→3(1) = 총 4</div>',
+formula:'플로이드-워셜:\n  for k in 1..V:\n    for i in 1..V:\n      for j in 1..V:\n        dp[i][j] = min(dp[i][j],\n                       dp[i][k]+dp[k][j])\n\n복잡도: O(V³)  공간: O(V²)\n음수 사이클: 대각선 dp[i][i]<0 체크',
+tip:{title:'플로이드-워셜 vs 다익스트라',text:'다익스트라 V번 = O(V²logV). 플로이드 = O(V³). V≤500이면 플로이드가 코드 단순. 음수 간선 가능. 음수 사이클 있으면 불가.'}}
+
+];
+
+// ── BUILD UI ──────────────────────────────────────────────────
+var jbar=document.getElementById('jbar');
+QS.forEach(function(q,i){
+  var b=document.createElement('button');b.className='jbtn';b.textContent=i+1;b.id='jb'+i;
+  b.onclick=(function(ii){return function(){document.getElementById('q'+ii).scrollIntoView({behavior:'smooth'});};})(i);
+  jbar.appendChild(b);
+});
+
+var ag=document.getElementById('ans-grid');
+QS.forEach(function(q,i){
+  var c=document.createElement('div');c.className='ag-c';
+  var qq=document.createElement('span');qq.className='ag-q';qq.textContent='Q'+String(i+1).padStart(2,'0');
+  var aa=document.createElement('span');aa.className='ag-a';aa.textContent=LBLS[q.ans];
+  var pp=document.createElement('span');pp.className='ag-p';pp.textContent=q.pts+'점';
+  c.appendChild(qq);c.appendChild(aa);c.appendChild(pp);
+  c.onclick=(function(ii){return function(){document.getElementById('q'+ii).scrollIntoView({behavior:'smooth'});};})(i);
+  ag.appendChild(c);
+});
+
+var tocEl=document.getElementById('toc');
+QS.forEach(function(q,i){
+  var li=document.createElement('li');li.className='toc-row';li.id='ti'+i;
+  var n=document.createElement('span');n.className='toc-n';n.textContent=String(i+1).padStart(2,'0');
+  var info=document.createElement('div');info.className='toc-i';
+  var t=document.createElement('div');t.className='toc-t';t.textContent=q.title;
+  var c=document.createElement('div');c.className='toc-c';c.style.color=q.catC;c.textContent=q.cat;
+  info.appendChild(t);info.appendChild(c);
+  var p=document.createElement('span');p.className='toc-p';p.textContent=q.pts+'pt';
+  li.appendChild(n);li.appendChild(info);li.appendChild(p);
+  li.onclick=(function(ii){return function(){document.getElementById('q'+ii).scrollIntoView({behavior:'smooth'});};})(i);
+  tocEl.appendChild(li);
+});
+
+var feed=document.getElementById('feed');
+QS.forEach(function(q,i){
+  var card=document.createElement('article');card.className='qcard';card.id='q'+i;
+
+  var stripe=document.createElement('div');stripe.className='qstripe';stripe.style.background=q.catC;card.appendChild(stripe);
+
+  // head
+  var head=document.createElement('div');head.className='qhead';
+  var numbox=document.createElement('div');numbox.className='qnumbox';numbox.textContent=String(i+1).padStart(2,'0');
+  var hmeta=document.createElement('div');hmeta.className='qheadmeta';
+  var crow=document.createElement('div');crow.className='qcatrow';
+  var catEl=document.createElement('div');catEl.className='qcat';catEl.style.color=q.catC;catEl.style.borderColor=q.catC;catEl.textContent=q.cat;
+  var ptsEl=document.createElement('div');ptsEl.className='qpts';ptsEl.textContent='+'+q.pts+'점';
+  crow.appendChild(catEl);crow.appendChild(ptsEl);
+  var titleEl=document.createElement('div');titleEl.className='qtitle';titleEl.textContent=q.title;
+  hmeta.appendChild(crow);hmeta.appendChild(titleEl);
+  var badge=document.createElement('div');badge.className='qansbadge';
+  var blbl=document.createElement('div');blbl.className='qansbadge-lbl';blbl.textContent='정답';
+  var bval=document.createElement('div');bval.className='qansbadge-val';bval.textContent=LBLS[q.ans]+' '+q.opts[q.ans];
+  badge.appendChild(blbl);badge.appendChild(bval);
+  head.appendChild(numbox);head.appendChild(hmeta);head.appendChild(badge);
+  card.appendChild(head);
+
+  // body
+  var bw=document.createElement('div');bw.className='qbody';
+  var bl=document.createElement('div');bl.className='qbody-lbl';bl.textContent='▸ 문제';
+  var bc=document.createElement('div');bc.innerHTML=q.body;
+  bw.appendChild(bl);bw.appendChild(bc);card.appendChild(bw);
+
+  // options
+  var os=document.createElement('div');os.className='opts-sec';
+  var ol=document.createElement('div');ol.className='opts-lbl';ol.textContent='▸ 선택지';os.appendChild(ol);
+  q.opts.forEach(function(o,oi){
+    var row=document.createElement('div');row.className='opt-row'+(oi===q.ans?' correct':'');
+    var lbl=document.createElement('span');lbl.className='opt-lbl';lbl.textContent=LBLS[oi];
+    var txt=document.createElement('span');txt.className='opt-txt';txt.textContent=o;
+    row.appendChild(lbl);row.appendChild(txt);
+    if(oi===q.ans){var ck=document.createElement('span');ck.className='opt-ck';ck.textContent='✅';row.appendChild(ck);}
+    os.appendChild(row);
+  });
+  card.appendChild(os);
+
+  // explanation
+  var es=document.createElement('div');es.className='expl-sec';
+  var banner=document.createElement('div');banner.className='expl-banner';
+  var eic=document.createElement('div');eic.className='expl-icon';eic.textContent='解';
+  var etl=document.createElement('span');etl.className='expl-title-lbl';etl.textContent='상세 풀이 및 해설';
+  banner.appendChild(eic);banner.appendChild(etl);es.appendChild(banner);
+
+  if(q.concept){
+    var cr=document.createElement('div');cr.className='concept-row';
+    var ct=document.createElement('div');ct.className='concept-tag';ct.textContent=q.concept.key;
+    var cv=document.createElement('div');cv.className='concept-desc';cv.textContent=q.concept.val;
+    cr.appendChild(ct);cr.appendChild(cv);es.appendChild(cr);
+  }
+
+  var atw=document.createElement('div');atw.className='ans-tag-wrap';
+  var at=document.createElement('div');at.className='ans-tag';at.textContent='정답: '+LBLS[q.ans]+' '+q.opts[q.ans];
+  atw.appendChild(at);es.appendChild(atw);
+
+  var eb=document.createElement('div');eb.className='expl-body';
+
+  var d1=document.createElement('div');d1.className='divider';
+  var dt1=document.createElement('span');dt1.className='divider-txt';dt1.textContent='단계별 풀이';
+  d1.appendChild(dt1);eb.appendChild(d1);
+  var ec=document.createElement('div');ec.innerHTML=q.expl;eb.appendChild(ec);
+
+  if(q.formula){
+    var d2=document.createElement('div');d2.className='divider';
+    var dt2=document.createElement('span');dt2.className='divider-txt';dt2.textContent='핵심 공식 & 복잡도';
+    d2.appendChild(dt2);eb.appendChild(d2);
+    var fb=document.createElement('div');fb.className='formula';fb.textContent=q.formula;eb.appendChild(fb);
+  }
+
+  if(q.tip){
+    var d3=document.createElement('div');d3.className='divider';
+    var dt3=document.createElement('span');dt3.className='divider-txt';dt3.textContent='팁 & 응용';
+    d3.appendChild(dt3);eb.appendChild(d3);
+    var tb=document.createElement('div');tb.className='tip';
+    var tt=document.createElement('div');tt.className='tip-t';tt.textContent='💡 '+q.tip.title;
+    var tx=document.createElement('div');tx.textContent=q.tip.text;
+    tb.appendChild(tt);tb.appendChild(tx);eb.appendChild(tb);
+  }
+
+  es.appendChild(eb);card.appendChild(es);feed.appendChild(card);
+});
+
+// Intersection Observer — 점프바 & TOC 자동 하이라이트
+var obs=new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(e.isIntersecting){
+      var i=parseInt(e.target.id.replace('q',''));
+      document.querySelectorAll('.jbtn').forEach(function(b,j){b.classList.toggle('act',j===i);});
+      document.querySelectorAll('.toc-row').forEach(function(t,j){t.classList.toggle('act',j===i);});
+    }
+  });
+},{threshold:0.15,rootMargin:'-76px 0px -60% 0px'});
+document.querySelectorAll('.qcard').forEach(function(el){obs.observe(el);});
+</script>
+</body>
+</html>

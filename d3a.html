@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>논리와 불대수 15문제 — 정답 및 완전 해설</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700;900&family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  --bg:#04080c;--deep:#070d12;--card:#0c1520;--card2:#101e2c;
+  --border:#162030;--border2:#1e3040;--faint:#284060;
+  --muted:#4a7090;--dim:#6a90b0;--text:#c0daf0;--bright:#e0f0ff;
+  --neon:#00e5ff;--neon2:#40f0ff;--green:#00e080;--green2:#40f0a0;
+  --amber:#ffaa00;--amber2:#ffcc40;--rose:#ff4060;--violet:#a060ff;
+  --ok-bg:rgba(0,224,128,.08);--ok-br:#00e080;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;min-height:100vh;line-height:1.8;}
+body::before{content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(0,229,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.025) 1px,transparent 1px);
+  background-size:40px 40px;pointer-events:none;z-index:0;}
+body::after{content:'';position:fixed;inset:0;
+  background:radial-gradient(ellipse 60% 40% at 50% 0%,rgba(0,229,255,.05),transparent);
+  pointer-events:none;z-index:0;}
+
+/* ── SITE HEADER ── */
+.site-hdr{position:sticky;top:0;z-index:100;background:rgba(4,8,12,.94);
+  backdrop-filter:blur(20px);border-bottom:1px solid var(--border2);
+  box-shadow:0 2px 20px rgba(0,229,255,.05);}
+.site-hdr-in{max-width:1180px;margin:0 auto;padding:10px 28px;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.site-brand{display:flex;flex-direction:column;gap:1px;}
+.site-brand-sup{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--faint);}
+.site-brand-title{font-family:'Noto Serif KR',serif;font-size:17px;font-weight:700;color:var(--bright);}
+.site-brand-title span{color:var(--neon);text-shadow:0 0 8px rgba(0,229,255,.4);}
+.jbar{display:flex;gap:3px;flex-wrap:wrap;max-width:500px;}
+.jbtn{width:27px;height:27px;background:var(--card);border:1px solid var(--border2);
+  color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:10px;
+  cursor:pointer;border-radius:2px;transition:all .15s;display:flex;align-items:center;justify-content:center;}
+.jbtn:hover{background:var(--border2);color:var(--text);}
+.jbtn.act{background:var(--neon);border-color:var(--neon);color:var(--bg);font-weight:700;box-shadow:0 0 8px rgba(0,229,255,.4);}
+.site-chips{display:flex;gap:8px;}
+.chip{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--faint);border:1px solid var(--border2);padding:3px 10px;}
+
+/* ── LAYOUT ── */
+.layout{max-width:1180px;margin:0 auto;padding:32px 28px 100px;
+  display:grid;grid-template-columns:260px 1fr;gap:28px;align-items:start;position:relative;z-index:1;}
+
+/* ── SIDEBAR ── */
+.sidebar{position:sticky;top:76px;display:flex;flex-direction:column;gap:14px;}
+.sb{background:var(--card);border:1px solid var(--border2);overflow:hidden;box-shadow:0 0 20px rgba(0,229,255,.04);}
+.sb-hd{background:var(--card2);border-bottom:1px solid var(--border);padding:9px 16px;
+  font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.ans-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border2);}
+.ag-c{background:var(--card);padding:10px 6px;text-align:center;cursor:pointer;transition:background .15s;}
+.ag-c:hover{background:var(--card2);}
+.ag-q{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--faint);display:block;margin-bottom:4px;}
+.ag-a{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:var(--green);display:block;line-height:1;text-shadow:0 0 6px rgba(0,224,128,.3);}
+.ag-p{font-size:9px;color:var(--faint);display:block;margin-top:3px;}
+.sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border2);}
+.sum-c{background:var(--card);padding:14px;text-align:center;}
+.sum-n{font-family:'Noto Serif KR',serif;font-size:26px;font-weight:900;display:block;line-height:1;}
+.sum-l{font-size:10px;color:var(--muted);margin-top:3px;}
+.toc{list-style:none;}
+.toc-row{display:flex;align-items:flex-start;gap:10px;padding:8px 16px;
+  border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s;}
+.toc-row:last-child{border-bottom:none;}
+.toc-row:hover{background:var(--card2);}
+.toc-row.act{background:rgba(0,229,255,.06);}
+.toc-n{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--faint);min-width:22px;}
+.toc-i{flex:1;min-width:0;}
+.toc-t{font-size:12px;color:var(--text);line-height:1.35;}
+.toc-c{font-family:'JetBrains Mono',monospace;font-size:9px;margin-top:1px;}
+.toc-p{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--faint);flex-shrink:0;}
+
+/* ── QUESTION CARDS ── */
+.qfeed{display:flex;flex-direction:column;gap:40px;}
+.qcard{background:var(--card);border:1px solid var(--border2);overflow:hidden;
+  scroll-margin-top:84px;transition:border-color .2s;box-shadow:0 0 16px rgba(0,229,255,.03);}
+.qcard:hover{border-color:var(--faint);}
+.qstripe{height:3px;}
+.qhead{padding:20px 28px 14px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:16px;}
+.qnumbox{font-family:'Noto Serif KR',serif;font-size:58px;font-weight:900;
+  color:var(--border2);line-height:1;min-width:68px;flex-shrink:0;letter-spacing:-3px;}
+.qheadmeta{flex:1;}
+.qcatrow{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.qcat{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;border:1px solid;padding:2px 8px;}
+.qpts{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--amber);border:1px solid var(--amber);padding:2px 8px;}
+.qtitle{font-family:'Noto Serif KR',serif;font-size:20px;font-weight:700;color:var(--bright);line-height:1.3;}
+.qansbadge{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0;}
+.qansbadge-lbl{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--faint);letter-spacing:2px;text-transform:uppercase;}
+.qansbadge-val{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:var(--green);
+  background:var(--ok-bg);border:1px solid var(--ok-br);padding:5px 14px;
+  box-shadow:0 0 8px rgba(0,224,128,.15);}
+
+/* body */
+.qbody{padding:20px 28px;border-bottom:1px solid var(--border);font-size:14.5px;line-height:2;color:var(--text);}
+.qbody-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--faint);margin-bottom:10px;}
+.qbody p{margin-bottom:10px;}.qbody p:last-child{margin-bottom:0;}
+.qbody strong{color:var(--neon2);}
+.qbody em{color:var(--amber);font-style:normal;font-weight:700;}
+.scene{background:var(--card2);border:1px solid var(--border2);border-left:3px solid var(--amber);padding:14px 18px;margin:12px 0;font-size:14px;line-height:2;}
+.scene-t{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--amber);margin-bottom:7px;font-weight:700;}
+.ttable{border-collapse:collapse;margin:12px 0;font-size:13.5px;}
+.ttable th{background:rgba(0,229,255,.08);border:1px solid var(--border2);padding:7px 16px;
+  font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1px;color:var(--neon);text-align:center;}
+.ttable td{border:1px solid var(--border);padding:7px 16px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:13px;}
+.ttable td.t{color:var(--green);font-weight:700;}
+.ttable td.f{color:var(--rose);font-weight:700;}
+
+/* options */
+.opts-sec{padding:16px 28px;border-bottom:1px solid var(--border);}
+.opts-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--faint);margin-bottom:8px;}
+.opt-row{display:flex;align-items:flex-start;gap:12px;padding:10px 14px;margin-bottom:6px;border:1px solid var(--border2);font-size:13.5px;line-height:1.7;font-family:'JetBrains Mono',monospace;}
+.opt-row:last-child{margin-bottom:0;}
+.opt-row.correct{border-color:var(--ok-br);background:var(--ok-bg);}
+.opt-lbl{font-size:12px;font-weight:700;color:var(--faint);min-width:22px;padding-top:1px;flex-shrink:0;}
+.opt-row.correct .opt-lbl{color:var(--green);}
+.opt-txt{color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:13.5px;}
+.opt-ck{margin-left:auto;font-size:16px;flex-shrink:0;}
+
+/* explanation */
+.expl-sec{padding:0;}
+.expl-banner{background:rgba(0,0,0,.4);border-bottom:1px solid var(--border);
+  padding:11px 22px;margin:0 28px;display:flex;align-items:center;gap:12px;}
+.expl-icon{width:30px;height:30px;border:1px solid var(--neon);display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--neon);flex-shrink:0;
+  box-shadow:0 0 8px rgba(0,229,255,.2);}
+.expl-title-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.concept-row{background:rgba(160,96,255,.06);border-bottom:1px solid var(--border);
+  padding:10px 28px;display:flex;align-items:flex-start;gap:10px;}
+.concept-tag{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--violet);border:1px solid var(--violet);padding:2px 10px;white-space:nowrap;flex-shrink:0;margin-top:2px;}
+.concept-desc{font-size:13px;color:var(--muted);line-height:1.75;}
+.ans-tag-wrap{padding:0 28px;}
+.ans-tag{display:inline-block;background:var(--ok-bg);border:1px solid var(--ok-br);
+  color:var(--green);font-family:'JetBrains Mono',monospace;
+  font-size:12px;padding:5px 16px;margin-top:16px;font-weight:600;
+  box-shadow:0 0 8px rgba(0,224,128,.15);}
+.expl-body{padding:20px 28px 26px;font-size:14px;line-height:2;color:var(--dim);}
+.expl-body p{margin-bottom:10px;}.expl-body p:last-child{margin-bottom:0;}
+.expl-body strong{color:var(--neon2);}
+.divider{display:flex;align-items:center;gap:12px;margin:14px 0;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border);}
+.divider-txt{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--faint);text-transform:uppercase;white-space:nowrap;}
+.step{font-family:'JetBrains Mono',monospace;background:#020508;
+  border:1px solid var(--border2);border-left:3px solid var(--violet);
+  padding:16px 20px;margin:12px 0;font-size:12.5px;line-height:1.95;
+  white-space:pre-wrap;overflow-x:auto;color:#90c0e0;}
+.formula{background:rgba(0,229,255,.06);border:1px solid rgba(0,229,255,.2);border-left:3px solid var(--neon);
+  padding:14px 18px;margin:12px 0;font-family:'JetBrains Mono',monospace;
+  font-size:13px;line-height:1.9;color:var(--neon2);white-space:pre-wrap;}
+.tip{background:rgba(255,170,0,.06);border-left:3px solid var(--amber);
+  padding:11px 16px;margin:12px 0;font-size:13px;line-height:1.75;color:var(--muted);}
+.tip-t{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--amber);margin-bottom:4px;font-weight:700;}
+
+/* responsive */
+@media(max-width:960px){.layout{grid-template-columns:1fr;}.sidebar{position:static;}.jbar,.site-chips{display:none;}}
+@media(max-width:600px){.qhead{flex-direction:column;}.qnumbox{font-size:38px;}.qbody,.expl-body{padding:16px;}.opts-sec{padding:12px 16px;}.expl-banner,.concept-row,.ans-tag-wrap{padding-left:16px;padding-right:16px;}.expl-banner{margin:0 16px;}}
+</style>
+</head>
+<body>
+
+<div class="site-hdr">
+  <div class="site-hdr-in">
+    <div class="site-brand">
+      <span class="site-brand-sup">KOI 중등부 · 논리와 불대수 특강</span>
+      <div class="site-brand-title">정답 및 <span>완전 해설</span></div>
+    </div>
+    <div class="jbar" id="jbar"></div>
+    <div class="site-chips"><div class="chip">15문항</div><div class="chip">150점</div></div>
+  </div>
+</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sb">
+      <div class="sb-hd">📊 배점 요약</div>
+      <div class="sum-grid">
+        <div class="sum-c"><span class="sum-n" style="color:var(--neon)">150</span><div class="sum-l">총 배점</div></div>
+        <div class="sum-c"><span class="sum-n" style="color:var(--amber)">15</span><div class="sum-l">총 문항</div></div>
+        <div class="sum-c"><span class="sum-n" style="color:var(--green)">8~12</span><div class="sum-l">문항 배점</div></div>
+        <div class="sum-c"><span class="sum-n" style="color:var(--rose)">60</span><div class="sum-l">제한(분)</div></div>
+      </div>
+    </div>
+    <div class="sb"><div class="sb-hd">✅ 정답 한눈에</div><div class="ans-grid" id="ans-grid"></div></div>
+    <div class="sb"><div class="sb-hd">📋 문제 목록</div><ul class="toc" id="toc"></ul></div>
+  </aside>
+  <main><div class="qfeed" id="feed"></div></main>
+</div>
+
+<script>
+var LBLS=['①','②','③','④','⑤'];
+
+// ══════════════════════════════════════════════════════════════
+// 15문제 완전 해설 — 논리와 불대수
+// ══════════════════════════════════════════════════════════════
+var QS=[
+{id:1,pts:8,cat:'진리표·기본',catC:'#00e5ff',
+title:'논리 연산의 진리표 완성',
+ans:0,opts:['(0,0)과 (1,1)','(0,1)과 (1,0)','(0,0)만','(1,1)만','모든 경우에서 1'],
+body:'<p>두 논리 변수 A, B에 대해 논리식 <strong>F = A·B + A\'·B\'</strong>의 진리표를 완성하시오.<br>(A\'= NOT A, · = AND, + = OR)</p><p>F의 값이 1이 되는 (A, B) 조합을 모두 고른 것은?</p>',
+concept:{key:'AND·OR·NOT 기본 연산',val:'A·B: 둘 다 1일 때만 1. A\'·B\': 둘 다 0일 때만 1. 두 항을 OR로 합산.'},
+expl:'<div class="step">F = A·B + A\'·B\' 항별 계산:\n\nA=0,B=0: (0·0) + (1·1) = 0+1 = 1  ✓\nA=0,B=1: (0·1) + (1·0) = 0+0 = 0\nA=1,B=0: (1·0) + (0·1) = 0+0 = 0\nA=1,B=1: (1·1) + (0·0) = 1+0 = 1  ✓\n\nF=1인 경우: (0,0)과 (1,1)</div>',
+formula:'F = A·B + A\'·B\'\n= XNOR(A, B)  (동치 연산)\n→ 두 입력이 같을 때만 출력 1',
+tip:{title:'XNOR = 동치 연산',text:'A XNOR B = A·B + A\'·B\'. 두 입력이 같으면 1, 다르면 0. XOR(A⊕B)의 보수: F = (A⊕B)\'.'}},
+
+{id:2,pts:8,cat:'드모르간 법칙',catC:'#a060ff',
+title:'드모르간 법칙으로 변환',
+ans:0,opts:['(A + B\')·C\'','(A·B\') + C','A\'·B·C','A·B\' + C\'','(A + B\')·C'],
+body:'<p>드모르간의 법칙(De Morgan\'s Law)을 적용하여 논리식 <strong>F = (A\'·B + C)\'</strong>을 변환하시오.</p>',
+concept:{key:'드모르간 법칙 2단계 적용',val:'(X+Y)\'=X\'·Y\'. (X·Y)\'=X\'+Y\'. 원식 (A\'B+C)\'= (A\'B)\'·C\'= (A+B\')·C\'.'},
+expl:'<div class="step">F = (A\'·B + C)\'\n\n[1단계] 드모르간 법칙 1 적용:\n  (X + Y)\' = X\'·Y\'  where X=A\'·B, Y=C\n  → (A\'·B)\' · C\'\n\n[2단계] 드모르간 법칙 2로 (A\'·B)\' 전개:\n  (X·Y)\' = X\' + Y\'  where X=A\', Y=B\n  → (A\')\' + B\' = A + B\'\n\n[최종] F = (A + B\') · C\'</div>',
+formula:'(A\'B+C)\' = (A\'B)\'·C\' = (A+B\')·C\'',
+tip:{title:'드모르간 기억법',text:'(AND)\'→OR로, (OR)\'→AND로. 변환 방향: 연산자 반전 + 각 변수 부정. NAND/NOR 게이트가 이 법칙의 하드웨어 구현.'}},
+
+{id:3,pts:8,cat:'불대수 단순화',catC:'#00e080',
+title:'불 대수 인수분해와 흡수',
+ans:0,opts:['A·(B + C)','A·B + A·C','A·B·C','A + B·C','A\'·B + A·C'],
+body:'<p>논리식 <strong>F = A·B·C + A·B·C\' + A·B\'·C</strong>를 불 대수로 최소화하시오.</p>',
+concept:{key:'인수분해 + 흡수 법칙',val:'공통 인수 A 묶기 → A·(BC+BC\'+B\'C). 괄호 안: BC+BC\'=B, B+B\'C=B+C.'},
+expl:'<div class="step">F = A·B·C + A·B·C\' + A·B\'·C\n\n[Step 1] 공통 인수 A 묶기:\n  F = A · (B·C + B·C\' + B\'·C)\n\n[Step 2] 괄호 안 단순화:\n  B·C + B·C\' = B·(C + C\') = B·1 = B\n  B + B\'·C = B + C  ← 흡수 법칙\n\n[결과] F = A·(B + C)</div>',
+formula:'흡수 법칙: A + A\'·B = A + B\n증명: (A+A\')(A+B) = 1·(A+B) = A+B',
+tip:{title:'흡수 법칙 암기',text:'X + X\'·Y = X + Y. 카르노 맵에서 묶음이 하나 더 흡수되는 현상과 동일. SOP 최소화의 핵심 도구.'}},
+
+{id:4,pts:10,cat:'카르노 맵·2변수',catC:'#ffaa00',
+title:'2변수 카르노 맵 최소화',
+ans:0,opts:['B\'','A\'','A + B\'','A\'·B\'','A XOR B'],
+body:'<p>2변수 카르노 맵이 아래와 같다. F=1인 셀을 묶어 최소 표현을 구하시오.</p><table class="ttable"><tr><th>A \\ B</th><th>0</th><th>1</th></tr><tr><td>0</td><td class="t">1</td><td class="f">0</td></tr><tr><td>1</td><td class="t">1</td><td class="f">0</td></tr></table>',
+concept:{key:'카르노 맵 기초',val:'B=0인 열 전체가 1. A가 0,1 모두 등장 → A 소거. 공통 변수 B=0(→B\')만 남음.'},
+expl:'<div class="step">F=1인 셀:\n  (A=0, B=0): A\'B\'\n  (A=1, B=0): AB\'\n\n두 셀 묶기 (B=0 열 전체, 2개):\n  A: 0과 1 모두 등장 → A 소거\n  B: 항상 0 고정  → B\'\n\nF = B\'\n\n검증:\n  B=0이면 F=1 ✓\n  B=1이면 F=0 ✓</div>',
+formula:'2개 묶음 → 1개 변수만 남음\n4개 묶음 → 0개 (상수 F=1)\n인접 기준: 한 비트만 다름 (그레이 코드 순서)',
+tip:{title:'카르노 맵 크기 원리',text:'묶음 크기 2^k개 → k개 변수 소거. 2개=1개 소거, 4개=2개 소거, 8개=3개 소거. 묶음은 클수록 좋다.'}},
+
+{id:5,pts:10,cat:'카르노 맵·3변수',catC:'#ffaa00',
+title:'3변수 카르노 맵',
+ans:0,opts:['C\'','A\'·C\'','B·C\'','A·C','A XOR C'],
+body:'<p>F(A,B,C) = Σm(0, 2, 4, 6) — 짝수 번호 민텀 전부. 최소화하시오.</p>',
+concept:{key:'민텀 번호 패턴 인식',val:'민텀 0,2,4,6은 모두 C=0. A,B는 0과 1 모두 등장 → 소거. F=C\'.'},
+expl:'<div class="step">민텀 번호 → 이진수 변환:\n  m0: ABC = 000 → C=0\n  m2: ABC = 010 → C=0\n  m4: ABC = 100 → C=0\n  m6: ABC = 110 → C=0\n\n공통점: C는 항상 0, A와 B는 0·1 모두 등장\n  → A, B 소거\n  → F = C\'\n\n카르노 맵 확인:\n  C=0인 열 전체(4셀) 묶음 → C\' 하나만 남음</div>',
+formula:'Σm(0,2,4,6) = C\'\nΣm(1,3,5,7) = C\nΣm(0,1,2,3) = A\'\nΣm(4,5,6,7) = A',
+tip:{title:'민텀 패턴 암기',text:'짝수 번호 전부 = 마지막 변수(C)=0 → C\'. 홀수 번호 전부 = C=1 → C. 상위 절반 = A=1 → A. 하위 절반 = A=0 → A\'.'}},
+
+{id:6,pts:10,cat:'NAND·완전성',catC:'#00e5ff',
+title:'NAND 게이트로 OR 구현',
+ans:0,opts:['NAND(NAND(A,A), NAND(B,B))','NAND(A, B)','NAND(NAND(A,B), NAND(A,B))','NAND(A, NAND(B,B))','NAND(NAND(A,A), B)'],
+body:'<p>NAND(A,B) = (A·B)\' = A\' + B\' 게이트만을 사용하여 <strong>OR(A, B) = A + B</strong>를 구현하시오.</p>',
+concept:{key:'NAND 완전 함수 집합',val:'A+B=(A\'·B\')\'(드모르간). A\'=NAND(A,A). (A\'·B\')\'=NAND(A\',B\')=NAND(NAND(A,A),NAND(B,B)).'},
+expl:'<div class="step">드모르간 법칙으로 분해:\n  A + B = (A\'·B\')\'\n\n각 부분을 NAND로 구현:\n  A\' = NAND(A, A)  ← 두 입력을 묶으면 NOT\n  B\' = NAND(B, B)\n  (A\'·B\')\'= NAND(A\', B\')\n\n최종 회로:\n  A + B = NAND( NAND(A,A), NAND(B,B) )\n\n검증 (A=0, B=1):\n  A\'=NAND(0,0)=(0·0)\'=1\n  B\'=NAND(1,1)=(1·1)\'=0\n  NAND(1,0)=(1·0)\'=0\'=1 = 0+1 ✓\n\n검증 (A=1, B=1):\n  A\'=0, B\'=0\n  NAND(0,0)=1 = 1+1 ✓</div>',
+formula:'NAND 완전 집합:\n  NOT(A)   = NAND(A,A)\n  AND(A,B) = NAND(NAND(A,B), NAND(A,B))\n  OR(A,B)  = NAND(NAND(A,A), NAND(B,B))',
+tip:{title:'왜 NAND/NOR만으로 충분?',text:'반도체 공정에서 NAND/NOR 게이트가 구현이 간단하고 속도가 빠름. CMOS 회로는 기본적으로 NAND/NOR 기반으로 설계됨.'}},
+
+{id:7,pts:10,cat:'XOR 게이트',catC:'#a060ff',
+title:'XOR 게이트의 성질',
+ans:2,opts:['A⊕0 = A','A⊕A = 0','A⊕1 = A  (잘못된 설명)','A⊕B = B⊕A','(A⊕B)⊕C = A⊕(B⊕C)'],
+body:'<p>XOR(A,B) = A⊕B = A\'·B + A·B\' 에 대한 설명 중 <strong>옳지 않은</strong> 것은?</p>',
+concept:{key:'XOR 기본 성질 5가지',val:'A⊕0=A, A⊕1=A\'(NOT), A⊕A=0, A⊕A\'=1, 교환·결합법칙 성립.'},
+expl:'<div class="step">각 선택지 진리표로 검증:\n\n① A⊕0:\n  0⊕0=0 (=A), 1⊕0=1 (=A) → A ✓\n\n② A⊕A:\n  0⊕0=0, 1⊕1=0 → 항상 0 ✓\n\n③ A⊕1 = A 라고 주장:\n  0⊕1=1 ≠ 0 (A=0인데 1이 나옴) ✗\n  1⊕1=0 ≠ 1 (A=1인데 0이 나옴) ✗\n  실제: A⊕1 = A\' (NOT A) → ③이 틀림!\n\n④ A⊕B = B⊕A: XOR 교환법칙 ✓\n\n⑤ (A⊕B)⊕C = A⊕(B⊕C): XOR 결합법칙 ✓</div>',
+formula:'XOR 5가지 성질:\n  A⊕0  = A       (항등원)\n  A⊕1  = A\'      (반전)\n  A⊕A  = 0       (자기소거)\n  A⊕A\' = 1       (항상 1)\n  A⊕B  = B⊕A    (교환법칙)',
+tip:{title:'XOR 암호화',text:'동일 키 K로 두 번 XOR: (A⊕K)⊕K = A⊕(K⊕K) = A⊕0 = A. 원래 값 복원. 대칭키 암호화의 기본 원리.'}},
+
+{id:8,pts:10,cat:'불대수 분배법칙',catC:'#00e080',
+title:'OR 기준 분배법칙',
+ans:0,opts:['A + B·C','A·B + A·C','A·(B+C)','A + B + C','A·B·C'],
+body:'<p>논리식 <strong>F = (A + B)·(A + C)</strong>를 불 대수 분배법칙으로 단순화하시오.</p>',
+concept:{key:'불 대수 OR 기준 분배법칙',val:'A+(B·C)=(A+B)·(A+C). 역방향 적용: (A+B)·(A+C)=A+B·C.'},
+expl:'<div class="step">F = (A+B)·(A+C)\n\n[방법 1] OR 기준 분배법칙 역방향:\n  X+(Y·Z) = (X+Y)·(X+Z)\n  역: (A+B)·(A+C) = A + B·C\n\n[방법 2] 직접 전개 검증:\n  = A·A + A·C + B·A + B·C\n  = A   + A·C + A·B + B·C\n  = A(1+C+B) + B·C\n  = A·1      + B·C  (1+C+B=1)\n  = A + B·C  ✓\n\n검증 진리표:\n  A=0,B=1,C=1: (1)(1)=1, 0+1=1 ✓\n  A=0,B=0,C=1: (0)(1)=0, 0+0=0 ✓\n  A=1,B=0,C=0: (1)(1)=1, 1+0=1 ✓</div>',
+formula:'AND 기준: A·(B+C) = A·B + A·C\nOR 기준:  A+(B·C) = (A+B)·(A+C)\n\nOR 기준 역방향:\n  (A+B)·(A+C) = A + B·C',
+tip:{title:'OR 분배법칙 활용',text:'POS(최대항의 곱) 형태를 SOP(최소항의 합)로 변환할 때 사용. 카르노 맵의 0 묶기와 연결됨.'}},
+
+{id:9,pts:10,cat:'반가산기',catC:'#00e5ff',
+title:'반가산기 논리식',
+ans:0,opts:['Sum = A⊕B, Carry = A·B','Sum = A+B, Carry = A·B','Sum = A·B, Carry = A+B','Sum = A⊕B, Carry = A+B','Sum = A+B, Carry = A⊕B'],
+body:'<p>1비트 반가산기(Half Adder): 두 비트 A, B를 더해 합(Sum)과 올림수(Carry)를 출력한다.</p><table class="ttable"><tr><th>A</th><th>B</th><th>Sum</th><th>Carry</th></tr><tr><td>0</td><td>0</td><td class="f">0</td><td class="f">0</td></tr><tr><td>0</td><td>1</td><td class="t">1</td><td class="f">0</td></tr><tr><td>1</td><td>0</td><td class="t">1</td><td class="f">0</td></tr><tr><td>1</td><td>1</td><td class="f">0</td><td class="t">1</td></tr></table><p>Sum과 Carry의 올바른 논리식은?</p>',
+concept:{key:'반가산기 = XOR + AND',val:'Sum: 두 입력이 다를 때 1 → XOR. Carry: 둘 다 1일 때만 올림 발생 → AND.'},
+expl:'<div class="step">Sum 진리표 분석:\n  (0,0)→0, (0,1)→1, (1,0)→1, (1,1)→0\n  → XOR 진리표와 일치 → Sum = A⊕B\n\nCarry 진리표 분석:\n  (0,0)→0, (0,1)→0, (1,0)→0, (1,1)→1\n  → AND 진리표와 일치 → Carry = A·B\n\n반가산기 구현:\n  Sum:   XOR 게이트 1개\n  Carry: AND 게이트 1개\n  총 2개의 기본 게이트</div>',
+formula:'반가산기:\n  Sum   = A ⊕ B\n  Carry = A · B\n\n전가산기 (Cin 포함):\n  Sum   = A ⊕ B ⊕ Cin\n  Cout  = A·B + (A⊕B)·Cin',
+tip:{title:'전가산기 구성',text:'전가산기 = 반가산기 2개 + OR 게이트 1개. n비트 가산기는 전가산기를 체인으로 연결(리플 캐리). 고속 가산기는 캐리 선행(carry look-ahead) 사용.'}},
+
+{id:10,pts:10,cat:'민텀·SOP 최소화',catC:'#a060ff',
+title:'최소항의 합(SOP) 최소화',
+ans:0,opts:['A·B + A·C + B·C','A + B·C','A·B·C','A·C + B','B + A·C'],
+body:'<p>F(A,B,C) = Σm(3, 5, 6, 7)을 카르노 맵으로 최소화하시오.<br>민텀: m3=011, m5=101, m6=110, m7=111</p>',
+concept:{key:'3변수 카르노 맵 묶기',val:'m6·m7 → A·B. m5·m7 → A·C. m3·m7 → B·C. 세 묶음의 합.'},
+expl:'<div class="step">3변수 카르노 맵 배치 (그레이 코드 순서):\n       BC\n  A  | 00 | 01 | 11 | 10 |\n  0  |  0 |  0 |  1 |  0 |\n  1  |  0 |  1 |  1 |  1 |\n\n(자리: m0,m1,m3,m2 / m4,m5,m7,m6)\n\n묶음 찾기:\n  [묶음1] m6,m7 (AB=10,11, C무관): A·B\n  [묶음2] m5,m7 (A=1, BC=01,11):   A·C\n  [묶음3] m3,m7 (B=1, AC=01,11):   B·C\n\n모든 1 커버:\n  m3: B·C로 커버\n  m5: A·C로 커버\n  m6: A·B로 커버\n  m7: 세 묶음 모두\n\nF = A·B + A·C + B·C</div>',
+formula:'다수결 함수 (Majority Function):\n  F = A·B + A·C + B·C\n  세 입력 중 2개 이상 1이면 출력 1',
+tip:{title:'다수결 함수 응용',text:'투표 회로, RAID 오류 검출, 중복 시스템(triple redundancy). n개 중 ⌈n/2⌉개 이상이 동의하면 출력 1.'}},
+
+{id:11,pts:10,cat:'NOR·완전성',catC:'#00e5ff',
+title:'NOR 게이트로 AND 구현',
+ans:0,opts:['NOR(NOR(A,A), NOR(B,B))','NOR(A, B)','NOR(NOR(A,B), NOR(A,B))','NOR(A, NOR(B,B))','NOR(NOR(A,A), B)'],
+body:'<p>NOR(A,B) = (A+B)\' 게이트만을 사용하여 <strong>AND(A, B) = A·B</strong>를 구현하시오.</p>',
+concept:{key:'NOR 완전 함수 집합',val:'A·B=(A\'+B\')\' (드모르간). A\'=NOR(A,A). NOR(A\',B\')=(A\'+B\')\'=A·B.'},
+expl:'<div class="step">드모르간 법칙으로 분해:\n  A·B = (A\' + B\')\'\n\n각 부분을 NOR로 구현:\n  A\' = NOR(A, A)  ← NOR(A,A)=(A+A)\'=A\'\n  B\' = NOR(B, B)\n  (A\'+B\')\'= NOR(A\', B\')\n\n최종 회로:\n  A·B = NOR( NOR(A,A), NOR(B,B) )\n\n검증 (A=1, B=1):\n  A\'=NOR(1,1)=(1+1)\'=0\n  B\'=NOR(1,1)=0\n  NOR(0,0)=(0+0)\'=1 = 1·1 ✓\n\n검증 (A=0, B=1):\n  A\'=NOR(0,0)=1, B\'=NOR(1,1)=0\n  NOR(1,0)=(1+0)\'=0 = 0·1 ✓</div>',
+formula:'NOR 완전 집합:\n  NOT(A)   = NOR(A,A)\n  OR(A,B)  = NOR(NOR(A,B), NOR(A,B))\n  AND(A,B) = NOR(NOR(A,A), NOR(B,B))',
+tip:{title:'NAND vs NOR 완전성',text:'NAND와 NOR 둘 다 완전 함수 집합. CMOS: NAND가 더 효율적. NOR는 NAND의 쌍대(dual). 설계 편의상 주로 NAND 사용.'}},
+
+{id:12,pts:10,cat:'불대수 오류 찾기',catC:'#00e080',
+title:'잘못된 불 대수 법칙 찾기',
+ans:2,opts:['A + A·B = A','A·(A\' + B) = A·B','A + A\' = 0','(A·B)\' = A\' + B\'','A ⊕ A = 0'],
+body:'<p>다음 불 대수 항등식 중 <strong>틀린 것</strong>을 찾아라.</p>',
+concept:{key:'보수 법칙',val:'A+A\'=1 (항상 참). A·A\'=0 (항상 거짓). ③은 0이라고 잘못 표기.'},
+expl:'<div class="step">각 선택지 검증:\n\n① A + A·B = A:\n  = A·(1+B) = A·1 = A ✓ (흡수 법칙)\n\n② A·(A\' + B) = A·B:\n  = A·A\' + A·B = 0 + A·B = A·B ✓\n\n③ A + A\' = 0 이라 주장:\n  A=0: 0+1=1 ≠ 0 ✗\n  A=1: 1+0=1 ≠ 0 ✗\n  → 실제: A + A\' = 1 (보수 법칙) ← 틀림!\n\n④ (A·B)\' = A\' + B\':\n  드모르간 법칙 ✓\n\n⑤ A ⊕ A = 0:\n  0⊕0=0, 1⊕1=0 → 항상 0 ✓</div>',
+formula:'불 대수 보수 법칙:\n  A + A\' = 1  (OR → 항상 1)\n  A · A\' = 0  (AND → 항상 0)\n\n불 대수 항등 법칙:\n  A + 0 = A,  A + 1 = 1\n  A · 1 = A,  A · 0 = 0',
+tip:{title:'불 대수 기본 법칙 체계',text:'멱등: A+A=A, A·A=A. 보수: A+A\'=1, A·A\'=0. 항등: A+0=A, A·1=A. 영화: A+1=1, A·0=0. 이 8가지가 핵심.'}},
+
+{id:13,pts:12,cat:'카르노 맵·4변수',catC:'#ffaa00',
+title:'4변수 카르노 맵 최소화',
+ans:0,opts:['B\'','A\'·B\'','A·B','A XNOR B','A\' + B\''],
+body:'<p>F(A,B,C,D) = Σm(0,1,2,3,8,9,10,11) — AB=00과 AB=10인 행 전체가 1.</p><table class="ttable"><tr><th>AB\\CD</th><th>00</th><th>01</th><th>11</th><th>10</th></tr><tr><td>00</td><td class="t">1</td><td class="t">1</td><td class="t">1</td><td class="t">1</td></tr><tr><td>01</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>11</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>10</td><td class="t">1</td><td class="t">1</td><td class="t">1</td><td class="t">1</td></tr></table>',
+concept:{key:'4변수 맵 8셀 묶음',val:'AB=00행(4셀)+AB=10행(4셀) = 8셀. A·C·D 모두 소거 → B=0만 남음 → B\'.'},
+expl:'<div class="step">F=1인 셀 분석:\n  AB=00행: m0(0000),m1(0001),m3(0011),m2(0010) → 4셀\n  AB=10행: m8(1000),m9(1001),m11(1011),m10(1010) → 4셀\n  총 8셀\n\n두 행 묶기 (8개 묶음):\n  A: AB=00(A=0)과 AB=10(A=1) → A 소거\n  B: 두 행 모두 B=0 → B\' 유지!\n  C,D: 0과 1 모두 → 소거\n\nF = B\'\n\n직관적 해석:\n  B=0인 행 전체(AB=00, AB=10) → B\'</div>',
+formula:'4변수 맵 묶음 크기:\n  1셀  → 4변수 항\n  2셀  → 3변수 항\n  4셀  → 2변수 항\n  8셀  → 1변수 항\n  16셀 → 상수 1',
+tip:{title:'4변수 맵 인접 주의',text:'AB=00과 AB=10은 인접! 그레이 코드 순서: 00→01→11→10. 맵의 위아래 가장자리, 좌우 가장자리도 인접으로 처리.'}},
+
+{id:14,pts:12,cat:'멀티플렉서 MUX',catC:'#00e5ff',
+title:'2:1 MUX 함수 구현',
+ans:0,opts:['A·B','A + B','A⊕B','A\'·B','A·B + A\''],
+body:'<p>2:1 멀티플렉서(MUX) 논리식: <strong>Y = S\'·I0 + S·I1</strong> (S: 선택 신호)</p><div class="scene"><div class="scene-t">🔀 입력 연결</div><p>S = A &nbsp;&nbsp; I0 = 0 &nbsp;&nbsp; I1 = B</p></div><p>출력 Y는?</p>',
+concept:{key:'MUX 함수 직접 대입',val:'Y=S\'·I0+S·I1에 S=A, I0=0, I1=B 대입: Y=A\'·0+A·B=0+AB=AB.'},
+expl:'<div class="step">Y = S\'·I0 + S·I1\n\nS=A, I0=0, I1=B 대입:\n  Y = A\'·0 + A·B\n    = 0   + A·B\n    = A·B\n\n동작 원리:\n  A=0 (S=0): I0=0을 출력 → Y=0 = 0·B ✓\n  A=1 (S=1): I1=B를 출력 → Y=B = 1·B ✓\n\n결론: 이 MUX 설정은 AND 게이트와 동일!</div>',
+formula:'2:1 MUX 범용성:\n  I0=0, I1=B, S=A → Y=A·B  (AND)\n  I0=1, I1=B, S=A → Y=A\'+B  (A→B)\n  I0=B, I1=B\',S=A → Y=A⊕B (XOR)\n  I0=B\',I1=B, S=A → Y=A⊙B (XNOR)',
+tip:{title:'MUX = 범용 논리 소자',text:'2:1 MUX로 AND, OR, NOT, XOR 등 모든 기본 게이트 구현 가능. 4:1 MUX 하나로 임의의 3변수 함수 구현.'}},
+
+{id:15,pts:12,cat:'패리티 검사기',catC:'#a060ff',
+title:'3비트 짝수 패리티 생성기',
+ans:0,opts:['A⊕B⊕C','A·B·C','A + B + C','A\'⊕B⊕C','(A+B+C)\''],
+body:'<p>3비트 데이터 A,B,C에 짝수 패리티 비트 P를 추가한다. 4비트 전체(A,B,C,P)의 1의 개수가 짝수가 되도록 P를 결정하시오.</p><div class="scene"><div class="scene-t">🔍 짝수 패리티 조건</div><p>A,B,C의 1 개수가 홀수 → P=1 (짝수로 만들기)<br>A,B,C의 1 개수가 짝수 → P=0 (이미 짝수)</p></div><p>패리티 비트 P의 논리식은?</p>',
+concept:{key:'패리티 = XOR 연쇄',val:'전체 XOR=0이 되려면 P=A⊕B⊕C. XOR은 1의 개수의 홀짝을 계산.'},
+expl:'<div class="step">짝수 패리티 조건:\n  A⊕B⊕C⊕P = 0\n  → P = A⊕B⊕C\n\n각 경우 검증:\n  A=0,B=0,C=0: 0⊕0⊕0=0 → P=0, 전체 1수=0 (짝수) ✓\n  A=1,B=0,C=0: 1⊕0⊕0=1 → P=1, 전체 1수=2 (짝수) ✓\n  A=1,B=1,C=0: 1⊕1⊕0=0 → P=0, 전체 1수=2 (짝수) ✓\n  A=1,B=1,C=1: 1⊕1⊕1=1 → P=1, 전체 1수=4 (짝수) ✓\n\n패리티 검사:\n  수신측에서 A⊕B⊕C⊕P=0이면 오류 없음\n  =1이면 1비트 오류 발생</div>',
+formula:'짝수 패리티 생성기: P = A⊕B⊕C\n홀수 패리티 생성기: P = (A⊕B⊕C)\'= A⊙B⊙C\n\nn비트 패리티: P = b₁⊕b₂⊕...⊕bₙ',
+tip:{title:'패리티 비트 한계',text:'1비트 오류만 탐지 가능 (수정 불가). 2비트 동시 오류는 탐지 불가. 수정까지 하려면 해밍 코드(Hamming Code) 사용.'}},
+];
+
+// ── BUILD UI ──────────────────────────────────────────────────
+// Jump bar
+var jbar=document.getElementById('jbar');
+QS.forEach(function(q,i){
+  var b=document.createElement('button');
+  b.className='jbtn';b.textContent=i+1;b.id='jb'+i;
+  b.onclick=(function(ii){return function(){document.getElementById('q'+ii).scrollIntoView({behavior:'smooth'});};})(i);
+  jbar.appendChild(b);
+});
+
+// Answer grid
+var ag=document.getElementById('ans-grid');
+QS.forEach(function(q,i){
+  var c=document.createElement('div');c.className='ag-c';
+  var qq=document.createElement('span');qq.className='ag-q';qq.textContent='Q'+String(i+1).padStart(2,'0');
+  var aa=document.createElement('span');aa.className='ag-a';aa.textContent=LBLS[q.ans];
+  var pp=document.createElement('span');pp.className='ag-p';pp.textContent=q.pts+'점';
+  c.appendChild(qq);c.appendChild(aa);c.appendChild(pp);
+  c.onclick=(function(ii){return function(){document.getElementById('q'+ii).scrollIntoView({behavior:'smooth'});};})(i);
+  ag.appendChild(c);
+});
+
+// TOC
+var tocEl=document.getElementById('toc');
+QS.forEach(function(q,i){
+  var li=document.createElement('li');li.className='toc-row';li.id='ti'+i;
+  var n=document.createElement('span');n.className='toc-n';n.textContent=String(i+1).padStart(2,'0');
+  var info=document.createElement('div');info.className='toc-i';
+  var t=document.createElement('div');t.className='toc-t';t.textContent=q.title;
+  var c=document.createElement('div');c.className='toc-c';c.style.color=q.catC;c.textContent=q.cat;
+  info.appendChild(t);info.appendChild(c);
+  var p=document.createElement('span');p.className='toc-p';p.textContent=q.pts+'pt';
+  li.appendChild(n);li.appendChild(info);li.appendChild(p);
+  li.onclick=(function(ii){return function(){document.getElementById('q'+ii).scrollIntoView({behavior:'smooth'});};})(i);
+  tocEl.appendChild(li);
+});
+
+// Question cards
+var feed=document.getElementById('feed');
+QS.forEach(function(q,i){
+  var card=document.createElement('article');card.className='qcard';card.id='q'+i;
+
+  // stripe
+  var stripe=document.createElement('div');stripe.className='qstripe';stripe.style.background=q.catC;card.appendChild(stripe);
+
+  // head
+  var head=document.createElement('div');head.className='qhead';
+  var numbox=document.createElement('div');numbox.className='qnumbox';numbox.textContent=String(i+1).padStart(2,'0');
+  var hmeta=document.createElement('div');hmeta.className='qheadmeta';
+  var crow=document.createElement('div');crow.className='qcatrow';
+  var catEl=document.createElement('div');catEl.className='qcat';catEl.style.color=q.catC;catEl.style.borderColor=q.catC;catEl.textContent=q.cat;
+  var ptsEl=document.createElement('div');ptsEl.className='qpts';ptsEl.textContent='+'+q.pts+'점';
+  crow.appendChild(catEl);crow.appendChild(ptsEl);
+  var titleEl=document.createElement('div');titleEl.className='qtitle';titleEl.textContent=q.title;
+  hmeta.appendChild(crow);hmeta.appendChild(titleEl);
+  var badge=document.createElement('div');badge.className='qansbadge';
+  var blbl=document.createElement('div');blbl.className='qansbadge-lbl';blbl.textContent='정답';
+  var bval=document.createElement('div');bval.className='qansbadge-val';bval.textContent=LBLS[q.ans]+' '+q.opts[q.ans];
+  badge.appendChild(blbl);badge.appendChild(bval);
+  head.appendChild(numbox);head.appendChild(hmeta);head.appendChild(badge);
+  card.appendChild(head);
+
+  // body
+  var bodyWrap=document.createElement('div');bodyWrap.className='qbody';
+  var bodyLbl=document.createElement('div');bodyLbl.className='qbody-lbl';bodyLbl.textContent='▸ 문제';
+  var bodyContent=document.createElement('div');bodyContent.innerHTML=q.body;
+  bodyWrap.appendChild(bodyLbl);bodyWrap.appendChild(bodyContent);
+  card.appendChild(bodyWrap);
+
+  // options
+  var optsSec=document.createElement('div');optsSec.className='opts-sec';
+  var optsLbl=document.createElement('div');optsLbl.className='opts-lbl';optsLbl.textContent='▸ 선택지';
+  optsSec.appendChild(optsLbl);
+  q.opts.forEach(function(o,oi){
+    var row=document.createElement('div');row.className='opt-row'+(oi===q.ans?' correct':'');
+    var lbl=document.createElement('span');lbl.className='opt-lbl';lbl.textContent=LBLS[oi];
+    var txt=document.createElement('span');txt.className='opt-txt';txt.textContent=o;
+    row.appendChild(lbl);row.appendChild(txt);
+    if(oi===q.ans){var ck=document.createElement('span');ck.className='opt-ck';ck.textContent='✅';row.appendChild(ck);}
+    optsSec.appendChild(row);
+  });
+  card.appendChild(optsSec);
+
+  // explanation
+  var explSec=document.createElement('div');explSec.className='expl-sec';
+
+  var banner=document.createElement('div');banner.className='expl-banner';
+  var icon=document.createElement('div');icon.className='expl-icon';icon.textContent='解';
+  var etitle=document.createElement('span');etitle.className='expl-title-lbl';etitle.textContent='상세 풀이 및 해설';
+  banner.appendChild(icon);banner.appendChild(etitle);
+  explSec.appendChild(banner);
+
+  if(q.concept){
+    var cr=document.createElement('div');cr.className='concept-row';
+    var ct=document.createElement('div');ct.className='concept-tag';ct.textContent=q.concept.key;
+    var cv=document.createElement('div');cv.className='concept-desc';cv.textContent=q.concept.val;
+    cr.appendChild(ct);cr.appendChild(cv);explSec.appendChild(cr);
+  }
+
+  var atw=document.createElement('div');atw.className='ans-tag-wrap';
+  var at=document.createElement('div');at.className='ans-tag';at.textContent='정답: '+LBLS[q.ans]+' '+q.opts[q.ans];
+  atw.appendChild(at);explSec.appendChild(atw);
+
+  var eb=document.createElement('div');eb.className='expl-body';
+  var div1=document.createElement('div');div1.className='divider';
+  var dt1=document.createElement('span');dt1.className='divider-txt';dt1.textContent='단계별 풀이';
+  div1.appendChild(dt1);eb.appendChild(div1);
+  var explContent=document.createElement('div');explContent.innerHTML=q.expl;eb.appendChild(explContent);
+
+  if(q.formula){
+    var div2=document.createElement('div');div2.className='divider';
+    var dt2=document.createElement('span');dt2.className='divider-txt';dt2.textContent='핵심 공식';
+    div2.appendChild(dt2);eb.appendChild(div2);
+    var fb=document.createElement('div');fb.className='formula';fb.textContent=q.formula;eb.appendChild(fb);
+  }
+
+  if(q.tip){
+    var div3=document.createElement('div');div3.className='divider';
+    var dt3=document.createElement('span');dt3.className='divider-txt';dt3.textContent='팁 & 응용';
+    div3.appendChild(dt3);eb.appendChild(div3);
+    var tb=document.createElement('div');tb.className='tip';
+    var tt=document.createElement('div');tt.className='tip-t';tt.textContent='💡 '+q.tip.title;
+    var tx=document.createElement('div');tx.textContent=q.tip.text;
+    tb.appendChild(tt);tb.appendChild(tx);eb.appendChild(tb);
+  }
+
+  explSec.appendChild(eb);
+  card.appendChild(explSec);
+  feed.appendChild(card);
+});
+
+// Intersection Observer
+var obs=new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(e.isIntersecting){
+      var i=parseInt(e.target.id.replace('q',''));
+      document.querySelectorAll('.jbtn').forEach(function(b,j){b.classList.toggle('act',j===i);});
+      document.querySelectorAll('.toc-row').forEach(function(t,j){t.classList.toggle('act',j===i);});
+    }
+  });
+},{threshold:0.15,rootMargin:'-76px 0px -60% 0px'});
+document.querySelectorAll('.qcard').forEach(function(el){obs.observe(el);});
+</script>
+</body>
+</html>
