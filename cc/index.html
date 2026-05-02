@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SY LAB | Algorithm & Math Archive</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --sidebar-width: 260px;
+            --primary: #3b82f6;
+            --dark: #0f172a;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --accent-purple: #8b5cf6;
+            --accent-green: #10b981;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Pretendard', -apple-system, sans-serif; background: var(--bg); display: flex; min-height: 100vh; overflow: hidden; }
+
+        /* --- 사이드바 --- */
+        nav {
+            width: var(--sidebar-width);
+            background: var(--dark);
+            color: white;
+            height: 100vh;
+            position: fixed;
+            display: flex;
+            flex-direction: column;
+            padding: 30px 15px;
+            z-index: 100;
+        }
+
+        nav h2 { font-size: 1.4rem; text-align: center; margin-bottom: 35px; color: var(--primary); font-weight: 800; }
+        .nav-menu { flex: 1; overflow-y: auto; list-style: none; }
+        .nav-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: #94a3b8;
+            text-decoration: none;
+            border-radius: 10px;
+            margin-bottom: 5px;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+        .nav-menu a i { margin-right: 12px; width: 20px; text-align: center; }
+        .nav-menu a:hover { background: rgba(255,255,255,0.1); color: white; }
+
+        /* --- 메인 영역 --- */
+        main {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 40px;
+            scroll-behavior: smooth;
+        }
+
+        .header-banner {
+            background: linear-gradient(135deg, var(--dark), #1e293b);
+            padding: 40px;
+            border-radius: 20px;
+            color: white;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+
+        section { margin-bottom: 60px; scroll-margin-top: 30px; }
+        .section-header { 
+            display: flex; align-items: center; gap: 15px; margin-bottom: 25px; 
+            padding-left: 10px; border-left: 5px solid var(--primary);
+        }
+        .section-header h2 { font-size: 1.6rem; color: var(--dark); }
+
+        /* --- 카드 그리드 --- */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .link-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid #e2e8f0;
+            text-decoration: none;
+            color: var(--dark);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.3s;
+        }
+
+        .link-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 12px 20px rgba(0,0,0,0.05);
+        }
+
+        .card-title { font-weight: 700; font-size: 1rem; margin-bottom: 10px; line-height: 1.4; }
+        .card-tag { font-size: 0.75rem; color: var(--primary); font-weight: 600; text-transform: uppercase; margin-bottom: 15px; display: block; }
+        
+        .footer-info { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; }
+        .source-tag { font-size: 0.7rem; padding: 3px 8px; border-radius: 5px; background: #f1f5f9; color: #64748b; }
+        .btn-view { color: var(--primary); font-size: 0.85rem; font-weight: 700; }
+
+        /* 모바일 대응 */
+        @media (max-width: 1024px) {
+            nav { width: 70px; padding: 20px 10px; }
+            nav h2, nav a span { display: none; }
+            main { margin-left: 70px; padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <h2>SY LAB</h2>
+        <div class="nav-menu">
+            <a href="#boj"><i class="fa-solid fa-trophy"></i> <span>BOJ 문제풀이</span></a>
+            <a href="#c-adv"><i class="fa-solid fa-code"></i> <span>C언어 심화</span></a>
+            <a href="#ds-algo"><i class="fa-solid fa-diagram-project"></i> <span>자료구조/알고리즘</span></a>
+            <a href="#math"><i class="fa-solid fa-calculator"></i> <span>이산수학</span></a>
+            <a href="#etc"><i class="fa-solid fa-lightbulb"></i> <span>기타 자료</span></a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="header-banner">
+            <h1>Algorithm Hub</h1>
+            <p>세영코딩연구소에서 엄선한 핵심 알고리즘 및 이산수학 학습 아카이브입니다.</p>
+        </div>
+
+        <!-- 1. 백준 문제풀이 -->
+        <section id="boj">
+            <div class="section-header"><h2>백준 문제풀이</h2></div>
+            <div class="grid">
+                <a href="https://claude.ai/public/artifacts/09f20b48-4ecd-4313-b84d-2765bdc030d5" class="link-card" target="_blank">
+                    <span class="card-tag">BOJ 10818</span>
+                    <div class="card-title">최소, 최대 (6가지 풀이법)</div>
+                    <div class="footer-info"><span class="source-tag">Claude</span><span class="btn-view">열기 <i class="fa-solid fa-arrow-up-right-from-square"></i></span></div>
+                </a>
+                <a href="https://claude.ai/public/artifacts/34443f32-61f4-407d-b950-d048d2170b76" class="link-card" target="_blank">
+                    <span class="card-tag">BOJ 10817</span>
+                    <div class="card-title">세 수 (2가지 풀이법)</div>
+                    <div class="footer-info"><span class="source-tag">Claude</span><span class="btn-view">열기 <i class="fa-solid fa-arrow-up-right-from-square"></i></span></div>
+                </a>
+                <a href="https://claude.ai/public/artifacts/e67fb666-facb-4302-9c90-c7f681fa3215" class="link-card" target="_blank">
+                    <span class="card-tag">BOJ 2309</span>
+                    <div class="card-title">일곱 난쟁이 풀이</div>
+                    <div class="footer-info"><span class="source-tag">Claude</span><span class="btn-view">열기 <i class="fa-solid fa-arrow-up-right-from-square"></i></span></div>
+                </a>
+            </div>
+        </section>
+
+        <!-- 2. C언어 심화 -->
+        <section id="c-adv">
+            <div class="section-header"><h2>C언어 포인터 & 구조체 심화</h2></div>
+            <div class="grid">
+                <a href="https://claude.ai/public/artifacts/61afa81a-4d83-4088-852c-7a7b1046bfaf" class="link-card" target="_blank">
+                    <span class="card-tag">STRUCT</span>
+                    <div class="card-title">C언어 구조체 기초</div>
+                    <div class="footer-info"><span class="source-tag">Claude</span><span class="btn-view">열기 <i class="fa-solid fa-arrow-up-right-from-square"></i></span></div>
+                </a>
+                <a href="https://claude.ai/public/artifacts/ec1efe9f-1871-424e-bc8f-10fd20199c73" class="link-card" target="_blank">
+                    <span class="card-tag">POINTER</span>
+                    <div class="card-title">Call by Reference</div>
+                    <div class="footer-info"><span class="source-tag">Claude</span><span class="btn-view">열기 <i class="fa-solid fa-arrow-up-right-from-square"></i></span></div>
+                </a>
+                <a href="https://claude.ai/public/artifacts/71426048-72e3-4a6e-9280-42604db4ca7e" class="link-card" target="_blank">
+                    <span class="card-tag">ARRAY</span>
+                    <div class="card-title">Call by Reference (Array)</div>
+                    <div class="footer-info"><span class="source-tag">Claude</span><span class="btn-view">열기 <i class="fa-solid fa-arrow-up-right-from-square"></i></span></div>
+                </a>
+                <a href="https://claude.ai/public/artifacts/abfadfc4-172f-4da0-be24-869c926db33a" class="link-card" target="_blank">
+                    <span class="card-tag">STEP 1</span>
+                    <div class="card-title">포인터_구조체_함수 1단계</div>
+                    <div class="footer-info"><span class="source-tag">Claude</span><span class="btn-view">열기 <i class="fa-solid fa-arrow-up-right-from-square"></i></span></div>
+                </a>
+                <a href="https://claude.ai/public/artifacts/152c4b85-084b-4fec-acba-9e3d9b4b7ff6" class="link-card" target="_blank">
+                    <span class="card-tag">STEP 2</span>
+                    <div class="card-title">포인터_구조체_함수_배열 2단계</div>
+                    <div class="footer-info"><span class="source-tag">Claude</span><span class="btn-view">열기 <i class="fa-solid fa-arrow-up-right-from-square"></i></span></div>
+                </a>
+                <a href="https://claude.ai/public/artifacts/077fb5f9-f950-48b7-b993-4e1db5f056e2" class="link-card" target="_blank">
+                    <span class="card-tag">STEP 3</span>
+                    <div class="card-title">링크드리스트 3단계</div>
+                    <div class="footer-info"><span class="source-tag">Claude</span><span class="btn-view">열기 <i class="fa-solid fa-arrow-up-right-from-square"></i></span></div>
+                </a>
+                <a href="https://claude.ai/public/artifacts/2bc9dc71-2d07-4ec3-834d-7e9310e10313" class="link-card" target="_blank">
+                    <span class="card-tag">MASTER</span>
+                    <div class="card-title">구조체와 포인터 완전정복</div>
+                    <div class="footer-info"><span class="source-tag">Claude</span><span class="btn-view">열기 <i class="fa-solid fa-arrow-up-right-from-square"></i></span></div>
+                </a>
+            </div>
+        </section>
+
+        <!-- 3. 자료구조/알고리즘 -->
+        <section id="ds-algo">
+            <div class="section-header"><h2>자료구조 & 알고리즘 시각화</h2></div>
+            <div class="grid">
+                <a href="https://claude.ai/public/artifacts/5b18d650-13d2-4918-b89e-48dedfaf07fd" class="link-card" target="_blank">
+                    <span class="card-tag">STACK</span>
+                    <div class="card-title">스택(Stack) 시각화 및 정복</div>
+                    <div class="footer-info"><span class="source-tag">Claude</span><span class="btn-view">열기 <i class="fa-solid fa-arrow-up-right-from-square"></i></span></div>
+                </a>
+                <a href="https://claude.ai/public/artifacts/533d0850-d438-4b09-98bd-0e4725fea136" class="link-card" target="_blank">
+                    <span class="card-tag">QUEUE</span>
+                    <div class="card-title">큐(Queue) 시각화 및 정복</div>
+                    <div class="footer-info"><span class="source-tag">Claude</span><span class="btn-view">열기 <i class="fa-solid fa-arrow-up-right-from-square"></i></span></div>
+                </a>
+                <a href="https://claude.ai/public/artifacts/77c365e3-e2bd-4046-8d87-0820ead4363b" class="link-card" target="_blank">
+                    <span class="card-tag">LIST</span>
+                    <div class="card-title">연결리스트(Linked List) 완전구현</div>
+                    <div class="footer-info"><span class="source-tag">Claude</span><span class="btn-view">열기 <i class="fa-solid fa-arrow-up-right-from-square"></i></span></div>
+                </a>
+                <a href="https://gemini.google.com/share/d8aace434a58" class="link-card" target="_blank">
+                    <span class="card-tag">BFS</span>
+                    <div class="card-title">BFS Array 시각화</div>
+                    <div class="footer-info"><span class="source-tag">Gemini</span><span class="btn-view">열기 <i class="fa-solid fa-arrow-up-right-from-square"></i></span></div>
+                </a>
+                <a href="https://gemini.google.com/share/08529341076e" class="link-card" target="_blank">
+                    <span class="card-tag">DFS</span>
+                    <div class="card-title">DFS Array 시각화</div>
+                    <div class="footer-info"><span class="source-tag">Gemini</span><span class="btn-view">열기 <i class="fa-solid fa-arrow-up-right-from-square"></i></span></div>
+                </a>
+                <a href="https://claude.ai/public/artifacts/5c562312-911c-4c3b-98fc-614c7d4e7f75" class="link-card" target="_blank">
+                    <span class="card-tag">SORT</span>
+                    <div class="card-title">qsort() 사용법 및 패턴 20개</div>
+                    <div class="footer-info"><span class="source-tag">Claude</span><span class="btn-view">열기 <i class="fa-solid fa-arrow-up-right-from-square"></i></span></div>
+                </a>
+            </div>
+        </section>
+
+        <!-- 4. 이산수학 -->
+        <section id="math">
+            <div class="section-header"><h2>이산수학 & 논리 연산</h2></div>
+            <div class="grid">
+                <a href="https://gemini.google.com/share/401b558fe4e9" class="link-card" target="_blank">
+                    <span class="card-tag">BINARY</span>
+                    <div class="card-title">부호와 절대값, 보수(1, 2) 정리</div>
+                    <div class="footer-info"><span class="source-tag">Gemini</span><span class="btn-view">열기 <i class="fa-solid fa-arrow-up-right-from-square"></i></span></div>
+                </a>
+                <a href="https://gemini.google.com/share/7767e6d9eee6" class="link-card" target="_blank">
+                    <span class="card-tag">EXERCISE</span>
+                    <div class="card-title">진수 변환 연습문제 (2, 8, 16진수)</div>
+                    <div class="footer-info"><span class="source-tag">Gemini</span><span class="btn-view">열기 <i class="fa-solid fa-arrow-up-right-from-square"></i></span></div>
+                </a>
+                <a href="https://claude.ai/public/artifacts/50173875-a754-4933-ad80-9730811c3c2a" class="link-card" target="_blank">
+                    <span class="card-tag">SET</span>
+                    <div class="card-title">집합론 및 포함/배제의 원리</div>
+                    <div class="footer-info"><span class="source-tag">Claude</span><span class="btn-view">열기 <i class="fa-solid fa-arrow-up-right-from-square"></i></span></div>
+                </a>
+                <a href="https://gemini.google.com/share/b7f6cdbe077e" class="link-card" target="_blank">
+                    <span class="card-tag">LOGIC</span>
+                    <div class="card-title">부울 대수 & 드모르간 문제</div>
+                    <div class="footer-info"><span class="source-tag">Gemini</span><span class="btn-view">열기 <i class="fa-solid fa-arrow-up-right-from-square"></i></span></div>
+                </a>
+                <a href="https://claude.ai/public/artifacts/ef4f46a9-355d-4bf7-9836-7540b929cb83" class="link-card" target="_blank">
+                    <span class="card-tag">GRAPH</span>
+                    <div class="card-title">그래프 증명 10가지 풀이 패턴</div>
+                    <div class="footer-info"><span class="source-tag">Claude</span><span class="btn-view">열기 <i class="fa-solid fa-arrow-up-right-from-square"></i></span></div>
+                </a>
+            </div>
+        </section>
+
+        <footer style="text-align: center; color: #94a3b8; padding: 40px 0; font-size: 0.9rem;">
+            &copy; 2026 Seyoung Coding Lab. 학습용 아카이브 포털
+        </footer>
+    </main>
+
+    <script>
+        // 부드러운 스크롤 이동
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                target.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>
