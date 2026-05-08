@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>그래프·행렬·집합 융합 인터랙티브 학습</title>
+  <style>
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "Pretendard", "Noto Sans KR", Arial, sans-serif;
+      background: linear-gradient(135deg, #eef2ff 0%, #ecfeff 42%, #fff7ed 100%);
+      color: #172033;
+      line-height: 1.7;
+    }
+    header {
+      padding: 58px 22px 42px;
+      text-align: center;
+      color: white;
+      background:
+        radial-gradient(circle at 12% 20%, rgba(34,211,238,.45), transparent 28%),
+        radial-gradient(circle at 84% 18%, rgba(251,191,36,.4), transparent 30%),
+        linear-gradient(135deg, #0f172a, #1e3a8a 50%, #6d28d9);
+      overflow: hidden;
+      position: relative;
+    }
+    header::before, header::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,.18);
+    }
+    header::before { width: 260px; height: 260px; left: -80px; bottom: -120px; }
+    header::after { width: 180px; height: 180px; right: -40px; top: -60px; }
+    header h1 {
+      margin: 0;
+      font-size: clamp(29px, 5.2vw, 52px);
+      letter-spacing: -1.5px;
+      position: relative;
+      z-index: 1;
+    }
+    header p {
+      max-width: 900px;
+      margin: 18px auto 0;
+      font-size: 18px;
+      opacity: .95;
+      position: relative;
+      z-index: 1;
+    }
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      gap: 8px;
+      padding: 10px;
+      overflow-x: auto;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid #dbe3ef;
+      justify-content: center;
+    }
+    nav a {
+      text-decoration: none;
+      white-space: nowrap;
+      color: #334155;
+      border: 1px solid #dbe3ef;
+      background: #f8fafc;
+      padding: 9px 13px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 800;
+    }
+    nav a:hover { background: #dbeafe; color: #1d4ed8; }
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 28px 18px 74px;
+    }
+    section {
+      margin: 28px 0;
+      padding: 28px;
+      background: rgba(255,255,255,.92);
+      border: 1px solid #e2e8f0;
+      border-radius: 28px;
+      box-shadow: 0 18px 45px rgba(15,23,42,.08);
+    }
+    h2 {
+      margin: 0 0 18px;
+      font-size: 28px;
+      color: #172554;
+      letter-spacing: -.5px;
+    }
+    h3 { color: #312e81; margin-top: 24px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+    .card {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 22px;
+      padding: 20px;
+      box-shadow: 0 8px 22px rgba(15,23,42,.055);
+    }
+    .card strong { color: #1d4ed8; }
+    .big-card {
+      background: linear-gradient(135deg, #eff6ff, #f5f3ff);
+      border: 1px solid #bfdbfe;
+      border-radius: 24px;
+      padding: 22px;
+    }
+    .formula {
+      display: inline-block;
+      margin: 7px 0;
+      padding: 10px 14px;
+      border-radius: 14px;
+      background: #eef2ff;
+      color: #3730a3;
+      font-weight: 900;
+      font-size: 18px;
+    }
+    .highlight {
+      padding: 18px;
+      border-radius: 18px;
+      background: linear-gradient(120deg, #fef3c7, #dbeafe);
+      border-left: 6px solid #2563eb;
+      font-weight: 900;
+    }
+    .pill {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: #dcfce7;
+      color: #166534;
+      font-size: 13px;
+      font-weight: 900;
+      margin: 4px 4px 4px 0;
+    }
+    .pill.blue { background: #dbeafe; color: #1d4ed8; }
+    .pill.orange { background: #ffedd5; color: #c2410c; }
+    .flow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+    .step {
+      flex: 1 1 180px;
+      text-align: center;
+      padding: 15px;
+      border-radius: 18px;
+      background: #f8fafc;
+      border: 1px solid #dbe3ef;
+      font-weight: 900;
+    }
+    .arrow { color: #2563eb; font-size: 24px; font-weight: 900; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 16px;
+      background: white;
+      margin: 12px 0;
+    }
+    th, td {
+      border: 1px solid #e2e8f0;
+      padding: 11px;
+      text-align: center;
+    }
+    th { background: #1e3a8a; color: white; }
+    details {
+      background: #f8fafc;
+      border: 1px solid #dbe3ef;
+      border-radius: 18px;
+      margin: 12px 0;
+      padding: 14px 18px;
+    }
+    summary {
+      cursor: pointer;
+      color: #1e40af;
+      font-weight: 900;
+    }
+    pre {
+      overflow-x: auto;
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 18px;
+      border-radius: 18px;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+    code { font-family: "D2Coding", "Consolas", monospace; }
+    input, textarea, select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 14px;
+      font-size: 15px;
+      margin: 6px 0 12px;
+      background: white;
+    }
+    textarea { min-height: 90px; resize: vertical; }
+    .btn {
+      border: 0;
+      border-radius: 14px;
+      padding: 11px 15px;
+      background: #2563eb;
+      color: white;
+      font-weight: 900;
+      cursor: pointer;
+      margin: 5px 5px 5px 0;
+    }
+    .btn:hover { background: #1d4ed8; transform: translateY(-1px); }
+    .btn.secondary { background: #7c3aed; }
+    .btn.dark { background: #0f172a; }
+    .result {
+      min-height: 48px;
+      background: #ecfeff;
+      border: 1px solid #67e8f9;
+      padding: 14px;
+      border-radius: 16px;
+      font-weight: 900;
+      color: #155e75;
+      margin-top: 10px;
+      white-space: pre-wrap;
+    }
+    .matrix-table td, .matrix-table th {
+      width: 42px;
+      height: 42px;
+      padding: 6px;
+      font-weight: 900;
+    }
+    .matrix-one { background: #dbeafe; color: #1d4ed8; }
+    .matrix-zero { background: #f8fafc; color: #94a3b8; }
+    .graph-svg-wrap {
+      background: #f8fafc;
+      border: 1px solid #dbe3ef;
+      border-radius: 22px;
+      padding: 12px;
+      overflow: hidden;
+    }
+    svg { width: 100%; height: 360px; display: block; }
+    .node { fill: #2563eb; stroke: white; stroke-width: 3; }
+    .node-label { fill: white; font-weight: 900; font-size: 15px; text-anchor: middle; dominant-baseline: central; }
+    .edge { stroke: #64748b; stroke-width: 3; }
+    .quiz-box {
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      border-radius: 22px;
+      padding: 20px;
+    }
+    .option {
+      display: block;
+      width: 100%;
+      text-align: left;
+      margin: 8px 0;
+      padding: 12px;
+      border: 1px solid #e2e8f0;
+      background: white;
+      border-radius: 14px;
+      cursor: pointer;
+      font-weight: 800;
+    }
+    .option:hover { background: #eff6ff; }
+    .correct { background: #dcfce7 !important; border-color: #22c55e !important; }
+    .wrong { background: #fee2e2 !important; border-color: #ef4444 !important; }
+    footer { text-align: center; padding: 30px; color: #475569; }
+    @media (max-width: 760px) {
+      section { padding: 20px; border-radius: 20px; }
+      nav { justify-content: flex-start; }
+      svg { height: 300px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>그래프 · 행렬 · 집합 융합 이론</h1>
+    <p>중등 정보올림피아드 이산수학을 위해 그래프를 집합으로 정의하고, 행렬로 계산하며, 알고리즘으로 연결하는 인터랙티브 수업자료입니다.</p>
+  </header>
+
+  <nav>
+    <a href="#overview">관계 한눈에</a>
+    <a href="#set">집합</a>
+    <a href="#matrix">행렬</a>
+    <a href="#degree">차수</a>
+    <a href="#path">경로</a>
+    <a href="#operation">집합 연산</a>
+    <a href="#complement">보수 그래프</a>
+    <a href="#algorithm">알고리즘</a>
+    <a href="#interactive">실습</a>
+    <a href="#code">C 코드</a>
+    <a href="#quiz">퀴즈</a>
+  </nav>
+
+  <main>
+    <section id="overview">
+      <h2>1. 그래프, 행렬, 집합의 관계</h2>
+      <div class="highlight">같은 관계를 세 가지 언어로 표현합니다. 집합은 정의, 그래프는 그림, 행렬은 계산입니다.</div>
+      <div class="flow" style="margin-top:18px;">
+        <div class="step">집합<br>V, E, R</div>
+        <div class="arrow">→</div>
+        <div class="step">그래프<br>점과 선</div>
+        <div class="arrow">→</div>
+        <div class="step">행렬<br>0과 1의 표</div>
+        <div class="arrow">→</div>
+        <div class="step">알고리즘<br>DFS, BFS, 경로</div>
+      </div>
+      <div class="grid" style="margin-top:16px;">
+        <div class="card"><strong>1. 집합</strong><br>정점과 간선을 수학적으로 정의합니다.</div>
+        <div class="card"><strong>2. 그래프</strong><br>정점 사이의 관계를 그림으로 보여줍니다.</div>
+        <div class="card"><strong>3. 행렬</strong><br>컴퓨터가 계산하기 좋게 숫자 표로 바꿉니다.</div>
+      </div>
+    </section>
+
+    <section id="set">
+      <h2>2. 집합으로 그래프 정의하기</h2>
+      <p>그래프 G는 보통 다음처럼 정의합니다.</p>
+      <p class="formula">G = (V, E)</p>
+      <div class="grid">
+        <div class="card">
+          <h3>2.1 정점 집합 V</h3>
+          <p>그래프에 있는 점들의 모음입니다.</p>
+          <p class="formula">V = {A, B, C, D}</p>
+        </div>
+        <div class="card">
+          <h3>2.2 간선 집합 E</h3>
+          <p>정점 사이의 연결 관계입니다.</p>
+          <p class="formula">E = {(A,B), (A,C), (B,D)}</p>
+        </div>
+      </div>
+      <h3>2.3 무방향 그래프와 방향 그래프</h3>
+      <div class="grid">
+        <div class="card">
+          <strong>무방향 그래프</strong>
+          <p>간선을 순서 없는 쌍으로 봅니다.</p>
+          <p class="formula">E = {{1,2}, {1,3}, {2,4}}</p>
+        </div>
+        <div class="card">
+          <strong>방향 그래프</strong>
+          <p>간선을 순서 있는 쌍으로 봅니다.</p>
+          <p class="formula">E = {(1,2), (1,3), (2,4)}</p>
+        </div>
+      </div>
+      <h3>2.4 인접 집합</h3>
+      <p>정점 v와 직접 연결된 정점들의 집합을 인접 집합이라고 생각할 수 있습니다.</p>
+      <p class="formula">N(1) = {2, 3}</p>
+    </section>
+
+    <section id="matrix">
+      <h2>3. 행렬로 그래프 표현하기</h2>
+      <p>그래프를 컴퓨터가 처리하기 쉽게 0과 1의 표로 만든 것이 인접 행렬입니다.</p>
+      <p class="formula">A[i][j] = 1이면 i와 j가 연결됨, 0이면 연결되지 않음</p>
+      <div class="grid">
+        <div class="card">
+          <h3>3.1 예시 간선 집합</h3>
+          <p class="formula">V = {1,2,3,4}</p>
+          <p class="formula">E = {{1,2}, {1,3}, {2,4}}</p>
+        </div>
+        <div class="card">
+          <h3>3.2 인접 행렬</h3>
+          <table class="matrix-table">
+            <tr><th></th><th>1</th><th>2</th><th>3</th><th>4</th></tr>
+            <tr><th>1</th><td class="matrix-zero">0</td><td class="matrix-one">1</td><td class="matrix-one">1</td><td class="matrix-zero">0</td></tr>
+            <tr><th>2</th><td class="matrix-one">1</td><td class="matrix-zero">0</td><td class="matrix-zero">0</td><td class="matrix-one">1</td></tr>
+            <tr><th>3</th><td class="matrix-one">1</td><td class="matrix-zero">0</td><td class="matrix-zero">0</td><td class="matrix-zero">0</td></tr>
+            <tr><th>4</th><td class="matrix-zero">0</td><td class="matrix-one">1</td><td class="matrix-zero">0</td><td class="matrix-zero">0</td></tr>
+          </table>
+        </div>
+      </div>
+      <h3>3.3 무방향 그래프 행렬의 특징</h3>
+      <p>무방향 그래프에서는 i와 j가 연결되면 j와 i도 연결됩니다.</p>
+      <p class="formula">A[i][j] = A[j][i]</p>
+      <p>따라서 인접 행렬이 대칭입니다.</p>
+
+      <h3>3.4 방향 그래프의 행렬</h3>
+      <p>방향 그래프에서는 A[i][j] = 1이 i → j로 갈 수 있다는 뜻입니다.</p>
+      <p class="formula">E = {(1,2), (1,3), (3,2)}</p>
+      <table class="matrix-table">
+        <tr><th></th><th>1</th><th>2</th><th>3</th></tr>
+        <tr><th>1</th><td class="matrix-zero">0</td><td class="matrix-one">1</td><td class="matrix-one">1</td></tr>
+        <tr><th>2</th><td class="matrix-zero">0</td><td class="matrix-zero">0</td><td class="matrix-zero">0</td></tr>
+        <tr><th>3</th><td class="matrix-zero">0</td><td class="matrix-one">1</td><td class="matrix-zero">0</td></tr>
+      </table>
+    </section>
+
+    <section id="degree">
+      <h2>4. 차수와 행렬</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>4.1 무방향 그래프의 차수</h3>
+          <p>정점에 연결된 간선의 개수입니다.</p>
+          <p class="formula">deg(v) = v행의 1 개수</p>
+        </div>
+        <div class="card">
+          <h3>4.2 방향 그래프의 진출차수</h3>
+          <p>정점에서 나가는 간선 수입니다.</p>
+          <p class="formula">outdeg(v) = v행의 1 개수</p>
+        </div>
+        <div class="card">
+          <h3>4.3 방향 그래프의 진입차수</h3>
+          <p>정점으로 들어오는 간선 수입니다.</p>
+          <p class="formula">indeg(v) = v열의 1 개수</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="path">
+      <h2>5. 경로와 행렬</h2>
+      <p>인접 행렬을 거듭제곱하면 길이가 정해진 경로의 개수를 알 수 있습니다.</p>
+      <div class="grid">
+        <div class="card">
+          <h3>5.1 길이 2 경로</h3>
+          <p class="formula">A²[i][j]</p>
+          <p>i에서 j까지 길이 2인 경로의 개수입니다.</p>
+        </div>
+        <div class="card">
+          <h3>5.2 길이 3 경로</h3>
+          <p class="formula">A³[i][j]</p>
+          <p>i에서 j까지 길이 3인 경로의 개수입니다.</p>
+        </div>
+      </div>
+      <details open>
+        <summary>삼각형 그래프 예제</summary>
+        <p>1, 2, 3이 모두 연결된 삼각형 그래프에서 1에서 1로 길이 2인 경로는 1→2→1, 1→3→1 두 가지입니다.</p>
+        <p class="formula">A²[1][1] = 2</p>
+      </details>
+    </section>
+
+    <section id="operation">
+      <h2>6. 그래프를 집합 연산으로 보기</h2>
+      <table>
+        <tr><th>연산</th><th>기호</th><th>그래프 의미</th></tr>
+        <tr><td>합집합</td><td>A ∪ B</td><td>둘 중 하나에 속함</td></tr>
+        <tr><td>교집합</td><td>A ∩ B</td><td>둘 다에 속함, 공통 이웃</td></tr>
+        <tr><td>차집합</td><td>A - B</td><td>A에는 있고 B에는 없음</td></tr>
+        <tr><td>여집합</td><td>Aᶜ</td><td>전체 중 A가 아닌 것</td></tr>
+        <tr><td>부분집합</td><td>A ⊆ B</td><td>A가 B에 포함됨</td></tr>
+      </table>
+      <div class="grid">
+        <div class="card">
+          <h3>6.1 공통 이웃</h3>
+          <p class="formula">N(1) ∩ N(2)</p>
+          <p>두 정점 모두와 연결된 정점입니다.</p>
+        </div>
+        <div class="card">
+          <h3>6.2 둘 중 하나와 연결</h3>
+          <p class="formula">N(1) ∪ N(2)</p>
+          <p>둘 중 하나라도 연결된 정점입니다.</p>
+        </div>
+        <div class="card">
+          <h3>6.3 한쪽에만 연결</h3>
+          <p class="formula">N(1) - N(2)</p>
+          <p>1번에는 연결되지만 2번에는 연결되지 않은 정점입니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="complement">
+      <h2>7. 보수 그래프</h2>
+      <p>보수 그래프는 원래 연결되지 않은 정점들을 연결한 그래프입니다.</p>
+      <div class="big-card">
+        <p class="formula">보수 그래프의 간선 집합 = 가능한 모든 간선 집합 K - 원래 간선 집합 E</p>
+        <p>예를 들어 V={1,2,3,4}일 때 가능한 모든 간선은 {1,2}, {1,3}, {1,4}, {2,3}, {2,4}, {3,4}입니다.</p>
+      </div>
+      <h3>7.1 보수 그래프와 행렬</h3>
+      <p>정점이 n개인 단순 무방향 그래프에서 보수 그래프의 인접 행렬은 다음과 같습니다.</p>
+      <p class="formula">Aᶜ = J - I - A</p>
+      <p>J는 모든 원소가 1인 행렬, I는 단위행렬, A는 원래 그래프의 인접 행렬입니다.</p>
+    </section>
+
+    <section id="relation">
+      <h2>8. 관계, 그래프, 행렬</h2>
+      <p>0과 1로 된 행렬은 관계를 나타낼 수 있습니다.</p>
+      <p class="formula">R ⊆ V × V</p>
+      <div class="grid">
+        <div class="card">
+          <h3>8.1 집합 표현</h3>
+          <p class="formula">R = {(1,2), (2,1), (2,3), (3,2)}</p>
+        </div>
+        <div class="card">
+          <h3>8.2 그래프 표현</h3>
+          <p>1 — 2 — 3</p>
+        </div>
+        <div class="card">
+          <h3>8.3 행렬 표현</h3>
+          <table class="matrix-table">
+            <tr><td class="matrix-zero">0</td><td class="matrix-one">1</td><td class="matrix-zero">0</td></tr>
+            <tr><td class="matrix-one">1</td><td class="matrix-zero">0</td><td class="matrix-one">1</td></tr>
+            <tr><td class="matrix-zero">0</td><td class="matrix-one">1</td><td class="matrix-zero">0</td></tr>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="algorithm">
+      <h2>9. 그래프 탐색과 집합</h2>
+      <p>DFS와 BFS도 집합으로 이해할 수 있습니다.</p>
+      <div class="grid">
+        <div class="card">
+          <h3>9.1 방문 집합</h3>
+          <p class="formula">Visited</p>
+          <p>이미 방문한 정점들의 집합입니다.</p>
+        </div>
+        <div class="card">
+          <h3>9.2 앞으로 갈 수 있는 정점</h3>
+          <p class="formula">N(v) - Visited</p>
+          <p>현재 정점의 이웃 중 아직 방문하지 않은 정점입니다.</p>
+        </div>
+        <div class="card">
+          <h3>9.3 BFS 층 구조</h3>
+          <p class="formula">L₀={시작점}, L₁=N(L₀), L₂=N(L₁)-Visited</p>
+          <p>가까운 거리부터 넓혀 갑니다.</p>
+        </div>
+      </div>
+      <h3>9.4 인접 행렬을 쓰면 좋은 경우</h3>
+      <div class="grid">
+        <div class="card">1. 정점 수가 작다.</div>
+        <div class="card">2. 두 정점의 연결 여부를 빠르게 확인해야 한다.</div>
+        <div class="card">3. 모든 정점 쌍 관계를 자주 확인한다.</div>
+      </div>
+      <p class="formula">연결 확인 A[i][j] : O(1)</p>
+      <p class="formula">공간 복잡도 : O(n²)</p>
+    </section>
+
+    <section id="interactive">
+      <h2>10. 인터랙티브 실습</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>10.1 간선 입력으로 그래프와 행렬 만들기</h3>
+          <label>정점 수 n</label>
+          <input id="nodeCount" type="number" min="2" max="9" value="5" />
+          <label>간선 목록</label>
+          <textarea id="edgeInput">1 2
+1 3
+2 4
+3 4
+4 5</textarea>
+          <button class="btn" onclick="buildGraph()">그래프 만들기</button>
+          <button class="btn secondary" onclick="loadSample()">예제 불러오기</button>
+          <div class="result" id="graphInfo">간선 목록을 입력하고 그래프 만들기를 누르세요.</div>
+        </div>
+        <div class="card">
+          <h3>10.2 그래프 그림</h3>
+          <div class="graph-svg-wrap">
+            <svg id="graphSvg"></svg>
+          </div>
+        </div>
+      </div>
+      <h3>10.3 인접 행렬</h3>
+      <div id="matrixOutput"></div>
+
+      <h3>10.4 인접 집합과 집합 연산</h3>
+      <div class="grid">
+        <div class="card">
+          <label>첫 번째 정점 a</label>
+          <input id="setA" type="number" min="1" value="1" />
+          <label>두 번째 정점 b</label>
+          <input id="setB" type="number" min="1" value="4" />
+          <button class="btn" onclick="setOperation()">집합 연산하기</button>
+          <div class="result" id="setResult">N(a), N(b), 합집합, 교집합, 차집합이 표시됩니다.</div>
+        </div>
+        <div class="card">
+          <h3>10.5 길이 2 경로 판단</h3>
+          <label>출발 정점 s</label>
+          <input id="pathS" type="number" min="1" value="1" />
+          <label>도착 정점 t</label>
+          <input id="pathT" type="number" min="1" value="5" />
+          <button class="btn dark" onclick="pathLengthTwo()">길이 2 경로 확인</button>
+          <div class="result" id="pathResult">길이 2 경로가 있는지 확인합니다.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="code">
+      <h2>11. 인접 행렬 C언어 예제</h2>
+      <h3>11.1 문제</h3>
+      <p>정점 n개, 간선 m개가 주어진다. 무방향 그래프의 인접 행렬을 만들고 출력하시오.</p>
+      <h3>11.2 입력</h3>
+      <pre><code>4 3
+1 2
+1 3
+2 4</code></pre>
+      <h3>11.3 출력</h3>
+      <pre><code>0 1 1 0
+1 0 0 1
+1 0 0 0
+0 1 0 0</code></pre>
+      <h3>11.4 정답 코드</h3>
+      <pre><code>#include &lt;stdio.h&gt;
+
+int main() {
+    int n, m;
+    int graph[101][101] = {0};
+
+    scanf("%d %d", &n, &m);
+
+    for (int i = 0; i &lt; m; i++) {
+        int a, b;
+        scanf("%d %d", &a, &b);
+
+        graph[a][b] = 1;
+        graph[b][a] = 1;
+    }
+
+    for (int i = 1; i &lt;= n; i++) {
+        for (int j = 1; j &lt;= n; j++) {
+            printf("%d ", graph[i][j]);
+        }
+        printf("\n");
+    }
+
+    return 0;
+}</code></pre>
+      <details open>
+        <summary>코드 설명</summary>
+        <p><strong>1.</strong> graph[101][101]은 인접 행렬입니다.</p>
+        <p><strong>2.</strong> 처음에는 모두 0입니다. 0은 연결되지 않았다는 뜻입니다.</p>
+        <p><strong>3.</strong> graph[a][b] = 1은 a와 b가 연결되었다는 뜻입니다.</p>
+        <p><strong>4.</strong> 무방향 그래프이므로 graph[b][a]도 1로 저장합니다.</p>
+        <p><strong>5.</strong> 마지막 이중 반복문으로 인접 행렬을 출력합니다.</p>
+      </details>
+    </section>
+
+    <section id="practice">
+      <h2>12. 융합 실전 문제</h2>
+      <div class="big-card">
+        <p>어느 마을에는 5개의 집이 있습니다. 도로는 다음과 같습니다.</p>
+        <p class="formula">E = {{1,2}, {1,3}, {2,4}, {3,4}, {4,5}}</p>
+        <p>다음을 구하시오.</p>
+        <p>1. 정점 집합 V</p>
+        <p>2. 인접 행렬</p>
+        <p>3. N(1)</p>
+        <p>4. N(4)</p>
+        <p>5. N(1) ∩ N(4)</p>
+        <p>6. 1번 집에서 5번 집까지 길이 2인 경로가 있는지 판단</p>
+      </div>
+      <details>
+        <summary>정답과 자세한 풀이 보기</summary>
+        <p><strong>1.</strong> V = {1,2,3,4,5}</p>
+        <p><strong>2.</strong> 인접 행렬</p>
+        <table class="matrix-table">
+          <tr><td class="matrix-zero">0</td><td class="matrix-one">1</td><td class="matrix-one">1</td><td class="matrix-zero">0</td><td class="matrix-zero">0</td></tr>
+          <tr><td class="matrix-one">1</td><td class="matrix-zero">0</td><td class="matrix-zero">0</td><td class="matrix-one">1</td><td class="matrix-zero">0</td></tr>
+          <tr><td class="matrix-one">1</td><td class="matrix-zero">0</td><td class="matrix-zero">0</td><td class="matrix-one">1</td><td class="matrix-zero">0</td></tr>
+          <tr><td class="matrix-zero">0</td><td class="matrix-one">1</td><td class="matrix-one">1</td><td class="matrix-zero">0</td><td class="matrix-one">1</td></tr>
+          <tr><td class="matrix-zero">0</td><td class="matrix-zero">0</td><td class="matrix-zero">0</td><td class="matrix-one">1</td><td class="matrix-zero">0</td></tr>
+        </table>
+        <p><strong>3.</strong> N(1) = {2,3}</p>
+        <p><strong>4.</strong> N(4) = {2,3,5}</p>
+        <p><strong>5.</strong> N(1) ∩ N(4) = {2,3}</p>
+        <p><strong>6.</strong> 길이 2 경로는 1 → x → 5 꼴입니다. N(1)={2,3}, N(5)={4}이므로 교집합이 공집합입니다. 따라서 길이 2 경로는 없습니다.</p>
+      </details>
+    </section>
+
+    <section id="quiz">
+      <h2>13. 개념 확인 퀴즈</h2>
+      <div class="quiz-box">
+        <h3 id="quizQuestion">문제</h3>
+        <div id="quizOptions"></div>
+        <div id="quizFeedback" class="result">정답을 선택해 보세요.</div>
+        <button class="btn secondary" onclick="nextQuiz()">다음 문제</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>14. 한 줄 정리</h2>
+      <div class="highlight">G=(V,E)에서 V와 E는 집합, G는 관계를 그림으로 나타낸 것, 인접 행렬은 그 관계를 숫자 표로 바꾼 것입니다.</div>
+      <div class="grid" style="margin-top:16px;">
+        <div class="card"><strong>1.</strong> 집합은 조건 분석에 강합니다.</div>
+        <div class="card"><strong>2.</strong> 그래프는 구조 이해에 강합니다.</div>
+        <div class="card"><strong>3.</strong> 행렬은 컴퓨터 계산에 강합니다.</div>
+        <div class="card"><strong>4.</strong> DFS, BFS, 최단경로, 경로 개수 문제는 세 표현을 자유롭게 바꾸는 능력에서 시작됩니다.</div>
+      </div>
+    </section>
+  </main>
+
+  <footer>중등 정보올림피아드 이산수학 수업자료용 인터랙티브 페이지</footer>
+
+  <script>
+    let matrix = [];
+    let n = 5;
+    let edges = [];
+
+    function parseEdges() {
+      n = Number(document.getElementById('nodeCount').value);
+      const raw = document.getElementById('edgeInput').value.trim();
+      edges = [];
+      matrix = Array.from({ length: n + 1 }, () => Array(n + 1).fill(0));
+
+      if (raw.length === 0) return;
+      const lines = raw.split(/\n+/);
+      for (const line of lines) {
+        const parts = line.trim().split(/\s+/).map(Number);
+        if (parts.length >= 2) {
+          const a = parts[0];
+          const b = parts[1];
+          if (a >= 1 && a <= n && b >= 1 && b <= n && a !== b) {
+            edges.push([a, b]);
+            matrix[a][b] = 1;
+            matrix[b][a] = 1;
+          }
+        }
+      }
+    }
+
+    function buildGraph() {
+      parseEdges();
+      drawGraph();
+      renderMatrix();
+      const edgeText = edges.map(e => `{${e[0]},${e[1]}}`).join(', ');
+      document.getElementById('graphInfo').textContent = `V = {${Array.from({length:n}, (_,i)=>i+1).join(', ')}}\nE = {${edgeText}}\n무방향 그래프이므로 인접 행렬은 대칭입니다.`;
+      setOperation();
+      pathLengthTwo();
+    }
+
+    function drawGraph() {
+      const svg = document.getElementById('graphSvg');
+      svg.innerHTML = '';
+      const width = svg.clientWidth || 600;
+      const height = 360;
+      const cx = width / 2;
+      const cy = height / 2;
+      const r = Math.min(width, height) * 0.34;
+      const pos = {};
+      for (let i = 1; i <= n; i++) {
+        const angle = -Math.PI / 2 + 2 * Math.PI * (i - 1) / n;
+        pos[i] = { x: cx + r * Math.cos(angle), y: cy + r * Math.sin(angle) };
+      }
+      for (const [a, b] of edges) {
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', pos[a].x);
+        line.setAttribute('y1', pos[a].y);
+        line.setAttribute('x2', pos[b].x);
+        line.setAttribute('y2', pos[b].y);
+        line.setAttribute('class', 'edge');
+        svg.appendChild(line);
+      }
+      for (let i = 1; i <= n; i++) {
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('cx', pos[i].x);
+        circle.setAttribute('cy', pos[i].y);
+        circle.setAttribute('r', 20);
+        circle.setAttribute('class', 'node');
+        svg.appendChild(circle);
+
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('x', pos[i].x);
+        text.setAttribute('y', pos[i].y + 1);
+        text.setAttribute('class', 'node-label');
+        text.textContent = i;
+        svg.appendChild(text);
+      }
+    }
+
+    function renderMatrix() {
+      const box = document.getElementById('matrixOutput');
+      let html = '<table class="matrix-table"><tr><th></th>';
+      for (let i = 1; i <= n; i++) html += `<th>${i}</th>`;
+      html += '</tr>';
+      for (let i = 1; i <= n; i++) {
+        html += `<tr><th>${i}</th>`;
+        for (let j = 1; j <= n; j++) {
+          const cls = matrix[i][j] ? 'matrix-one' : 'matrix-zero';
+          html += `<td class="${cls}">${matrix[i][j]}</td>`;
+        }
+        html += '</tr>';
+      }
+      html += '</table>';
+      box.innerHTML = html;
+    }
+
+    function neighbors(v) {
+      const arr = [];
+      if (v < 1 || v > n) return arr;
+      for (let i = 1; i <= n; i++) if (matrix[v][i] === 1) arr.push(i);
+      return arr;
+    }
+
+    function fmtSet(arr) {
+      if (!arr || arr.length === 0) return '∅';
+      return `{${arr.join(', ')}}`;
+    }
+
+    function union(a, b) {
+      return [...new Set([...a, ...b])].sort((x,y)=>x-y);
+    }
+
+    function intersect(a, b) {
+      const bs = new Set(b);
+      return a.filter(x => bs.has(x));
+    }
+
+    function diff(a, b) {
+      const bs = new Set(b);
+      return a.filter(x => !bs.has(x));
+    }
+
+    function setOperation() {
+      const a = Number(document.getElementById('setA').value);
+      const b = Number(document.getElementById('setB').value);
+      const na = neighbors(a);
+      const nb = neighbors(b);
+      document.getElementById('setResult').textContent =
+        `N(${a}) = ${fmtSet(na)}\n` +
+        `N(${b}) = ${fmtSet(nb)}\n` +
+        `N(${a}) ∪ N(${b}) = ${fmtSet(union(na, nb))}\n` +
+        `N(${a}) ∩ N(${b}) = ${fmtSet(intersect(na, nb))}\n` +
+        `N(${a}) - N(${b}) = ${fmtSet(diff(na, nb))}`;
+    }
+
+    function pathLengthTwo() {
+      const s = Number(document.getElementById('pathS').value);
+      const t = Number(document.getElementById('pathT').value);
+      const ns = neighbors(s);
+      const nt = neighbors(t);
+      const common = intersect(ns, nt);
+      const count = common.length;
+      const paths = common.map(x => `${s} → ${x} → ${t}`);
+      document.getElementById('pathResult').textContent =
+        `길이 2 경로는 ${s} → x → ${t} 꼴입니다.\n` +
+        `따라서 x는 N(${s})와 N(${t})의 공통 원소입니다.\n` +
+        `N(${s}) ∩ N(${t}) = ${fmtSet(common)}\n` +
+        `길이 2 경로 개수 = ${count}` +
+        (paths.length ? `\n경로: ${paths.join(', ')}` : '\n경로가 없습니다.');
+    }
+
+    function loadSample() {
+      document.getElementById('nodeCount').value = 5;
+      document.getElementById('edgeInput').value = '1 2\n1 3\n2 4\n3 4\n4 5';
+      document.getElementById('setA').value = 1;
+      document.getElementById('setB').value = 4;
+      document.getElementById('pathS').value = 1;
+      document.getElementById('pathT').value = 5;
+      buildGraph();
+    }
+
+    const quizzes = [
+      {
+        q: '그래프 G=(V,E)에서 V는 무엇을 의미할까요?',
+        options: ['간선의 집합', '정점의 집합', '행렬의 대각선', '경로의 길이'],
+        answer: 1,
+        explain: 'V는 그래프에 있는 정점들의 집합입니다.'
+      },
+      {
+        q: '무방향 그래프의 인접 행렬에서 항상 성립하는 성질은?',
+        options: ['A[i][j] = A[j][i]', '모든 값이 1이다', '대각선만 1이다', '행과 열의 개수가 다르다'],
+        answer: 0,
+        explain: '무방향 그래프는 양쪽 연결이 같으므로 행렬이 대칭입니다.'
+      },
+      {
+        q: 'N(1) ∩ N(4)는 그래프에서 무엇을 의미할까요?',
+        options: ['1과 4의 공통 이웃', '1에서 4까지의 최단거리', '1과 4를 제거한 그래프', '모든 가능한 간선'],
+        answer: 0,
+        explain: '교집합은 두 집합에 모두 속한 원소이므로 공통 이웃입니다.'
+      },
+      {
+        q: '인접 행렬 A에서 A²[i][j]는 무엇을 의미할까요?',
+        options: ['i에서 j까지 길이 2인 경로 개수', 'i의 차수', 'j의 번호', '전체 정점 수'],
+        answer: 0,
+        explain: '인접 행렬의 제곱은 길이 2 경로 개수를 나타냅니다.'
+      },
+      {
+        q: '보수 그래프의 간선 집합은 어떻게 구할까요?',
+        options: ['원래 간선을 모두 두 번 쓴다', '가능한 모든 간선 K에서 원래 간선 E를 뺀다', '정점 집합을 비운다', '행렬을 모두 0으로 만든다'],
+        answer: 1,
+        explain: '보수 그래프는 원래 연결되지 않은 정점들을 연결합니다. 즉 K-E입니다.'
+      }
+    ];
+    let quizIndex = 0;
+
+    function renderQuiz() {
+      const quiz = quizzes[quizIndex];
+      document.getElementById('quizQuestion').textContent = `${quizIndex + 1}. ${quiz.q}`;
+      const box = document.getElementById('quizOptions');
+      box.innerHTML = '';
+      document.getElementById('quizFeedback').textContent = '정답을 선택해 보세요.';
+      quiz.options.forEach((option, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'option';
+        btn.textContent = option;
+        btn.onclick = () => checkAnswer(btn, idx);
+        box.appendChild(btn);
+      });
+    }
+
+    function checkAnswer(button, idx) {
+      const quiz = quizzes[quizIndex];
+      const buttons = document.querySelectorAll('.option');
+      buttons.forEach((b, i) => {
+        b.disabled = true;
+        if (i === quiz.answer) b.classList.add('correct');
+      });
+      if (idx === quiz.answer) {
+        button.classList.add('correct');
+        document.getElementById('quizFeedback').textContent = `정답입니다. ${quiz.explain}`;
+      } else {
+        button.classList.add('wrong');
+        document.getElementById('quizFeedback').textContent = `아쉽습니다. ${quiz.explain}`;
+      }
+    }
+
+    function nextQuiz() {
+      quizIndex = (quizIndex + 1) % quizzes.length;
+      renderQuiz();
+    }
+
+    window.addEventListener('resize', drawGraph);
+    renderQuiz();
+    buildGraph();
+  </script>
+</body>
+</html>
