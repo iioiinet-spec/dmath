@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>C언어 그래프 행렬 입력 방법 인터랙티브 학습</title>
+  <style>
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "Pretendard", "Noto Sans KR", Arial, sans-serif;
+      background: linear-gradient(135deg, #ecfeff 0%, #eef2ff 42%, #fff7ed 100%);
+      color: #172033;
+      line-height: 1.7;
+    }
+    header {
+      padding: 58px 22px 42px;
+      text-align: center;
+      color: white;
+      background:
+        radial-gradient(circle at 12% 20%, rgba(34,211,238,.45), transparent 28%),
+        radial-gradient(circle at 84% 18%, rgba(251,191,36,.38), transparent 30%),
+        linear-gradient(135deg, #0f172a, #1e40af 52%, #7c2d12);
+      position: relative;
+      overflow: hidden;
+    }
+    header::before, header::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,.16);
+    }
+    header::before { width: 270px; height: 270px; left: -90px; bottom: -130px; }
+    header::after { width: 190px; height: 190px; right: -50px; top: -70px; }
+    header h1 {
+      margin: 0;
+      font-size: clamp(29px, 5.2vw, 52px);
+      letter-spacing: -1.4px;
+      position: relative;
+      z-index: 1;
+    }
+    header p {
+      max-width: 900px;
+      margin: 18px auto 0;
+      font-size: 18px;
+      opacity: .95;
+      position: relative;
+      z-index: 1;
+    }
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      gap: 8px;
+      padding: 10px;
+      overflow-x: auto;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid #dbe3ef;
+      justify-content: center;
+    }
+    nav a {
+      text-decoration: none;
+      white-space: nowrap;
+      color: #334155;
+      border: 1px solid #dbe3ef;
+      background: #f8fafc;
+      padding: 9px 13px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 900;
+    }
+    nav a:hover { background: #dbeafe; color: #1d4ed8; }
+    main {
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 28px 18px 74px;
+    }
+    section {
+      margin: 28px 0;
+      padding: 28px;
+      background: rgba(255,255,255,.93);
+      border: 1px solid #e2e8f0;
+      border-radius: 28px;
+      box-shadow: 0 18px 45px rgba(15,23,42,.08);
+    }
+    h2 {
+      margin: 0 0 18px;
+      font-size: 28px;
+      color: #172554;
+      letter-spacing: -.5px;
+    }
+    h3 { color: #312e81; margin-top: 24px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+    }
+    .card {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 22px;
+      padding: 20px;
+      box-shadow: 0 8px 22px rgba(15,23,42,.055);
+    }
+    .card strong { color: #1d4ed8; }
+    .highlight {
+      padding: 18px;
+      border-radius: 18px;
+      background: linear-gradient(120deg, #fef3c7, #dbeafe);
+      border-left: 6px solid #2563eb;
+      font-weight: 900;
+    }
+    .formula {
+      display: inline-block;
+      margin: 7px 0;
+      padding: 10px 14px;
+      border-radius: 14px;
+      background: #eef2ff;
+      color: #3730a3;
+      font-weight: 900;
+      font-size: 17px;
+    }
+    .pill {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: #dcfce7;
+      color: #166534;
+      font-size: 13px;
+      font-weight: 900;
+      margin: 4px 4px 4px 0;
+    }
+    .pill.blue { background: #dbeafe; color: #1d4ed8; }
+    .pill.orange { background: #ffedd5; color: #c2410c; }
+    .flow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+    .step {
+      flex: 1 1 180px;
+      text-align: center;
+      padding: 15px;
+      border-radius: 18px;
+      background: #f8fafc;
+      border: 1px solid #dbe3ef;
+      font-weight: 900;
+    }
+    .arrow { color: #2563eb; font-size: 24px; font-weight: 900; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 16px;
+      background: white;
+      margin: 12px 0;
+    }
+    th, td {
+      border: 1px solid #e2e8f0;
+      padding: 11px;
+      text-align: center;
+    }
+    th { background: #1e3a8a; color: white; }
+    details {
+      background: #f8fafc;
+      border: 1px solid #dbe3ef;
+      border-radius: 18px;
+      margin: 12px 0;
+      padding: 14px 18px;
+    }
+    summary {
+      cursor: pointer;
+      color: #1e40af;
+      font-weight: 900;
+    }
+    pre {
+      overflow-x: auto;
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 18px;
+      border-radius: 18px;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+    code { font-family: "D2Coding", "Consolas", monospace; }
+    input, textarea, select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 14px;
+      font-size: 15px;
+      margin: 6px 0 12px;
+      background: white;
+    }
+    textarea { min-height: 120px; resize: vertical; font-family: "D2Coding", Consolas, monospace; }
+    .btn {
+      border: 0;
+      border-radius: 14px;
+      padding: 11px 15px;
+      background: #2563eb;
+      color: white;
+      font-weight: 900;
+      cursor: pointer;
+      margin: 5px 5px 5px 0;
+    }
+    .btn:hover { background: #1d4ed8; transform: translateY(-1px); }
+    .btn.secondary { background: #7c3aed; }
+    .btn.dark { background: #0f172a; }
+    .btn.orange { background: #ea580c; }
+    .result {
+      min-height: 48px;
+      background: #ecfeff;
+      border: 1px solid #67e8f9;
+      padding: 14px;
+      border-radius: 16px;
+      font-weight: 900;
+      color: #155e75;
+      margin-top: 10px;
+      white-space: pre-wrap;
+    }
+    .matrix-table td, .matrix-table th {
+      width: 42px;
+      height: 42px;
+      padding: 6px;
+      font-weight: 900;
+    }
+    .matrix-one { background: #dbeafe; color: #1d4ed8; }
+    .matrix-zero { background: #f8fafc; color: #94a3b8; }
+    .matrix-inf { background: #fee2e2; color: #991b1b; font-size: 12px; }
+    .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 18px; }
+    .tab-btn {
+      border: 1px solid #bfdbfe;
+      background: #eff6ff;
+      color: #1d4ed8;
+      padding: 9px 12px;
+      border-radius: 999px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+    .tab-btn.active { background: #2563eb; color: white; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    .quiz-box {
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      border-radius: 22px;
+      padding: 20px;
+    }
+    .option {
+      display: block;
+      width: 100%;
+      text-align: left;
+      margin: 8px 0;
+      padding: 12px;
+      border: 1px solid #e2e8f0;
+      background: white;
+      border-radius: 14px;
+      cursor: pointer;
+      font-weight: 800;
+    }
+    .option:hover { background: #eff6ff; }
+    .correct { background: #dcfce7 !important; border-color: #22c55e !important; }
+    .wrong { background: #fee2e2 !important; border-color: #ef4444 !important; }
+    footer { text-align: center; padding: 30px; color: #475569; }
+    @media (max-width: 760px) {
+      section { padding: 20px; border-radius: 20px; }
+      nav { justify-content: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>C언어 그래프를 행렬로 입력하는 다양한 방법</h1>
+    <p>무방향, 방향, 가중치, 문자 행렬, 이름 정점, 거리 행렬, 중복 간선, 0번 정점 입력까지 한 번에 익히는 인터랙티브 수업자료입니다.</p>
+  </header>
+
+  <nav>
+    <a href="#concept">기본 개념</a>
+    <a href="#patterns">입력 방식</a>
+    <a href="#interactive">행렬 실습</a>
+    <a href="#codes">코드 모음</a>
+    <a href="#degree">차수/질문</a>
+    <a href="#floyd">거리 행렬</a>
+    <a href="#mistakes">실수</a>
+    <a href="#quiz">퀴즈</a>
+  </nav>
+
+  <main>
+    <section id="concept">
+      <h2>1. 기본 개념</h2>
+      <div class="highlight">그래프를 C언어에서 행렬로 저장할 때는 보통 2차원 배열을 사용합니다.</div>
+      <p class="formula">int graph[101][101];</p>
+      <p><code>graph[a][b] = 1;</code> 이면 a번 정점과 b번 정점이 연결되어 있다는 뜻입니다.</p>
+      <div class="flow">
+        <div class="step">1. 입력 방식 확인</div>
+        <div class="arrow">→</div>
+        <div class="step">2. 방향/무방향 확인</div>
+        <div class="arrow">→</div>
+        <div class="step">3. 가중치 여부 확인</div>
+        <div class="arrow">→</div>
+        <div class="step">4. graph 배열에 저장</div>
+      </div>
+    </section>
+
+    <section id="patterns">
+      <h2>2. 그래프를 행렬로 입력하는 12가지 방법</h2>
+      <div class="grid">
+        <div class="card"><strong>1. 간선 목록</strong><br><span class="pill">무방향</span><p class="formula">graph[a][b]=graph[b][a]=1</p></div>
+        <div class="card"><strong>2. 방향 간선 목록</strong><br><span class="pill blue">방향</span><p class="formula">graph[a][b]=1</p></div>
+        <div class="card"><strong>3. 가중치 그래프</strong><br><span class="pill orange">가중치</span><p class="formula">graph[a][b]=w</p></div>
+        <div class="card"><strong>4. 행렬 직접 입력</strong><br><span class="pill">행렬</span><p class="formula">scanf("%d", &graph[i][j])</p></div>
+        <div class="card"><strong>5. 문자 행렬</strong><br><span class="pill blue">문자열</span><p class="formula">line[j]-'0'</p></div>
+        <div class="card"><strong>6. 이름 정점</strong><br><span class="pill orange">A,B,C</span><p class="formula">c-'A'+1</p></div>
+        <div class="card"><strong>7. 연결 여부 질문</strong><br><span class="pill">O(1)</span><p class="formula">if(graph[a][b])</p></div>
+        <div class="card"><strong>8. 차수 구하기</strong><br><span class="pill blue">행의 합</span><p class="formula">degree += graph[i][j]</p></div>
+        <div class="card"><strong>9. 진입/진출차수</strong><br><span class="pill orange">방향</span><p class="formula">행=진출, 열=진입</p></div>
+        <div class="card"><strong>10. 거리 행렬</strong><br><span class="pill">INF</span><p class="formula">dist[a][b]=w</p></div>
+        <div class="card"><strong>11. 중복 간선</strong><br><span class="pill blue">최솟값</span><p class="formula">if(w&lt;dist[a][b])</p></div>
+        <div class="card"><strong>12. 0번 정점</strong><br><span class="pill orange">0~n-1</span><p class="formula">for(i=0;i&lt;n;i++)</p></div>
+      </div>
+
+      <h3>2.1 정리표</h3>
+      <table>
+        <tr><th>입력 방식</th><th>저장값</th><th>방향 여부</th><th>대표 코드</th></tr>
+        <tr><td>간선 목록</td><td>1</td><td>무방향</td><td>graph[a][b]=graph[b][a]=1</td></tr>
+        <tr><td>방향 간선 목록</td><td>1</td><td>방향</td><td>graph[a][b]=1</td></tr>
+        <tr><td>가중치 간선 목록</td><td>w</td><td>무방향/방향</td><td>graph[a][b]=w</td></tr>
+        <tr><td>행렬 직접 입력</td><td>입력값</td><td>둘 다 가능</td><td>scanf("%d",&graph[i][j])</td></tr>
+        <tr><td>문자 행렬 입력</td><td>0 또는 1</td><td>둘 다 가능</td><td>line[j]-'0'</td></tr>
+        <tr><td>거리 행렬</td><td>거리 또는 INF</td><td>보통 방향</td><td>dist[a][b]=w</td></tr>
+      </table>
+    </section>
+
+    <section id="interactive">
+      <h2>3. 인터랙티브 행렬 생성 실습</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>3.1 입력 설정</h3>
+          <label>입력 방식</label>
+          <select id="mode" onchange="loadModeSample()">
+            <option value="undirected">간선 목록 - 무방향</option>
+            <option value="directed">방향 간선 목록</option>
+            <option value="weightedUndirected">가중치 무방향</option>
+            <option value="weightedDirected">가중치 방향</option>
+            <option value="matrix">행렬 직접 입력</option>
+            <option value="charMatrix">문자 행렬 입력</option>
+            <option value="name">이름 정점 A,B,C</option>
+            <option value="zeroBased">0번 정점부터</option>
+            <option value="dist">거리 행렬 INF</option>
+            <option value="duplicate">중복 간선 최솟값</option>
+          </select>
+          <label>정점 수 n</label>
+          <input id="nInput" type="number" min="2" max="9" value="4" />
+          <label>입력 데이터</label>
+          <textarea id="dataInput"></textarea>
+          <button class="btn" onclick="makeMatrix()">행렬 만들기</button>
+          <button class="btn secondary" onclick="loadModeSample()">예제 다시 불러오기</button>
+          <div id="explainBox" class="result">입력 방식을 선택하세요.</div>
+        </div>
+        <div class="card">
+          <h3>3.2 생성된 행렬</h3>
+          <div id="matrixBox"></div>
+          <div id="summaryBox" class="result">결과가 표시됩니다.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="codes">
+      <h2>4. 코드 모음: 예제별 펼쳐보기</h2>
+      <div class="tabs">
+        <button class="tab-btn active" onclick="showTab('c1', this)">1. 무방향</button>
+        <button class="tab-btn" onclick="showTab('c2', this)">2. 방향</button>
+        <button class="tab-btn" onclick="showTab('c3', this)">3. 가중치</button>
+        <button class="tab-btn" onclick="showTab('c4', this)">4. 행렬 직접</button>
+        <button class="tab-btn" onclick="showTab('c5', this)">5. 문자 행렬</button>
+        <button class="tab-btn" onclick="showTab('c6', this)">6. 이름 정점</button>
+        <button class="tab-btn" onclick="showTab('c7', this)">7. 연결 확인</button>
+        <button class="tab-btn" onclick="showTab('c8', this)">8. 차수</button>
+      </div>
+
+      <div id="c1" class="tab-panel active">
+        <h3>4.1 간선 목록으로 무방향 그래프 입력</h3>
+        <pre><code>#include &lt;stdio.h&gt;
+
+int main() {
+    int n, m;
+    int graph[101][101] = {0};
+
+    scanf("%d %d", &n, &m);
+
+    for (int i = 0; i &lt; m; i++) {
+        int a, b;
+        scanf("%d %d", &a, &b);
+        graph[a][b] = 1;
+        graph[b][a] = 1;
+    }
+
+    for (int i = 1; i &lt;= n; i++) {
+        for (int j = 1; j &lt;= n; j++) printf("%d ", graph[i][j]);
+        printf("\n");
+    }
+    return 0;
+}</code></pre>
+      </div>
+
+      <div id="c2" class="tab-panel">
+        <h3>4.2 방향 그래프 입력</h3>
+        <pre><code>#include &lt;stdio.h&gt;
+
+int main() {
+    int n, m;
+    int graph[101][101] = {0};
+
+    scanf("%d %d", &n, &m);
+
+    for (int i = 0; i &lt; m; i++) {
+        int a, b;
+        scanf("%d %d", &a, &b);
+        graph[a][b] = 1;
+    }
+
+    for (int i = 1; i &lt;= n; i++) {
+        for (int j = 1; j &lt;= n; j++) printf("%d ", graph[i][j]);
+        printf("\n");
+    }
+    return 0;
+}</code></pre>
+      </div>
+
+      <div id="c3" class="tab-panel">
+        <h3>4.3 가중치 그래프 입력</h3>
+        <pre><code>#include &lt;stdio.h&gt;
+
+int main() {
+    int n, m;
+    int graph[101][101] = {0};
+
+    scanf("%d %d", &n, &m);
+
+    for (int i = 0; i &lt; m; i++) {
+        int a, b, w;
+        scanf("%d %d %d", &a, &b, &w);
+        graph[a][b] = w;
+        graph[b][a] = w;
+    }
+
+    for (int i = 1; i &lt;= n; i++) {
+        for (int j = 1; j &lt;= n; j++) printf("%d ", graph[i][j]);
+        printf("\n");
+    }
+    return 0;
+}</code></pre>
+      </div>
+
+      <div id="c4" class="tab-panel">
+        <h3>4.4 인접 행렬 자체를 입력받기</h3>
+        <pre><code>#include &lt;stdio.h&gt;
+
+int main() {
+    int n;
+    int graph[101][101];
+
+    scanf("%d", &n);
+
+    for (int i = 1; i &lt;= n; i++) {
+        for (int j = 1; j &lt;= n; j++) {
+            scanf("%d", &graph[i][j]);
+        }
+    }
+
+    for (int i = 1; i &lt;= n; i++) {
+        for (int j = 1; j &lt;= n; j++) printf("%d ", graph[i][j]);
+        printf("\n");
+    }
+    return 0;
+}</code></pre>
+      </div>
+
+      <div id="c5" class="tab-panel">
+        <h3>4.5 문자 그래프를 행렬로 입력받기</h3>
+        <pre><code>#include &lt;stdio.h&gt;
+
+int main() {
+    int n;
+    int graph[101][101];
+    char line[101];
+
+    scanf("%d", &n);
+
+    for (int i = 1; i &lt;= n; i++) {
+        scanf("%s", line);
+        for (int j = 1; j &lt;= n; j++) {
+            graph[i][j] = line[j - 1] - '0';
+        }
+    }
+
+    for (int i = 1; i &lt;= n; i++) {
+        for (int j = 1; j &lt;= n; j++) printf("%d ", graph[i][j]);
+        printf("\n");
+    }
+    return 0;
+}</code></pre>
+      </div>
+
+      <div id="c6" class="tab-panel">
+        <h3>4.6 도시 이름을 번호로 바꾸어 입력받기</h3>
+        <pre><code>#include &lt;stdio.h&gt;
+
+int getIndex(char c) {
+    return c - 'A' + 1;
+}
+
+int main() {
+    int n, m;
+    int graph[101][101] = {0};
+
+    scanf("%d %d", &n, &m);
+
+    for (int i = 0; i &lt; m; i++) {
+        char a, b;
+        scanf(" %c %c", &a, &b);
+        int x = getIndex(a);
+        int y = getIndex(b);
+        graph[x][y] = 1;
+        graph[y][x] = 1;
+    }
+
+    for (int i = 1; i &lt;= n; i++) {
+        for (int j = 1; j &lt;= n; j++) printf("%d ", graph[i][j]);
+        printf("\n");
+    }
+    return 0;
+}</code></pre>
+      </div>
+
+      <div id="c7" class="tab-panel">
+        <h3>4.7 연결 여부를 빠르게 확인하기</h3>
+        <pre><code>#include &lt;stdio.h&gt;
+
+int main() {
+    int n, m, q;
+    int graph[101][101] = {0};
+
+    scanf("%d %d", &n, &m);
+
+    for (int i = 0; i &lt; m; i++) {
+        int a, b;
+        scanf("%d %d", &a, &b);
+        graph[a][b] = 1;
+        graph[b][a] = 1;
+    }
+
+    scanf("%d", &q);
+
+    for (int i = 0; i &lt; q; i++) {
+        int a, b;
+        scanf("%d %d", &a, &b);
+        if (graph[a][b] == 1) printf("YES\n");
+        else printf("NO\n");
+    }
+    return 0;
+}</code></pre>
+      </div>
+
+      <div id="c8" class="tab-panel">
+        <h3>4.8 각 정점의 차수 구하기</h3>
+        <pre><code>#include &lt;stdio.h&gt;
+
+int main() {
+    int n, m;
+    int graph[101][101] = {0};
+
+    scanf("%d %d", &n, &m);
+
+    for (int i = 0; i &lt; m; i++) {
+        int a, b;
+        scanf("%d %d", &a, &b);
+        graph[a][b] = 1;
+        graph[b][a] = 1;
+    }
+
+    for (int i = 1; i &lt;= n; i++) {
+        int degree = 0;
+        for (int j = 1; j &lt;= n; j++) {
+            if (graph[i][j] == 1) degree++;
+        }
+        printf("%d번 정점 차수: %d\n", i, degree);
+    }
+    return 0;
+}</code></pre>
+      </div>
+    </section>
+
+    <section id="degree">
+      <h2>5. 차수와 연결 질문</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>5.1 무방향 그래프 차수</h3>
+          <p>한 행에서 1의 개수를 세면 정점의 차수가 됩니다.</p>
+          <p class="formula">degree = graph[i][1] + graph[i][2] + ... + graph[i][n]</p>
+        </div>
+        <div class="card">
+          <h3>5.2 방향 그래프 진출/진입차수</h3>
+          <p>진출차수는 행, 진입차수는 열을 봅니다.</p>
+          <p class="formula">out = graph[i][j], in = graph[j][i]</p>
+        </div>
+        <div class="card">
+          <h3>5.3 연결 여부 확인</h3>
+          <p>인접 행렬은 두 정점의 연결 여부를 바로 확인할 수 있습니다.</p>
+          <p class="formula">graph[a][b] == 1</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="floyd">
+      <h2>6. 플로이드 워셜용 거리 행렬</h2>
+      <p>최단거리 문제에서는 연결되지 않은 곳을 0으로 두면 안 됩니다. 0은 거리 0이라는 의미가 될 수 있기 때문입니다.</p>
+      <p class="formula">#define INF 1000000000</p>
+      <pre><code>#include &lt;stdio.h&gt;
+
+#define INF 1000000000
+
+int main() {
+    int n, m;
+    int dist[101][101];
+
+    scanf("%d %d", &n, &m);
+
+    for (int i = 1; i &lt;= n; i++) {
+        for (int j = 1; j &lt;= n; j++) {
+            if (i == j) dist[i][j] = 0;
+            else dist[i][j] = INF;
+        }
+    }
+
+    for (int i = 0; i &lt; m; i++) {
+        int a, b, w;
+        scanf("%d %d %d", &a, &b, &w);
+        dist[a][b] = w;
+    }
+
+    return 0;
+}</code></pre>
+      <h3>6.1 중복 간선이 있을 때</h3>
+      <pre><code>if (w &lt; dist[a][b]) {
+    dist[a][b] = w;
+}</code></pre>
+    </section>
+
+    <section id="patterns2">
+      <h2>7. 가장 중요한 코드 패턴</h2>
+      <div class="grid">
+        <div class="card"><strong>1. 무방향 그래프</strong><pre><code>graph[a][b] = 1;
+graph[b][a] = 1;</code></pre></div>
+        <div class="card"><strong>2. 방향 그래프</strong><pre><code>graph[a][b] = 1;</code></pre></div>
+        <div class="card"><strong>3. 가중치 무방향</strong><pre><code>graph[a][b] = w;
+graph[b][a] = w;</code></pre></div>
+        <div class="card"><strong>4. 가중치 방향</strong><pre><code>graph[a][b] = w;</code></pre></div>
+        <div class="card"><strong>5. 연결 확인</strong><pre><code>if (graph[a][b] == 1)
+    printf("YES\n");
+else
+    printf("NO\n");</code></pre></div>
+        <div class="card"><strong>6. 차수 구하기</strong><pre><code>int degree = 0;
+for (int j = 1; j &lt;= n; j++) {
+    if (graph[i][j] == 1) degree++;
+}</code></pre></div>
+      </div>
+    </section>
+
+    <section id="mistakes">
+      <h2>8. 학생들이 자주 하는 실수</h2>
+      <details open>
+        <summary>8.1 무방향 그래프인데 한쪽만 저장함</summary>
+        <p>틀린 코드</p>
+        <pre><code>graph[a][b] = 1;</code></pre>
+        <p>올바른 코드</p>
+        <pre><code>graph[a][b] = 1;
+graph[b][a] = 1;</code></pre>
+      </details>
+      <details>
+        <summary>8.2 1번 정점부터인데 0번부터 출력함</summary>
+        <pre><code>for (int i = 1; i &lt;= n; i++)</code></pre>
+      </details>
+      <details>
+        <summary>8.3 문자 숫자를 정수로 바꾸지 않음</summary>
+        <p>틀린 코드</p>
+        <pre><code>graph[i][j] = line[j];</code></pre>
+        <p>올바른 코드</p>
+        <pre><code>graph[i][j] = line[j] - '0';</code></pre>
+      </details>
+      <details>
+        <summary>8.4 최단거리 문제에서 연결 없음 값을 0으로 둠</summary>
+        <p>연결 없음은 INF로 두어야 합니다.</p>
+        <pre><code>#define INF 1000000000</code></pre>
+      </details>
+    </section>
+
+    <section id="quiz">
+      <h2>9. 개념 확인 퀴즈</h2>
+      <div class="quiz-box">
+        <h3 id="quizQuestion">문제</h3>
+        <div id="quizOptions"></div>
+        <div id="quizFeedback" class="result">정답을 선택해 보세요.</div>
+        <button class="btn secondary" onclick="nextQuiz()">다음 문제</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>10. 한 줄 정리</h2>
+      <div class="highlight">그래프를 행렬로 입력받을 때는 방향 여부, 가중치 여부, 정점 번호 시작, 입력 형식, 연결 없음 값을 먼저 판단하면 C 코드 구조가 자동으로 정해집니다.</div>
+      <div class="grid" style="margin-top:16px;">
+        <div class="card"><strong>1.</strong> 방향 그래프인가, 무방향 그래프인가?</div>
+        <div class="card"><strong>2.</strong> 가중치가 있는가, 없는가?</div>
+        <div class="card"><strong>3.</strong> 정점 번호가 0부터인가, 1부터인가?</div>
+        <div class="card"><strong>4.</strong> 입력이 간선 목록인가, 행렬 자체인가?</div>
+        <div class="card"><strong>5.</strong> 연결 없음 값을 0으로 둘 것인가, INF로 둘 것인가?</div>
+      </div>
+    </section>
+  </main>
+
+  <footer>C언어 그래프 행렬 입력 수업자료용 인터랙티브 페이지</footer>
+
+  <script>
+    const samples = {
+      undirected: { n: 4, data: '1 2\n1 3\n2 4', explain: '무방향 그래프: graph[a][b]와 graph[b][a]를 모두 1로 저장합니다.' },
+      directed: { n: 4, data: '1 2\n1 3\n3 2\n4 1', explain: '방향 그래프: a → b만 저장하므로 graph[a][b]만 1입니다.' },
+      weightedUndirected: { n: 4, data: '1 2 7\n1 3 5\n2 4 9\n3 4 2', explain: '가중치 무방향 그래프: 1 대신 가중치 w를 양쪽에 저장합니다.' },
+      weightedDirected: { n: 4, data: '1 2 3\n1 3 8\n2 3 2\n3 4 1\n4 2 4', explain: '가중치 방향 그래프: a → b 방향으로만 가중치 w를 저장합니다.' },
+      matrix: { n: 4, data: '0 1 1 0\n1 0 0 1\n1 0 0 0\n0 1 0 0', explain: '행렬 직접 입력: 입력된 n×n 값을 그대로 graph[i][j]에 저장합니다.' },
+      charMatrix: { n: 4, data: '0110\n1001\n1000\n0100', explain: "문자 행렬 입력: '1'-'0'=1, '0'-'0'=0으로 바꿉니다." },
+      name: { n: 4, data: 'A B\nA C\nB D', explain: "이름 정점: A→1, B→2처럼 c-'A'+1로 번호를 바꿉니다." },
+      zeroBased: { n: 4, data: '0 1\n0 2\n1 3', explain: '0번 정점부터: 배열 인덱스와 반복문을 0부터 n-1까지 사용합니다.' },
+      dist: { n: 4, data: '1 2 3\n1 3 8\n2 3 2\n3 4 1\n4 2 4', explain: '거리 행렬: 연결되지 않은 곳은 INF, 자기 자신은 0으로 초기화합니다.' },
+      duplicate: { n: 3, data: '1 2 10\n1 2 3\n2 3 5\n1 3 100', explain: '중복 간선: 같은 방향 간선이 여러 개면 가장 작은 가중치만 저장합니다.' }
+    };
+
+    function loadModeSample() {
+      const mode = document.getElementById('mode').value;
+      document.getElementById('nInput').value = samples[mode].n;
+      document.getElementById('dataInput').value = samples[mode].data;
+      document.getElementById('explainBox').textContent = samples[mode].explain;
+      makeMatrix();
+    }
+
+    function initMatrix(n, fill = 0) {
+      return Array.from({ length: n }, () => Array(n).fill(fill));
+    }
+
+    function makeMatrix() {
+      const mode = document.getElementById('mode').value;
+      const n = Number(document.getElementById('nInput').value);
+      const raw = document.getElementById('dataInput').value.trim();
+      let matrix;
+      let summary = '';
+      const INF = 1000000000;
+
+      if (mode === 'dist' || mode === 'duplicate') {
+        matrix = initMatrix(n, INF);
+        for (let i = 0; i < n; i++) matrix[i][i] = 0;
+      } else {
+        matrix = initMatrix(n, 0);
+      }
+
+      if (mode === 'matrix') {
+        const rows = raw.split(/\n+/).map(line => line.trim().split(/\s+/).map(Number));
+        for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) matrix[i][j] = rows[i]?.[j] ?? 0;
+        summary = '입력된 행렬을 그대로 저장했습니다.';
+      } else if (mode === 'charMatrix') {
+        const rows = raw.split(/\n+/).map(line => line.trim());
+        for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) matrix[i][j] = Number(rows[i]?.[j] ?? 0);
+        summary = "문자 '0', '1'을 숫자 0, 1로 변환했습니다.";
+      } else {
+        const lines = raw.length ? raw.split(/\n+/) : [];
+        for (const line of lines) {
+          const parts = line.trim().split(/\s+/);
+          if (parts.length < 2) continue;
+          let a, b, w;
+          if (mode === 'name') {
+            a = parts[0].charCodeAt(0) - 'A'.charCodeAt(0) + 1;
+            b = parts[1].charCodeAt(0) - 'A'.charCodeAt(0) + 1;
+            w = 1;
+          } else {
+            a = Number(parts[0]);
+            b = Number(parts[1]);
+            w = Number(parts[2] ?? 1);
+          }
+          if (mode === 'zeroBased') {
+            if (a >= 0 && a < n && b >= 0 && b < n) {
+              matrix[a][b] = 1;
+              matrix[b][a] = 1;
+            }
+          } else {
+            if (a < 1 || a > n || b < 1 || b > n) continue;
+            const x = a - 1, y = b - 1;
+            if (mode === 'undirected' || mode === 'name') {
+              matrix[x][y] = 1; matrix[y][x] = 1;
+            } else if (mode === 'directed') {
+              matrix[x][y] = 1;
+            } else if (mode === 'weightedUndirected') {
+              matrix[x][y] = w; matrix[y][x] = w;
+            } else if (mode === 'weightedDirected' || mode === 'dist') {
+              matrix[x][y] = w;
+            } else if (mode === 'duplicate') {
+              if (w < matrix[x][y]) matrix[x][y] = w;
+            }
+          }
+        }
+        summary = samples[mode].explain;
+      }
+
+      renderMatrix(matrix, mode);
+      document.getElementById('summaryBox').textContent = summary + '\n' + getPatternText(mode);
+      document.getElementById('explainBox').textContent = samples[mode]?.explain ?? '행렬을 생성했습니다.';
+    }
+
+    function getPatternText(mode) {
+      const map = {
+        undirected: '핵심 코드: graph[a][b] = 1; graph[b][a] = 1;',
+        directed: '핵심 코드: graph[a][b] = 1;',
+        weightedUndirected: '핵심 코드: graph[a][b] = w; graph[b][a] = w;',
+        weightedDirected: '핵심 코드: graph[a][b] = w;',
+        matrix: '핵심 코드: scanf("%d", &graph[i][j]);',
+        charMatrix: "핵심 코드: graph[i][j] = line[j-1] - '0';",
+        name: "핵심 코드: int x = c - 'A' + 1;",
+        zeroBased: '핵심 코드: for (int i=0; i<n; i++)',
+        dist: '핵심 코드: 연결 없음은 INF, 자기 자신은 0',
+        duplicate: '핵심 코드: if (w < dist[a][b]) dist[a][b] = w;'
+      };
+      return map[mode];
+    }
+
+    function renderMatrix(matrix, mode) {
+      const box = document.getElementById('matrixBox');
+      const n = matrix.length;
+      const zeroBased = mode === 'zeroBased';
+      let html = '<table class="matrix-table"><tr><th></th>';
+      for (let i = 0; i < n; i++) html += `<th>${zeroBased ? i : i + 1}</th>`;
+      html += '</tr>';
+      for (let i = 0; i < n; i++) {
+        html += `<tr><th>${zeroBased ? i : i + 1}</th>`;
+        for (let j = 0; j < n; j++) {
+          const val = matrix[i][j];
+          let cls = 'matrix-zero';
+          let text = val;
+          if (val === 1000000000) { cls = 'matrix-inf'; text = 'INF'; }
+          else if (val !== 0) cls = 'matrix-one';
+          html += `<td class="${cls}">${text}</td>`;
+        }
+        html += '</tr>';
+      }
+      html += '</table>';
+      box.innerHTML = html;
+    }
+
+    function showTab(id, btn) {
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    const quizzes = [
+      {
+        q: '무방향 그래프에서 a와 b가 연결되었을 때 올바른 저장 방법은?',
+        options: ['graph[a][b] = 1만 저장', 'graph[b][a] = 1만 저장', 'graph[a][b]와 graph[b][a]를 모두 1로 저장', '저장하지 않는다'],
+        answer: 2,
+        explain: '무방향 그래프는 양쪽 방향이 같은 연결이므로 두 칸 모두 저장합니다.'
+      },
+      {
+        q: '방향 그래프에서 a → b를 저장할 때 올바른 코드는?',
+        options: ['graph[a][b] = 1', 'graph[b][a] = 1만 사용', '항상 양쪽 저장', 'graph[a+b] = 1'],
+        answer: 0,
+        explain: '방향 그래프는 방향이 있으므로 a에서 b로 가는 칸만 저장합니다.'
+      },
+      {
+        q: "문자 행렬에서 line[j]가 '1'일 때 숫자 1로 바꾸는 방법은?",
+        options: ['line[j] + 1', "line[j] - '0'", 'line[j] * 0', 'line[j] / 10'],
+        answer: 1,
+        explain: "문자 '1'에서 문자 '0'을 빼면 숫자 1이 됩니다." 
+      },
+      {
+        q: '최단거리용 거리 행렬에서 연결되지 않은 곳은 보통 무엇으로 초기화할까요?',
+        options: ['0', '1', 'INF', '-1만 가능'],
+        answer: 2,
+        explain: '0은 거리 0이라는 의미가 될 수 있으므로 연결 없음은 큰 값 INF로 둡니다.'
+      },
+      {
+        q: '방향 그래프의 진입차수는 인접 행렬에서 어디를 보면 될까요?',
+        options: ['해당 행', '해당 열', '대각선', '마지막 행만'],
+        answer: 1,
+        explain: '진입차수는 다른 정점에서 나에게 들어오는 간선이므로 해당 열을 봅니다.'
+      }
+    ];
+    let quizIndex = 0;
+
+    function renderQuiz() {
+      const quiz = quizzes[quizIndex];
+      document.getElementById('quizQuestion').textContent = `${quizIndex + 1}. ${quiz.q}`;
+      const box = document.getElementById('quizOptions');
+      box.innerHTML = '';
+      document.getElementById('quizFeedback').textContent = '정답을 선택해 보세요.';
+      quiz.options.forEach((option, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'option';
+        btn.textContent = option;
+        btn.onclick = () => checkAnswer(btn, idx);
+        box.appendChild(btn);
+      });
+    }
+
+    function checkAnswer(button, idx) {
+      const quiz = quizzes[quizIndex];
+      const buttons = document.querySelectorAll('.option');
+      buttons.forEach((b, i) => {
+        b.disabled = true;
+        if (i === quiz.answer) b.classList.add('correct');
+      });
+      if (idx === quiz.answer) {
+        button.classList.add('correct');
+        document.getElementById('quizFeedback').textContent = `정답입니다. ${quiz.explain}`;
+      } else {
+        button.classList.add('wrong');
+        document.getElementById('quizFeedback').textContent = `아쉽습니다. ${quiz.explain}`;
+      }
+    }
+
+    function nextQuiz() {
+      quizIndex = (quizIndex + 1) % quizzes.length;
+      renderQuiz();
+    }
+
+    renderQuiz();
+    loadModeSample();
+  </script>
+</body>
+</html>
