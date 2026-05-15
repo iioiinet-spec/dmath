@@ -8,3 +8,24 @@ gms
 
 in
 그래프 다양한 입력 코드
+
+
+free1
+
+ppt  이산수학_1장_수의표현과연산
+http://iioiinet-spec.github.io/dmath/free1/ppt
+
+01 이산수학_1장_문제
+http://iioiinet-spec.github.io/dmath/free1/01
+
+02 이산수학_1장_심화문제
+http://iioiinet-spec.github.io/dmath/free1/02
+
+03 이산수학_1장_정올문제
+http://iioiinet-spec.github.io/dmath/free1/03
+
+04 이산수학_1장_정올기출문제유형
+http://iioiinet-spec.github.io/dmath/free1/04
+
+01.pdf 이산수학_1장_수의표현과연산.pdf
+http://iioiinet-spec.github.io/dmath/free1/01.pdf
