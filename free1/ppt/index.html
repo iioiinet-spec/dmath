@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>이산수학 1장 수의 표현과 연산 60장 강의자료</title>
+<style>
+:root{
+  --bg:#0f172a; --card:#ffffff; --ink:#172033; --muted:#5b6475; --blue:#2563eb; --sky:#e0f2fe; --yellow:#fef3c7; --green:#dcfce7; --red:#fee2e2; --purple:#ede9fe;
+}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(135deg,#0f172a,#1e293b);font-family:'Malgun Gothic','Apple SD Gothic Neo',Arial,sans-serif;color:var(--ink)}
+.deck{max-width:1180px;margin:0 auto;padding:28px 18px 80px}
+.topbar{position:sticky;top:0;z-index:10;background:rgba(15,23,42,.92);backdrop-filter:blur(8px);color:white;padding:12px 18px;border-bottom:1px solid rgba(255,255,255,.15)}
+.topbar .inner{max-width:1180px;margin:auto;display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.progress{height:8px;background:#334155;border-radius:999px;overflow:hidden;min-width:260px;flex:1;max-width:520px}.bar{height:100%;width:0%;background:linear-gradient(90deg,#38bdf8,#a78bfa)}
+.slide{background:var(--card);border-radius:26px;box-shadow:0 22px 60px rgba(0,0,0,.28);padding:42px;margin:30px 0;min-height:650px;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
+.slide:before{content:"";position:absolute;right:-90px;top:-90px;width:260px;height:260px;border-radius:50%;background:linear-gradient(135deg,rgba(37,99,235,.16),rgba(168,85,247,.12))}
+.slide h1{font-size:46px;line-height:1.18;margin:0 0 22px;color:#0f172a}.slide h2{font-size:34px;margin:0 0 20px;color:#0f172a}.slide h3{font-size:24px;margin:20px 0 12px;color:#1e40af}.slide p,.slide li{font-size:21px;line-height:1.75}.slide ul,.slide ol{padding-left:34px}.num{position:absolute;right:28px;bottom:20px;color:#94a3b8;font-weight:700}.tag{display:inline-block;background:#dbeafe;color:#1d4ed8;border-radius:999px;padding:8px 15px;font-weight:700;margin-bottom:16px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.box{border-radius:20px;padding:20px;background:#f8fafc;border:1px solid #e2e8f0}.blue{background:#eff6ff}.yellow{background:#fffbeb}.green{background:#f0fdf4}.red{background:#fef2f2}.purple{background:#f5f3ff}.formula{font-size:26px;background:#0f172a;color:white;border-radius:18px;padding:18px 22px;font-family:Consolas,monospace;margin:16px 0}.code{font-size:18px;background:#111827;color:#e5e7eb;border-radius:18px;padding:18px;white-space:pre-wrap;font-family:Consolas,monospace;line-height:1.55}.table{width:100%;border-collapse:collapse;margin-top:14px;font-size:20px}.table th,.table td{border:1px solid #cbd5e1;padding:12px;text-align:center}.table th{background:#e0f2fe}.big{font-size:64px;font-weight:900;color:#2563eb}.small{font-size:17px;color:var(--muted)}.pill{display:inline-block;padding:6px 12px;border-radius:999px;background:#eef2ff;color:#3730a3;font-weight:700;margin:4px}.nav{display:flex;gap:8px;flex-wrap:wrap}.nav a{color:white;text-decoration:none;background:#334155;padding:7px 10px;border-radius:10px;font-size:13px}.print{background:#2563eb;color:white;border:0;border-radius:10px;padding:9px 14px;cursor:pointer;font-weight:700}@media print{body{background:white}.topbar{display:none}.deck{padding:0}.slide{box-shadow:none;border:1px solid #ddd;page-break-after:always;margin:0;border-radius:0;min-height:100vh}}@media(max-width:820px){.grid{grid-template-columns:1fr}.slide{padding:28px;min-height:auto}.slide h1{font-size:34px}.slide h2{font-size:28px}.slide p,.slide li{font-size:18px}}
+</style>
+</head>
+<body>
+<div class="topbar"><div class="inner"><b>이산수학 1장: 수의 표현과 연산</b><div class="progress"><div class="bar" id="bar"></div></div><button class="print" onclick="window.print()">PDF/인쇄</button></div></div>
+<div class="deck">
+
+<section class="slide" id="s1"><span class="tag">1장 전체 개요</span><h1>이산수학 1장<br>수의 표현과 연산</h1><p>이 장에서는 사람이 쓰는 수, 컴퓨터가 쓰는 수, 그리고 여러 진법 사이의 변환과 계산을 배웁니다.</p><div class="grid"><div class="box blue"><h3>학습 목표</h3><ol><li>수의 체계를 구분한다.</li><li>자연수·정수·유리수·실수의 연산을 이해한다.</li><li>2진수, 8진수, 10진수, 16진수를 변환한다.</li><li>컴퓨터 내부의 수 표현 방식을 이해한다.</li></ol></div><div class="box yellow"><h3>핵심 질문</h3><p>왜 컴퓨터는 0과 1만으로 숫자, 문자, 그림, 소리를 모두 표현할 수 있을까요?</p></div></div><span class="num">1 / 60</span></section>
+
+<section class="slide" id="s2"><span class="tag">목차</span><h2>1장 구성</h2><ol><li>수의 체계</li><li>수의 연산</li><li>진법별 변환</li><li>진법 간 변환</li><li>진법별 사칙연산</li><li>컴퓨터에서의 수의 표현과 연산</li></ol><p class="small">수업 운영: 개념 설명 40%, 손계산 30%, 컴퓨터 표현과 코딩 연결 30%</p><span class="num">2 / 60</span></section>
+
+<section class="slide" id="s3"><span class="tag">수의 체계</span><h2>수는 왜 체계가 필요할까?</h2><p>수학에서는 숫자를 아무렇게나 다루지 않고, 성질에 따라 묶어서 생각합니다. 그래야 연산 규칙을 정확하게 세울 수 있습니다.</p><div class="box green"><h3>예시</h3><p>3은 자연수이지만, -3은 자연수가 아닙니다. 1/2은 정수는 아니지만 유리수입니다.</p></div><div class="formula">자연수 ⊂ 정수 ⊂ 유리수 ⊂ 실수</div><span class="num">3 / 60</span></section>
+
+<section class="slide" id="s4"><span class="tag">수의 체계</span><h2>자연수</h2><p>자연수는 물건의 개수를 셀 때 사용하는 수입니다.</p><div class="grid"><div class="box blue"><h3>자연수 예</h3><p>1, 2, 3, 4, 5, ...</p></div><div class="box red"><h3>주의</h3><p>0을 자연수에 포함하는지 여부는 교재나 분야에 따라 다를 수 있습니다. 컴퓨터 과학에서는 0부터 세는 경우가 많습니다.</p></div></div><span class="num">4 / 60</span></section>
+
+<section class="slide" id="s5"><span class="tag">수의 체계</span><h2>정수</h2><p>정수는 자연수, 0, 음의 정수를 모두 포함합니다.</p><div class="formula">..., -3, -2, -1, 0, 1, 2, 3, ...</div><div class="box yellow"><p>컴퓨터에서는 음수를 표현하기 위해 부호 비트나 2의 보수를 사용합니다. 뒤에서 다시 자세히 배웁니다.</p></div><span class="num">5 / 60</span></section>
+
+<section class="slide" id="s6"><span class="tag">수의 체계</span><h2>유리수</h2><p>유리수는 두 정수의 비율로 나타낼 수 있는 수입니다.</p><div class="formula">유리수 = a / b &nbsp;&nbsp; (a, b는 정수, b ≠ 0)</div><div class="grid"><div class="box green"><h3>예</h3><p>1/2, -3/4, 0.25, 2</p></div><div class="box purple"><h3>특징</h3><p>소수로 나타내면 끝나는 소수 또는 반복되는 소수가 됩니다.</p></div></div><span class="num">6 / 60</span></section>
+
+<section class="slide" id="s7"><span class="tag">수의 체계</span><h2>무리수와 실수</h2><p>무리수는 분수로 정확히 나타낼 수 없는 수입니다. 유리수와 무리수를 합치면 실수가 됩니다.</p><div class="grid"><div class="box blue"><h3>무리수 예</h3><p>√2, π, e</p></div><div class="box yellow"><h3>실수</h3><p>수직선 위의 점으로 나타낼 수 있는 수입니다.</p></div></div><span class="num">7 / 60</span></section>
+
+<section class="slide" id="s8"><span class="tag">수의 체계</span><h2>복소수</h2><p>복소수는 실수와 허수를 함께 사용하는 수입니다.</p><div class="formula">a + bi</div><p>여기서 i는 제곱하면 -1이 되는 특별한 수입니다.</p><div class="box purple"><p>이산수학 1장에서는 주로 정수와 진법 표현에 집중합니다.</p></div><span class="num">8 / 60</span></section>
+
+<section class="slide" id="s9"><span class="tag">수의 체계</span><h2>집합으로 보는 수의 체계</h2><table class="table"><tr><th>수의 종류</th><th>예시</th><th>특징</th></tr><tr><td>자연수</td><td>1, 2, 3</td><td>개수 세기</td></tr><tr><td>정수</td><td>-2, 0, 5</td><td>음수 포함</td></tr><tr><td>유리수</td><td>1/3, 0.5</td><td>분수 표현 가능</td></tr><tr><td>실수</td><td>√2, π</td><td>수직선 위의 수</td></tr></table><span class="num">9 / 60</span></section>
+
+<section class="slide" id="s10"><span class="tag">수의 체계</span><h2>컴퓨터 과학에서 중요한 수</h2><ol><li>정수: 개수, 인덱스, 반복 횟수</li><li>이진수: 컴퓨터 내부 표현</li><li>실수: 측정값, 좌표, 확률</li><li>모듈러 수: 암호, 해시, 알고리즘</li></ol><div class="box green"><p>정보올림피아드에서는 정수 연산, 나머지 연산, 진법 변환이 매우 자주 등장합니다.</p></div><span class="num">10 / 60</span></section>
+
+<section class="slide" id="s11"><span class="tag">수의 연산</span><h2>기본 연산 4가지</h2><div class="grid"><div class="box blue"><h3>덧셈과 뺄셈</h3><p>수의 크기를 증가 또는 감소시킵니다.</p></div><div class="box yellow"><h3>곱셈과 나눗셈</h3><p>같은 수를 반복해서 더하거나 나누는 연산입니다.</p></div></div><div class="formula">+, -, ×, ÷</div><span class="num">11 / 60</span></section>
+
+<section class="slide" id="s12"><span class="tag">수의 연산</span><h2>연산의 우선순위</h2><ol><li>괄호 안을 먼저 계산한다.</li><li>곱셈과 나눗셈을 먼저 계산한다.</li><li>덧셈과 뺄셈을 나중에 계산한다.</li><li>같은 우선순위는 왼쪽에서 오른쪽으로 계산한다.</li></ol><div class="formula">3 + 4 × 2 = 11</div><span class="num">12 / 60</span></section>
+
+<section class="slide" id="s13"><span class="tag">수의 연산</span><h2>교환법칙</h2><p>덧셈과 곱셈은 순서를 바꾸어도 결과가 같습니다.</p><div class="formula">a + b = b + a<br>a × b = b × a</div><div class="box red"><p>뺄셈과 나눗셈은 일반적으로 교환법칙이 성립하지 않습니다.</p></div><span class="num">13 / 60</span></section>
+
+<section class="slide" id="s14"><span class="tag">수의 연산</span><h2>결합법칙</h2><p>덧셈과 곱셈은 묶는 순서를 바꾸어도 결과가 같습니다.</p><div class="formula">(a + b) + c = a + (b + c)<br>(a × b) × c = a × (b × c)</div><span class="num">14 / 60</span></section>
+
+<section class="slide" id="s15"><span class="tag">수의 연산</span><h2>분배법칙</h2><p>곱셈은 덧셈에 대해 분배됩니다.</p><div class="formula">a × (b + c) = a × b + a × c</div><div class="box green"><h3>예</h3><p>3 × (10 + 2) = 3 × 10 + 3 × 2 = 36</p></div><span class="num">15 / 60</span></section>
+
+<section class="slide" id="s16"><span class="tag">수의 연산</span><h2>몫과 나머지</h2><p>정수 나눗셈에서는 몫과 나머지가 중요합니다.</p><div class="formula">a = bq + r &nbsp;&nbsp; (0 ≤ r &lt; b)</div><div class="box blue"><p>17 ÷ 5 = 몫 3, 나머지 2 → 17 = 5 × 3 + 2</p></div><span class="num">16 / 60</span></section>
+
+<section class="slide" id="s17"><span class="tag">수의 연산</span><h2>나머지 연산</h2><p>프로그래밍에서 % 연산자는 나머지를 구합니다.</p><div class="code">printf("%d", 17 % 5);  // 출력: 2</div><ol><li>짝수 판별: n % 2 == 0</li><li>배수 판별: n % k == 0</li><li>순환 구조: 요일, 시계, 배열 회전</li></ol><span class="num">17 / 60</span></section>
+
+<section class="slide" id="s18"><span class="tag">수의 연산</span><h2>거듭제곱</h2><p>같은 수를 여러 번 곱하는 연산입니다.</p><div class="formula">2³ = 2 × 2 × 2 = 8</div><div class="box yellow"><p>진법에서는 각 자리의 값이 밑의 거듭제곱으로 결정됩니다.</p></div><span class="num">18 / 60</span></section>
+
+<section class="slide" id="s19"><span class="tag">수의 연산</span><h2>자리값의 원리</h2><p>우리가 쓰는 10진수는 위치에 따라 값이 달라집니다.</p><div class="formula">357 = 3×100 + 5×10 + 7×1</div><p>즉, 357은 3, 5, 7이라는 숫자의 단순한 나열이 아니라 자리값을 가진 표현입니다.</p><span class="num">19 / 60</span></section>
+
+<section class="slide" id="s20"><span class="tag">수의 연산</span><h2>진법의 핵심</h2><p>진법은 몇 개의 숫자 기호를 사용하여 수를 표현할지 정하는 규칙입니다.</p><div class="grid"><div class="box blue"><h3>10진법</h3><p>0~9, 총 10개 기호</p></div><div class="box green"><h3>2진법</h3><p>0~1, 총 2개 기호</p></div></div><div class="formula">자리값 = 각 자리 숫자 × 밑ⁿ</div><span class="num">20 / 60</span></section>
+
+<section class="slide" id="s21"><span class="tag">진법별 변환</span><h2>10진수의 구조</h2><p>10진수는 10의 거듭제곱을 사용합니다.</p><div class="formula">482 = 4×10² + 8×10¹ + 2×10⁰</div><table class="table"><tr><th>자리</th><th>백의 자리</th><th>십의 자리</th><th>일의 자리</th></tr><tr><td>값</td><td>10²</td><td>10¹</td><td>10⁰</td></tr></table><span class="num">21 / 60</span></section>
+
+<section class="slide" id="s22"><span class="tag">진법별 변환</span><h2>2진수의 구조</h2><p>2진수는 2의 거듭제곱을 사용합니다.</p><div class="formula">1011₂ = 1×2³ + 0×2² + 1×2¹ + 1×2⁰</div><p>결과는 8 + 0 + 2 + 1 = 11입니다.</p><span class="num">22 / 60</span></section>
+
+<section class="slide" id="s23"><span class="tag">진법별 변환</span><h2>2진수 자리값표</h2><table class="table"><tr><th>자리</th><th>2⁷</th><th>2⁶</th><th>2⁵</th><th>2⁴</th><th>2³</th><th>2²</th><th>2¹</th><th>2⁰</th></tr><tr><td>값</td><td>128</td><td>64</td><td>32</td><td>16</td><td>8</td><td>4</td><td>2</td><td>1</td></tr></table><div class="box green"><p>2진수 1101₂ = 8 + 4 + 1 = 13</p></div><span class="num">23 / 60</span></section>
+
+<section class="slide" id="s24"><span class="tag">진법별 변환</span><h2>8진수의 구조</h2><p>8진수는 0부터 7까지의 숫자를 사용합니다.</p><div class="formula">725₈ = 7×8² + 2×8¹ + 5×8⁰</div><p>448 + 16 + 5 = 469입니다.</p><span class="num">24 / 60</span></section>
+
+<section class="slide" id="s25"><span class="tag">진법별 변환</span><h2>16진수의 구조</h2><p>16진수는 0~9와 A~F를 사용합니다.</p><table class="table"><tr><th>16진수</th><td>A</td><td>B</td><td>C</td><td>D</td><td>E</td><td>F</td></tr><tr><th>10진수</th><td>10</td><td>11</td><td>12</td><td>13</td><td>14</td><td>15</td></tr></table><div class="formula">2F₁₆ = 2×16 + 15 = 47</div><span class="num">25 / 60</span></section>
+
+<section class="slide" id="s26"><span class="tag">진법별 변환</span><h2>n진수를 10진수로 바꾸는 방법</h2><ol><li>오른쪽 끝 자리부터 0제곱을 붙입니다.</li><li>각 자리 숫자에 밑의 거듭제곱을 곱합니다.</li><li>모두 더합니다.</li></ol><div class="formula">abcₙ = a×n² + b×n¹ + c×n⁰</div><span class="num">26 / 60</span></section>
+
+<section class="slide" id="s27"><span class="tag">진법별 변환</span><h2>2진수 → 10진수 예제</h2><div class="formula">11010₂</div><ol><li>1×2⁴ = 16</li><li>1×2³ = 8</li><li>0×2² = 0</li><li>1×2¹ = 2</li><li>0×2⁰ = 0</li></ol><div class="box blue"><p>정답: 26₁₀</p></div><span class="num">27 / 60</span></section>
+
+<section class="slide" id="s28"><span class="tag">진법별 변환</span><h2>8진수 → 10진수 예제</h2><div class="formula">346₈ = 3×8² + 4×8¹ + 6×8⁰</div><p>192 + 32 + 6 = 230</p><div class="box green"><p>정답: 230₁₀</p></div><span class="num">28 / 60</span></section>
+
+<section class="slide" id="s29"><span class="tag">진법별 변환</span><h2>16진수 → 10진수 예제</h2><div class="formula">A3₁₆ = 10×16¹ + 3×16⁰</div><p>160 + 3 = 163</p><div class="box yellow"><p>A는 10을 의미합니다.</p></div><span class="num">29 / 60</span></section>
+
+<section class="slide" id="s30"><span class="tag">진법별 변환</span><h2>10진수 → n진수 핵심 방법</h2><p>10진수를 다른 진법으로 바꿀 때는 밑으로 계속 나누고, 나머지를 거꾸로 읽습니다.</p><div class="formula">10진수 ÷ 밑 → 나머지 기록 → 몫이 0이 될 때까지 반복</div><span class="num">30 / 60</span></section>
+
+<section class="slide" id="s31"><span class="tag">진법 간 변환</span><h2>10진수 13을 2진수로</h2><table class="table"><tr><th>나눗셈</th><th>몫</th><th>나머지</th></tr><tr><td>13 ÷ 2</td><td>6</td><td>1</td></tr><tr><td>6 ÷ 2</td><td>3</td><td>0</td></tr><tr><td>3 ÷ 2</td><td>1</td><td>1</td></tr><tr><td>1 ÷ 2</td><td>0</td><td>1</td></tr></table><div class="box blue"><p>나머지를 아래에서 위로 읽으면 1101₂</p></div><span class="num">31 / 60</span></section>
+
+<section class="slide" id="s32"><span class="tag">진법 간 변환</span><h2>10진수 125를 8진수로</h2><table class="table"><tr><th>나눗셈</th><th>몫</th><th>나머지</th></tr><tr><td>125 ÷ 8</td><td>15</td><td>5</td></tr><tr><td>15 ÷ 8</td><td>1</td><td>7</td></tr><tr><td>1 ÷ 8</td><td>0</td><td>1</td></tr></table><div class="box green"><p>정답: 175₈</p></div><span class="num">32 / 60</span></section>
+
+<section class="slide" id="s33"><span class="tag">진법 간 변환</span><h2>10진수 255를 16진수로</h2><table class="table"><tr><th>나눗셈</th><th>몫</th><th>나머지</th></tr><tr><td>255 ÷ 16</td><td>15</td><td>15 = F</td></tr><tr><td>15 ÷ 16</td><td>0</td><td>15 = F</td></tr></table><div class="box yellow"><p>정답: FF₁₆</p></div><span class="num">33 / 60</span></section>
+
+<section class="slide" id="s34"><span class="tag">진법 간 변환</span><h2>2진수 ↔ 8진수</h2><p>8은 2³이므로 2진수 3자리씩 묶으면 8진수로 바꿀 수 있습니다.</p><div class="formula">101110₂ → 101 110 → 5 6 → 56₈</div><div class="box blue"><p>오른쪽부터 3자리씩 묶습니다.</p></div><span class="num">34 / 60</span></section>
+
+<section class="slide" id="s35"><span class="tag">진법 간 변환</span><h2>2진수 ↔ 16진수</h2><p>16은 2⁴이므로 2진수 4자리씩 묶으면 16진수로 바꿀 수 있습니다.</p><div class="formula">11111111₂ → 1111 1111 → F F → FF₁₆</div><span class="num">35 / 60</span></section>
+
+<section class="slide" id="s36"><span class="tag">진법 간 변환</span><h2>8진수 → 2진수</h2><p>각 8진수 자리를 2진수 3자리로 바꿉니다.</p><div class="formula">57₈ → 5=101, 7=111 → 101111₂</div><table class="table"><tr><th>8진수</th><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td></tr><tr><th>2진수</th><td>000</td><td>001</td><td>010</td><td>011</td><td>100</td><td>101</td><td>110</td><td>111</td></tr></table><span class="num">36 / 60</span></section>
+
+<section class="slide" id="s37"><span class="tag">진법 간 변환</span><h2>16진수 → 2진수</h2><p>각 16진수 자리를 2진수 4자리로 바꿉니다.</p><div class="formula">A5₁₆ → A=1010, 5=0101 → 10100101₂</div><span class="num">37 / 60</span></section>
+
+<section class="slide" id="s38"><span class="tag">진법 간 변환</span><h2>진법 변환 전략 정리</h2><table class="table"><tr><th>변환</th><th>방법</th></tr><tr><td>n진수 → 10진수</td><td>자리값을 곱해서 더하기</td></tr><tr><td>10진수 → n진수</td><td>n으로 나누고 나머지 거꾸로 읽기</td></tr><tr><td>2진수 ↔ 8진수</td><td>3자리씩 묶기</td></tr><tr><td>2진수 ↔ 16진수</td><td>4자리씩 묶기</td></tr></table><span class="num">38 / 60</span></section>
+
+<section class="slide" id="s39"><span class="tag">진법별 사칙연산</span><h2>2진수 덧셈 규칙</h2><table class="table"><tr><th>계산</th><th>결과</th></tr><tr><td>0 + 0</td><td>0</td></tr><tr><td>0 + 1</td><td>1</td></tr><tr><td>1 + 0</td><td>1</td></tr><tr><td>1 + 1</td><td>10</td></tr></table><p>1 + 1은 2이므로 2진수에서는 10이 됩니다.</p><span class="num">39 / 60</span></section>
+
+<section class="slide" id="s40"><span class="tag">진법별 사칙연산</span><h2>2진수 덧셈 예제</h2><div class="formula">1011₂ + 0110₂ = 10001₂</div><div class="box blue"><p>10진수로 확인하면 11 + 6 = 17입니다.</p></div><p>자리마다 더하고 2가 되면 윗자리로 1을 올립니다.</p><span class="num">40 / 60</span></section>
+
+<section class="slide" id="s41"><span class="tag">진법별 사칙연산</span><h2>2진수 뺄셈 규칙</h2><p>2진수 뺄셈도 10진수처럼 빌림을 사용합니다.</p><div class="formula">10₂ - 1₂ = 1₂</div><div class="box yellow"><p>0에서 1을 뺄 수 없을 때는 왼쪽 자리에서 1을 빌려옵니다. 2진수에서는 빌려온 1이 현재 자리에서 2가 됩니다.</p></div><span class="num">41 / 60</span></section>
+
+<section class="slide" id="s42"><span class="tag">진법별 사칙연산</span><h2>2진수 뺄셈 예제</h2><div class="formula">10010₂ - 00101₂ = 01101₂</div><div class="box green"><p>10진수로 확인하면 18 - 5 = 13입니다.</p></div><span class="num">42 / 60</span></section>
+
+<section class="slide" id="s43"><span class="tag">진법별 사칙연산</span><h2>2진수 곱셈 규칙</h2><p>2진수 곱셈은 0과 1만 사용하므로 매우 단순합니다.</p><table class="table"><tr><th>계산</th><th>결과</th></tr><tr><td>0×0</td><td>0</td></tr><tr><td>0×1</td><td>0</td></tr><tr><td>1×0</td><td>0</td></tr><tr><td>1×1</td><td>1</td></tr></table><span class="num">43 / 60</span></section>
+
+<section class="slide" id="s44"><span class="tag">진법별 사칙연산</span><h2>2진수 곱셈 예제</h2><div class="formula">101₂ × 11₂ = 1111₂</div><p>10진수로 확인하면 5 × 3 = 15입니다.</p><div class="box purple"><p>2진수에서 왼쪽으로 한 칸 이동하는 것은 2를 곱하는 효과가 있습니다.</p></div><span class="num">44 / 60</span></section>
+
+<section class="slide" id="s45"><span class="tag">진법별 사칙연산</span><h2>2진수 나눗셈</h2><p>2진수 나눗셈도 10진수 나눗셈과 같은 원리입니다.</p><div class="formula">1100₂ ÷ 11₂ = 100₂</div><p>10진수로 확인하면 12 ÷ 3 = 4입니다.</p><span class="num">45 / 60</span></section>
+
+<section class="slide" id="s46"><span class="tag">진법별 사칙연산</span><h2>8진수 덧셈</h2><p>8진수는 한 자리에서 8이 되면 올림이 발생합니다.</p><div class="formula">7₈ + 1₈ = 10₈</div><div class="box blue"><p>10진수에서 9가 되면 10으로 넘어가는 것처럼, 8진수에서는 7 다음이 10입니다.</p></div><span class="num">46 / 60</span></section>
+
+<section class="slide" id="s47"><span class="tag">진법별 사칙연산</span><h2>16진수 덧셈</h2><p>16진수는 한 자리에서 16이 되면 올림이 발생합니다.</p><div class="formula">F₁₆ + 1₁₆ = 10₁₆</div><div class="box yellow"><p>F는 10진수 15입니다. 15 + 1 = 16이므로 16진수에서는 10이 됩니다.</p></div><span class="num">47 / 60</span></section>
+
+<section class="slide" id="s48"><span class="tag">진법별 사칙연산</span><h2>진법별 계산 확인법</h2><ol><li>먼저 원래 진법에서 계산한다.</li><li>헷갈리면 10진수로 바꾸어 확인한다.</li><li>다시 원래 진법으로 바꾸어 답을 검산한다.</li></ol><div class="box green"><p>시험에서는 계산 실수를 줄이기 위해 검산 습관이 중요합니다.</p></div><span class="num">48 / 60</span></section>
+
+<section class="slide" id="s49"><span class="tag">컴퓨터 표현</span><h2>컴퓨터는 왜 2진수를 사용할까?</h2><p>컴퓨터 회로는 전기 신호의 켜짐과 꺼짐을 구분하기 쉽습니다.</p><div class="grid"><div class="box blue"><h3>0</h3><p>전기 신호가 낮음, 꺼짐</p></div><div class="box yellow"><h3>1</h3><p>전기 신호가 높음, 켜짐</p></div></div><span class="num">49 / 60</span></section>
+
+<section class="slide" id="s50"><span class="tag">컴퓨터 표현</span><h2>비트와 바이트</h2><p>비트는 컴퓨터가 다루는 가장 작은 정보 단위입니다.</p><div class="formula">1 bit = 0 또는 1<br>1 byte = 8 bits</div><div class="box green"><p>8비트로는 00000000부터 11111111까지 총 256가지 값을 표현할 수 있습니다.</p></div><span class="num">50 / 60</span></section>
+
+<section class="slide" id="s51"><span class="tag">컴퓨터 표현</span><h2>8비트로 표현할 수 있는 수</h2><p>부호가 없는 8비트 정수는 0부터 255까지 표현할 수 있습니다.</p><div class="formula">00000000₂ = 0<br>11111111₂ = 255</div><div class="box yellow"><p>총 개수는 2⁸ = 256개입니다.</p></div><span class="num">51 / 60</span></section>
+
+<section class="slide" id="s52"><span class="tag">컴퓨터 표현</span><h2>부호 있는 정수 표현</h2><p>음수를 표현하려면 부호 정보를 함께 저장해야 합니다.</p><ol><li>부호-크기 방식</li><li>1의 보수 방식</li><li>2의 보수 방식</li></ol><div class="box blue"><p>현대 컴퓨터에서는 보통 2의 보수 방식을 사용합니다.</p></div><span class="num">52 / 60</span></section>
+
+<section class="slide" id="s53"><span class="tag">컴퓨터 표현</span><h2>부호-크기 방식</h2><p>맨 앞 비트를 부호로 사용하고, 나머지 비트는 크기를 나타냅니다.</p><div class="formula">0 = 양수, 1 = 음수</div><div class="box red"><p>단점: +0과 -0이 따로 존재하여 계산 회로가 복잡해집니다.</p></div><span class="num">53 / 60</span></section>
+
+<section class="slide" id="s54"><span class="tag">컴퓨터 표현</span><h2>1의 보수</h2><p>1의 보수는 모든 비트를 반대로 바꾸는 방식입니다.</p><div class="formula">00000101₂ = +5<br>11111010₂ = -5의 1의 보수 표현</div><div class="box yellow"><p>하지만 1의 보수도 +0과 -0 문제가 남아 있습니다.</p></div><span class="num">54 / 60</span></section>
+
+<section class="slide" id="s55"><span class="tag">컴퓨터 표현</span><h2>2의 보수</h2><p>2의 보수는 1의 보수를 구한 뒤 1을 더합니다.</p><div class="formula">+5: 00000101<br>비트 반전: 11111010<br>1 더하기: 11111011 = -5</div><div class="box green"><p>장점: 덧셈 회로만으로 뺄셈과 음수 계산을 처리할 수 있습니다.</p></div><span class="num">55 / 60</span></section>
+
+<section class="slide" id="s56"><span class="tag">컴퓨터 표현</span><h2>8비트 2의 보수 범위</h2><p>8비트 부호 있는 정수는 -128부터 127까지 표현합니다.</p><div class="formula">-2⁷ ~ 2⁷ - 1<br>-128 ~ 127</div><div class="box blue"><p>양수보다 음수가 하나 더 많은 이유는 0이 양수 쪽 공간 하나를 사용하기 때문입니다.</p></div><span class="num">56 / 60</span></section>
+
+<section class="slide" id="s57"><span class="tag">컴퓨터 표현</span><h2>오버플로우</h2><p>오버플로우는 표현할 수 있는 범위를 넘어선 결과가 나오는 현상입니다.</p><div class="formula">8비트 signed int: 127 + 1 → -128처럼 보일 수 있음</div><div class="box red"><p>정보올림피아드에서는 int, long long의 범위를 반드시 확인해야 합니다.</p></div><span class="num">57 / 60</span></section>
+
+<section class="slide" id="s58"><span class="tag">컴퓨터 표현</span><h2>실수 표현의 한계</h2><p>컴퓨터는 실수를 정확히 무한히 저장할 수 없으므로 근삿값으로 저장합니다.</p><div class="code">double x = 0.1 + 0.2;
+// 수학적으로는 0.3이지만 컴퓨터 내부에서는 아주 작은 오차가 생길 수 있음</div><div class="box yellow"><p>실수 비교는 == 대신 오차 범위를 두고 비교하는 것이 안전합니다.</p></div><span class="num">58 / 60</span></section>
+
+<section class="slide" id="s59"><span class="tag">코딩 연결</span><h2>C언어로 진법 출력하기</h2><p>C언어에서는 서식 지정자를 이용해 8진수와 16진수를 출력할 수 있습니다.</p><div class="code">#include &lt;stdio.h&gt;
+
+int main() {
+    int n = 255;
+    printf("10진수: %d\n", n);
+    printf("8진수: %o\n", n);
+    printf("16진수: %X\n", n);
+    return 0;
+}</div><span class="num">59 / 60</span></section>
+
+<section class="slide" id="s60"><span class="tag">마무리</span><h2>1장 핵심 정리와 연습 과제</h2><div class="grid"><div class="box blue"><h3>핵심 정리</h3><ol><li>수의 체계는 수를 성질에 따라 분류한다.</li><li>진법은 자리값과 밑으로 이해한다.</li><li>2진수, 8진수, 16진수는 컴퓨터와 밀접하다.</li><li>컴퓨터는 비트와 바이트로 수를 저장한다.</li><li>2의 보수는 음수 표현의 핵심이다.</li></ol></div><div class="box green"><h3>연습 과제</h3><ol><li>101101₂를 10진수로 바꾸기</li><li>156₁₀을 2진수와 16진수로 바꾸기</li><li>1101₂ + 1011₂ 계산하기</li><li>8비트 2의 보수로 -12 표현하기</li></ol></div></div><span class="num">60 / 60</span></section>
+
+</div>
+<script>
+const bar=document.getElementById('bar');
+function update(){const h=document.documentElement; const p=h.scrollTop/(h.scrollHeight-h.clientHeight)*100; bar.style.width=p+'%';}
+addEventListener('scroll',update); update();
+</script>
+</body>
+</html>

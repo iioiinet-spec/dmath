@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>이산수학 1장 수의 표현과 연산 - 중등정보올림피아드 기출 유형 10문제</title>
+<style>
+  :root{
+    --bg:#f5f7fb; --card:#ffffff; --ink:#172033; --muted:#667085;
+    --main:#2f5bea; --main2:#6d8cff; --ok:#138a43; --bad:#d92d20;
+    --line:#d9e1f2; --soft:#eef3ff; --warn:#fff6db;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',Arial,sans-serif;background:linear-gradient(135deg,#eef3ff 0%,#f8fbff 45%,#fff7e8 100%);color:var(--ink);line-height:1.65}
+  header{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .wrap{max-width:1180px;margin:0 auto;padding:22px}
+  h1{margin:0;font-size:30px;letter-spacing:-.6px}
+  .subtitle{color:var(--muted);margin-top:6px}
+  .topbar{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+  .scorebox{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .pill{background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:8px 14px;font-weight:700;color:#2947a9}
+  button{border:0;border-radius:12px;padding:10px 14px;font-weight:800;cursor:pointer;background:var(--main);color:white;box-shadow:0 8px 20px rgba(47,91,234,.18)}
+  button.secondary{background:#24324b}
+  button.ghost{background:white;color:var(--main);border:1px solid var(--line);box-shadow:none}
+  main{max-width:1180px;margin:0 auto;padding:28px 22px 80px}
+  .intro{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:24px;box-shadow:0 18px 45px rgba(32,54,98,.08);margin-bottom:24px}
+  .grid{display:grid;grid-template-columns:1fr;gap:22px}
+  .problem{background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:24px;padding:24px;box-shadow:0 14px 35px rgba(32,54,98,.08)}
+  .problem h2{margin:0 0 12px;font-size:22px;color:#203a8f}
+  .tagrow{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+  .tag{font-size:13px;border-radius:999px;padding:5px 10px;background:#edf2ff;color:#2742a0;border:1px solid #d8e1ff;font-weight:700}
+  .level{background:#fff4d8;color:#8a5b00;border-color:#ffe0a3}
+  .story{background:#fbfdff;border:1px dashed #cbd7f0;border-radius:16px;padding:16px;margin:12px 0}
+  .question{font-weight:800;margin-top:12px}
+  .inputrow{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:16px}
+  input[type=text]{min-width:230px;flex:1;border:2px solid #ccd6ee;border-radius:12px;padding:12px 14px;font-size:16px;background:white}
+  input[type=text]:focus{outline:0;border-color:var(--main);box-shadow:0 0 0 4px rgba(47,91,234,.12)}
+  .feedback{margin-top:12px;font-weight:900;padding:12px 14px;border-radius:12px;display:none}
+  .feedback.ok{display:block;background:#e8f7ee;color:var(--ok);border:1px solid #bfe7cf}
+  .feedback.bad{display:block;background:#fff0ed;color:var(--bad);border:1px solid #ffd0c7}
+  .solution{display:none;margin-top:14px;background:#f7f9ff;border-left:6px solid var(--main);border-radius:14px;padding:16px}
+  .solution.open{display:block}
+  .solution h3{margin:0 0 8px;color:#203a8f}
+  .code{font-family:Consolas,monospace;background:#101828;color:#e6efff;border-radius:12px;padding:12px;overflow:auto;white-space:pre-wrap}
+  table{width:100%;border-collapse:collapse;margin:10px 0;background:white;border-radius:12px;overflow:hidden}
+  th,td{border:1px solid var(--line);padding:9px;text-align:center}
+  th{background:#edf2ff;color:#203a8f}
+  .footerbox{margin-top:28px;background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px;text-align:center}
+  .small{font-size:14px;color:var(--muted)}
+  .nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .nav a{text-decoration:none;background:#fff;border:1px solid var(--line);padding:7px 10px;border-radius:10px;color:#203a8f;font-weight:800}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap topbar">
+    <div>
+      <h1>이산수학 1장 수의 표현과 연산</h1>
+      <div class="subtitle">중등정보올림피아드 기출문제 유형 인터랙티브 10문제</div>
+    </div>
+    <div class="scorebox">
+      <span class="pill">맞힌 문제: <span id="score">0</span> / 10</span>
+      <span class="pill">시도한 문제: <span id="tried">0</span> / 10</span>
+      <button class="secondary" onclick="gradeAll()">전체 채점</button>
+      <button class="ghost" onclick="resetAll()">초기화</button>
+    </div>
+  </div>
+</header>
+<main>
+  <section class="intro">
+    <h2>수업 활용 방법</h2>
+    <p>이 자료는 단순 계산 문제가 아니라, 중등정보올림피아드 기출문제에서 자주 보이는 사고 흐름을 연습하도록 만든 문제입니다. 답은 대소문자를 구분하지 않으며, 진법 표기는 예를 들어 <b>1011(2)</b>, <b>2F(16)</b>, <b>17</b>처럼 입력하면 됩니다.</p>
+    <div class="nav">
+      <a href="#p1">1번</a><a href="#p2">2번</a><a href="#p3">3번</a><a href="#p4">4번</a><a href="#p5">5번</a>
+      <a href="#p6">6번</a><a href="#p7">7번</a><a href="#p8">8번</a><a href="#p9">9번</a><a href="#p10">10번</a>
+    </div>
+  </section>
+
+  <section class="grid" id="problems"></section>
+
+  <section class="footerbox">
+    <h2>학습 정리</h2>
+    <p>1장 수의 표현과 연산에서 중요한 핵심은 진법 변환을 외우는 것이 아니라, 자릿값과 규칙을 이용해 문제 조건을 해석하는 것입니다.</p>
+    <p class="small">세영코딩연구소 이산수학 수업자료</p>
+  </section>
+</main>
+<script>
+const problems = [
+{
+ id:1, title:'숨겨진 진법 찾기', tags:['진법 추론','자릿값','기출형'], level:'중', ans:['7'],
+ story:`어떤 학생이 칠판에 <b>34(b) = 25(10)</b>라고 적었다. 여기서 b는 10보다 작은 자연수이고, 34(b)는 b진법으로 쓴 수이다. 선생님은 "진법 b는 반드시 각 자리 숫자보다 커야 한다"고 말했다.`,
+ q:'조건을 모두 만족하는 b의 값을 구하시오.',
+ sol:`34(b)는 3×b + 4입니다. 이것이 25와 같으므로 3b + 4 = 25입니다. 따라서 3b = 21, b = 7입니다. 또한 b는 숫자 4보다 커야 하므로 b=7은 조건을 만족합니다.`
+},
+{
+ id:2, title:'가장 작은 2진수 카드', tags:['2진수','최소값','조건'], level:'중', ans:['10011(2)','10011'],
+ story:`민수는 2진수 카드 5장을 가지고 있다. 각 카드에는 0 또는 1을 쓸 수 있다. 단, 맨 앞 카드는 반드시 1이어야 하며, 전체 카드에 적힌 1의 개수는 정확히 3개여야 한다.`,
+ q:'조건을 만족하는 5자리 2진수 중 가장 작은 수를 2진수로 쓰시오.',
+ sol:`5자리 2진수는 맨 앞이 1입니다. 가장 작은 수를 만들려면 높은 자리에는 가능한 0을 두고, 1은 뒤쪽에 몰아야 합니다. 이미 맨 앞에 1이 있으므로 남은 1 두 개를 가장 오른쪽 두 자리에 둡니다. 따라서 10011(2)입니다.`
+},
+{
+ id:3, title:'8비트 보수 표현', tags:['2의 보수','음수 표현','컴퓨터 수'], level:'상', ans:['11110101(2)','11110101'],
+ story:`컴퓨터가 정수를 8비트 2의 보수 방식으로 저장한다고 하자. 선생님은 -11을 저장하는 과정을 다음과 같이 설명했다. 먼저 11을 8비트 2진수로 쓰고, 모든 비트를 뒤집은 뒤 1을 더한다.`,
+ q:'-11을 8비트 2의 보수로 표현한 결과를 쓰시오.',
+ sol:`11은 8비트로 00001011입니다. 모든 비트를 뒤집으면 11110100입니다. 여기에 1을 더하면 11110101입니다. 따라서 -11의 8비트 2의 보수 표현은 11110101(2)입니다.`
+},
+{
+ id:4, title:'16진수 색상 코드 계산', tags:['16진수','덧셈','자리올림'], level:'중', ans:['C3(16)','C3'],
+ story:`디지털 색상값을 계산하던 지우는 밝기값 A7(16)에 1C(16)를 더해야 했다. 단, 결과도 16진수로 나타내야 한다.`,
+ q:'A7(16) + 1C(16)의 결과를 16진수로 쓰시오.',
+ sol:`오른쪽 자리부터 계산합니다. 7 + C는 7 + 12 = 19입니다. 19는 16 + 3이므로 3을 쓰고 1을 올립니다. 왼쪽 자리는 A + 1 + 올림 1 = 10 + 1 + 1 = 12, 즉 C입니다. 따라서 C3(16)입니다.`
+},
+{
+ id:5, title:'나머지로 알아내는 비트', tags:['비트','나머지','규칙 찾기'], level:'상', ans:['1'],
+ story:`어떤 자연수 N을 2진수로 나타냈을 때 오른쪽에서 세 번째 비트를 알고 싶다. 오른쪽에서 첫 번째 비트는 2^0 자리, 두 번째 비트는 2^1 자리, 세 번째 비트는 2^2 자리이다. N = 45일 때 오른쪽에서 세 번째 비트를 구하라.`,
+ q:'오른쪽에서 세 번째 비트는 0인가 1인가?',
+ sol:`45를 2진수로 바꾸면 32 + 8 + 4 + 1 = 45이므로 101101(2)입니다. 오른쪽부터 보면 1, 0, 1이므로 오른쪽에서 세 번째 비트는 1입니다. 또는 45를 8로 나눈 나머지는 5이고, 5는 101(2)이므로 세 번째 비트가 1입니다.`
+},
+{
+ id:6, title:'서로 다른 진법의 합 비교', tags:['진법 변환','비교','합'], level:'중', ans:['47'],
+ story:`다음 세 수를 모두 10진수로 바꾸어 더하려고 한다. 10101(2), 34(8), A(16).`,
+ q:'세 수의 합을 10진수로 구하시오.',
+ sol:`10101(2)=16+4+1=21입니다. 34(8)=3×8+4=28입니다. A(16)=10입니다. 따라서 합은 21+28+10=59가 아니라, 문제의 답 후보를 다시 점검해야 합니다. 여기서 34(8)는 28이 맞고, 10101(2)는 21, A(16)는 10이므로 총합은 59입니다.`, overrideAns:['59']
+},
+{
+ id:7, title:'오버플로 판별', tags:['8비트','부호 없는 정수','오버플로'], level:'상', ans:['44'],
+ story:`어떤 장치는 부호 없는 정수를 8비트로만 저장한다. 따라서 표현 가능한 값은 0부터 255까지이다. 이 장치에서 200 + 100을 계산하면 실제 합은 300이지만, 8비트에 저장되면서 256을 넘는 부분은 버려진다.`,
+ q:'장치에 최종 저장되는 10진수 값을 구하시오.',
+ sol:`8비트 부호 없는 정수는 0~255까지 저장합니다. 200+100=300입니다. 256을 넘으면 256으로 나눈 나머지만 남는 것과 같습니다. 300-256=44이므로 최종 저장값은 44입니다.`
+},
+{
+ id:8, title:'진법 곱셈의 숨은 값', tags:['진법 사칙연산','곱셈','검산'], level:'상', ans:['121(3)','121'],
+ story:`3진법 계산에서 11(3) × 11(3)을 하려고 한다. 어떤 학생은 10진수 곱셈처럼 121이라고 썼지만, 선생님은 "우연히 모양은 비슷할 수 있어도 반드시 자릿값으로 검산해야 한다"고 말했다.`,
+ q:'11(3) × 11(3)의 결과를 3진수로 쓰시오.',
+ sol:`11(3)은 1×3+1=4입니다. 따라서 11(3)×11(3)=4×4=16입니다. 16을 3진수로 바꾸면 16÷3=5 나머지1, 5÷3=1 나머지2, 1÷3=0 나머지1이므로 121(3)입니다.`
+},
+{
+ id:9, title:'코딩 대회의 번호표', tags:['자리수','진법','범위'], level:'상', ans:['4'],
+ story:`한 코딩 대회에서는 참가자 번호를 2진수로 표시한다. 번호는 1번부터 차례대로 붙이며, 모든 참가자 번호가 최대 4비트 안에 표현되어야 한다. 예를 들어 1은 1(2), 2는 10(2), 15는 1111(2)이다.`,
+ q:'참가자가 12명일 때, 4비트 번호표 중 사용되지 않는 번호표는 몇 개인가? 단, 0000은 참가자 번호로 사용하지 않는다.',
+ sol:`4비트로 표현 가능한 양의 번호는 0001부터 1111까지 총 15개입니다. 참가자는 1번부터 12번까지 사용하므로 12개를 씁니다. 따라서 사용되지 않는 번호표는 15-12=3개입니다.`, overrideAns:['3']
+},
+{
+ id:10, title:'조건을 만족하는 10진수 찾기', tags:['진법 변환','조건 탐색','기출형'], level:'상', ans:['23'],
+ story:`어떤 10진수 자연수 N이 있다. N을 2진수로 나타내면 1의 개수가 4개이고, N을 8진수로 나타내면 두 자리 수이다. 또한 N은 20보다 크고 30보다 작다.`,
+ q:'조건을 만족하는 N을 구하시오.',
+ sol:`20보다 크고 30보다 작은 수를 확인합니다. 21=10101(2)는 1이 3개, 22=10110(2)는 1이 3개, 23=10111(2)는 1이 4개입니다. 23은 8진수로 27(8)이므로 두 자리 수입니다. 따라서 N=23입니다.`
+}
+];
+// Fix overridden answers
+problems.forEach(p=>{ if(p.overrideAns) p.ans=p.overrideAns; });
+const state = {};
+function norm(s){return (s||'').toString().trim().toUpperCase().replace(/\s+/g,'').replace(/（/g,'(').replace(/）/g,')');}
+function render(){
+ const box=document.getElementById('problems');
+ box.innerHTML=problems.map(p=>`
+ <article class="problem" id="p${p.id}">
+   <h2>${p.id}. ${p.title}</h2>
+   <div class="tagrow">${p.tags.map(t=>`<span class="tag">${t}</span>`).join('')}<span class="tag level">난이도 ${p.level}</span></div>
+   <div class="story">${p.story}</div>
+   <div class="question">문제: ${p.q}</div>
+   <div class="inputrow">
+     <input type="text" id="ans${p.id}" placeholder="정답 입력" onkeydown="if(event.key==='Enter') check(${p.id})" />
+     <button onclick="check(${p.id})">정답 확인</button>
+     <button class="ghost" onclick="toggleSol(${p.id})">해설 보기</button>
+   </div>
+   <div class="feedback" id="fb${p.id}"></div>
+   <div class="solution" id="sol${p.id}"><h3>자세한 해설</h3><p>${p.sol}</p><p><b>정답:</b> ${p.ans[0]}</p></div>
+ </article>`).join('');
+ updateScore();
+}
+function check(id){
+ const p=problems.find(x=>x.id===id);
+ const val=norm(document.getElementById('ans'+id).value);
+ const ok=p.ans.map(norm).includes(val);
+ state[id]={tried:true, ok};
+ const fb=document.getElementById('fb'+id);
+ fb.className='feedback '+(ok?'ok':'bad');
+ fb.innerHTML=ok?'정답입니다. 풀이 과정을 해설에서 확인해 보세요.':'아직 정답이 아닙니다. 진법의 자릿값과 조건을 다시 확인해 보세요.';
+ updateScore();
+}
+function toggleSol(id){document.getElementById('sol'+id).classList.toggle('open');}
+function updateScore(){
+ let tried=0, score=0;
+ problems.forEach(p=>{if(state[p.id]?.tried) tried++; if(state[p.id]?.ok) score++;});
+ document.getElementById('score').textContent=score;
+ document.getElementById('tried').textContent=tried;
+}
+function gradeAll(){problems.forEach(p=>check(p.id)); window.scrollTo({top:0, behavior:'smooth'});}
+function resetAll(){
+ problems.forEach(p=>{state[p.id]=undefined; const a=document.getElementById('ans'+p.id); if(a)a.value=''; const fb=document.getElementById('fb'+p.id); if(fb){fb.className='feedback';fb.innerHTML='';} const sol=document.getElementById('sol'+p.id); if(sol)sol.classList.remove('open');});
+ updateScore();
+}
+render();
+</script>
+</body>
+</html>

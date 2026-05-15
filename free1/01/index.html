@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>이산수학 1장 수의 표현과 연산 - 인터랙티브 기본 문제 50</title>
+<style>
+:root{
+  --bg:#f6f8ff; --card:#ffffff; --ink:#172033; --muted:#5c667a; --primary:#3454d1; --primary2:#6c7df5;
+  --ok:#0b8f5a; --bad:#d13a34; --warn:#f59e0b; --line:#e3e7f4;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(135deg,#eef3ff,#fff7fb);color:var(--ink)}
+header{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:18px 24px}
+.header-inner{max-width:1180px;margin:auto;display:flex;gap:18px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+h1{font-size:24px;margin:0}.sub{color:var(--muted);font-size:14px;margin-top:4px}
+.stats{display:flex;gap:10px;flex-wrap:wrap}.pill{background:#eef2ff;border:1px solid #dce2ff;border-radius:999px;padding:8px 13px;font-weight:700;color:#273b9f}
+main{max-width:1180px;margin:28px auto;padding:0 18px 80px}.intro{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:24px;box-shadow:0 12px 30px rgba(35,47,90,.08);margin-bottom:20px}
+.intro h2{margin:0 0 10px;font-size:24px}.intro p{line-height:1.7;color:var(--muted);margin:8px 0}.controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+button{border:0;border-radius:14px;padding:11px 15px;font-weight:800;cursor:pointer;background:var(--primary);color:white;box-shadow:0 8px 16px rgba(52,84,209,.18)}
+button.secondary{background:#eef2ff;color:#2b3f9f;box-shadow:none;border:1px solid #dce2ff}button.ghost{background:white;color:#334;border:1px solid var(--line);box-shadow:none}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:18px}.card{background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:22px;padding:20px;box-shadow:0 12px 26px rgba(35,47,90,.08);position:relative;overflow:hidden}
+.card::before{content:"";position:absolute;top:0;left:0;right:0;height:6px;background:linear-gradient(90deg,var(--primary),var(--primary2))}.meta{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-bottom:12px}.num{font-size:14px;font-weight:900;color:var(--primary)}.tag{font-size:12px;background:#f3f5ff;border:1px solid #e0e5ff;color:#4353a4;border-radius:999px;padding:5px 9px;font-weight:800}.q{font-size:17px;line-height:1.6;font-weight:800;margin:8px 0 14px}.choices{display:grid;gap:8px;margin:12px 0}.choice{display:flex;align-items:flex-start;gap:9px;background:#f8f9fd;border:1px solid #e6e9f5;border-radius:14px;padding:10px;cursor:pointer;line-height:1.45}.choice:hover{border-color:#bfc8ff;background:#f2f5ff}.choice input{margin-top:4px}.answer-row{display:flex;gap:8px;margin-top:12px}.text-answer{width:100%;border:1px solid #dce1ef;border-radius:14px;padding:12px;font-size:15px}.result{display:none;margin-top:13px;border-radius:15px;padding:13px;line-height:1.65}.result.ok{display:block;background:#eafaf2;border:1px solid #bcebd4;color:#075f3d}.result.bad{display:block;background:#fff0ef;border:1px solid #ffd0cc;color:#8d211d}.explain{margin-top:7px;color:#344054}.progress-wrap{height:12px;background:#e9edfb;border-radius:99px;overflow:hidden;margin-top:14px}.progress{height:100%;width:0%;background:linear-gradient(90deg,#3454d1,#7c8cff);transition:.25s}.section-title{font-size:22px;margin:32px 0 14px;padding-left:8px;border-left:6px solid var(--primary)}
+.footer-note{text-align:center;color:var(--muted);margin-top:28px}.hidden{display:none}.code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:#f4f6fb;border:1px solid #e1e5f2;border-radius:8px;padding:1px 5px}
+@media print{header,.controls,button{display:none}.grid{display:block}.card{break-inside:avoid;margin-bottom:12px;box-shadow:none}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div><h1>이산수학 1장 수의 표현과 연산</h1><div class="sub">기본 개념을 익히는 인터랙티브 문제 50개</div></div>
+    <div class="stats"><div class="pill">푼 문제 <span id="solved">0</span>/50</div><div class="pill">정답 <span id="correct">0</span>개</div><div class="pill">점수 <span id="score">0</span>점</div></div>
+  </div>
+</header>
+<main>
+  <section class="intro">
+    <h2>수업 활용 방법</h2>
+    <p>1. 각 문제를 풀고 <b>정답 확인</b>을 누릅니다.</p>
+    <p>2. 틀린 문제는 해설을 읽고 다시 풀 수 있습니다.</p>
+    <p>3. 진법 변환 문제는 숫자만 입력해도 되고, 보기형 문제는 하나를 선택하면 됩니다.</p>
+    <div class="progress-wrap"><div id="progress" class="progress"></div></div>
+    <div class="controls"><button onclick="checkAll()">전체 채점</button><button class="secondary" onclick="resetAll()">다시 풀기</button><button class="ghost" onclick="window.print()">인쇄하기</button></div>
+  </section>
+  <div id="quiz"></div>
+  <p class="footer-note">세영코딩연구소 | 이산수학 기초 학습용 인터랙티브 자료</p>
+</main>
+<script>
+const questions = [
+{cat:'수의 체계', type:'mc', q:'자연수에 해당하는 것은?', choices:['-3','0.5','7','√2'], a:'7', exp:'자연수는 보통 1, 2, 3처럼 세는 수입니다.'},
+{cat:'수의 체계', type:'mc', q:'정수에 포함되지 않는 수는?', choices:['-5','0','12','3.14'], a:'3.14', exp:'정수는 소수점이 없는 수입니다. 3.14는 유리수이지만 정수는 아닙니다.'},
+{cat:'수의 체계', type:'mc', q:'유리수에 대한 설명으로 알맞은 것은?', choices:['분수로 나타낼 수 있는 수','절대로 소수로 못 쓰는 수','항상 양수인 수','무한히 커지는 수'], a:'분수로 나타낼 수 있는 수', exp:'유리수는 a/b 꼴로 나타낼 수 있는 수입니다. 단, b는 0이 아닙니다.'},
+{cat:'수의 체계', type:'mc', q:'무리수의 예로 알맞은 것은?', choices:['1/2','0.25','√2','-7'], a:'√2', exp:'√2는 분수로 정확히 나타낼 수 없는 대표적인 무리수입니다.'},
+{cat:'수의 체계', type:'mc', q:'실수에 포함되는 것은?', choices:['정수만','유리수와 무리수','자연수만','짝수만'], a:'유리수와 무리수', exp:'실수는 수직선 위에 나타낼 수 있는 수로, 유리수와 무리수를 포함합니다.'},
+{cat:'수의 체계', type:'mc', q:'컴퓨터가 가장 기본적으로 사용하는 수 체계는?', choices:['2진수','5진수','7진수','10진수만'], a:'2진수', exp:'컴퓨터는 전기 신호의 켜짐/꺼짐을 0과 1로 표현하므로 2진수를 사용합니다.'},
+{cat:'수의 연산', type:'text', q:'12 + 8 × 3 의 값은?', a:'36', exp:'곱셈을 먼저 계산합니다. 8×3=24, 12+24=36입니다.'},
+{cat:'수의 연산', type:'text', q:'(12 + 8) × 3 의 값은?', a:'60', exp:'괄호를 먼저 계산합니다. 12+8=20, 20×3=60입니다.'},
+{cat:'수의 연산', type:'text', q:'45 ÷ 5 + 6 의 값은?', a:'15', exp:'45÷5=9, 9+6=15입니다.'},
+{cat:'수의 연산', type:'text', q:'2³ + 4² 의 값은?', a:'24', exp:'2³=8, 4²=16, 8+16=24입니다.'},
+{cat:'수의 연산', type:'mc', q:'나머지 연산 17 mod 5의 값은?', choices:['2','3','4','5'], a:'2', exp:'17을 5로 나누면 몫은 3, 나머지는 2입니다.'},
+{cat:'수의 연산', type:'mc', q:'짝수인지 확인할 때 자주 사용하는 조건은?', choices:['n mod 2 = 0','n mod 3 = 1','n + 2 = 0','n × 2 = 0'], a:'n mod 2 = 0', exp:'2로 나눈 나머지가 0이면 짝수입니다.'},
+{cat:'진법별 변환', type:'text', q:'2진수 1010₂를 10진수로 바꾸면?', a:'10', exp:'1010₂ = 1×8 + 0×4 + 1×2 + 0×1 = 10입니다.'},
+{cat:'진법별 변환', type:'text', q:'2진수 1111₂를 10진수로 바꾸면?', a:'15', exp:'1111₂ = 8+4+2+1 = 15입니다.'},
+{cat:'진법별 변환', type:'text', q:'2진수 10000₂를 10진수로 바꾸면?', a:'16', exp:'10000₂는 2⁴이므로 16입니다.'},
+{cat:'진법별 변환', type:'text', q:'8진수 17₈을 10진수로 바꾸면?', a:'15', exp:'17₈ = 1×8 + 7 = 15입니다.'},
+{cat:'진법별 변환', type:'text', q:'8진수 25₈를 10진수로 바꾸면?', a:'21', exp:'25₈ = 2×8 + 5 = 21입니다.'},
+{cat:'진법별 변환', type:'text', q:'16진수 A₁₆을 10진수로 바꾸면?', a:'10', exp:'16진수에서 A는 10을 의미합니다.'},
+{cat:'진법별 변환', type:'text', q:'16진수 F₁₆을 10진수로 바꾸면?', a:'15', exp:'16진수에서 F는 15를 의미합니다.'},
+{cat:'진법별 변환', type:'text', q:'16진수 1A₁₆을 10진수로 바꾸면?', a:'26', exp:'1A₁₆ = 1×16 + 10 = 26입니다.'},
+{cat:'진법 간 변환', type:'text', q:'10진수 13을 2진수로 바꾸면?', a:'1101', exp:'13=8+4+1이므로 1101₂입니다.'},
+{cat:'진법 간 변환', type:'text', q:'10진수 8을 2진수로 바꾸면?', a:'1000', exp:'8은 2³이므로 1000₂입니다.'},
+{cat:'진법 간 변환', type:'text', q:'10진수 31을 2진수로 바꾸면?', a:'11111', exp:'31=16+8+4+2+1이므로 11111₂입니다.'},
+{cat:'진법 간 변환', type:'text', q:'10진수 15를 16진수로 바꾸면?', a:'F', exp:'16진수에서 15는 F입니다.'},
+{cat:'진법 간 변환', type:'text', q:'10진수 16을 16진수로 바꾸면?', a:'10', exp:'16진수 10은 10진수 16을 의미합니다.'},
+{cat:'진법 간 변환', type:'text', q:'2진수 1011₂을 16진수로 바꾸면?', a:'B', exp:'1011₂는 10진수 11이고, 16진수에서 11은 B입니다.'},
+{cat:'진법 간 변환', type:'text', q:'2진수 11110000₂을 16진수로 바꾸면?', a:'F0', exp:'1111은 F, 0000은 0이므로 F0₁₆입니다.'},
+{cat:'진법 간 변환', type:'text', q:'16진수 2F₁₆을 2진수로 바꾸면? 공백 없이 쓰세요.', a:'00101111', exp:'2는 0010, F는 1111이므로 00101111₂입니다.'},
+{cat:'진법 간 변환', type:'text', q:'8진수 7₈을 2진수로 바꾸면? 3자리로 쓰세요.', a:'111', exp:'8진수 한 자리는 2진수 3자리와 대응합니다. 7은 111₂입니다.'},
+{cat:'진법 간 변환', type:'text', q:'8진수 12₈를 2진수로 바꾸면? 6자리로 쓰세요.', a:'001010', exp:'1은 001, 2는 010이므로 001010₂입니다.'},
+{cat:'진법별 사칙연산', type:'text', q:'2진수 101₂ + 11₂의 결과는?', a:'1000', exp:'101₂=5, 11₂=3, 합은 8이므로 1000₂입니다.'},
+{cat:'진법별 사칙연산', type:'text', q:'2진수 111₂ + 1₂의 결과는?', a:'1000', exp:'7+1=8이고, 8은 2진수로 1000₂입니다.'},
+{cat:'진법별 사칙연산', type:'text', q:'2진수 1000₂ - 1₂의 결과는?', a:'111', exp:'8-1=7이고, 7은 111₂입니다.'},
+{cat:'진법별 사칙연산', type:'text', q:'2진수 101₂ × 10₂의 결과는?', a:'1010', exp:'2진수에서 ×10₂은 왼쪽으로 한 칸 이동하는 것과 같습니다. 1010₂입니다.'},
+{cat:'진법별 사칙연산', type:'text', q:'8진수 7₈ + 1₈의 결과는?', a:'10', exp:'8진수에서는 7 다음에 자리올림이 되어 10₈이 됩니다.'},
+{cat:'진법별 사칙연산', type:'text', q:'8진수 15₈ + 3₈의 결과는?', a:'20', exp:'15₈=13, 3₈=3, 합은 16이고 8진수로 20₈입니다.'},
+{cat:'진법별 사칙연산', type:'text', q:'16진수 F₁₆ + 1₁₆의 결과는?', a:'10', exp:'16진수에서 F 다음은 자리올림되어 10₁₆입니다.'},
+{cat:'진법별 사칙연산', type:'text', q:'16진수 A₁₆ + 5₁₆의 결과는?', a:'F', exp:'A는 10, 10+5=15이고 16진수 15는 F입니다.'},
+{cat:'진법별 사칙연산', type:'text', q:'16진수 10₁₆ - 1₁₆의 결과는?', a:'F', exp:'16진수 10은 10진수 16이고, 16-1=15=F₁₆입니다.'},
+{cat:'진법별 사칙연산', type:'text', q:'2진수 10₂ × 11₂의 결과는?', a:'110', exp:'10₂=2, 11₂=3, 2×3=6이고 6은 110₂입니다.'},
+{cat:'컴퓨터 수 표현', type:'mc', q:'1비트가 표현할 수 있는 정보의 개수는?', choices:['1개','2개','8개','16개'], a:'2개', exp:'1비트는 0 또는 1, 두 가지 상태를 표현합니다.'},
+{cat:'컴퓨터 수 표현', type:'mc', q:'1바이트는 몇 비트인가요?', choices:['2비트','4비트','8비트','16비트'], a:'8비트', exp:'1바이트는 8비트입니다.'},
+{cat:'컴퓨터 수 표현', type:'text', q:'4비트로 표현할 수 있는 서로 다른 값의 개수는?', a:'16', exp:'n비트는 2ⁿ개의 값을 표현합니다. 4비트는 2⁴=16개입니다.'},
+{cat:'컴퓨터 수 표현', type:'text', q:'8비트로 표현할 수 있는 서로 다른 값의 개수는?', a:'256', exp:'8비트는 2⁸=256개의 값을 표현합니다.'},
+{cat:'컴퓨터 수 표현', type:'mc', q:'부호 없는 8비트 정수의 범위는?', choices:['0~255','-128~127','1~256','-255~255'], a:'0~255', exp:'부호 없는 8비트는 0부터 2⁸-1, 즉 0~255입니다.'},
+{cat:'컴퓨터 수 표현', type:'mc', q:'2의 보수 표현에서 8비트 정수의 일반적인 범위는?', choices:['0~255','-128~127','-100~100','1~128'], a:'-128~127', exp:'8비트 2의 보수는 -2⁷부터 2⁷-1까지 표현합니다.'},
+{cat:'컴퓨터 수 표현', type:'text', q:'8비트에서 255에 1을 더하면, 부호 없는 정수에서 오버플로 후 값은?', a:'0', exp:'8비트는 0~255까지만 저장합니다. 255+1은 자리수가 넘쳐 0으로 돌아갑니다.'},
+{cat:'컴퓨터 수 표현', type:'mc', q:'컴퓨터에서 실수를 표현할 때 주로 사용하는 방식은?', choices:['부동소수점','한글 코드','색상표','나머지표'], a:'부동소수점', exp:'실수는 보통 부호, 지수, 가수로 나누어 저장하는 부동소수점 방식을 사용합니다.'},
+{cat:'컴퓨터 수 표현', type:'mc', q:'ASCII 코드가 주로 표현하는 것은?', choices:['문자','소수','사진 해상도','소리 크기'], a:'문자', exp:'ASCII는 영문자, 숫자, 기호 등을 숫자로 표현하는 문자 코드입니다.'},
+{cat:'컴퓨터 수 표현', type:'text', q:'2진수 11111111₂은 부호 없는 8비트 정수로 얼마인가요?', a:'255', exp:'11111111₂ = 128+64+32+16+8+4+2+1 = 255입니다.'}
+];
+function norm(s){return String(s).trim().toUpperCase().replace(/\s+/g,'').replace(/[₂₈₁₆]/g,'');}
+function render(){
+ let html=''; let current='';
+ questions.forEach((item,i)=>{
+  if(item.cat!==current){current=item.cat; html += `<h2 class="section-title">${current}</h2><div class="grid">`;}
+  const next=questions[i+1];
+  html += `<article class="card" id="card-${i}"><div class="meta"><span class="num">문제 ${i+1}</span><span class="tag">${item.cat}</span></div><div class="q">${item.q}</div>`;
+  if(item.type==='mc'){
+   html += `<div class="choices">` + item.choices.map((c,j)=>`<label class="choice"><input type="radio" name="q${i}" value="${c}"><span>${c}</span></label>`).join('') + `</div>`;
+  } else {
+   html += `<input class="text-answer" id="input-${i}" placeholder="정답을 입력하세요">`;
+  }
+  html += `<div class="answer-row"><button onclick="checkOne(${i})">정답 확인</button><button class="secondary" onclick="showHint(${i})">해설 보기</button></div><div class="result" id="result-${i}"></div></article>`;
+  if(!next || next.cat!==current){html += `</div>`;}
+ });
+ document.getElementById('quiz').innerHTML=html;
+}
+function getValue(i){const item=questions[i]; if(item.type==='mc'){const el=document.querySelector(`input[name=q${i}]:checked`); return el?el.value:'';} return document.getElementById(`input-${i}`).value;}
+let state=Array(questions.length).fill(null);
+function checkOne(i){const item=questions[i], val=getValue(i); const box=document.getElementById(`result-${i}`); if(!val){box.className='result bad'; box.innerHTML='아직 답을 입력하거나 선택하지 않았습니다.'; return false;} const ok=norm(val)===norm(item.a); state[i]=ok; box.className='result '+(ok?'ok':'bad'); box.innerHTML=(ok?'정답입니다!':'틀렸습니다.')+`<div class="explain"><b>정답:</b> ${item.a}<br><b>해설:</b> ${item.exp}</div>`; updateStats(); return ok;}
+function showHint(i){const item=questions[i]; const box=document.getElementById(`result-${i}`); box.className='result ok'; box.innerHTML=`<b>해설</b><div class="explain">${item.exp}<br><b>정답:</b> ${item.a}</div>`;}
+function checkAll(){questions.forEach((_,i)=>checkOne(i));}
+function resetAll(){state=Array(questions.length).fill(null); document.querySelectorAll('input[type=radio]').forEach(x=>x.checked=false); document.querySelectorAll('.text-answer').forEach(x=>x.value=''); document.querySelectorAll('.result').forEach(x=>{x.className='result'; x.innerHTML='';}); updateStats(); window.scrollTo({top:0,behavior:'smooth'});}
+function updateStats(){const solved=state.filter(x=>x!==null).length; const correct=state.filter(x=>x===true).length; document.getElementById('solved').textContent=solved; document.getElementById('correct').textContent=correct; document.getElementById('score').textContent=Math.round(correct/questions.length*100); document.getElementById('progress').style.width=(solved/questions.length*100)+'%';}
+render(); updateStats();
+</script>
+</body>
+</html>
