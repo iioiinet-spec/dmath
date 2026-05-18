@@ -29,3 +29,8 @@ http://iioiinet-spec.github.io/dmath/free1/04
 
 01.pdf 이산수학_1장_수의표현과연산.pdf
 http://iioiinet-spec.github.io/dmath/free1/01.pdf
+
+
+cal  이산수학 계산기
+log  로그
+gi   그래프 학습
