@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>로그(Logarithm) 완전 이해</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;700&family=Playfair+Display:ital,wght@0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+<style>
+:root {
+  --cream: #faf6ef;
+  --paper: #f4ede0;
+  --ink: #1a1208;
+  --ink-light: #4a3f2f;
+  --ink-faint: #9c8c70;
+  --amber: #c8830a;
+  --amber-light: #f0a830;
+  --amber-pale: #fdf3dc;
+  --teal: #0a6c6c;
+  --teal-light: #e0f4f4;
+  --rose: #a0222a;
+  --rose-light: #fce8e8;
+  --border: #d9cdb8;
+  --shadow: rgba(26,18,8,0.08);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Noto Serif KR', serif;
+  background: var(--cream);
+  color: var(--ink);
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* paper texture overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 27px,
+      rgba(180,160,120,0.08) 28px
+    );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.page-wrap {
+  position: relative;
+  z-index: 1;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 60px 32px 80px;
+}
+
+/* ── HEADER ── */
+.page-header {
+  text-align: center;
+  margin-bottom: 56px;
+  animation: fadeDown 0.7s ease forwards;
+}
+
+@keyframes fadeDown {
+  from { opacity:0; transform: translateY(-16px); }
+  to   { opacity:1; transform: translateY(0); }
+}
+
+.subject-tag {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--amber);
+  border: 1px solid var(--amber);
+  border-radius: 2px;
+  padding: 4px 14px;
+  margin-bottom: 18px;
+}
+
+.page-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 48px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.1;
+  margin-bottom: 6px;
+}
+
+.page-subtitle {
+  font-size: 15px;
+  color: var(--ink-faint);
+  font-style: italic;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 48px 0 40px;
+}
+
+.divider-line { flex:1; height:1px; background: var(--border); }
+.divider-mark {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  color: var(--amber);
+}
+
+/* ── SECTION ── */
+.section {
+  margin-bottom: 52px;
+  animation: fadeUp 0.5s ease forwards;
+  opacity: 0;
+}
+
+@keyframes fadeUp {
+  from { opacity:0; transform: translateY(20px); }
+  to   { opacity:1; transform: translateY(0); }
+}
+
+.section:nth-child(1) { animation-delay:0.1s }
+.section:nth-child(2) { animation-delay:0.2s }
+.section:nth-child(3) { animation-delay:0.3s }
+.section:nth-child(4) { animation-delay:0.4s }
+
+.section-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 20px;
+  line-height: 1.3;
+}
+
+p.body-text {
+  font-size: 15.5px;
+  line-height: 1.9;
+  color: var(--ink-light);
+  font-weight: 300;
+  margin-bottom: 16px;
+}
+
+/* ── FORMULA DISPLAY ── */
+.formula-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 28px 32px;
+  text-align: center;
+  margin: 24px 0;
+  box-shadow: 0 2px 16px var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.formula-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 4px;
+  background: linear-gradient(180deg, var(--amber), var(--amber-light));
+}
+
+.formula-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 14px;
+}
+
+.formula-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.formula-item {
+  text-align: center;
+}
+
+.formula-eq {
+  font-size: 22px;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.formula-desc {
+  font-size: 12px;
+  color: var(--ink-faint);
+  font-style: italic;
+}
+
+.formula-arrow {
+  font-size: 20px;
+  color: var(--amber);
+}
+
+/* ── TERM BREAKDOWN ── */
+.term-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.term-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 16px 18px;
+  transition: box-shadow 0.2s;
+}
+
+.term-card:hover {
+  box-shadow: 0 4px 20px var(--shadow);
+}
+
+.term-symbol {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 22px;
+  color: var(--amber);
+  margin-bottom: 6px;
+}
+
+.term-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+.term-desc {
+  font-size: 13px;
+  color: var(--ink-light);
+  line-height: 1.5;
+  font-weight: 300;
+}
+
+.term-cond {
+  display: inline-block;
+  background: var(--amber-pale);
+  border: 1px solid rgba(200,131,10,0.2);
+  border-radius: 3px;
+  padding: 2px 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--amber);
+  margin-top: 6px;
+}
+
+/* ── INTERACTIVE TRANSFORMER ── */
+.transformer {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 28px 0;
+  box-shadow: 0 4px 24px var(--shadow);
+}
+
+.transformer-header {
+  background: var(--ink);
+  padding: 14px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.transformer-header-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: var(--amber-light);
+  text-transform: uppercase;
+}
+
+.transformer-body {
+  padding: 28px 24px;
+}
+
+.tf-label {
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.tf-display {
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 20px;
+  text-align: center;
+  font-size: 20px;
+  color: var(--ink);
+  margin-bottom: 20px;
+  min-height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s;
+}
+
+.tf-display.highlight {
+  background: var(--amber-pale);
+  border-color: var(--amber);
+}
+
+.tf-controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.tf-group label {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.tf-group input[type="range"] {
+  width: 100%;
+  accent-color: var(--amber);
+}
+
+.tf-group .val-display {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 18px;
+  color: var(--amber);
+  text-align: center;
+  margin-top: 4px;
+}
+
+.tf-result-row {
+  display: grid;
+  grid-template-columns: 1fr 24px 1fr;
+  gap: 0;
+  align-items: center;
+}
+
+.tf-result-box {
+  background: var(--cream);
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  padding: 16px;
+  text-align: center;
+}
+
+.tf-result-box.active {
+  border-color: var(--amber);
+  background: var(--amber-pale);
+}
+
+.tf-result-label {
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  font-family: 'JetBrains Mono', monospace;
+  margin-bottom: 8px;
+}
+
+.tf-result-val {
+  font-size: 16px;
+  color: var(--ink);
+}
+
+.tf-arrow {
+  text-align: center;
+  font-size: 18px;
+  color: var(--amber);
+}
+
+/* ── EXAMPLES ── */
+.example-tabs {
+  display: flex;
+  border-bottom: 2px solid var(--border);
+  margin-bottom: 0;
+  gap: 0;
+}
+
+.ex-tab {
+  padding: 12px 22px;
+  font-size: 13px;
+  color: var(--ink-faint);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: all 0.2s;
+  font-weight: 300;
+  white-space: nowrap;
+}
+
+.ex-tab:hover { color: var(--ink); }
+
+.ex-tab.active {
+  color: var(--amber);
+  border-bottom-color: var(--amber);
+  font-weight: 700;
+}
+
+.example-panels {
+  background: white;
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  overflow: hidden;
+}
+
+.ex-panel {
+  display: none;
+  padding: 28px 28px 24px;
+}
+
+.ex-panel.active { display: block; animation: fadeUp 0.3s ease; }
+
+.ex-situation {
+  font-size: 14px;
+  color: var(--ink-light);
+  margin-bottom: 20px;
+  padding: 12px 16px;
+  background: var(--cream);
+  border-left: 3px solid var(--amber);
+  border-radius: 0 4px 4px 0;
+  font-style: italic;
+}
+
+.ex-equation-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.ex-eq-box {
+  flex: 1;
+  min-width: 180px;
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 16px;
+  text-align: center;
+}
+
+.ex-eq-type {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  font-family: 'JetBrains Mono', monospace;
+  margin-bottom: 10px;
+}
+
+.ex-eq-formula {
+  font-size: 18px;
+  color: var(--ink);
+  margin-bottom: 0;
+}
+
+.ex-eq-box.log-box {
+  border-color: var(--amber);
+  background: var(--amber-pale);
+}
+
+.ex-eq-box.log-box .ex-eq-type { color: var(--amber); }
+
+.ex-answer {
+  padding: 14px 18px;
+  background: var(--teal-light);
+  border: 1px solid rgba(10,108,108,0.2);
+  border-radius: 6px;
+  font-size: 14px;
+  color: var(--teal);
+  line-height: 1.7;
+}
+
+.ex-real-world {
+  margin-top: 14px;
+  padding: 12px 16px;
+  background: var(--rose-light);
+  border: 1px solid rgba(160,34,42,0.15);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--rose);
+  line-height: 1.6;
+}
+
+.ex-real-world-label {
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-family: 'JetBrains Mono', monospace;
+  margin-bottom: 4px;
+  opacity: 0.7;
+}
+
+/* ── QUIZ ── */
+.quiz-section {
+  background: var(--ink);
+  border-radius: 8px;
+  padding: 32px;
+  margin-top: 48px;
+  color: white;
+}
+
+.quiz-section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  color: var(--amber-light);
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.quiz-item {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 6px;
+  padding: 22px;
+  margin-bottom: 16px;
+}
+
+.quiz-q {
+  font-size: 15px;
+  color: rgba(255,255,255,0.9);
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+
+.quiz-opts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.quiz-opt {
+  background: rgba(255,255,255,0.06);
+  border: 1.5px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.75);
+  padding: 9px 20px;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.quiz-opt:hover { border-color: var(--amber-light); color: var(--amber-light); }
+
+.quiz-opt.correct {
+  border-color: #5fcf80;
+  background: rgba(95,207,128,0.12);
+  color: #5fcf80;
+}
+
+.quiz-opt.wrong {
+  border-color: #e07070;
+  background: rgba(224,112,112,0.12);
+  color: #e07070;
+}
+
+.quiz-fb {
+  margin-top: 12px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  display: none;
+  padding: 10px 14px;
+  border-radius: 4px;
+}
+
+.quiz-fb.show { display: block; }
+.quiz-fb.ok { background: rgba(95,207,128,0.1); color: #5fcf80; }
+.quiz-fb.fail { background: rgba(224,112,112,0.1); color: #e07070; }
+
+/* ── NUMBER LINE VIZ ── */
+.log-viz {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 28px 24px 20px;
+  margin: 24px 0;
+  box-shadow: 0 2px 12px var(--shadow);
+}
+
+.viz-title {
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  font-family: 'JetBrains Mono', monospace;
+  margin-bottom: 18px;
+  text-align: center;
+}
+
+.number-line-wrap {
+  position: relative;
+  height: 60px;
+  margin: 0 20px;
+}
+
+.nl-axis {
+  position: absolute;
+  top: 30px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--border);
+}
+
+.nl-arrow {
+  position: absolute;
+  top: 24px;
+  right: -8px;
+  width: 0;
+  height: 0;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-left: 10px solid var(--border);
+}
+
+.nl-tick {
+  position: absolute;
+  top: 22px;
+  width: 2px;
+  height: 16px;
+  background: var(--border);
+  transform: translateX(-50%);
+}
+
+.nl-label {
+  position: absolute;
+  top: 42px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-faint);
+  transform: translateX(-50%);
+}
+
+.nl-marker {
+  position: absolute;
+  top: 18px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--amber);
+  transform: translateX(-50%);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: white;
+  font-weight: 500;
+  transition: left 0.4s ease;
+  cursor: pointer;
+}
+
+.nl-marker-label {
+  position: absolute;
+  top: 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--amber);
+  transform: translateX(-50%);
+  white-space: nowrap;
+  transition: left 0.4s ease;
+}
+
+.viz-examples {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+
+.viz-ex-btn {
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 7px 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--ink-light);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.viz-ex-btn:hover, .viz-ex-btn.active {
+  background: var(--amber-pale);
+  border-color: var(--amber);
+  color: var(--amber);
+}
+
+/* read-aloud box */
+.read-box {
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin: 16px 0;
+  font-size: 15px;
+  color: var(--ink);
+  line-height: 1.8;
+  font-style: italic;
+}
+
+.read-box strong { color: var(--amber); font-style: normal; }
+
+/* footer */
+.page-footer {
+  text-align: center;
+  margin-top: 64px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border);
+}
+
+.footer-text {
+  font-size: 13px;
+  color: var(--ink-faint);
+  font-style: italic;
+}
+
+mjx-container { line-height: 1.5 !important; }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <div class="subject-tag">수학 I · 지수와 로그</div>
+    <div class="page-title">Logarithm</div>
+    <div class="page-subtitle">로그의 표기 방법과 의미를 완전히 이해하기</div>
+  </div>
+
+  <!-- SECTION 1 -->
+  <div class="section">
+    <div class="section-num">Section 01</div>
+    <div class="section-title">로그가 탄생하는 순간</div>
+    <p class="body-text">
+      어떤 수 \(a\)를 \(x\)번 곱해서 \(b\)가 되었다고 해보겠습니다. 이것을 지수로 표현하면 \(a^x = b\)입니다.
+    </p>
+    <p class="body-text">
+      여기서 <strong>"그럼 대체 몇 번(\(x\)) 곱해야 \(b\)가 되는 거야?"</strong>라고 질문을 바꿀 때 사용하는 기호가 바로 로그(\(\log\))입니다.
+    </p>
+
+    <div class="formula-card">
+      <div class="formula-label">지수 표현 → 로그 표현 변환</div>
+      <div class="formula-row">
+        <div class="formula-item">
+          <div class="formula-eq">\(a^x = b\)</div>
+          <div class="formula-desc">지수 표현</div>
+        </div>
+        <div class="formula-arrow">⟺</div>
+        <div class="formula-item">
+          <div class="formula-eq">\(\log_a b = x\)</div>
+          <div class="formula-desc">로그 표현</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="read-box">
+      읽는 법: <strong>"밑을 \(a\)로 하는 \(b\)의 로그는 \(x\)다"</strong><br>
+      뜻: <strong>"\(a\)를 \(x\)번 곱하면 \(b\)가 된다"</strong>는 것을 다르게 쓴 것뿐입니다.
+    </div>
+
+    <div class="term-grid">
+      <div class="term-card">
+        <div class="term-symbol">\(\log\)</div>
+        <div class="term-name">로그 기호</div>
+        <div class="term-desc">'Logarithm'의 약자. 로그를 쓰겠다는 선언입니다.</div>
+      </div>
+      <div class="term-card">
+        <div class="term-symbol">\(a\)</div>
+        <div class="term-name">밑 (Base)</div>
+        <div class="term-desc">곱하는 기준이 되는 수. 우리가 반복해서 곱할 수입니다.</div>
+        <div class="term-cond">\(a > 0\), \(a \neq 1\)</div>
+      </div>
+      <div class="term-card">
+        <div class="term-symbol">\(b\)</div>
+        <div class="term-name">진수 (Argument)</div>
+        <div class="term-desc">곱한 결과로 나온 수. 목표값입니다.</div>
+        <div class="term-cond">\(b > 0\)</div>
+      </div>
+      <div class="term-card">
+        <div class="term-symbol">\(x\)</div>
+        <div class="term-name">로그값</div>
+        <div class="term-desc">진짜 주인공. 우리가 구하고 싶었던 <strong>지수(실수)</strong>입니다.</div>
+        <div class="term-cond">모든 실수 가능</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"><div class="divider-line"></div><div class="divider-mark">§</div><div class="divider-line"></div></div>
+
+  <!-- INTERACTIVE TRANSFORMER -->
+  <div class="section">
+    <div class="section-num">Interactive</div>
+    <div class="section-title">직접 변환해보기</div>
+    <p class="body-text">슬라이더를 움직여서 \(a\), \(x\) 값을 바꿔보세요. 지수 표현과 로그 표현이 실시간으로 바뀝니다.</p>
+
+    <div class="transformer">
+      <div class="transformer-header">
+        <div class="transformer-header-title">지수 ↔ 로그 실시간 변환기</div>
+      </div>
+      <div class="transformer-body">
+        <div class="tf-controls">
+          <div class="tf-group">
+            <label>밑 (a)</label>
+            <input type="range" id="sliderA" min="2" max="10" value="2" step="1" oninput="updateTransformer()">
+            <div class="val-display" id="valA">2</div>
+          </div>
+          <div class="tf-group">
+            <label>지수 (x)</label>
+            <input type="range" id="sliderX" min="-3" max="5" value="3" step="1" oninput="updateTransformer()">
+            <div class="val-display" id="valX">3</div>
+          </div>
+          <div class="tf-group">
+            <label>결과 (b)</label>
+            <div class="val-display" id="valB" style="margin-top:28px;font-size:20px">8</div>
+          </div>
+        </div>
+
+        <div class="tf-result-row">
+          <div class="tf-result-box active">
+            <div class="tf-result-label">지수 표현</div>
+            <div class="tf-result-val" id="expDisplay">\(2^3 = 8\)</div>
+          </div>
+          <div class="tf-arrow">⟺</div>
+          <div class="tf-result-box active">
+            <div class="tf-result-label">로그 표현</div>
+            <div class="tf-result-val" id="logDisplay">\(\log_2 8 = 3\)</div>
+          </div>
+        </div>
+
+        <div style="margin-top:16px;padding:12px 16px;background:var(--cream);border-radius:6px;font-size:14px;color:var(--ink-light);text-align:center;line-height:1.7" id="interpText">
+          "2를 3번 곱하면 8이 된다"
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"><div class="divider-line"></div><div class="divider-mark">§</div><div class="divider-line"></div></div>
+
+  <!-- SECTION 2 — EXAMPLES -->
+  <div class="section">
+    <div class="section-num">Section 02</div>
+    <div class="section-title">한눈에 이해되는 예제 3가지</div>
+    <p class="body-text">로그가 결국 <strong>'지수'라는 실수를 표현한다</strong>는 것을 아래 예제들로 확인해보세요.</p>
+
+    <div class="example-tabs">
+      <div class="ex-tab active" onclick="switchTab(0)">예제 ① 정수</div>
+      <div class="ex-tab" onclick="switchTab(1)">예제 ② 상용로그</div>
+      <div class="ex-tab" onclick="switchTab(2)">예제 ③ 음수 결과</div>
+    </div>
+    <div class="example-panels">
+
+      <!-- Panel 0 -->
+      <div class="ex-panel active" id="panel0">
+        <div class="ex-situation">💭 2를 몇 번 곱해야 8이 될까요?</div>
+        <div class="ex-equation-row">
+          <div class="ex-eq-box">
+            <div class="ex-eq-type">지수 표현</div>
+            <div class="ex-eq-formula">\(2^3 = 8\)</div>
+          </div>
+          <div class="ex-eq-box log-box">
+            <div class="ex-eq-type">로그 표현</div>
+            <div class="ex-eq-formula">\(\log_2 8 = 3\)</div>
+          </div>
+        </div>
+        <div class="ex-answer">
+          ✔ 해석: \(\log_2 8\)이라는 복잡해 보이는 기호는 결국 <strong>\(3\)</strong>이라는 단순한 숫자를 나타냅니다.<br>
+          "밑이 2일 때 결과가 8이 되려면, 지수는 3이어야 해."
+        </div>
+      </div>
+
+      <!-- Panel 1 -->
+      <div class="ex-panel" id="panel1">
+        <div class="ex-situation">💭 10을 몇 번 곱해야 10,000이 될까요?</div>
+        <div class="ex-equation-row">
+          <div class="ex-eq-box">
+            <div class="ex-eq-type">지수 표현</div>
+            <div class="ex-eq-formula">\(10^4 = 10000\)</div>
+          </div>
+          <div class="ex-eq-box log-box">
+            <div class="ex-eq-type">로그 표현</div>
+            <div class="ex-eq-formula">\(\log_{10} 10000 = 4\)</div>
+          </div>
+        </div>
+        <div class="ex-answer">
+          ✔ 해석: 10을 밑으로 하는 로그를 <strong>'상용로그'</strong>라고 합니다. \(\log_{10} 10000\)은 <strong>\(4\)</strong>를 표현한 것입니다.
+        </div>
+        <div class="ex-real-world">
+          <div class="ex-real-world-label">🌍 실생활 연결</div>
+          지진의 강도를 나타내는 <strong>리히터 규모</strong>와 소음 단위인 <strong>데시벨(dB)</strong>이 모두 상용로그를 기반으로 만들어졌습니다.
+        </div>
+      </div>
+
+      <!-- Panel 2 -->
+      <div class="ex-panel" id="panel2">
+        <div class="ex-situation">💭 2를 몇 번 곱해야 0.5(절반)이 될까요?</div>
+        <div class="ex-equation-row">
+          <div class="ex-eq-box">
+            <div class="ex-eq-type">지수 표현</div>
+            <div class="ex-eq-formula">\(2^{-1} = \tfrac{1}{2} = 0.5\)</div>
+          </div>
+          <div class="ex-eq-box log-box">
+            <div class="ex-eq-type">로그 표현</div>
+            <div class="ex-eq-formula">\(\log_2 0.5 = -1\)</div>
+          </div>
+        </div>
+        <div class="ex-answer">
+          ✔ 해석: 지수에 마이너스가 붙으면 '역수(분수)'를 의미합니다. \(\log_2 0.5\)는 <strong>\(-1\)</strong>이라는 음의 실수를 표현한 것입니다.<br>
+          로그의 결과값은 양수, 음수, 소수 등 <strong>모든 실수</strong>가 될 수 있습니다.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"><div class="divider-line"></div><div class="divider-mark">§</div><div class="divider-line"></div></div>
+
+  <!-- NUMBER LINE VIZ -->
+  <div class="section">
+    <div class="section-num">Visualization</div>
+    <div class="section-title">로그값은 수직선 위의 한 점</div>
+    <p class="body-text">로그의 결과값 \(x\)는 수직선 위의 <strong>하나의 실수</strong>입니다. 아래 버튼을 클릭해서 각 예제의 로그값이 어디에 위치하는지 확인해보세요.</p>
+
+    <div class="log-viz">
+      <div class="viz-title">수직선 위의 로그값</div>
+      <div class="number-line-wrap" id="numberLine">
+        <div class="nl-axis"></div>
+        <div class="nl-arrow"></div>
+        <!-- ticks inserted by JS -->
+        <div class="nl-marker" id="nlMarker" style="left:75%">x</div>
+        <div class="nl-marker-label" id="nlMarkerLabel" style="left:75%">\(\log_2 8 = 3\)</div>
+      </div>
+      <div class="viz-examples">
+        <button class="viz-ex-btn active" onclick="setNL(75,'\\(\\log_2 8 = 3\\)',this)">log₂8 = 3</button>
+        <button class="viz-ex-btn" onclick="setNL(87.5,'\\(\\log_{10} 10000 = 4\\)',this)">log₁₀10000 = 4</button>
+        <button class="viz-ex-btn" onclick="setNL(37.5,'\\(\\log_2 0.5 = -1\\)',this)">log₂0.5 = −1</button>
+        <button class="viz-ex-btn" onclick="setNL(62.5,'\\(\\log_2 4 = 2\\)',this)">log₂4 = 2</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-section">
+    <div class="quiz-section-title">개념 확인 퀴즈</div>
+
+    <div class="quiz-item" id="qz1">
+      <div class="quiz-q">① \(\log_3 27\)의 값은? &nbsp;(힌트: \(3^? = 27\))</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt" onclick="quiz('qz1',this,'wrong','아쉬워요! 3¹=3, 3²=9, 3³=27 이므로 지수는 3입니다.')">1</button>
+        <button class="quiz-opt" onclick="quiz('qz1',this,'wrong','아쉬워요! 3²=9이고, 3³=27 입니다. 다시 세어보세요.')">2</button>
+        <button class="quiz-opt" onclick="quiz('qz1',this,'correct','맞아요! 3³=27 이므로 log₃27 = 3 입니다.')">3</button>
+        <button class="quiz-opt" onclick="quiz('qz1',this,'wrong','3⁴=81 이에요. 27은 3을 세 번 곱한 값입니다.')">4</button>
+      </div>
+      <div class="quiz-fb" id="qz1-fb"></div>
+    </div>
+
+    <div class="quiz-item" id="qz2">
+      <div class="quiz-q">② \(\log_5 1\)의 값은? &nbsp;(힌트: \(5^? = 1\))</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt" onclick="quiz('qz2',this,'correct','정확해요! 어떤 수의 0제곱은 항상 1이에요. 5⁰=1 이므로 log₅1 = 0 입니다.')">0</button>
+        <button class="quiz-opt" onclick="quiz('qz2',this,'wrong','5¹=5 이에요. 1이 아닙니다.')">1</button>
+        <button class="quiz-opt" onclick="quiz('qz2',this,'wrong','1은 어떤 수의 0제곱으로 표현됩니다. a⁰ = 1이 핵심 공식이에요.')">−1</button>
+        <button class="quiz-opt" onclick="quiz('qz2',this,'wrong','5⁵는 매우 큰 수입니다. 1이 되려면 지수가 얼마여야 할지 생각해보세요.')">5</button>
+      </div>
+      <div class="quiz-fb" id="qz2-fb"></div>
+    </div>
+
+    <div class="quiz-item" id="qz3">
+      <div class="quiz-q">③ \(2^5 = 32\)를 로그로 바꾸면?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt" onclick="quiz('qz3',this,'wrong','밑과 진수가 바뀌었어요. aˣ=b → logₐb=x 공식을 다시 확인해보세요.')">log₃₂2 = 5</button>
+        <button class="quiz-opt" onclick="quiz('qz3',this,'correct','완벽해요! 2⁵=32 에서 밑은 2, 결과는 32, 지수는 5 이므로 log₂32 = 5 입니다.')">log₂32 = 5</button>
+        <button class="quiz-opt" onclick="quiz('qz3',this,'wrong','지수 5가 진수 자리에 들어간 것은 잘못되었어요.')">log₂5 = 32</button>
+        <button class="quiz-opt" onclick="quiz('qz3',this,'wrong','로그값(답) 자리에 32가 들어가면 안 돼요. 32는 진수 자리입니다.')">log₅32 = 2</button>
+      </div>
+      <div class="quiz-fb" id="qz3-fb"></div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="page-footer">
+    <div class="footer-text">로그는 지수를 뒤집어 질문한 것 — 그 이상도 이하도 아닙니다.</div>
+  </div>
+
+</div>
+
+<script>
+// ── TRANSFORMER ──
+function frac(x) {
+  if (x === -3) return '\\tfrac{1}{8}';
+  if (x === -2) return '\\tfrac{1}{4}';
+  if (x === -1) return '\\tfrac{1}{2}';
+  return null;
+}
+
+function updateTransformer() {
+  const a = parseInt(document.getElementById('sliderA').value);
+  const x = parseInt(document.getElementById('sliderX').value);
+  const b = Math.pow(a, x);
+
+  document.getElementById('valA').textContent = a;
+  document.getElementById('valX').textContent = x;
+
+  let bDisplay;
+  if (Number.isInteger(b)) {
+    bDisplay = b.toString();
+  } else {
+    bDisplay = b.toFixed(4);
+  }
+  document.getElementById('valB').textContent = bDisplay;
+
+  let bTex;
+  if (x < 0 && Number.isInteger(1/b)) {
+    bTex = frac(x) ? frac(x) : bDisplay;
+  } else {
+    bTex = Number.isInteger(b) ? b : b.toFixed(3);
+  }
+
+  const expTex = `\\(${a}^{${x}} = ${bTex}\\)`;
+  const logTex = `\\(\\log_{${a}} ${bTex} = ${x}\\)`;
+
+  document.getElementById('expDisplay').innerHTML = expTex;
+  document.getElementById('logDisplay').innerHTML = logTex;
+
+  const xWord = x >= 0 ? `${x}번` : `${Math.abs(x)}번 (역수)`;
+  document.getElementById('interpText').textContent =
+    `"${a}를 ${xWord} 곱하면 ${bDisplay}이 된다"`;
+
+  if (window.MathJax) MathJax.typesetPromise();
+}
+
+updateTransformer();
+
+// ── TABS ──
+function switchTab(idx) {
+  document.querySelectorAll('.ex-tab').forEach((t,i) => t.classList.toggle('active', i===idx));
+  document.querySelectorAll('.ex-panel').forEach((p,i) => p.classList.toggle('active', i===idx));
+}
+
+// ── NUMBER LINE ──
+function buildNL() {
+  const nl = document.getElementById('numberLine');
+  const ticks = [-3,-2,-1,0,1,2,3,4,5];
+  const min = -4, max = 6, range = max - min;
+
+  ticks.forEach(v => {
+    const pct = ((v - min) / range) * 100;
+    const tick = document.createElement('div');
+    tick.className = 'nl-tick';
+    tick.style.left = pct + '%';
+    nl.appendChild(tick);
+
+    const lbl = document.createElement('div');
+    lbl.className = 'nl-label';
+    lbl.style.left = pct + '%';
+    lbl.textContent = v;
+    nl.appendChild(lbl);
+  });
+}
+
+buildNL();
+
+function setNL(pct, tex, btn) {
+  document.getElementById('nlMarker').style.left = pct + '%';
+  document.getElementById('nlMarkerLabel').style.left = pct + '%';
+  document.getElementById('nlMarkerLabel').innerHTML = tex;
+  document.querySelectorAll('.viz-ex-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (window.MathJax) MathJax.typesetPromise();
+}
+
+// ── QUIZ ──
+function quiz(id, btn, result, msg) {
+  const box = document.getElementById(id);
+  if (box.dataset.done) return;
+  box.dataset.done = '1';
+  btn.classList.add(result);
+  const fb = document.getElementById(id + '-fb');
+  fb.innerHTML = (result === 'correct' ? '✅ ' : '❌ ') + msg;
+  fb.className = 'quiz-fb show ' + (result === 'correct' ? 'ok' : 'fail');
+  box.querySelectorAll('.quiz-opt').forEach(b => b.style.pointerEvents = 'none');
+}
+
+// intersection observer for animations
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.style.animationPlayState = 'running'; });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.section').forEach(s => {
+  s.style.animationPlayState = 'paused';
+  obs.observe(s);
+});
+</script>
+</body>
+</html>

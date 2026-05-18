@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>이산수학 8장 그래프 — 인터랙티브 학습</title>
+<style>
+:root {
+  --bg: #0a0f1e; --bg2: #111827; --bg3: #1a2336;
+  --c1: #06b6d4; --c2: #a78bfa; --c3: #34d399;
+  --c4: #fbbf24; --c5: #f472b6; --red: #f87171;
+  --white: #f0f6ff; --gray: #6b82a8; --dgray: #1e3050;
+  --border: rgba(106,130,168,0.25);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Malgun Gothic', sans-serif; background: var(--bg); color: var(--white); min-height: 100vh; }
+
+.header { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 14px 24px; display: flex; align-items: center; gap: 16px; }
+.header h1 { font-size: 18px; font-weight: 700; color: var(--c1); }
+.header span { font-size: 13px; color: var(--gray); }
+
+.tabs { display: flex; gap: 0; background: var(--bg2); border-bottom: 1px solid var(--border); padding: 0 24px; }
+.tab { padding: 12px 20px; font-size: 14px; cursor: pointer; border-bottom: 2.5px solid transparent; color: var(--gray); transition: all .2s; background: none; border-top: none; border-left: none; border-right: none; }
+.tab.active { color: var(--c1); border-bottom-color: var(--c1); }
+.tab:hover:not(.active) { color: var(--white); }
+
+.content { padding: 24px; max-width: 1100px; margin: 0 auto; }
+
+/* LEARNING */
+.learn-grid { display: grid; grid-template-columns: 1fr 320px; gap: 20px; }
+.canvas-wrap { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+.canvas-wrap h2 { font-size: 15px; color: var(--c1); margin-bottom: 12px; }
+#graphCanvas { width: 100%; border-radius: 8px; background: var(--bg3); cursor: pointer; display: block; }
+.algo-panel { display: flex; flex-direction: column; gap: 12px; }
+.panel-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+.panel-card h3 { font-size: 13px; color: var(--c4); margin-bottom: 10px; letter-spacing: .5px; }
+.btn-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+.btn { padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg3); color: var(--white); font-size: 12px; cursor: pointer; transition: all .15s; }
+.btn:hover { background: var(--dgray); border-color: var(--c1); }
+.btn.active-btn { background: var(--c1); color: #000; border-color: var(--c1); }
+.btn.red { border-color: var(--red); }
+.btn.red:hover { background: var(--red); }
+.info-box { background: var(--bg3); border-radius: 8px; padding: 10px 12px; font-size: 12.5px; line-height: 1.7; color: var(--gray); min-height: 60px; }
+.info-box b { color: var(--c1); }
+.badge-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.badge { padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+.badge.cyan { background: rgba(6,182,212,.18); color: var(--c1); }
+.badge.green { background: rgba(52,211,153,.18); color: var(--c3); }
+.badge.red { background: rgba(248,113,113,.18); color: var(--red); }
+.badge.amber { background: rgba(251,191,36,.18); color: var(--c4); }
+.step-log { max-height: 100px; overflow-y: auto; font-size: 11.5px; color: var(--gray); line-height: 1.8; }
+.step-log span { display: block; }
+.step-log span.hi { color: var(--c3); }
+
+/* concept cards */
+.concept-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 20px; }
+.concept-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 14px; cursor: pointer; transition: border-color .2s; }
+.concept-card:hover { border-color: var(--c1); }
+.concept-card h4 { font-size: 13px; color: var(--c2); margin-bottom: 6px; }
+.concept-card p { font-size: 12px; color: var(--gray); line-height: 1.6; }
+.concept-card .formula { font-size: 13px; color: var(--c4); font-family: monospace; margin-top: 6px; background: var(--bg3); padding: 4px 8px; border-radius: 4px; }
+
+/* PROBLEMS */
+.prob-layout { display: grid; grid-template-columns: 260px 1fr; gap: 20px; }
+.prob-nav { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
+.prob-nav h3 { font-size: 13px; color: var(--c4); margin-bottom: 10px; }
+.prob-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.pnum { width: 36px; height: 36px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg3); color: var(--gray); font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .15s; }
+.pnum:hover { border-color: var(--c1); color: var(--c1); }
+.pnum.current { border-color: var(--c1); background: rgba(6,182,212,.18); color: var(--c1); }
+.pnum.correct { border-color: var(--c3); background: rgba(52,211,153,.18); color: var(--c3); }
+.pnum.wrong { border-color: var(--red); background: rgba(248,113,113,.18); color: var(--red); }
+.score-bar { margin-top: 14px; padding: 10px; background: var(--bg3); border-radius: 8px; font-size: 12px; }
+.score-bar .sc { font-size: 22px; font-weight: 700; color: var(--c1); }
+
+.prob-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+.prob-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+.prob-num { width: 32px; height: 32px; border-radius: 50%; background: var(--c1); color: #000; font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+.prob-tag { padding: 3px 10px; border-radius: 20px; font-size: 11px; }
+.prob-title { font-size: 16px; font-weight: 600; color: var(--white); margin-bottom: 12px; line-height: 1.6; }
+.prob-desc { font-size: 13px; color: var(--gray); line-height: 1.8; margin-bottom: 14px; background: var(--bg3); padding: 12px; border-radius: 8px; }
+.prob-desc b { color: var(--c1); }
+.prob-figure { text-align: center; margin: 12px 0; }
+.choices { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+.choice { padding: 11px 16px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg3); cursor: pointer; font-size: 14px; color: var(--white); transition: all .15s; display: flex; align-items: center; gap: 10px; }
+.choice:hover:not(.disabled) { border-color: var(--c1); background: rgba(6,182,212,.1); }
+.choice.selected { border-color: var(--c2); background: rgba(167,139,250,.15); }
+.choice.correct-ans { border-color: var(--c3); background: rgba(52,211,153,.15); }
+.choice.wrong-ans { border-color: var(--red); background: rgba(248,113,113,.15); }
+.choice .mark { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 11px; flex-shrink: 0; }
+.btn-submit { padding: 10px 24px; background: var(--c1); color: #000; border: none; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; transition: opacity .15s; }
+.btn-submit:hover { opacity: .85; }
+.btn-submit:disabled { opacity: .4; cursor: not-allowed; }
+.btn-nav { padding: 9px 18px; border: 1px solid var(--border); background: var(--bg3); color: var(--white); border-radius: 8px; font-size: 13px; cursor: pointer; }
+.btn-nav:hover { border-color: var(--c1); }
+
+.explain-box { margin-top: 16px; background: var(--bg3); border-radius: 10px; border-left: 3px solid var(--c4); padding: 14px 16px; font-size: 13px; line-height: 1.85; color: var(--gray); }
+.explain-box .etitle { font-size: 13px; font-weight: 700; color: var(--c4); margin-bottom: 8px; }
+.explain-box b { color: var(--c1); }
+.explain-box code { background: var(--bg2); padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 12px; color: var(--c3); }
+
+.nav-row { display: flex; gap: 8px; align-items: center; margin-top: 16px; }
+
+/* graph canvas node colors for algo */
+svg text { font-family: 'Malgun Gothic', sans-serif; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>📊 이산수학 8장 — 그래프 인터랙티브 학습</h1>
+  <span>세영코딩연구소</span>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('learn')">🎮 인터랙티브 학습</button>
+  <button class="tab" onclick="showTab('problems')">📝 정올 기출 수준 문제 (20문제)</button>
+</div>
+
+<!-- ===================== LEARN TAB ===================== -->
+<div id="tab-learn" class="content">
+  <div class="learn-grid">
+    <div class="canvas-wrap">
+      <h2>그래프 시각화 — 클릭으로 노드 추가, 드래그로 이동</h2>
+      <canvas id="graphCanvas" height="340"></canvas>
+    </div>
+    <div class="algo-panel">
+      <div class="panel-card">
+        <h3>⚙ 그래프 설정</h3>
+        <div class="btn-row">
+          <button class="btn active-btn" id="modeAddNode" onclick="setMode('addNode')">노드 추가</button>
+          <button class="btn" id="modeAddEdge" onclick="setMode('addEdge')">간선 추가</button>
+          <button class="btn" id="modeDrag" onclick="setMode('drag')">이동</button>
+        </div>
+        <div class="btn-row">
+          <button class="btn" onclick="loadPreset('cycle')">사이클 예제</button>
+          <button class="btn" onclick="loadPreset('k4')">K₄</button>
+          <button class="btn" onclick="loadPreset('bipartite')">이분 그래프</button>
+          <button class="btn" onclick="loadPreset('euler')">오일러 예제</button>
+          <button class="btn red" onclick="clearGraph()">초기화</button>
+        </div>
+        <div class="info-box" id="graphInfo">
+          <b>사용법:</b> 노드 추가 모드에서 캔버스 클릭 → 노드 생성<br>간선 추가 모드에서 두 노드 순서대로 클릭
+        </div>
+        <div class="badge-row" id="graphStats"></div>
+      </div>
+
+      <div class="panel-card">
+        <h3>🔍 알고리즘 실행</h3>
+        <div class="btn-row">
+          <button class="btn" onclick="runAlgo('bfs')">BFS</button>
+          <button class="btn" onclick="runAlgo('dfs')">DFS</button>
+          <button class="btn" onclick="runAlgo('euler')">오일러 판별</button>
+          <button class="btn" onclick="runAlgo('bipartite')">이분 판별</button>
+          <button class="btn" onclick="runAlgo('degree')">차수 분석</button>
+        </div>
+        <div class="step-log" id="algoLog"><span style="color:var(--gray)">알고리즘을 선택하세요</span></div>
+      </div>
+
+      <div class="panel-card">
+        <h3>📐 인접행렬</h3>
+        <div id="matrixView" style="overflow-x:auto; font-size:12px; font-family:monospace; color:var(--c1)">
+          (그래프를 만들면 여기에 표시)
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="concept-grid">
+    <div class="concept-card" onclick="showConcept('handshaking')">
+      <h4>핸드쉐이킹 정리</h4>
+      <p>모든 꼭짓점의 차수 합 = 간선 수의 2배</p>
+      <div class="formula">Σdeg(v) = 2|E|</div>
+    </div>
+    <div class="concept-card" onclick="showConcept('euler')">
+      <h4>오일러 회로 조건</h4>
+      <p>연결 그래프이고 모든 꼭짓점의 차수가 짝수</p>
+      <div class="formula">∀v: deg(v) 짝수</div>
+    </div>
+    <div class="concept-card" onclick="showConcept('path_euler')">
+      <h4>오일러 경로 조건</h4>
+      <p>연결 그래프이고 홀수 차수 꼭짓점이 정확히 2개</p>
+      <div class="formula">홀수 차수 = 2개</div>
+    </div>
+    <div class="concept-card" onclick="showConcept('bipartite')">
+      <h4>이분 그래프</h4>
+      <p>홀수 길이 사이클이 없는 그래프 ↔ 2-색칠 가능</p>
+      <div class="formula">V = X ∪ Y</div>
+    </div>
+    <div class="concept-card" onclick="showConcept('planar')">
+      <h4>플라나 그래프</h4>
+      <p>간선 교차 없이 평면에 그릴 수 있는 그래프</p>
+      <div class="formula">V - E + F = 2</div>
+    </div>
+    <div class="concept-card" onclick="showConcept('complete')">
+      <h4>완전 그래프 Kₙ</h4>
+      <p>n개 꼭짓점의 모든 쌍이 간선으로 연결</p>
+      <div class="formula">|E| = n(n-1)/2</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PROBLEMS TAB ===================== -->
+<div id="tab-problems" class="content" style="display:none">
+  <div class="prob-layout">
+    <div>
+      <div class="prob-nav">
+        <h3>📋 문제 목록</h3>
+        <div class="prob-grid" id="probGrid"></div>
+        <div class="score-bar">
+          <div style="font-size:12px;color:var(--gray);margin-bottom:4px">현재 점수</div>
+          <span class="sc" id="scoreNum">0</span><span style="font-size:13px;color:var(--gray)">/20</span>
+          <div style="margin-top:6px;height:4px;background:var(--bg3);border-radius:2px">
+            <div id="scoreBar" style="height:100%;background:var(--c1);border-radius:2px;width:0%;transition:width .4s"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="prob-card" id="probCard"></div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// GRAPH ENGINE
+// ============================================================
+const canvas = document.getElementById('graphCanvas');
+const ctx = canvas.getContext('2d');
+let nodes = [], edges = [], mode = 'addNode', selectedNode = null, dragging = null, dragOffset = {x:0,y:0};
+let algoColors = {};
+let edgeConnectFirst = null;
+
+function resizeCanvas() {
+  const w = canvas.parentElement.clientWidth - 32;
+  canvas.width = w; canvas.height = 340;
+  draw();
+}
+
+function setMode(m) {
+  mode = m; selectedNode = null; edgeConnectFirst = null;
+  ['addNode','addEdge','drag'].forEach(id => {
+    const el = document.getElementById('mode'+id.charAt(0).toUpperCase()+id.slice(1));
+    if(el) el.classList.toggle('active-btn', m===id);
+  });
+  updateInfo();
+}
+
+function updateInfo() {
+  const msgs = {
+    addNode:'캔버스 빈 곳을 클릭해 노드를 추가하세요',
+    addEdge:'첫 번째 노드 클릭 → 두 번째 노드 클릭으로 간선을 추가합니다',
+    drag:'노드를 드래그해 위치를 바꾸세요'
+  };
+  document.getElementById('graphInfo').innerHTML = msgs[mode]||'';
+  updateStats();
+}
+
+function updateStats() {
+  const n=nodes.length, e=edges.length;
+  const deg = Array(n).fill(0);
+  edges.forEach(({a,b})=>{ deg[a]++; deg[b]++; });
+  const odd = deg.filter(d=>d%2===1).length;
+  const s = document.getElementById('graphStats');
+  s.innerHTML = `<span class="badge cyan">V = ${n}</span><span class="badge cyan">E = ${e}</span><span class="badge amber">Σdeg = ${2*e}</span><span class="badge ${odd===0?'green':odd===2?'amber':'red'}">홀수차수 ${odd}개</span>`;
+  updateMatrix();
+}
+
+function updateMatrix() {
+  const n = nodes.length;
+  if(n===0){ document.getElementById('matrixView').innerHTML='(노드 없음)'; return; }
+  if(n>8){ document.getElementById('matrixView').innerHTML='(V>8 행렬 생략)'; return; }
+  const adj = Array.from({length:n},()=>Array(n).fill(0));
+  edges.forEach(({a,b})=>{ adj[a][b]=1; adj[b][a]=1; });
+  const lbl = nodes.map(nd=>nd.label);
+  let html = '<table style="border-collapse:collapse">';
+  html += '<tr><td style="padding:2px 5px;color:var(--gray)"></td>';
+  lbl.forEach(l=>html+=`<td style="padding:2px 5px;color:var(--c4)">${l}</td>`);
+  html += '</tr>';
+  adj.forEach((row,i)=>{
+    html+=`<tr><td style="padding:2px 5px;color:var(--c4)">${lbl[i]}</td>`;
+    row.forEach(v=>html+=`<td style="padding:2px 5px;color:${v?'var(--c1)':'var(--dgray)'}">${v}</td>`);
+    html+='</tr>';
+  });
+  html+='</table>';
+  document.getElementById('matrixView').innerHTML = html;
+}
+
+function getNodeAt(x,y) {
+  return nodes.findIndex(n=>Math.hypot(n.x-x,n.y-y)<20);
+}
+
+canvas.addEventListener('mousedown', e=>{
+  const r=canvas.getBoundingClientRect(), mx=e.clientX-r.left, my=e.clientY-r.top;
+  const ni=getNodeAt(mx,my);
+  if(mode==='addNode'){
+    if(ni===-1){ nodes.push({x:mx,y:my,label:String.fromCharCode(65+nodes.length%26)}); algoColors={}; draw(); updateStats(); }
+  } else if(mode==='addEdge'){
+    if(ni!==-1){
+      if(edgeConnectFirst===null){ edgeConnectFirst=ni; selectedNode=ni; }
+      else if(edgeConnectFirst!==ni){
+        if(!edges.some(ed=>(ed.a===edgeConnectFirst&&ed.b===ni)||(ed.a===ni&&ed.b===edgeConnectFirst))){
+          edges.push({a:edgeConnectFirst,b:ni});
+        }
+        edgeConnectFirst=null; selectedNode=null;
+      }
+      algoColors={}; draw(); updateStats();
+    }
+  } else if(mode==='drag'){
+    if(ni!==-1){ dragging=ni; dragOffset={x:mx-nodes[ni].x,y:my-nodes[ni].y}; }
+  }
+});
+
+canvas.addEventListener('mousemove',e=>{
+  if(mode==='drag'&&dragging!==null){
+    const r=canvas.getBoundingClientRect();
+    nodes[dragging].x=e.clientX-r.left-dragOffset.x;
+    nodes[dragging].y=e.clientY-r.top-dragOffset.y;
+    draw();
+  }
+});
+canvas.addEventListener('mouseup',()=>{ dragging=null; });
+
+function draw() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle='#101828';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  // grid
+  ctx.strokeStyle='rgba(255,255,255,0.03)';
+  ctx.lineWidth=1;
+  for(let x=0;x<canvas.width;x+=30){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,canvas.height); ctx.stroke(); }
+  for(let y=0;y<canvas.height;y+=30){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(canvas.width,y); ctx.stroke(); }
+  // edges
+  edges.forEach(({a,b})=>{
+    ctx.beginPath();
+    ctx.moveTo(nodes[a].x,nodes[a].y);
+    ctx.lineTo(nodes[b].x,nodes[b].y);
+    ctx.strokeStyle='rgba(107,130,168,0.5)';
+    ctx.lineWidth=2;
+    ctx.stroke();
+  });
+  // nodes
+  nodes.forEach((n,i)=>{
+    const col=algoColors[i]||'#06b6d4';
+    ctx.beginPath();
+    ctx.arc(n.x,n.y,18,0,Math.PI*2);
+    ctx.fillStyle=col==='#06b6d4'?'#1a2a3a':`${col}33`;
+    ctx.fill();
+    ctx.strokeStyle=col;
+    ctx.lineWidth= (i===selectedNode||i===edgeConnectFirst)? 3:2;
+    ctx.stroke();
+    ctx.fillStyle=col;
+    ctx.font='bold 13px Malgun Gothic, monospace';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(n.label,n.x,n.y);
+    // degree
+    const deg=edges.filter(e=>e.a===i||e.b===i).length;
+    ctx.fillStyle='rgba(107,130,168,0.7)';
+    ctx.font='10px monospace';
+    ctx.fillText(`d=${deg}`,n.x,n.y+28);
+  });
+}
+
+// PRESETS
+function loadPreset(type){
+  clearGraph();
+  const W=canvas.width, H=canvas.height;
+  const cx=W/2, cy=H/2;
+  if(type==='cycle'){
+    const n=5;
+    for(let i=0;i<n;i++){
+      const a=-Math.PI/2+i*2*Math.PI/n;
+      nodes.push({x:cx+120*Math.cos(a),y:cy+110*Math.sin(a),label:String.fromCharCode(65+i)});
+    }
+    for(let i=0;i<n;i++) edges.push({a:i,b:(i+1)%n});
+  } else if(type==='k4'){
+    [[cx-100,cy-80],[cx+100,cy-80],[cx+100,cy+80],[cx-100,cy+80]].forEach((p,i)=>nodes.push({x:p[0],y:p[1],label:String.fromCharCode(65+i)}));
+    for(let i=0;i<4;i++) for(let j=i+1;j<4;j++) edges.push({a:i,b:j});
+  } else if(type==='bipartite'){
+    [[cx-120,cy-80],[cx-120,cy],[cx-120,cy+80],[cx+120,cy-60],[cx+120,cy+60]].forEach((p,i)=>nodes.push({x:p[0],y:p[1],label:String.fromCharCode(65+i)}));
+    [[0,3],[0,4],[1,3],[1,4],[2,4]].forEach(([a,b])=>edges.push({a,b}));
+  } else if(type==='euler'){
+    [[cx,cy-110],[cx-120,cy+30],[cx+120,cy+30],[cx-60,cy+110],[cx+60,cy+110]].forEach((p,i)=>nodes.push({x:p[0],y:p[1],label:String.fromCharCode(65+i)}));
+    [[0,1],[0,2],[1,2],[1,3],[2,4],[3,4]].forEach(([a,b])=>edges.push({a,b}));
+  }
+  algoColors={}; draw(); updateStats();
+}
+
+function clearGraph(){ nodes=[]; edges=[]; algoColors={}; edgeConnectFirst=null; selectedNode=null; draw(); updateStats(); document.getElementById('algoLog').innerHTML='<span style="color:var(--gray)">초기화됨</span>'; }
+
+// ALGORITHMS
+function runAlgo(type){
+  const log=document.getElementById('algoLog');
+  algoColors={};
+  if(nodes.length===0){ log.innerHTML='<span style="color:var(--red)">노드가 없습니다</span>'; return; }
+  if(type==='bfs'){
+    const adj=buildAdj();
+    const vis=new Array(nodes.length).fill(false);
+    const q=[0]; vis[0]=true;
+    const order=[];
+    const cols=['#06b6d4','#a78bfa','#34d399','#fbbf24','#f472b6','#fb923c','#60a5fa','#4ade80'];
+    let ci=0;
+    while(q.length){
+      const v=q.shift(); order.push(v); algoColors[v]=cols[ci++%cols.length];
+      adj[v].forEach(u=>{ if(!vis[u]){ vis[u]=true; q.push(u); }});
+    }
+    const unvisited=nodes.map((_,i)=>i).filter(i=>!vis[i]);
+    log.innerHTML=`<span class="hi">BFS 순서: ${order.map(i=>nodes[i].label).join(' → ')}</span>${unvisited.length?`<span style="color:var(--red)">비연결: ${unvisited.map(i=>nodes[i].label).join(',')}</span>`:'<span style="color:var(--c3)">✓ 연결 그래프</span>'}`;
+    draw();
+  } else if(type==='dfs'){
+    const adj=buildAdj();
+    const vis=new Array(nodes.length).fill(false);
+    const order=[];
+    const cols=['#06b6d4','#a78bfa','#34d399','#fbbf24','#f472b6'];
+    let ci=0;
+    function dfs(v){ vis[v]=true; order.push(v); algoColors[v]=cols[ci++%cols.length]; adj[v].forEach(u=>{ if(!vis[u]) dfs(u); }); }
+    dfs(0);
+    log.innerHTML=`<span class="hi">DFS 순서: ${order.map(i=>nodes[i].label).join(' → ')}</span>`;
+    draw();
+  } else if(type==='euler'){
+    const n=nodes.length, e=edges.length;
+    if(n===0){ log.innerHTML='<span style="color:var(--red)">노드 없음</span>'; return; }
+    const deg=nodes.map((_,i)=>edges.filter(ed=>ed.a===i||ed.b===i).length);
+    const odd=deg.map((d,i)=>({i,d,odd:d%2===1})).filter(x=>x.odd);
+    const connected=isConnected();
+    let result='';
+    if(!connected){ result='<span style="color:var(--red)">✗ 비연결 그래프 → 오일러 경로/회로 없음</span>'; }
+    else if(odd.length===0){ result=`<span style="color:var(--c3)">✓ 오일러 회로 존재 (모든 차수 짝수)</span>`; }
+    else if(odd.length===2){ result=`<span style="color:var(--c4)">✓ 오일러 경로 존재 (홀수차수: ${odd.map(x=>nodes[x.i].label).join(', ')}에서 시작/끝)</span>`; odd.forEach(x=>algoColors[x.i]='#fbbf24'); }
+    else{ result=`<span style="color:var(--red)">✗ 오일러 경로/회로 없음 (홀수차수 꼭짓점 ${odd.length}개)</span>`; odd.forEach(x=>algoColors[x.i]='#f87171'); }
+    log.innerHTML=result+`<span>V=${n}, E=${e}, Σdeg=${2*e}</span>`;
+    draw();
+  } else if(type==='bipartite'){
+    const adj=buildAdj();
+    const col=new Array(nodes.length).fill(-1);
+    let isBi=true;
+    function bfs2(s){ col[s]=0; const q=[s]; while(q.length){ const v=q.shift(); adj[v].forEach(u=>{ if(col[u]===-1){ col[u]=1-col[v]; q.push(u); } else if(col[u]===col[v]){ isBi=false; } }); } }
+    for(let i=0;i<nodes.length;i++) if(col[i]===-1) bfs2(i);
+    if(isBi){
+      nodes.forEach((_,i)=>algoColors[i]=col[i]===0?'#06b6d4':'#f472b6');
+      log.innerHTML=`<span class="hi">✓ 이분 그래프</span><span>X집합(파랑): ${nodes.filter((_,i)=>col[i]===0).map(n=>n.label).join(',')} / Y집합(분홍): ${nodes.filter((_,i)=>col[i]===1).map(n=>n.label).join(',')}</span>`;
+    } else {
+      log.innerHTML='<span style="color:var(--red)">✗ 이분 그래프 아님 (홀수 사이클 존재)</span>';
+    }
+    draw();
+  } else if(type==='degree'){
+    const deg=nodes.map((_,i)=>edges.filter(e=>e.a===i||e.b===i).length);
+    const maxD=Math.max(...deg,0);
+    nodes.forEach((_,i)=>{ const t=deg[i]/Math.max(maxD,1); algoColors[i]=`hsl(${180+t*60},80%,${40+t*20}%)`; });
+    log.innerHTML=nodes.map((n,i)=>`<span><b style="color:var(--c1)">${n.label}</b>: deg=${deg[i]}${deg[i]%2===0?' (짝수)':' (홀수)'}</span>`).join('')+`<span class="hi">Σdeg=${deg.reduce((a,b)=>a+b,0)} = 2×|E|=${2*edges.length}</span>`;
+    draw();
+  }
+}
+
+function buildAdj(){
+  const adj=nodes.map(()=>[]);
+  edges.forEach(({a,b})=>{ adj[a].push(b); adj[b].push(a); });
+  return adj;
+}
+function isConnected(){
+  if(nodes.length===0) return true;
+  const adj=buildAdj(), vis=new Array(nodes.length).fill(false);
+  const q=[0]; vis[0]=true;
+  while(q.length){ const v=q.shift(); adj[v].forEach(u=>{ if(!vis[u]){ vis[u]=true; q.push(u); }}); }
+  return vis.every(x=>x);
+}
+
+function showConcept(type){
+  const info={
+    handshaking:'<b>핸드쉐이킹 정리</b><br>Σdeg(v) = 2|E|<br>→ 홀수 차수 꼭짓점의 수는 항상 짝수<br>→ "차수 분석" 버튼으로 확인해보세요!',
+    euler:'<b>오일러 회로 존재 조건</b><br>① 연결 그래프<br>② 모든 꼭짓점의 차수가 짝수<br>→ "오일러 예제" 프리셋 후 판별해보세요!',
+    path_euler:'<b>오일러 경로 존재 조건</b><br>① 연결 그래프<br>② 홀수 차수 꼭짓점이 정확히 2개<br>→ 경로는 홀수차수 꼭짓점에서 시작·끝',
+    bipartite:'<b>이분 그래프</b><br>V=X∪Y, 간선은 X↔Y만<br>조건: 홀수 사이클 없음<br>→ "이분 그래프" 프리셋 후 판별해보세요!',
+    planar:'<b>플라나 그래프 (오일러 공식)</b><br>V - E + F = 2<br>K₅와 K₃₃은 비평면<br>E ≤ 3V-6 (V≥3인 단순 평면 그래프)',
+    complete:'<b>완전 그래프 Kₙ</b><br>|E| = n(n-1)/2<br>각 꼭짓점 차수 = n-1<br>→ "K₄" 프리셋으로 확인!'
+  };
+  document.getElementById('graphInfo').innerHTML = info[type]||'';
+}
+
+// ============================================================
+// PROBLEMS
+// ============================================================
+const problems = [
+{
+  tag:'그래프 기초', tagColor:'cyan',
+  q:'꼭짓점이 8개이고 각 꼭짓점의 차수가 3인 정규 그래프(3-정규 그래프)가 있다. 이 그래프의 간선 수는?',
+  choices:['8','10','12','14','16'],
+  answer:2,
+  explain:`<b>핸드쉐이킹 정리</b>: Σdeg(v) = 2|E|<br>각 꼭짓점 차수가 3이고 꼭짓점 8개이므로:<br>Σdeg = 3 × 8 = 24 = 2|E|<br>∴ <b>|E| = 24/2 = 12</b><br><br>일반화: k-정규 그래프에서 |E| = kn/2`
+},
+{
+  tag:'오일러 회로', tagColor:'amber',
+  q:'다음 중 오일러 회로가 존재하기 위한 조건으로 올바른 것은? (무향 그래프 기준)',
+  choices:['모든 꼭짓점의 차수가 홀수','홀수 차수 꼭짓점이 정확히 2개','연결 그래프이고 모든 꼭짓점의 차수가 짝수','연결 그래프이고 꼭짓점 수가 짝수','간선 수가 꼭짓점 수보다 많음'],
+  answer:2,
+  explain:`<b>오일러 회로</b>: 모든 간선을 정확히 한 번씩 지나 출발점으로 돌아오는 회로<br><br><b>존재 조건 (무향 그래프)</b>:<br>① 연결 그래프<br>② 모든 꼭짓점의 차수가 짝수<br><br>②번은 <b>오일러 경로</b>의 조건 (홀수차수 2개)<br><br>예: K₄는 모든 차수=3 → 오일러 회로 없음`
+},
+{
+  tag:'완전 그래프', tagColor:'cyan',
+  q:'완전 그래프 K₇의 간선 수와 오일러 회로 존재 여부는?',
+  choices:['21개, 존재','21개, 존재하지 않음','28개, 존재','28개, 존재하지 않음','14개, 존재'],
+  answer:1,
+  explain:`<b>K₇의 간선 수</b>: n(n-1)/2 = 7×6/2 = <b>21</b><br><br><b>오일러 회로 여부</b>: K₇에서 각 꼭짓점의 차수 = n-1 = 6 (짝수)<br>→ 모든 차수가 짝수 → 오일러 회로 <b>존재?</b>... 연결도 확인!<br>→ K₇은 연결 그래프<br><br>그러나 홀수 n (n=7)에서 Kₙ의 차수 = n-1 = 6 → 짝수<br>∴ <b>오일러 회로 존재</b>하지만 간선은 21개`
+},
+{
+  tag:'이분 그래프', tagColor:'green',
+  q:'다음 중 이분 그래프임을 판별하는 올바른 방법은?',
+  choices:['모든 꼭짓점의 차수가 같으면 이분 그래프','BFS로 2-색칠이 가능하면 이분 그래프','간선 수가 꼭짓점 수보다 적으면 이분 그래프','사이클이 존재하지 않으면 이분 그래프','꼭짓점 수가 짝수이면 이분 그래프'],
+  answer:1,
+  explain:`<b>이분 그래프 판별</b>: BFS로 2-색칠 시도<br><br>BFS 과정에서 인접 꼭짓점을 다른 색으로 칠하다가 <b>같은 색인 인접 꼭짓점</b>이 발견되면 → 이분 그래프 아님<br><br>이분 그래프 ↔ <b>홀수 길이 사이클이 없음</b><br><br>④는 틀림: 사이클 없는 트리도 이분 그래프지만 사이클 있어도 이분 그래프 가능 (짝수 사이클만 있으면 OK)`
+},
+{
+  tag:'BFS/DFS', tagColor:'cyan',
+  q:'다음 그래프에서 꼭짓점 1에서 BFS를 수행할 때 방문 순서로 올바른 것은? (인접 꼭짓점은 번호 오름차순 탐색, 간선: 1-2, 1-3, 2-4, 2-5, 3-6)',
+  choices:['1,2,3,4,5,6','1,2,4,5,3,6','1,3,6,2,4,5','1,2,3,4,6,5','1,3,2,6,4,5'],
+  answer:0,
+  explain:`<b>BFS 수행 (큐 방식)</b>:<br><br>큐: [1], 방문: {1}<br>1 꺼냄 → 인접: 2,3 → 큐: [2,3]<br>2 꺼냄 → 인접: 4,5 (미방문) → 큐: [3,4,5]<br>3 꺼냄 → 인접: 6 → 큐: [4,5,6]<br>4,5,6 차례로 꺼냄<br><br>방문 순서: <b>1 → 2 → 3 → 4 → 5 → 6</b><br><br>BFS는 층별 탐색 = 레벨 0:{1}, 레벨 1:{2,3}, 레벨 2:{4,5,6}`
+},
+{
+  tag:'위상 정렬', tagColor:'amber',
+  q:'방향 그래프에서 간선이 1→3, 1→4, 2→3, 3→5, 4→5, 5→6일 때 올바른 위상 정렬 순서는?',
+  choices:['1,2,3,4,5,6','2,1,3,4,5,6','1,2,4,3,5,6','2,1,4,3,5,6','위의 여러 개 모두 가능'],
+  answer:4,
+  explain:`<b>위상 정렬</b>: 진입차수 0인 꼭짓점부터 처리<br><br>초기 진입차수: 1→0, 2→0, 3→2, 4→1, 5→2, 6→1<br><br>진입차수 0: {1,2} → 둘 중 아무거나 먼저 가능<br>→ 1 먼저: 1,2,... 또는 2 먼저: 2,1,...<br>→ 4와 3 중에서도 선택 가능<br><br>가능한 위상 정렬: <b>1,2,3,4,5,6 / 2,1,3,4,5,6 / 1,2,4,3,5,6 / 2,1,4,3,5,6</b> 등 여러 가지`
+},
+{
+  tag:'최단 경로', tagColor:'cyan',
+  q:'다익스트라 알고리즘에서 간선의 가중치가 음수인 경우 어떤 문제가 발생하는가?',
+  choices:['무한 루프가 발생한다','최단 경로를 잘못 계산할 수 있다','메모리가 부족해진다','알고리즘이 시작도 못한다','간선이 탐색되지 않는다'],
+  answer:1,
+  explain:`<b>다익스트라 알고리즘</b>은 한 번 확정된 꼭짓점의 거리를 다시 갱신하지 않음<br><br>음수 간선이 있으면 이미 확정된 꼭짓점을 거치는 더 짧은 경로가 생겨 <b>최단 경로를 잘못 계산</b>할 수 있음<br><br>음수 간선 포함 시 → <b>벨만-포드 알고리즘</b> 사용 O(VE)<br>음수 사이클 → 벨만-포드로도 탐지만 가능 (최단 경로 정의 불가)`
+},
+{
+  tag:'MST', tagColor:'green',
+  q:'꼭짓점 n개짜리 연결 그래프의 최소 신장트리(MST)의 간선 수는?',
+  choices:['n','n-1','n+1','n(n-1)/2','간선 수와 무관'],
+  answer:1,
+  explain:`<b>신장트리 (Spanning Tree)</b>:<br>연결 그래프의 모든 꼭짓점을 포함하는 트리<br><br><b>트리의 성질</b>: n개 꼭짓점 트리의 간선 수 = <b>n-1</b><br><br>MST는 신장트리 중 가중치 합이 최소인 것<br>→ MST의 간선 수도 항상 <b>n-1</b><br><br>예: V=5이면 MST 간선 수 = 4`
+},
+{
+  tag:'플라나 그래프', tagColor:'amber',
+  q:'꼭짓점이 6개, 간선이 12개인 연결 평면 그래프의 면(face)의 수는?',
+  choices:['4','6','7','8','10'],
+  answer:3,
+  explain:`<b>오일러 공식 (플라나 그래프)</b>:<br>V - E + F = 2<br><br>V = 6, E = 12 대입:<br>6 - 12 + F = 2<br>F = 2 + 12 - 6 = <b>8</b><br><br>F에는 외부 면(unbounded face)도 포함됨<br><br>단, 이 그래프가 실제로 평면에 그려질 수 있는지는 E ≤ 3V-6 조건 확인 필요: 3×6-6=12, 12 ≤ 12 ✓`
+},
+{
+  tag:'그래프 이론', tagColor:'cyan',
+  q:'해밀턴 회로와 오일러 회로에 대한 설명으로 옳은 것은?',
+  choices:['둘 다 다항 시간에 판별 가능하다','오일러 회로 판별은 NP-완전이다','해밀턴 회로 판별은 NP-완전이다','두 회로가 동시에 존재하면 그래프는 완전 그래프이다','해밀턴 회로가 존재하면 오일러 회로도 존재한다'],
+  answer:2,
+  explain:`<b>오일러 회로</b>: 모든 차수 짝수 조건으로 <b>O(E)에 다항 시간 판별</b> 가능<br><br><b>해밀턴 회로</b>: <b>NP-완전 (NP-complete)</b> 문제<br>→ 효율적인 일반 알고리즘 없음<br>→ 완전 탐색 O(n!), DP O(2ⁿn²)<br><br>이것이 이산수학에서 가장 중요한 대비 사례 중 하나<br>외판원 문제(TSP)도 NP-하드`
+},
+{
+  tag:'인접행렬', tagColor:'green',
+  q:'n×n 인접행렬 A에서 A²[i][j]가 나타내는 것은?',
+  choices:['i에서 j로 가는 최단 경로 길이','i와 j의 공통 이웃(공통 인접 꼭짓점)의 수','i에서 j로 가는 길이 2인 경로의 수','i에서 j로 가는 경로 존재 여부','i번째 꼭짓점의 차수'],
+  answer:2,
+  explain:`<b>인접행렬 거듭제곱</b>:<br>A^k[i][j] = i에서 j로 가는 <b>길이 정확히 k인 경로의 수</b><br><br>A²[i][j] = Σₖ A[i][k] × A[k][j]<br>= i→k→j 형태의 경로 수 합<br>= 길이 2인 경로의 수<br><br>특히 A²[i][j] = i와 j의 <b>공통 인접 꼭짓점 수</b> (무향 그래프에서)<br>→ 소셜 네트워크의 '공통 친구' 계산에 활용`
+},
+{
+  tag:'크루스칼', tagColor:'amber',
+  q:'크루스칼 알고리즘에서 사이클을 판별하기 위해 사용하는 자료구조는?',
+  choices:['스택','큐','우선순위 큐','Union-Find (서로소 집합)','해시 테이블'],
+  answer:3,
+  explain:`<b>크루스칼 알고리즘</b>:<br>① 간선을 가중치 오름차순 정렬<br>② 사이클을 만들지 않는 간선 추가<br>③ n-1개 간선 추가 시 완료<br><br>사이클 판별: <b>Union-Find (서로소 집합)</b><br>- find(u) == find(v) → 같은 집합 → 사이클 생성<br>- find(u) ≠ find(v) → 다른 집합 → 안전하게 추가<br><br>경로 압축 + 랭크: 거의 O(1) per operation<br>전체 복잡도: O(E log E)`
+},
+{
+  tag:'DFS 응용', tagColor:'cyan',
+  q:'DFS를 이용한 위상 정렬에서 꼭짓점 처리 순서로 올바른 것은?',
+  choices:['DFS 시작 순서대로','DFS 완료 시간 오름차순','DFS 완료 시간 내림차순','발견 순서와 역순','차수가 큰 것부터'],
+  answer:2,
+  explain:`<b>DFS 위상 정렬</b>:<br>각 꼭짓점을 DFS로 탐색하고, <b>완료될 때(후위 순서)</b> 스택에 push<br>→ 스택에서 pop하면 위상 정렬 순서<br>= DFS 완료 시간의 <b>내림차순</b><br><br>예: A→B→C 경로에서<br>C 완료 후 → B 완료 후 → A 완료<br>스택: [A, B, C] → pop 순서: A, B, C ✓<br><br>Kahn 알고리즘(BFS)과 결과 동일`
+},
+{
+  tag:'연결 성분', tagColor:'green',
+  q:'꼭짓점이 10개인 비연결 그래프의 연결 성분이 3개이다. 이 그래프가 트리들의 합(forest)이라면 간선의 수는?',
+  choices:['7','8','9','10','12'],
+  answer:0,
+  explain:`<b>포레스트(Forest)</b>: 사이클 없는 그래프 = 트리들의 합집합<br><br>각 연결 성분이 트리이면:<br>트리의 성질: |E| = |V| - 1 (각 성분별)<br><br>성분 1: v₁개 꼭짓점 → e₁ = v₁-1 간선<br>성분 2: v₂개 꼭짓점 → e₂ = v₂-1 간선<br>성분 3: v₃개 꼭짓점 → e₃ = v₃-1 간선<br><br>전체: |E| = (v₁-1)+(v₂-1)+(v₃-1) = (v₁+v₂+v₃) - 3 = 10 - 3 = <b>7</b>`
+},
+{
+  tag:'차수 수열', tagColor:'amber',
+  q:'차수 수열 [4, 3, 3, 2, 2, 2]를 갖는 단순 그래프의 간선 수는?',
+  choices:['7','8','9','16','불가능한 수열'],
+  answer:1,
+  explain:`<b>핸드쉐이킹 정리</b>: |E| = Σdeg(v) / 2<br><br>Σdeg = 4+3+3+2+2+2 = <b>16</b><br>|E| = 16/2 = <b>8</b><br><br>이 차수 수열이 실현 가능한지 확인 (에르되시-갈라이):<br>Σdeg=16 짝수 ✓<br>→ 실현 가능 (단순 그래프 존재)<br><br>실제 예: 꼭짓점 A(4), B(3), C(3), D(2), E(2), F(2)<br>A-B, A-C, A-D, A-E, B-C, B-F, C-F, D-E 등`
+},
+{
+  tag:'오일러 응용', tagColor:'cyan',
+  q:'쾨니히스베르크 다리 문제에서 4개 지역(A,B,C,D)의 차수가 각각 3,3,5,3일 때 한붓그리기(오일러 경로)가 불가능한 이유는?',
+  choices:['간선이 너무 많다','꼭짓점이 짝수이다','홀수 차수 꼭짓점이 2개 초과이다','그래프가 비연결이다','차수 합이 홀수이다'],
+  answer:2,
+  explain:`<b>오일러 경로 조건</b>: 홀수 차수 꼭짓점이 <b>정확히 0개 또는 2개</b><br><br>쾨니히스베르크: A=3, B=3, C=5, D=3<br>홀수 차수 꼭짓점: A, B, C, D → <b>4개</b><br><br>홀수 차수가 4개 → 오일러 경로도, 회로도 불가<br><br>오일러(1736)가 이를 증명하며 그래프 이론 시작<br>→ 역사상 최초의 그래프 이론 문제`
+},
+{
+  tag:'해밀턴', tagColor:'amber',
+  q:'디락(Dirac)의 정리에 따르면 꼭짓점이 n개(n≥3)인 단순 그래프에서 해밀턴 회로가 존재하는 충분조건은?',
+  choices:['모든 꼭짓점의 차수 ≥ n/3','모든 꼭짓점의 차수 ≥ n/2','간선 수 ≥ n','그래프가 연결되어 있음','모든 꼭짓점의 차수 = n-1'],
+  answer:1,
+  explain:`<b>디락의 정리 (Dirac, 1952)</b>:<br>n≥3인 단순 그래프에서<br><b>모든 꼭짓점 v: deg(v) ≥ n/2</b><br>→ 해밀턴 회로 반드시 존재<br><br>주의: 이것은 <b>충분 조건</b>이지 필요 조건이 아님!<br>→ 조건 불만족해도 해밀턴 회로가 있을 수 있음<br><br>예: n=6이면 deg(v) ≥ 3 → 해밀턴 회로 보장<br>K₅: deg=4 ≥ 5/2=2.5 → 조건 만족 ✓`
+},
+{
+  tag:'SCC', tagColor:'green',
+  q:'방향 그래프에서 강연결 성분(SCC)의 특성으로 옳지 않은 것은?',
+  choices:['SCC 내의 임의의 두 꼭짓점 사이에 양방향 경로가 존재한다','같은 SCC 내의 두 꼭짓점은 같은 SCC에 속한다','타잔 알고리즘으로 O(V+E)에 구할 수 있다','SCC를 수축하면 DAG가 된다','SCC는 서로 중첩될 수 있다'],
+  answer:4,
+  explain:`<b>강연결 성분(SCC)</b>은 <b>극대 강연결 부분 그래프</b><br><br>SCC의 성질:<br>① SCC 내 임의 두 꼭짓점 u,v: u→v, v→u 경로 모두 존재 ✓<br>② 두 SCC가 같으면 같은 집합 ✓<br>③ 타잔/코사라주 알고리즘: O(V+E) ✓<br>④ SCC를 하나의 노드로 수축하면 DAG(방향 비순환 그래프) ✓<br><br>⑤ <b>SCC는 절대 중첩될 수 없음 (극대성)</b> ✗<br>→ 같은 꼭짓점이 두 SCC에 동시에 속할 수 없음`
+},
+{
+  tag:'그래프 채색', tagColor:'cyan',
+  q:'평면 그래프(planar graph)의 색수(chromatic number)에 대한 올바른 설명은?',
+  choices:['항상 2이다','항상 3 이하이다','항상 4 이하이다 (4색 정리)','항상 5 이하이다','그래프마다 다르며 상한 없음'],
+  answer:2,
+  explain:`<b>4색 정리 (Four Color Theorem, 1976)</b>:<br>모든 평면 그래프의 색수 χ(G) ≤ 4<br><br>즉, 지도의 각 나라를 4가지 색으로 인접국과 다르게 칠할 수 있음<br><br>1976년 아펠(Appel)과 하켄(Haken)이<br><b>컴퓨터 보조 증명</b>으로 최초 증명<br><br>이분 그래프: χ=2<br>삼각형(K₃): χ=3<br>K₅: χ=5 (비평면이라 4색 정리 해당 없음)`
+},
+{
+  tag:'종합', tagColor:'amber',
+  q:'꼭짓점 수가 v, 간선 수가 e인 연결된 평면 그래프의 각 면(face)의 경계에 간선이 적어도 3개 이상이라고 할 때, 성립하는 부등식은?',
+  choices:['e ≤ v-2','e ≤ 2v-2','e ≤ 3v-6','e ≤ v²/2','e ≤ v+3'],
+  answer:2,
+  explain:`<b>평면 그래프 간선 수 상한</b> 유도:<br><br>오일러 공식: v - e + f = 2 → f = e - v + 2<br>각 면의 경계 간선 ≥ 3개, 각 간선은 최대 2개의 면 경계:<br>3f ≤ 2e → 3(e-v+2) ≤ 2e<br>3e - 3v + 6 ≤ 2e<br><b>e ≤ 3v - 6</b><br><br>이 조건으로 K₅가 비평면임을 증명:<br>K₅: v=5, e=10 → 3×5-6=9 < 10 → 비평면 ✓<br><br>이분 그래프 평면: e ≤ 2v-4 (면당 간선 ≥ 4)`
+}
+];
+
+const answers = new Array(20).fill(null);
+const results = new Array(20).fill(null);
+let currentProb = 0;
+
+function initProbs() {
+  const grid = document.getElementById('probGrid');
+  grid.innerHTML = problems.map((_,i)=>`<div class="pnum${i===0?' current':''}" id="pn${i}" onclick="goProb(${i})">${i+1}</div>`).join('');
+  renderProb(0);
+}
+
+function goProb(i) {
+  currentProb = i;
+  document.querySelectorAll('.pnum').forEach((el,j)=>{
+    el.classList.toggle('current', j===i);
+  });
+  renderProb(i);
+}
+
+const tagColors = {cyan:'rgba(6,182,212,.18)',amber:'rgba(251,191,36,.18)',green:'rgba(52,211,153,.18)'};
+const tagText = {cyan:'var(--c1)',amber:'var(--c4)',green:'var(--c3)'};
+
+function renderProb(i) {
+  const p = problems[i];
+  const answered = results[i] !== null;
+  const choiceHTML = p.choices.map((c,ci)=>{
+    let cls = 'choice';
+    if(answered) cls += ' disabled';
+    if(answers[i]===ci) cls += ' selected';
+    if(answered && ci===p.answer) cls += ' correct-ans';
+    if(answered && answers[i]===ci && ci!==p.answer) cls += ' wrong-ans';
+    const mark = answered ? (ci===p.answer?'✓':answers[i]===ci?'✗':'') : '';
+    const marks = answered ? (ci===p.answer?'#34d399':answers[i]===ci?'#f87171':'var(--border)') : 'var(--border)';
+    return `<div class="${cls}" onclick="selectChoice(${i},${ci})">
+      <div class="mark" style="border-color:${marks};color:${marks}">${mark||String.fromCharCode(9312+ci)}</div>
+      ${c}
+    </div>`;
+  }).join('');
+
+  const explainHTML = answered ? `
+    <div class="explain-box">
+      <div class="etitle">💡 해설</div>
+      ${p.explain}
+    </div>` : '';
+
+  const isCorrect = answered ? results[i] : null;
+  const resultBadge = answered ? `<span class="badge ${isCorrect?'green':'red'}">${isCorrect?'✓ 정답':'✗ 오답'}</span>` : '';
+
+  document.getElementById('probCard').innerHTML = `
+    <div class="prob-header">
+      <div class="prob-num">${i+1}</div>
+      <span class="prob-tag" style="background:${tagColors[p.tagColor]||tagColors.cyan};color:${tagText[p.tagColor]||tagText.cyan}">${p.tag}</span>
+      ${resultBadge}
+    </div>
+    <div class="prob-title">${p.q}</div>
+    <div class="choices">${choiceHTML}</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      ${!answered ? `<button class="btn-submit" id="submitBtn" onclick="submitAnswer(${i})" ${answers[i]===null?'disabled':''}>제출</button>` : ''}
+      ${i>0?`<button class="btn-nav" onclick="goProb(${i-1})">← 이전</button>`:''}
+      ${i<19?`<button class="btn-nav" onclick="goProb(${i+1})">다음 →</button>`:''}
+    </div>
+    ${explainHTML}
+  `;
+}
+
+function selectChoice(pi, ci) {
+  if(results[pi]!==null) return;
+  answers[pi] = ci;
+  document.getElementById('submitBtn').disabled = false;
+  document.querySelectorAll('.choice').forEach((el,j)=>{
+    el.classList.toggle('selected', j===ci);
+  });
+}
+
+function submitAnswer(pi) {
+  if(answers[pi]===null) return;
+  const correct = answers[pi] === problems[pi].answer;
+  results[pi] = correct;
+  const pn = document.getElementById('pn'+pi);
+  pn.classList.remove('current');
+  pn.classList.add(correct?'correct':'wrong');
+  // update score
+  const score = results.filter(r=>r===true).length;
+  document.getElementById('scoreNum').textContent = score;
+  document.getElementById('scoreBar').style.width = (score/20*100)+'%';
+  renderProb(pi);
+  // restore current highlight
+  document.getElementById('pn'+pi).classList.add('current');
+}
+
+function updateScoreDisplay() {
+  const score = results.filter(r=>r===true).length;
+  document.getElementById('scoreNum').textContent = score;
+  document.getElementById('scoreBar').style.width = (score/20*100)+'%';
+}
+
+// ============================================================
+// TAB SWITCH
+// ============================================================
+function showTab(tab) {
+  document.getElementById('tab-learn').style.display = tab==='learn'?'block':'none';
+  document.getElementById('tab-problems').style.display = tab==='problems'?'block':'none';
+  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('active', (i===0&&tab==='learn')||(i===1&&tab==='problems')));
+}
+
+// INIT
+window.addEventListener('load', ()=>{
+  resizeCanvas();
+  loadPreset('cycle');
+  initProbs();
+});
+window.addEventListener('resize', resizeCanvas);
+</script>
+</body>
+</html>
