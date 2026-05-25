@@ -12,6 +12,8 @@ in
 
 free1
 
+all   :   이산수학 전체 리뷰
+
 ppt  이산수학_1장_수의표현과연산
 http://iioiinet-spec.github.io/dmath/free1/ppt
 
