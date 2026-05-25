@@ -1,0 +1,1955 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>이산수학 완전정복 | 세영코딩연구소</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;600&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #060b14;
+  --bg2: #0d1626;
+  --bg3: #111d33;
+  --card: #0f1a2e;
+  --border: #1e3050;
+  --cyan: #00e5ff;
+  --cyan2: #00b8d9;
+  --purple: #a855f7;
+  --purple2: #7c3aed;
+  --gold: #f59e0b;
+  --green: #10b981;
+  --red: #ef4444;
+  --pink: #ec4899;
+  --text: #e2eaf7;
+  --text2: #8aa0c0;
+  --text3: #4a6080;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Noto Sans KR', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── HEADER ── */
+header {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(6,11,20,0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.header-inner {
+  display: flex; align-items: center; gap: 16px;
+  padding: 10px 20px;
+}
+.logo {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.1rem; font-weight: 700;
+  color: var(--cyan);
+  white-space: nowrap;
+  letter-spacing: 1px;
+}
+.logo span { color: var(--purple); }
+
+/* Tab nav */
+.tab-nav {
+  display: flex; gap: 4px; overflow-x: auto;
+  scrollbar-width: none; flex: 1;
+}
+.tab-nav::-webkit-scrollbar { display: none; }
+.tab-btn {
+  flex-shrink: 0;
+  padding: 6px 12px;
+  border: none; border-radius: 6px;
+  background: transparent;
+  color: var(--text2);
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 0.78rem; font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  position: relative;
+}
+.tab-btn:hover { color: var(--text); background: var(--bg3); }
+.tab-btn.active {
+  color: var(--cyan);
+  background: rgba(0,229,255,0.08);
+}
+.tab-btn.active::after {
+  content: '';
+  position: absolute; bottom: -11px; left: 0; right: 0; height: 2px;
+  background: var(--cyan);
+  border-radius: 2px 2px 0 0;
+}
+
+/* ── MAIN ── */
+main { padding-top: 70px; }
+.section {
+  display: none;
+  padding: 32px 20px 60px;
+  max-width: 960px;
+  margin: 0 auto;
+  animation: fadeIn 0.4s ease;
+}
+.section.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+/* Section Header */
+.sec-header {
+  display: flex; align-items: center; gap: 16px;
+  margin-bottom: 28px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+.sec-icon {
+  width: 52px; height: 52px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem;
+  flex-shrink: 0;
+}
+.sec-title { font-size: 1.5rem; font-weight: 700; }
+.sec-sub { font-size: 0.85rem; color: var(--text2); margin-top: 3px; }
+
+/* Cards */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px 24px;
+  margin-bottom: 20px;
+}
+.card-title {
+  font-size: 1rem; font-weight: 700;
+  color: var(--cyan);
+  margin-bottom: 14px;
+  display: flex; align-items: center; gap: 8px;
+}
+.card-title::before {
+  content: '';
+  width: 3px; height: 18px; border-radius: 2px;
+  background: var(--cyan);
+  flex-shrink: 0;
+}
+
+/* Concept Grid */
+.concept-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.concept-item {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+}
+.ci-name {
+  font-size: 0.9rem; font-weight: 700;
+  color: var(--gold);
+  margin-bottom: 6px;
+}
+.ci-desc { font-size: 0.82rem; color: var(--text2); line-height: 1.7; }
+.ci-formula {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  color: var(--cyan);
+  background: var(--bg);
+  border-radius: 6px;
+  padding: 6px 10px;
+  margin-top: 8px;
+  display: inline-block;
+}
+
+/* Table */
+.truth-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 0.85rem;
+  font-family: 'JetBrains Mono', monospace;
+}
+.truth-table th {
+  background: var(--bg3);
+  padding: 8px 14px; text-align: center;
+  color: var(--cyan); font-weight: 600;
+  border: 1px solid var(--border);
+}
+.truth-table td {
+  padding: 7px 14px; text-align: center;
+  border: 1px solid var(--border);
+  color: var(--text2);
+}
+.truth-table tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+.t1 { color: var(--green) !important; font-weight: 700; }
+.t0 { color: var(--red) !important; }
+
+/* Tag badges */
+.badge {
+  display: inline-block;
+  padding: 2px 10px; border-radius: 20px;
+  font-size: 0.72rem; font-weight: 600;
+  margin-right: 4px; margin-bottom: 4px;
+}
+.badge-cyan { background: rgba(0,229,255,0.12); color: var(--cyan); border: 1px solid rgba(0,229,255,0.3); }
+.badge-purple { background: rgba(168,85,247,0.12); color: var(--purple); border: 1px solid rgba(168,85,247,0.3); }
+.badge-gold { background: rgba(245,158,11,0.12); color: var(--gold); border: 1px solid rgba(245,158,11,0.3); }
+.badge-green { background: rgba(16,185,129,0.12); color: var(--green); border: 1px solid rgba(16,185,129,0.3); }
+
+/* Simulator */
+.sim-area {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+  margin-top: 12px;
+}
+.sim-row {
+  display: flex; align-items: center; gap: 12px;
+  flex-wrap: wrap; margin-bottom: 12px;
+}
+.sim-label { font-size: 0.85rem; color: var(--text2); min-width: 80px; }
+.sim-input {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9rem;
+  padding: 7px 12px;
+  width: 100px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.sim-input:focus { border-color: var(--cyan); }
+.sim-btn {
+  padding: 8px 20px; border: none; border-radius: 8px;
+  background: var(--cyan); color: var(--bg);
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 0.85rem; font-weight: 700;
+  cursor: pointer; transition: all 0.2s;
+}
+.sim-btn:hover { background: var(--cyan2); transform: translateY(-1px); }
+.sim-result {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 14px 16px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88rem; color: var(--text);
+  min-height: 48px; line-height: 1.8;
+  white-space: pre-wrap; word-break: break-all;
+}
+.highlight { color: var(--cyan); font-weight: 600; }
+.step { color: var(--text2); }
+.ans { color: var(--gold); font-weight: 700; font-size: 1rem; }
+
+/* Quiz */
+.quiz-wrap { margin-top: 8px; }
+.q-item {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 14px;
+}
+.q-num {
+  font-size: 0.7rem; font-weight: 700;
+  color: var(--purple);
+  text-transform: uppercase; letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+.q-text {
+  font-size: 0.9rem; line-height: 1.7;
+  margin-bottom: 14px;
+  color: var(--text);
+}
+.q-opts { display: flex; flex-direction: column; gap: 7px; }
+.q-opt {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 9px 14px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  color: var(--text2);
+  font-family: 'Noto Sans KR', sans-serif;
+}
+.q-opt:hover:not(:disabled) { border-color: var(--cyan); color: var(--text); }
+.q-opt.correct { background: rgba(16,185,129,0.15); border-color: var(--green); color: var(--green); }
+.q-opt.wrong { background: rgba(239,68,68,0.12); border-color: var(--red); color: var(--red); }
+.q-opt:disabled { cursor: default; }
+.q-explain {
+  margin-top: 12px; padding: 10px 14px;
+  background: rgba(0,229,255,0.05);
+  border-left: 3px solid var(--cyan);
+  border-radius: 0 8px 8px 0;
+  font-size: 0.82rem;
+  color: var(--text2);
+  line-height: 1.7;
+  display: none;
+}
+.q-score-bar {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  display: flex; align-items: center; gap: 16px;
+}
+.score-num { font-size: 1.4rem; font-weight: 700; color: var(--gold); }
+.score-label { font-size: 0.85rem; color: var(--text2); }
+
+/* Venn diagram canvas */
+canvas { border-radius: 10px; display: block; }
+
+/* Code block */
+pre {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+  line-height: 1.7;
+  color: var(--text2);
+}
+.kw { color: var(--purple); }
+.fn { color: var(--cyan); }
+.num { color: var(--gold); }
+.cm { color: var(--text3); }
+.str { color: var(--green); }
+
+/* Grid 2col */
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 640px) { .grid2 { grid-template-columns: 1fr; } }
+
+/* Formula box */
+.formula-box {
+  background: linear-gradient(135deg, rgba(0,229,255,0.05), rgba(168,85,247,0.05));
+  border: 1px solid rgba(0,229,255,0.2);
+  border-radius: 12px;
+  padding: 18px 22px;
+  margin: 12px 0;
+  text-align: center;
+}
+.formula-main {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.1rem;
+  color: var(--cyan);
+  font-weight: 600;
+}
+.formula-note { font-size: 0.8rem; color: var(--text2); margin-top: 6px; }
+
+/* Progress dots */
+.progress-dots {
+  display: flex; gap: 6px; margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--border);
+  transition: background 0.3s;
+}
+.dot.done { background: var(--green); }
+.dot.current { background: var(--cyan); }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* Toggle buttons for truth table */
+.toggle-btn {
+  width: 44px; height: 24px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg3);
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s;
+}
+.toggle-btn.on { background: rgba(0,229,255,0.2); border-color: var(--cyan); }
+.toggle-knob {
+  position: absolute; top: 3px; left: 3px;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--text3);
+  transition: all 0.2s;
+}
+.toggle-btn.on .toggle-knob { left: 23px; background: var(--cyan); }
+
+/* Graph node */
+.graph-canvas { cursor: pointer; }
+
+/* Collapsible */
+.collapse-btn {
+  background: none; border: none;
+  color: var(--text2); font-size: 0.82rem;
+  cursor: pointer; padding: 4px 0;
+  display: flex; align-items: center; gap: 6px;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+.collapse-btn:hover { color: var(--cyan); }
+.collapse-body { margin-top: 10px; }
+
+/* Step visualization */
+.step-list { counter-reset: step-counter; }
+.step-item {
+  counter-increment: step-counter;
+  position: relative; padding-left: 36px;
+  margin-bottom: 12px;
+  font-size: 0.85rem; line-height: 1.7;
+  color: var(--text2);
+}
+.step-item::before {
+  content: counter(step-counter);
+  position: absolute; left: 0; top: 0;
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--purple2);
+  color: white; font-size: 0.75rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+.step-item strong { color: var(--text); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">세영<span>코딩</span>연구소</div>
+    <nav class="tab-nav" id="tabNav">
+      <button class="tab-btn active" data-tab="logic">① 명제·논리</button>
+      <button class="tab-btn" data-tab="set">② 집합</button>
+      <button class="tab-btn" data-tab="number">③ 수론</button>
+      <button class="tab-btn" data-tab="combo">④ 조합론</button>
+      <button class="tab-btn" data-tab="graph">⑤ 그래프</button>
+      <button class="tab-btn" data-tab="bool">⑥ 부울대수</button>
+      <button class="tab-btn" data-tab="recur">⑦ 점화식</button>
+      <button class="tab-btn" data-tab="func">⑧ 함수·관계</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<!-- ═══════════════════════════════════════════
+     ① 명제와 논리
+═══════════════════════════════════════════ -->
+<section class="section active" id="sec-logic">
+  <div class="sec-header">
+    <div class="sec-icon" style="background:rgba(0,229,255,0.1); color:var(--cyan)">🌍</div>
+    <div>
+      <div class="sec-title">명제와 논리</div>
+      <div class="sec-sub">Propositions & Logic · 역·이·대우 · 진리표 · 논리 연산</div>
+    </div>
+  </div>
+
+  <!-- 개념 카드 -->
+  <div class="card">
+    <div class="card-title">핵심 개념 정리</div>
+    <div class="concept-grid">
+      <div class="concept-item">
+        <div class="ci-name">명제 (Proposition)</div>
+        <div class="ci-desc">참(T) 또는 거짓(F)으로 판별할 수 있는 문장.<br>예) "3은 소수이다" → T</div>
+      </div>
+      <div class="concept-item">
+        <div class="ci-name">역 · 이 · 대우</div>
+        <div class="ci-desc">p→q의 변환 관계</div>
+        <div class="ci-formula">역: q→p  이: ¬p→¬q  대우: ¬q→¬p</div>
+        <div class="ci-desc" style="margin-top:6px">⭐ 원명제와 대우는 동치!</div>
+      </div>
+      <div class="concept-item">
+        <div class="ci-name">논리 연산자</div>
+        <div class="ci-desc">∧ AND, ∨ OR, ¬ NOT, → 조건, ↔ 쌍조건</div>
+        <div class="ci-formula">p→q ≡ ¬p∨q</div>
+      </div>
+      <div class="concept-item">
+        <div class="ci-name">드모르간 법칙</div>
+        <div class="ci-desc">논리 연산 부정 변환</div>
+        <div class="ci-formula">¬(p∧q) ≡ ¬p∨¬q<br>¬(p∨q) ≡ ¬p∧¬q</div>
+      </div>
+      <div class="concept-item">
+        <div class="ci-name">항진명제 vs 모순명제</div>
+        <div class="ci-desc">항진: 모든 경우 T (예: p∨¬p)<br>모순: 모든 경우 F (예: p∧¬p)</div>
+      </div>
+      <div class="concept-item">
+        <div class="ci-name">동치 (≡)</div>
+        <div class="ci-desc">두 명제의 진리표가 완전히 같을 때</div>
+        <div class="ci-formula">p→q ≡ ¬p∨q ≡ ¬q→¬p</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 인터랙티브 진리표 시뮬레이터 -->
+  <div class="card">
+    <div class="card-title">🔬 진리표 시뮬레이터</div>
+    <p style="font-size:0.85rem; color:var(--text2); margin-bottom:14px">p, q 값을 설정하면 모든 논리 연산 결과를 실시간으로 확인합니다.</p>
+    <div class="sim-area" id="truthSimArea">
+      <div class="sim-row">
+        <span class="sim-label">p 값:</span>
+        <button class="toggle-btn on" id="toggleP">
+          <div class="toggle-knob"></div>
+        </button>
+        <span id="pLabel" style="color:var(--green);font-weight:700;font-family:'JetBrains Mono'">T</span>
+        <span class="sim-label" style="margin-left:20px">q 값:</span>
+        <button class="toggle-btn on" id="toggleQ">
+          <div class="toggle-knob"></div>
+        </button>
+        <span id="qLabel" style="color:var(--green);font-weight:700;font-family:'JetBrains Mono'">T</span>
+      </div>
+      <div id="truthResult" class="sim-result"></div>
+    </div>
+  </div>
+
+  <!-- 역이대우 시뮬레이터 -->
+  <div class="card">
+    <div class="card-title">🔄 역·이·대우 변환기</div>
+    <div class="sim-area">
+      <div class="sim-row">
+        <span class="sim-label">가정 p:</span>
+        <input class="sim-input" id="propP" value="x는 짝수" style="width:160px">
+        <span class="sim-label">결론 q:</span>
+        <input class="sim-input" id="propQ" value="x²은 짝수" style="width:160px">
+        <button class="sim-btn" onclick="calcPropTransform()">변환</button>
+      </div>
+      <div id="propResult" class="sim-result"></div>
+    </div>
+  </div>
+
+  <!-- 퀴즈 -->
+  <div class="card">
+    <div class="card-title">📝 실전 퀴즈</div>
+    <div id="quizLogic" class="quiz-wrap"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     ② 집합
+═══════════════════════════════════════════ -->
+<section class="section" id="sec-set">
+  <div class="sec-header">
+    <div class="sec-icon" style="background:rgba(168,85,247,0.1); color:var(--purple)">⭕</div>
+    <div>
+      <div class="sec-title">집합 이론</div>
+      <div class="sec-sub">Set Theory · 집합 연산 · 벤 다이어그램 · 포함배제의 원리</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">핵심 개념 정리</div>
+    <div class="concept-grid">
+      <div class="concept-item">
+        <div class="ci-name">집합 표기</div>
+        <div class="ci-desc">원소나열법: A = {1,2,3}<br>조건제시법: A = {x | x &lt; 4, x∈N}</div>
+      </div>
+      <div class="concept-item">
+        <div class="ci-name">집합 연산</div>
+        <div class="ci-formula">합집합: A∪B<br>교집합: A∩B<br>차집합: A-B<br>여집합: Aᶜ</div>
+      </div>
+      <div class="concept-item">
+        <div class="ci-name">포함배제의 원리</div>
+        <div class="ci-desc">두 집합의 합집합 원소 개수</div>
+        <div class="ci-formula">|A∪B| = |A|+|B|-|A∩B|</div>
+      </div>
+      <div class="concept-item">
+        <div class="ci-name">세 집합 포함배제</div>
+        <div class="ci-formula">|A∪B∪C| =<br>|A|+|B|+|C|<br>-|A∩B|-|B∩C|-|A∩C|<br>+|A∩B∩C|</div>
+      </div>
+      <div class="concept-item">
+        <div class="ci-name">부분집합</div>
+        <div class="ci-desc">원소 n개인 집합의 부분집합 수:</div>
+        <div class="ci-formula">2ⁿ 개</div>
+      </div>
+      <div class="concept-item">
+        <div class="ci-name">집합 법칙</div>
+        <div class="ci-desc">교환법칙, 결합법칙, 분배법칙, 드모르간 법칙이 모두 성립</div>
+        <div class="ci-formula">(A∪B)ᶜ = Aᶜ∩Bᶜ</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 집합 연산 시뮬레이터 -->
+  <div class="card">
+    <div class="card-title">🔬 집합 연산 시뮬레이터</div>
+    <div class="sim-area">
+      <div class="sim-row">
+        <span class="sim-label">집합 A:</span>
+        <input class="sim-input" id="setA" value="1,2,3,4,5" style="width:200px">
+        <span class="sim-label">집합 B:</span>
+        <input class="sim-input" id="setB" value="3,4,5,6,7" style="width:200px">
+      </div>
+      <div class="sim-row">
+        <button class="sim-btn" onclick="calcSet('union')">A∪B</button>
+        <button class="sim-btn" style="background:var(--purple)" onclick="calcSet('inter')">A∩B</button>
+        <button class="sim-btn" style="background:var(--gold);color:#000" onclick="calcSet('diffAB')">A-B</button>
+        <button class="sim-btn" style="background:var(--green)" onclick="calcSet('diffBA')">B-A</button>
+        <button class="sim-btn" style="background:var(--pink)" onclick="calcSet('sym')">대칭차</button>
+      </div>
+      <div id="setResult" class="sim-result">버튼을 눌러 집합 연산 결과를 확인하세요.</div>
+    </div>
+  </div>
+
+  <!-- 포함배제 계산기 -->
+  <div class="card">
+    <div class="card-title">🧮 포함배제의 원리 계산기</div>
+    <div class="sim-area">
+      <div class="sim-row">
+        <span class="sim-label">|A|:</span>
+        <input class="sim-input" id="pieA" value="30" style="width:80px">
+        <span class="sim-label">|B|:</span>
+        <input class="sim-input" id="pieB" value="25" style="width:80px">
+        <span class="sim-label">|A∩B|:</span>
+        <input class="sim-input" id="pieAB" value="10" style="width:80px">
+        <button class="sim-btn" onclick="calcPIE()">계산</button>
+      </div>
+      <div id="pieResult" class="sim-result"></div>
+    </div>
+  </div>
+
+  <!-- 퀴즈 -->
+  <div class="card">
+    <div class="card-title">📝 실전 퀴즈</div>
+    <div id="quizSet" class="quiz-wrap"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     ③ 정수론
+═══════════════════════════════════════════ -->
+<section class="section" id="sec-number">
+  <div class="sec-header">
+    <div class="sec-icon" style="background:rgba(245,158,11,0.1); color:var(--gold)">🔢</div>
+    <div>
+      <div class="sec-title">정수론 (Number Theory)</div>
+      <div class="sec-sub">소수 · 에라토스테네스의 체 · GCD/LCM · 유클리드 호제법</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">핵심 개념 정리</div>
+    <div class="concept-grid">
+      <div class="concept-item">
+        <div class="ci-name">소수 (Prime Number)</div>
+        <div class="ci-desc">1과 자기 자신만을 약수로 갖는 수<br>2, 3, 5, 7, 11, 13, ...<br>⭐ 2는 유일한 짝수 소수</div>
+      </div>
+      <div class="concept-item">
+        <div class="ci-name">소수 판별 최적화</div>
+        <div class="ci-desc">n이 소수인지 확인할 때 √n까지만 나눠보면 충분</div>
+        <div class="ci-formula">O(√n) 소수 판별</div>
+      </div>
+      <div class="concept-item">
+        <div class="ci-name">GCD (최대공약수)</div>
+        <div class="ci-desc">유클리드 호제법: gcd(a,b) = gcd(b, a%b)</div>
+        <div class="ci-formula">gcd(48,18): 48=18×2+12<br>gcd(18,12): 18=12×1+6<br>gcd(12,6): 12=6×2+0 → 6</div>
+      </div>
+      <div class="concept-item">
+        <div class="ci-name">LCM (최소공배수)</div>
+        <div class="ci-formula">lcm(a,b) = a×b / gcd(a,b)</div>
+      </div>
+      <div class="concept-item">
+        <div class="ci-name">소인수분해</div>
+        <div class="ci-desc">모든 자연수는 소수의 곱으로 유일하게 표현 가능</div>
+        <div class="ci-formula">360 = 2³ × 3² × 5</div>
+      </div>
+      <div class="concept-item">
+        <div class="ci-name">약수의 개수</div>
+        <div class="ci-desc">n = p₁^a₁ × p₂^a₂ × ... 일 때</div>
+        <div class="ci-formula">약수의 개수 = (a₁+1)(a₂+1)...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 에라토스테네스 체 -->
+  <div class="card">
+    <div class="card-title">🔬 에라토스테네스의 체 시각화</div>
+    <div class="sim-area">
+      <div class="sim-row">
+        <span class="sim-label">범위 N:</span>
+        <input class="sim-input" id="sieveN" value="60" style="width:80px">
+        <button class="sim-btn" onclick="runSieve()">체 실행</button>
+      </div>
+      <div id="sieveGrid" style="margin-top:12px; display:flex; flex-wrap:wrap; gap:6px;"></div>
+      <div id="sieveResult" class="sim-result" style="margin-top:12px"></div>
+    </div>
+  </div>
+
+  <!-- GCD/LCM 계산기 -->
+  <div class="card">
+    <div class="card-title">🧮 GCD / LCM 계산기 (유클리드 호제법 단계 표시)</div>
+    <div class="sim-area">
+      <div class="sim-row">
+        <span class="sim-label">a:</span>
+        <input class="sim-input" id="gcdA" value="48">
+        <span class="sim-label">b:</span>
+        <input class="sim-input" id="gcdB" value="18">
+        <button class="sim-btn" onclick="calcGCDLCM()">계산</button>
+      </div>
+      <div id="gcdResult" class="sim-result"></div>
+    </div>
+  </div>
+
+  <!-- 퀴즈 -->
+  <div class="card">
+    <div class="card-title">📝 실전 퀴즈</div>
+    <div id="quizNumber" class="quiz-wrap"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     ④ 조합론
+═══════════════════════════════════════════ -->
+<section class="section" id="sec-combo">
+  <div class="sec-header">
+    <div class="sec-icon" style="background:rgba(16,185,129,0.1); color:var(--green)">🎲</div>
+    <div>
+      <div class="sec-title">조합론 (Combinatorics)</div>
+      <div class="sec-sub">합·곱의 법칙 · 순열 · 조합 · 중복순열 · 중복조합</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">핵심 공식 정리</div>
+    <div class="concept-grid">
+      <div class="concept-item">
+        <div class="ci-name">합의 법칙</div>
+        <div class="ci-desc">두 사건이 동시에 일어나지 않을 때</div>
+        <div class="ci-formula">|A| + |B|</div>
+      </div>
+      <div class="concept-item">
+        <div class="ci-name">곱의 법칙</div>
+        <div class="ci-desc">두 사건이 독립적으로 연속 일어날 때</div>
+        <div class="ci-formula">|A| × |B|</div>
+      </div>
+      <div class="concept-item">
+        <div class="ci-name">순열 P(n,r)</div>
+        <div class="ci-desc">n개 중 r개를 순서 있게 선택</div>
+        <div class="ci-formula">P(n,r) = n!/(n-r)!</div>
+      </div>
+      <div class="concept-item">
+        <div class="ci-name">조합 C(n,r)</div>
+        <div class="ci-desc">n개 중 r개를 순서 없이 선택</div>
+        <div class="ci-formula">C(n,r) = n!/(r!(n-r)!)</div>
+      </div>
+      <div class="concept-item">
+        <div class="ci-name">중복순열 Π(n,r)</div>
+        <div class="ci-desc">n종류에서 중복 허용, r개 선택</div>
+        <div class="ci-formula">nʳ</div>
+      </div>
+      <div class="concept-item">
+        <div class="ci-name">중복조합 H(n,r)</div>
+        <div class="ci-desc">n종류에서 중복 허용, r개 비순서 선택</div>
+        <div class="ci-formula">C(n+r-1, r)</div>
+      </div>
+    </div>
+
+    <div class="formula-box">
+      <div class="formula-main">C(n,r) = C(n, n-r)&nbsp;&nbsp;|&nbsp;&nbsp;C(n,r) = C(n-1,r-1) + C(n-1,r)</div>
+      <div class="formula-note">파스칼의 삼각형 점화식 — C(0,0)=1부터 쌓아 올릴 수 있음</div>
+    </div>
+  </div>
+
+  <!-- 순열/조합 계산기 -->
+  <div class="card">
+    <div class="card-title">🧮 P(n,r) / C(n,r) 계산기</div>
+    <div class="sim-area">
+      <div class="sim-row">
+        <span class="sim-label">n:</span>
+        <input class="sim-input" id="comboN" value="6">
+        <span class="sim-label">r:</span>
+        <input class="sim-input" id="comboR" value="2">
+        <button class="sim-btn" onclick="calcCombo()">계산</button>
+      </div>
+      <div id="comboResult" class="sim-result"></div>
+    </div>
+  </div>
+
+  <!-- 파스칼 삼각형 -->
+  <div class="card">
+    <div class="card-title">🔺 파스칼의 삼각형</div>
+    <div class="sim-area">
+      <div class="sim-row">
+        <span class="sim-label">행 수:</span>
+        <input class="sim-input" id="pascalN" value="8" style="width:80px">
+        <button class="sim-btn" onclick="drawPascal()">생성</button>
+      </div>
+      <div id="pascalGrid" style="margin-top:14px; font-family:'JetBrains Mono',monospace; font-size:0.82rem; line-height:2.2; text-align:center;"></div>
+    </div>
+  </div>
+
+  <!-- 퀴즈 -->
+  <div class="card">
+    <div class="card-title">📝 실전 퀴즈</div>
+    <div id="quizCombo" class="quiz-wrap"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     ⑤ 그래프 이론
+═══════════════════════════════════════════ -->
+<section class="section" id="sec-graph">
+  <div class="sec-header">
+    <div class="sec-icon" style="background:rgba(236,72,153,0.1); color:var(--pink)">🕸️</div>
+    <div>
+      <div class="sec-title">그래프 이론</div>
+      <div class="sec-sub">Graph Theory · 정점·간선·차수 · 경로 · 트리 · 오일러·해밀턴</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">핵심 개념 정리</div>
+    <div class="concept-grid">
+      <div class="concept-item">
+        <div class="ci-name">그래프 G = (V, E)</div>
+        <div class="ci-desc">V: 정점(vertex)의 집합<br>E: 간선(edge)의 집합</div>
+      </div>
+      <div class="concept-item">
+        <div class="ci-name">차수 (Degree)</div>
+        <div class="ci-desc">한 정점에 연결된 간선의 수<br>⭐ 모든 차수의 합 = 2|E| (악수 정리)</div>
+        <div class="ci-formula">∑deg(v) = 2|E|</div>
+      </div>
+      <div class="concept-item">
+        <div class="ci-name">경로와 회로</div>
+        <div class="ci-desc">경로: 정점과 간선의 연속열<br>단순경로: 정점 반복 없음<br>회로: 시작=끝 단순경로</div>
+      </div>
+      <div class="concept-item">
+        <div class="ci-name">오일러 경로/회로</div>
+        <div class="ci-desc">모든 간선을 정확히 1번 지나는 경로/회로<br>오일러 회로: 홀수 차수 정점 = 0개<br>오일러 경로: 홀수 차수 정점 = 2개</div>
+      </div>
+      <div class="concept-item">
+        <div class="ci-name">트리 (Tree)</div>
+        <div class="ci-desc">연결된 비순환 그래프<br>n개 정점 → n-1개 간선<br>임의의 두 정점 사이 경로 유일</div>
+      </div>
+      <div class="concept-item">
+        <div class="ci-name">완전 그래프 Kₙ</div>
+        <div class="ci-desc">n개 정점이 모두 연결된 그래프</div>
+        <div class="ci-formula">간선 수 = C(n,2) = n(n-1)/2</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 차수·악수 정리 시뮬레이터 -->
+  <div class="card">
+    <div class="card-title">🔬 악수 정리 시뮬레이터</div>
+    <div class="sim-area">
+      <p style="font-size:0.82rem;color:var(--text2);margin-bottom:12px">각 정점의 차수를 입력하면 간선 수와 검증을 확인합니다.</p>
+      <div class="sim-row">
+        <span class="sim-label">차수 목록:</span>
+        <input class="sim-input" id="degSeq" value="3,3,2,2,4" style="width:200px">
+        <button class="sim-btn" onclick="calcHandshake()">검증</button>
+      </div>
+      <div id="handshakeResult" class="sim-result"></div>
+    </div>
+  </div>
+
+  <!-- 오일러 검사 -->
+  <div class="card">
+    <div class="card-title">🔬 오일러 경로/회로 판별기</div>
+    <div class="sim-area">
+      <p style="font-size:0.82rem;color:var(--text2);margin-bottom:12px">각 정점의 차수를 입력하여 오일러 경로/회로 존재 여부를 판별합니다.</p>
+      <div class="sim-row">
+        <span class="sim-label">차수 목록:</span>
+        <input class="sim-input" id="eulerDeg" value="2,3,3,2,2" style="width:200px">
+        <button class="sim-btn" onclick="checkEuler()">판별</button>
+      </div>
+      <div id="eulerResult" class="sim-result"></div>
+    </div>
+  </div>
+
+  <!-- 퀴즈 -->
+  <div class="card">
+    <div class="card-title">📝 실전 퀴즈</div>
+    <div id="quizGraph" class="quiz-wrap"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     ⑥ 부울 대수
+═══════════════════════════════════════════ -->
+<section class="section" id="sec-bool">
+  <div class="sec-header">
+    <div class="sec-icon" style="background:rgba(0,229,255,0.1); color:var(--cyan)">⚡</div>
+    <div>
+      <div class="sec-title">부울 대수 (Boolean Algebra)</div>
+      <div class="sec-sub">논리 게이트 · 부울 식 · 드모르간 · 카르노 맵</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">핵심 법칙 정리</div>
+    <div class="grid2">
+      <div>
+        <div class="ci-name" style="color:var(--gold);margin-bottom:8px">기본 법칙</div>
+        <table class="truth-table">
+          <tr><th>법칙</th><th>AND형</th><th>OR형</th></tr>
+          <tr><td>항등</td><td>A·1 = A</td><td>A+0 = A</td></tr>
+          <tr><td>영</td><td>A·0 = 0</td><td>A+1 = 1</td></tr>
+          <tr><td>멱등</td><td>A·A = A</td><td>A+A = A</td></tr>
+          <tr><td>보수</td><td>A·Ā = 0</td><td>A+Ā = 1</td></tr>
+          <tr><td>이중부정</td><td colspan="2" style="text-align:center">Ā̄ = A</td></tr>
+        </table>
+      </div>
+      <div>
+        <div class="ci-name" style="color:var(--gold);margin-bottom:8px">드모르간 법칙</div>
+        <div class="formula-box">
+          <div class="formula-main" style="font-size:0.95rem">Ā·B̄ = (A+B)̄</div>
+          <div class="formula-note">NOT(A AND B) = (NOT A) OR (NOT B)</div>
+        </div>
+        <div class="formula-box" style="margin-top:8px">
+          <div class="formula-main" style="font-size:0.95rem">Ā+B̄ = (A·B)̄</div>
+          <div class="formula-note">NOT(A OR B) = (NOT A) AND (NOT B)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 논리 게이트 시뮬레이터 -->
+  <div class="card">
+    <div class="card-title">🔬 논리 게이트 시뮬레이터</div>
+    <div class="sim-area">
+      <div class="sim-row">
+        <span class="sim-label">A:</span>
+        <button class="toggle-btn on" id="boolA"><div class="toggle-knob"></div></button>
+        <span id="boolALabel" style="color:var(--green);font-weight:700;font-family:'JetBrains Mono'">1</span>
+        <span class="sim-label" style="margin-left:20px">B:</span>
+        <button class="toggle-btn on" id="boolB"><div class="toggle-knob"></div></button>
+        <span id="boolBLabel" style="color:var(--green);font-weight:700;font-family:'JetBrains Mono'">1</span>
+      </div>
+      <div id="gateResult" class="sim-result"></div>
+    </div>
+  </div>
+
+  <!-- 부울식 진리표 -->
+  <div class="card">
+    <div class="card-title">📊 3변수 진리표</div>
+    <div style="overflow-x:auto">
+      <table class="truth-table" id="bool3Table">
+        <thead>
+          <tr>
+            <th>A</th><th>B</th><th>C</th>
+            <th>A·B</th><th>A+C</th><th>Ā</th>
+            <th>A⊕B</th><th>A·B+C</th>
+          </tr>
+        </thead>
+        <tbody id="bool3Body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 퀴즈 -->
+  <div class="card">
+    <div class="card-title">📝 실전 퀴즈</div>
+    <div id="quizBool" class="quiz-wrap"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     ⑦ 점화식
+═══════════════════════════════════════════ -->
+<section class="section" id="sec-recur">
+  <div class="sec-header">
+    <div class="sec-icon" style="background:rgba(245,158,11,0.1); color:var(--gold)">🌀</div>
+    <div>
+      <div class="sec-title">점화식 (Recurrence Relation)</div>
+      <div class="sec-sub">등차수열 · 등비수열 · 피보나치 · 카탈란 수</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">핵심 개념 정리</div>
+    <div class="concept-grid">
+      <div class="concept-item">
+        <div class="ci-name">등차수열</div>
+        <div class="ci-desc">공차 d씩 증가하는 수열</div>
+        <div class="ci-formula">aₙ = a₁ + (n-1)d<br>Sₙ = n(a₁+aₙ)/2</div>
+      </div>
+      <div class="concept-item">
+        <div class="ci-name">등비수열</div>
+        <div class="ci-desc">공비 r씩 곱해지는 수열</div>
+        <div class="ci-formula">aₙ = a₁ × r^(n-1)<br>Sₙ = a₁(rⁿ-1)/(r-1)</div>
+      </div>
+      <div class="concept-item">
+        <div class="ci-name">피보나치 수열</div>
+        <div class="ci-formula">F(0)=0, F(1)=1<br>F(n) = F(n-1)+F(n-2)</div>
+        <div class="ci-desc">0,1,1,2,3,5,8,13,21,...</div>
+      </div>
+      <div class="concept-item">
+        <div class="ci-name">카탈란 수</div>
+        <div class="ci-desc">괄호 짝 맞추기, 이진트리 등 문제의 답</div>
+        <div class="ci-formula">Cₙ = C(2n,n)/(n+1)<br>1,1,2,5,14,42,132,...</div>
+      </div>
+      <div class="concept-item">
+        <div class="ci-name">점화식 풀이 전략</div>
+        <div class="ci-desc">1) 패턴 파악 (등차/등비인지 확인)<br>2) 특성방정식 이용<br>3) DP 테이블로 계산</div>
+      </div>
+      <div class="concept-item">
+        <div class="ci-name">탑 쌓기 점화식</div>
+        <div class="ci-desc">1×n 타일 채우기 (1×1, 1×2 타일)</div>
+        <div class="ci-formula">f(n) = f(n-1) + f(n-2)<br>f(1)=1, f(2)=2</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 수열 생성기 -->
+  <div class="card">
+    <div class="card-title">🔬 수열 생성기</div>
+    <div class="sim-area">
+      <div class="sim-row">
+        <span class="sim-label">유형:</span>
+        <select id="seqType" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:7px 12px;border-radius:8px;font-size:0.85rem">
+          <option value="arith">등차수열</option>
+          <option value="geom">등비수열</option>
+          <option value="fib">피보나치</option>
+          <option value="catalan">카탈란 수</option>
+        </select>
+      </div>
+      <div class="sim-row" id="seqParams">
+        <span class="sim-label">a₁:</span>
+        <input class="sim-input" id="seqA1" value="1" style="width:80px">
+        <span class="sim-label" id="seqDLabel">공차 d:</span>
+        <input class="sim-input" id="seqD" value="3" style="width:80px">
+        <span class="sim-label">항 수:</span>
+        <input class="sim-input" id="seqN" value="10" style="width:80px">
+        <button class="sim-btn" onclick="genSeq()">생성</button>
+      </div>
+      <div id="seqResult" class="sim-result"></div>
+    </div>
+  </div>
+
+  <!-- DP 점화식 시뮬레이터 -->
+  <div class="card">
+    <div class="card-title">🔬 타일 채우기 DP 시뮬레이터</div>
+    <div class="sim-area">
+      <p style="font-size:0.82rem;color:var(--text2);margin-bottom:12px">1×n 보드를 1×1, 1×2 타일로 채우는 경우의 수 (f(n) = f(n-1)+f(n-2))</p>
+      <div class="sim-row">
+        <span class="sim-label">n:</span>
+        <input class="sim-input" id="tileN" value="8" style="width:80px">
+        <button class="sim-btn" onclick="calcTile()">DP 실행</button>
+      </div>
+      <div id="tileResult" class="sim-result"></div>
+    </div>
+  </div>
+
+  <!-- 퀴즈 -->
+  <div class="card">
+    <div class="card-title">📝 실전 퀴즈</div>
+    <div id="quizRecur" class="quiz-wrap"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     ⑧ 함수와 관계
+═══════════════════════════════════════════ -->
+<section class="section" id="sec-func">
+  <div class="sec-header">
+    <div class="sec-icon" style="background:rgba(168,85,247,0.1); color:var(--purple)">🔗</div>
+    <div>
+      <div class="sec-title">함수와 관계</div>
+      <div class="sec-sub">함수의 정의 · 단사·전사·전단사 · 이진관계 · 동치관계</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">핵심 개념 정리</div>
+    <div class="concept-grid">
+      <div class="concept-item">
+        <div class="ci-name">함수 f: A→B</div>
+        <div class="ci-desc">A의 모든 원소에 B의 원소를 하나씩 대응<br>정의역 A, 공역 B, 치역 f(A)⊆B</div>
+      </div>
+      <div class="concept-item">
+        <div class="ci-name">단사함수 (1-1)</div>
+        <div class="ci-desc">서로 다른 입력 → 서로 다른 출력<br>f(a)=f(b) → a=b</div>
+        <div class="ci-formula">|A| ≤ |B| 이어야 가능</div>
+      </div>
+      <div class="concept-item">
+        <div class="ci-name">전사함수 (onto)</div>
+        <div class="ci-desc">공역과 치역이 같음<br>B의 모든 원소가 최소 1번 대응됨</div>
+        <div class="ci-formula">|A| ≥ |B| 이어야 가능</div>
+      </div>
+      <div class="concept-item">
+        <div class="ci-name">전단사함수 (bijection)</div>
+        <div class="ci-desc">단사 + 전사. 역함수 존재</div>
+        <div class="ci-formula">|A| = |B| 이어야 가능</div>
+      </div>
+      <div class="concept-item">
+        <div class="ci-name">함수의 개수</div>
+        <div class="ci-desc">|A|=m, |B|=n 일 때</div>
+        <div class="ci-formula">전체 함수: nᵐ<br>단사 함수: P(n,m)</div>
+      </div>
+      <div class="concept-item">
+        <div class="ci-name">동치관계</div>
+        <div class="ci-desc">반사적 + 대칭적 + 추이적 관계<br>동치류: 서로 관계된 원소의 집합</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 함수 개수 계산기 -->
+  <div class="card">
+    <div class="card-title">🧮 함수 개수 계산기</div>
+    <div class="sim-area">
+      <div class="sim-row">
+        <span class="sim-label">|A| = m:</span>
+        <input class="sim-input" id="funcM" value="3" style="width:80px">
+        <span class="sim-label">|B| = n:</span>
+        <input class="sim-input" id="funcN" value="4" style="width:80px">
+        <button class="sim-btn" onclick="calcFunctions()">계산</button>
+      </div>
+      <div id="funcResult" class="sim-result"></div>
+    </div>
+  </div>
+
+  <!-- 관계 속성 판별기 -->
+  <div class="card">
+    <div class="card-title">🔬 이진관계 속성 판별기</div>
+    <div class="sim-area">
+      <p style="font-size:0.82rem;color:var(--text2);margin-bottom:12px">집합 A = {1,2,3}에서의 관계를 쉼표로 입력하세요. 예: (1,1),(2,2),(3,3),(1,2)</p>
+      <div class="sim-row">
+        <input class="sim-input" id="relInput" value="(1,1),(2,2),(3,3),(1,2),(2,1)" style="width:340px">
+        <button class="sim-btn" onclick="checkRelation()">판별</button>
+      </div>
+      <div id="relResult" class="sim-result"></div>
+    </div>
+  </div>
+
+  <!-- 퀴즈 -->
+  <div class="card">
+    <div class="card-title">📝 실전 퀴즈</div>
+    <div id="quizFunc" class="quiz-wrap"></div>
+  </div>
+</section>
+
+</main>
+
+<script>
+/* ═══════════════════════════════════════════
+   TAB NAVIGATION
+═══════════════════════════════════════════ */
+const tabMap = {
+  'logic':'sec-logic','set':'sec-set','number':'sec-number',
+  'combo':'sec-combo','graph':'sec-graph','bool':'sec-bool',
+  'recur':'sec-recur','func':'sec-func'
+};
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(tabMap[btn.dataset.tab]).classList.add('active');
+    window.scrollTo(0,0);
+  });
+});
+
+/* ═══════════════════════════════════════════
+   ① 명제 · 진리표 시뮬레이터
+═══════════════════════════════════════════ */
+let pVal = true, qVal = true;
+function setupToggle(id, labelId, getSet, render) {
+  const btn = document.getElementById(id);
+  const lbl = document.getElementById(labelId);
+  btn.addEventListener('click', () => {
+    let v = getSet();
+    v = !v;
+    getSet(v);
+    btn.classList.toggle('on', v);
+    lbl.textContent = v ? 'T' : 'F';
+    lbl.style.color = v ? 'var(--green)' : 'var(--red)';
+    render();
+  });
+}
+setupToggle('toggleP','pLabel',
+  v => { if(v!==undefined) pVal=v; return pVal; }, renderTruth);
+setupToggle('toggleQ','qLabel',
+  v => { if(v!==undefined) qVal=v; return qVal; }, renderTruth);
+
+function renderTruth() {
+  const p = pVal, q = qVal;
+  const ops = [
+    ['p', p],
+    ['q', q],
+    ['¬p', !p],
+    ['¬q', !q],
+    ['p ∧ q', p && q],
+    ['p ∨ q', p || q],
+    ['p → q', !p || q],
+    ['q → p', !q || p],
+    ['p ↔ q', p === q],
+    ['¬p ∨ ¬q', !p || !q],
+    ['¬(p ∧ q)', !(p && q)],
+  ];
+  const el = document.getElementById('truthResult');
+  el.innerHTML = '';
+  ops.forEach(([name, val]) => {
+    const line = document.createElement('div');
+    line.style.display = 'inline-block';
+    line.style.marginRight = '18px';
+    line.style.marginBottom = '4px';
+    const nameSpan = document.createElement('span');
+    nameSpan.style.color = 'var(--text2)';
+    nameSpan.textContent = name + ' = ';
+    const valSpan = document.createElement('span');
+    valSpan.textContent = val ? 'T' : 'F';
+    valSpan.style.fontWeight = '700';
+    valSpan.style.color = val ? 'var(--green)' : 'var(--red)';
+    line.appendChild(nameSpan);
+    line.appendChild(valSpan);
+    el.appendChild(line);
+  });
+}
+renderTruth();
+
+function calcPropTransform() {
+  const p = document.getElementById('propP').value.trim();
+  const q = document.getElementById('propQ').value.trim();
+  const el = document.getElementById('propResult');
+  el.innerHTML = '';
+  const rows = [
+    ['원명제 (p→q)', p + '  →  ' + q, 'var(--cyan)'],
+    ['역      (q→p)', q + '  →  ' + p, 'var(--purple)'],
+    ['이    (¬p→¬q)', '~(' + p + ')  →  ~(' + q + ')', 'var(--gold)'],
+    ['대우 (¬q→¬p)', '~(' + q + ')  →  ~(' + p + ')', 'var(--green)'],
+  ];
+  rows.forEach(([label, expr, color]) => {
+    const row = document.createElement('div');
+    row.style.marginBottom = '6px';
+    const lb = document.createElement('span');
+    lb.textContent = label + ':  ';
+    lb.style.color = color;
+    lb.style.fontWeight = '600';
+    lb.style.minWidth = '160px';
+    lb.style.display = 'inline-block';
+    const ex = document.createElement('span');
+    ex.textContent = expr;
+    row.appendChild(lb); row.appendChild(ex);
+    el.appendChild(row);
+  });
+  const note = document.createElement('div');
+  note.style.marginTop = '8px';
+  note.style.color = 'var(--text3)';
+  note.style.fontSize = '0.8rem';
+  note.textContent = '⭐ 원명제와 대우는 진릿값이 항상 같습니다.';
+  el.appendChild(note);
+}
+
+/* ═══════════════════════════════════════════
+   ② 집합 연산 시뮬레이터
+═══════════════════════════════════════════ */
+function parseSet(str) {
+  return new Set(str.split(',').map(s => s.trim()).filter(s => s !== ''));
+}
+function calcSet(op) {
+  const A = parseSet(document.getElementById('setA').value);
+  const B = parseSet(document.getElementById('setB').value);
+  let result, label;
+  if (op === 'union') {
+    result = new Set([...A, ...B]); label = 'A ∪ B';
+  } else if (op === 'inter') {
+    result = new Set([...A].filter(x => B.has(x))); label = 'A ∩ B';
+  } else if (op === 'diffAB') {
+    result = new Set([...A].filter(x => !B.has(x))); label = 'A - B';
+  } else if (op === 'diffBA') {
+    result = new Set([...B].filter(x => !A.has(x))); label = 'B - A';
+  } else {
+    const AnotB = new Set([...A].filter(x => !B.has(x)));
+    const BnotA = new Set([...B].filter(x => !A.has(x)));
+    result = new Set([...AnotB, ...BnotA]); label = 'A △ B (대칭차)';
+  }
+  const el = document.getElementById('setResult');
+  el.innerHTML = '';
+  const lb = document.createElement('span');
+  lb.textContent = label + ' = ';
+  lb.style.color = 'var(--text2)';
+  const res = document.createElement('span');
+  res.textContent = '{ ' + [...result].join(', ') + ' }';
+  res.style.color = 'var(--cyan)';
+  res.style.fontWeight = '700';
+  const cnt = document.createElement('span');
+  cnt.textContent = '  → 원소 개수: ' + result.size;
+  cnt.style.color = 'var(--gold)';
+  el.appendChild(lb); el.appendChild(res); el.appendChild(cnt);
+}
+
+function calcPIE() {
+  const a = parseInt(document.getElementById('pieA').value) || 0;
+  const b = parseInt(document.getElementById('pieB').value) || 0;
+  const ab = parseInt(document.getElementById('pieAB').value) || 0;
+  const union = a + b - ab;
+  const el = document.getElementById('pieResult');
+  el.innerHTML = '';
+  const lines = [
+    ['|A ∪ B|', '= |A| + |B| - |A ∩ B|', 'var(--text2)'],
+    ['', '= ' + a + ' + ' + b + ' - ' + ab, 'var(--text2)'],
+    ['결과', '= ' + union, 'var(--gold)'],
+  ];
+  lines.forEach(([k, v, c]) => {
+    const row = document.createElement('div');
+    if (k) {
+      const ks = document.createElement('span');
+      ks.textContent = k + ':  ';
+      ks.style.color = 'var(--cyan)';
+      ks.style.fontWeight = '700';
+      ks.style.minWidth = '80px';
+      ks.style.display = 'inline-block';
+      row.appendChild(ks);
+    }
+    const vs = document.createElement('span');
+    vs.textContent = v;
+    vs.style.color = c;
+    row.appendChild(vs);
+    el.appendChild(row);
+  });
+}
+
+/* ═══════════════════════════════════════════
+   ③ 에라토스테네스의 체
+═══════════════════════════════════════════ */
+function runSieve() {
+  const n = Math.min(parseInt(document.getElementById('sieveN').value) || 60, 200);
+  const isPrime = new Array(n + 1).fill(true);
+  isPrime[0] = isPrime[1] = false;
+  for (let i = 2; i * i <= n; i++) {
+    if (isPrime[i]) for (let j = i * i; j <= n; j += i) isPrime[j] = false;
+  }
+  const grid = document.getElementById('sieveGrid');
+  grid.innerHTML = '';
+  for (let i = 2; i <= n; i++) {
+    const cell = document.createElement('div');
+    cell.textContent = i;
+    cell.style.cssText = 'width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:0.78rem;font-family:JetBrains Mono,monospace;font-weight:600;border:1px solid;transition:all 0.3s';
+    if (isPrime[i]) {
+      cell.style.background = 'rgba(0,229,255,0.12)';
+      cell.style.borderColor = 'var(--cyan)';
+      cell.style.color = 'var(--cyan)';
+    } else {
+      cell.style.background = 'var(--bg3)';
+      cell.style.borderColor = 'var(--border)';
+      cell.style.color = 'var(--text3)';
+      cell.style.textDecoration = 'line-through';
+    }
+    grid.appendChild(cell);
+  }
+  const primes = [];
+  for (let i = 2; i <= n; i++) if (isPrime[i]) primes.push(i);
+  const el = document.getElementById('sieveResult');
+  el.innerHTML = '';
+  const t = document.createElement('span');
+  t.textContent = '2~' + n + ' 사이의 소수 (' + primes.length + '개): ';
+  t.style.color = 'var(--text2)';
+  const v = document.createElement('span');
+  v.textContent = primes.join(', ');
+  v.style.color = 'var(--gold)';
+  el.appendChild(t); el.appendChild(v);
+}
+runSieve();
+
+/* ═══════════════════════════════════════════
+   ③ GCD / LCM
+═══════════════════════════════════════════ */
+function gcd(a, b) { return b === 0 ? a : gcd(b, a % b); }
+function calcGCDLCM() {
+  let a = parseInt(document.getElementById('gcdA').value) || 0;
+  let b = parseInt(document.getElementById('gcdB').value) || 0;
+  const el = document.getElementById('gcdResult');
+  el.innerHTML = '';
+  const steps = [];
+  let ta = a, tb = b;
+  while (tb !== 0) {
+    const q = Math.floor(ta / tb), r = ta % tb;
+    steps.push({ a: ta, b: tb, q, r });
+    ta = tb; tb = r;
+  }
+  steps.forEach((s, i) => {
+    const row = document.createElement('div');
+    row.style.color = i === steps.length - 1 ? 'var(--gold)' : 'var(--text2)';
+    row.style.marginBottom = '3px';
+    row.textContent = '  ' + s.a + ' = ' + s.b + ' × ' + s.q + ' + ' + s.r;
+    el.appendChild(row);
+  });
+  const g = gcd(a, b);
+  const l = a * b / g;
+  const divider = document.createElement('hr');
+  divider.style.border = '1px solid var(--border)'; divider.style.margin = '8px 0';
+  el.appendChild(divider);
+  [['GCD(' + a + ', ' + b + ')', g, 'var(--cyan)'],
+   ['LCM(' + a + ', ' + b + ')', l, 'var(--purple)'],
+   ['검증: ' + a + '×' + b, '= GCD×LCM = ' + (g * l), 'var(--green)']].forEach(([k, v, c]) => {
+    const row = document.createElement('div');
+    row.style.marginBottom = '4px';
+    const ks = document.createElement('span');
+    ks.textContent = k + ' = ';
+    ks.style.color = 'var(--text2)';
+    const vs = document.createElement('span');
+    vs.textContent = v;
+    vs.style.color = c;
+    vs.style.fontWeight = '700';
+    row.appendChild(ks); row.appendChild(vs);
+    el.appendChild(row);
+  });
+}
+
+/* ═══════════════════════════════════════════
+   ④ 조합론 계산기
+═══════════════════════════════════════════ */
+function factorial(n) {
+  if (n <= 1) return 1n;
+  return BigInt(n) * factorial(n - 1);
+}
+function calcCombo() {
+  const n = parseInt(document.getElementById('comboN').value) || 0;
+  const r = parseInt(document.getElementById('comboR').value) || 0;
+  const el = document.getElementById('comboResult');
+  el.innerHTML = '';
+  if (r > n || n < 0 || r < 0) {
+    el.textContent = 'n ≥ r ≥ 0 이어야 합니다.';
+    return;
+  }
+  const P = factorial(n) / factorial(n - r);
+  const C = factorial(n) / (factorial(r) * factorial(n - r));
+  const repP = BigInt(n) ** BigInt(r);
+  const repC = factorial(n + r - 1) / (factorial(r) * factorial(n - 1));
+  const rows = [
+    ['P(' + n + ',' + r + ') 순열', n + '!/' + (n-r) + '! = ' + P.toString(), 'var(--cyan)'],
+    ['C(' + n + ',' + r + ') 조합', n + '!/(' + r + '!' + (n-r) + '!) = ' + C.toString(), 'var(--purple)'],
+    ['중복순열 ' + n + '^' + r, n + '의 ' + r + '제곱 = ' + repP.toString(), 'var(--gold)'],
+    ['중복조합 H(' + n + ',' + r + ')', 'C(' + (n+r-1) + ',' + r + ') = ' + repC.toString(), 'var(--green)'],
+  ];
+  rows.forEach(([k, v, c]) => {
+    const row = document.createElement('div');
+    row.style.marginBottom = '5px';
+    const ks = document.createElement('span');
+    ks.textContent = k + ':  ';
+    ks.style.color = 'var(--text2)';
+    ks.style.minWidth = '200px';
+    ks.style.display = 'inline-block';
+    const vs = document.createElement('span');
+    vs.textContent = v;
+    vs.style.color = c;
+    vs.style.fontWeight = '700';
+    row.appendChild(ks); row.appendChild(vs);
+    el.appendChild(row);
+  });
+}
+
+/* ── 파스칼 삼각형 ── */
+function drawPascal() {
+  const n = Math.min(parseInt(document.getElementById('pascalN').value) || 8, 14);
+  const C = [];
+  for (let i = 0; i <= n; i++) {
+    C[i] = [];
+    for (let j = 0; j <= i; j++) {
+      C[i][j] = j === 0 || j === i ? 1 : C[i-1][j-1] + C[i-1][j];
+    }
+  }
+  const el = document.getElementById('pascalGrid');
+  el.innerHTML = '';
+  C.forEach((row, i) => {
+    const rowDiv = document.createElement('div');
+    rowDiv.style.marginBottom = '4px';
+    row.forEach((val, j) => {
+      const cell = document.createElement('span');
+      cell.textContent = String(val).padStart(5, ' ');
+      cell.style.fontFamily = 'JetBrains Mono,monospace';
+      cell.style.fontSize = '0.8rem';
+      cell.style.display = 'inline-block';
+      cell.style.textAlign = 'center';
+      cell.style.minWidth = '42px';
+      if (val === 1) cell.style.color = 'var(--text3)';
+      else if (i === j || j === 0) cell.style.color = 'var(--text3)';
+      else cell.style.color = 'var(--cyan)';
+      rowDiv.appendChild(cell);
+    });
+    el.appendChild(rowDiv);
+  });
+}
+drawPascal();
+
+/* ═══════════════════════════════════════════
+   ⑤ 그래프 이론
+═══════════════════════════════════════════ */
+function calcHandshake() {
+  const degs = document.getElementById('degSeq').value.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n));
+  const sum = degs.reduce((a, b) => a + b, 0);
+  const el = document.getElementById('handshakeResult');
+  el.innerHTML = '';
+  const rows = [
+    ['차수 수열', degs.join(', '), 'var(--cyan)'],
+    ['차수의 합', sum.toString(), 'var(--text)'],
+    ['간선 수', (sum / 2).toString() + (sum % 2 === 0 ? '' : ' (정수가 아님 → 불가능한 수열!)'), sum % 2 === 0 ? 'var(--gold)' : 'var(--red)'],
+    ['홀수 차수 정점 수', degs.filter(d => d % 2 === 1).length.toString(), 'var(--purple)'],
+  ];
+  rows.forEach(([k, v, c]) => {
+    const row = document.createElement('div');
+    row.style.marginBottom = '5px';
+    const ks = document.createElement('span');
+    ks.textContent = k + ': ';
+    ks.style.color = 'var(--text2)';
+    ks.style.minWidth = '180px';
+    ks.style.display = 'inline-block';
+    const vs = document.createElement('span');
+    vs.textContent = v;
+    vs.style.color = c;
+    vs.style.fontWeight = '700';
+    row.appendChild(ks); row.appendChild(vs);
+    el.appendChild(row);
+  });
+  if (sum % 2 !== 0) {
+    const note = document.createElement('div');
+    note.style.color = 'var(--red)';
+    note.style.marginTop = '8px';
+    note.style.fontSize = '0.82rem';
+    note.textContent = '⚠️ 악수 정리: 모든 차수의 합은 반드시 짝수여야 합니다!';
+    el.appendChild(note);
+  }
+}
+
+function checkEuler() {
+  const degs = document.getElementById('eulerDeg').value.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n));
+  const odd = degs.filter(d => d % 2 === 1).length;
+  const el = document.getElementById('eulerResult');
+  el.innerHTML = '';
+  let msg, color;
+  if (odd === 0) { msg = '✅ 오일러 회로 존재 (모든 정점의 차수가 짝수)'; color = 'var(--green)'; }
+  else if (odd === 2) { msg = '✅ 오일러 경로 존재 (홀수 차수 정점이 정확히 2개)'; color = 'var(--cyan)'; }
+  else { msg = '❌ 오일러 경로/회로 모두 없음 (홀수 차수 정점이 ' + odd + '개)'; color = 'var(--red)'; }
+  const rows = [
+    ['차수 수열', degs.join(', ')],
+    ['홀수 차수 정점 수', odd.toString()],
+    ['판정 결과', msg],
+  ];
+  rows.forEach(([k, v], i) => {
+    const row = document.createElement('div');
+    row.style.marginBottom = '6px';
+    const ks = document.createElement('span');
+    ks.textContent = k + ': ';
+    ks.style.color = 'var(--text2)';
+    ks.style.minWidth = '180px';
+    ks.style.display = 'inline-block';
+    const vs = document.createElement('span');
+    vs.textContent = v;
+    vs.style.color = i === 2 ? color : 'var(--text)';
+    vs.style.fontWeight = i === 2 ? '700' : '400';
+    row.appendChild(ks); row.appendChild(vs);
+    el.appendChild(row);
+  });
+}
+
+/* ═══════════════════════════════════════════
+   ⑥ 부울 대수 - 게이트 시뮬레이터
+═══════════════════════════════════════════ */
+let bA = true, bB = true;
+function setupBoolToggle(id, labelId, getSet, render) {
+  const btn = document.getElementById(id);
+  const lbl = document.getElementById(labelId);
+  btn.addEventListener('click', () => {
+    let v = getSet();
+    v = !v;
+    getSet(v);
+    btn.classList.toggle('on', v);
+    lbl.textContent = v ? '1' : '0';
+    lbl.style.color = v ? 'var(--green)' : 'var(--red)';
+    render();
+  });
+}
+setupBoolToggle('boolA','boolALabel', v => { if(v!==undefined) bA=v; return bA; }, renderGates);
+setupBoolToggle('boolB','boolBLabel', v => { if(v!==undefined) bB=v; return bB; }, renderGates);
+
+function renderGates() {
+  const A = bA, B = bB;
+  const gates = [
+    ['AND  (A·B)', A && B],
+    ['OR   (A+B)', A || B],
+    ['NOT  (Ā)', !A],
+    ['NAND (A·B)̄', !(A && B)],
+    ['NOR  (A+B)̄', !(A || B)],
+    ['XOR  (A⊕B)', A !== B],
+    ['XNOR (A⊙B)', A === B],
+    ['A→B', !A || B],
+  ];
+  const el = document.getElementById('gateResult');
+  el.innerHTML = '';
+  const grid = document.createElement('div');
+  grid.style.display = 'grid';
+  grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(200px,1fr))';
+  grid.style.gap = '8px';
+  gates.forEach(([name, val]) => {
+    const cell = document.createElement('div');
+    cell.style.cssText = 'background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;display:flex;justify-content:space-between;align-items:center';
+    const n = document.createElement('span');
+    n.textContent = name;
+    n.style.color = 'var(--text2)';
+    n.style.fontSize = '0.82rem';
+    n.style.fontFamily = 'JetBrains Mono,monospace';
+    const v = document.createElement('span');
+    v.textContent = val ? '1' : '0';
+    v.style.fontWeight = '700';
+    v.style.fontSize = '1.1rem';
+    v.style.color = val ? 'var(--green)' : 'var(--red)';
+    cell.appendChild(n); cell.appendChild(v);
+    grid.appendChild(cell);
+  });
+  el.appendChild(grid);
+}
+renderGates();
+
+/* ── 3변수 진리표 ── */
+(function fill3VarTable() {
+  const tbody = document.getElementById('bool3Body');
+  for (let i = 7; i >= 0; i--) {
+    const A = !!(i & 4), B = !!(i & 2), C = !!(i & 1);
+    const tr = document.createElement('tr');
+    const vals = [A, B, C, A&&B, A||C, !A, A!==B, (A&&B)||C];
+    vals.forEach(v => {
+      const td = document.createElement('td');
+      td.textContent = v ? '1' : '0';
+      td.className = v ? 't1' : 't0';
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  }
+})();
+
+/* ═══════════════════════════════════════════
+   ⑦ 점화식 - 수열 생성기
+═══════════════════════════════════════════ */
+document.getElementById('seqType').addEventListener('change', function() {
+  const t = this.value;
+  const lbl = document.getElementById('seqDLabel');
+  if (t === 'arith') { lbl.textContent = '공차 d:'; document.getElementById('seqD').value = '3'; }
+  else if (t === 'geom') { lbl.textContent = '공비 r:'; document.getElementById('seqD').value = '2'; }
+  else { lbl.textContent = '(무시)'; }
+});
+
+function genSeq() {
+  const type = document.getElementById('seqType').value;
+  const a1 = parseFloat(document.getElementById('seqA1').value) || 1;
+  const d = parseFloat(document.getElementById('seqD').value) || 1;
+  const n = Math.min(parseInt(document.getElementById('seqN').value) || 10, 20);
+  let seq = [], formula = '';
+  if (type === 'arith') {
+    for (let i = 0; i < n; i++) seq.push(a1 + i * d);
+    formula = 'aₙ = ' + a1 + ' + (n-1)×' + d;
+  } else if (type === 'geom') {
+    for (let i = 0; i < n; i++) seq.push(a1 * Math.pow(d, i));
+    formula = 'aₙ = ' + a1 + ' × ' + d + '^(n-1)';
+  } else if (type === 'fib') {
+    seq = [0, 1];
+    for (let i = 2; i < n; i++) seq.push(seq[i-1] + seq[i-2]);
+    seq = seq.slice(0, n);
+    formula = 'F(n) = F(n-1) + F(n-2), F(0)=0, F(1)=1';
+  } else {
+    // catalan
+    function cat(k) {
+      if (k === 0) return 1;
+      let c = 0;
+      for (let i = 0; i < k; i++) c += cat(i) * cat(k - 1 - i);
+      return c;
+    }
+    for (let i = 0; i < n; i++) seq.push(cat(i));
+    formula = 'Cₙ = C(2n,n)/(n+1)';
+  }
+  const el = document.getElementById('seqResult');
+  el.innerHTML = '';
+  const fRow = document.createElement('div');
+  fRow.style.color = 'var(--text2)';
+  fRow.style.marginBottom = '6px';
+  fRow.style.fontSize = '0.82rem';
+  fRow.textContent = '공식: ' + formula;
+  el.appendChild(fRow);
+  const seqRow = document.createElement('div');
+  seq.forEach((v, i) => {
+    const sp = document.createElement('span');
+    sp.style.display = 'inline-block';
+    sp.style.minWidth = '40px';
+    sp.style.textAlign = 'center';
+    sp.style.marginRight = '6px';
+    const idx = document.createElement('div');
+    idx.textContent = 'a' + (i + 1);
+    idx.style.fontSize = '0.65rem';
+    idx.style.color = 'var(--text3)';
+    const val = document.createElement('div');
+    val.textContent = Number.isInteger(v) ? v : v.toFixed(2);
+    val.style.color = 'var(--cyan)';
+    val.style.fontWeight = '700';
+    val.style.fontSize = '0.9rem';
+    sp.appendChild(idx); sp.appendChild(val);
+    seqRow.appendChild(sp);
+  });
+  el.appendChild(seqRow);
+}
+
+function calcTile() {
+  const n = Math.min(parseInt(document.getElementById('tileN').value) || 8, 20);
+  const dp = [0, 1, 2];
+  for (let i = 3; i <= n; i++) dp[i] = dp[i-1] + dp[i-2];
+  const el = document.getElementById('tileResult');
+  el.innerHTML = '';
+  const tbl = document.createElement('div');
+  tbl.style.display = 'flex'; tbl.style.flexWrap = 'wrap'; tbl.style.gap = '8px';
+  for (let i = 1; i <= n; i++) {
+    const cell = document.createElement('div');
+    cell.style.cssText = 'background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:8px 12px;text-align:center;min-width:52px';
+    const l = document.createElement('div');
+    l.textContent = 'f(' + i + ')';
+    l.style.fontSize = '0.7rem'; l.style.color = 'var(--text3)';
+    const v = document.createElement('div');
+    v.textContent = dp[i];
+    v.style.fontSize = '1rem'; v.style.color = 'var(--gold)'; v.style.fontWeight = '700';
+    cell.appendChild(l); cell.appendChild(v);
+    tbl.appendChild(cell);
+  }
+  el.appendChild(tbl);
+  const note = document.createElement('div');
+  note.style.marginTop = '10px'; note.style.color = 'var(--text2)'; note.style.fontSize = '0.82rem';
+  note.textContent = 'f(' + n + ') = ' + dp[n] + ' 가지';
+  el.appendChild(note);
+}
+
+/* ═══════════════════════════════════════════
+   ⑧ 함수 개수 계산기
+═══════════════════════════════════════════ */
+function calcFunctions() {
+  const m = parseInt(document.getElementById('funcM').value) || 0;
+  const n = parseInt(document.getElementById('funcN').value) || 0;
+  const el = document.getElementById('funcResult');
+  el.innerHTML = '';
+  const total = Math.pow(n, m);
+  let injection = 0;
+  if (n >= m) {
+    injection = 1;
+    for (let i = 0; i < m; i++) injection *= (n - i);
+  }
+  const rows = [
+    ['전체 함수 수 (nᵐ)', n + '^' + m + ' = ' + total, 'var(--cyan)'],
+    ['단사함수 수 P(n,m)', n >= m ? 'P(' + n + ',' + m + ') = ' + injection : '|A|>|B|이므로 단사함수 없음', 'var(--purple)'],
+    ['단사함수 가능?', n >= m ? '✅ |B| ≥ |A|' : '❌ |B| < |A|', n >= m ? 'var(--green)' : 'var(--red)'],
+    ['전사함수 가능?', n <= m ? '✅ |A| ≥ |B|' : '❌ |A| < |B|', n <= m ? 'var(--green)' : 'var(--red)'],
+    ['전단사 가능?', n === m ? '✅ |A| = |B| = ' + m : '❌ |A| ≠ |B|', n === m ? 'var(--gold)' : 'var(--red)'],
+  ];
+  rows.forEach(([k, v, c]) => {
+    const row = document.createElement('div');
+    row.style.marginBottom = '6px';
+    const ks = document.createElement('span');
+    ks.textContent = k + ': ';
+    ks.style.color = 'var(--text2)';
+    ks.style.minWidth = '200px';
+    ks.style.display = 'inline-block';
+    const vs = document.createElement('span');
+    vs.textContent = v;
+    vs.style.color = c;
+    vs.style.fontWeight = '700';
+    row.appendChild(ks); row.appendChild(vs);
+    el.appendChild(row);
+  });
+}
+
+/* ── 관계 속성 판별기 ── */
+function checkRelation() {
+  const input = document.getElementById('relInput').value;
+  const pairs = [];
+  const re = /\((\d+),(\d+)\)/g;
+  let m;
+  while ((m = re.exec(input)) !== null) pairs.push([parseInt(m[1]), parseInt(m[2])]);
+  const A = [1, 2, 3];
+  const pairSet = new Set(pairs.map(([a, b]) => a + ',' + b));
+  const has = (a, b) => pairSet.has(a + ',' + b);
+  const reflexive = A.every(a => has(a, a));
+  const symmetric = pairs.every(([a, b]) => has(b, a));
+  const transitive = pairs.every(([a, b]) => pairs.filter(([c]) => c === b).every(([, d]) => has(a, d)));
+  const antisym = pairs.every(([a, b]) => a === b || !has(b, a));
+  const el = document.getElementById('relResult');
+  el.innerHTML = '';
+  const props = [
+    ['반사적', reflexive, 'A의 모든 a에 (a,a) ∈ R'],
+    ['대칭적', symmetric, '(a,b)∈R 이면 (b,a)∈R'],
+    ['추이적', transitive, '(a,b)∈R, (b,c)∈R 이면 (a,c)∈R'],
+    ['반대칭적', antisym, '(a,b)∈R, (b,a)∈R 이면 a=b'],
+    ['동치관계', reflexive && symmetric && transitive, '반사적 + 대칭적 + 추이적'],
+    ['편순서관계', reflexive && antisym && transitive, '반사적 + 반대칭적 + 추이적'],
+  ];
+  props.forEach(([name, ok, desc]) => {
+    const row = document.createElement('div');
+    row.style.display = 'flex'; row.style.alignItems = 'flex-start';
+    row.style.gap = '10px'; row.style.marginBottom = '7px';
+    const badge = document.createElement('span');
+    badge.textContent = ok ? '✅' : '❌';
+    const info = document.createElement('div');
+    const nm = document.createElement('span');
+    nm.textContent = name;
+    nm.style.color = ok ? 'var(--green)' : 'var(--red)';
+    nm.style.fontWeight = '700';
+    nm.style.marginRight = '8px';
+    const ds = document.createElement('span');
+    ds.textContent = desc;
+    ds.style.color = 'var(--text3)';
+    ds.style.fontSize = '0.78rem';
+    info.appendChild(nm); info.appendChild(ds);
+    row.appendChild(badge); row.appendChild(info);
+    el.appendChild(row);
+  });
+}
+
+/* ═══════════════════════════════════════════
+   QUIZ ENGINE (createElement 기반)
+═══════════════════════════════════════════ */
+function buildQuiz(containerId, questions) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  let correct = 0, answered = 0;
+
+  // Score bar
+  const scoreBar = document.createElement('div');
+  scoreBar.className = 'q-score-bar';
+  const scoreNum = document.createElement('div');
+  scoreNum.className = 'score-num';
+  scoreNum.textContent = '0/' + questions.length;
+  const scoreLbl = document.createElement('div');
+  scoreLbl.className = 'score-label';
+  scoreLbl.textContent = '문제를 풀어보세요!';
+  scoreBar.appendChild(scoreNum);
+  scoreBar.appendChild(scoreLbl);
+  container.appendChild(scoreBar);
+
+  questions.forEach((q, qi) => {
+    const item = document.createElement('div');
+    item.className = 'q-item';
+
+    const numDiv = document.createElement('div');
+    numDiv.className = 'q-num';
+    numDiv.textContent = 'Q' + (qi + 1);
+    item.appendChild(numDiv);
+
+    const textDiv = document.createElement('div');
+    textDiv.className = 'q-text';
+    textDiv.textContent = q.q;
+    item.appendChild(textDiv);
+
+    const optsDiv = document.createElement('div');
+    optsDiv.className = 'q-opts';
+
+    const explainDiv = document.createElement('div');
+    explainDiv.className = 'q-explain';
+    explainDiv.textContent = '📖 ' + q.explain;
+
+    q.opts.forEach((opt, oi) => {
+      const btn = document.createElement('button');
+      btn.className = 'q-opt';
+      btn.textContent = (oi + 1) + '. ' + opt;
+      btn.addEventListener('click', () => {
+        if (btn.disabled) return;
+        // disable all
+        optsDiv.querySelectorAll('.q-opt').forEach(b => b.disabled = true);
+        if (oi === q.ans) {
+          btn.classList.add('correct');
+          correct++;
+        } else {
+          btn.classList.add('wrong');
+          optsDiv.querySelectorAll('.q-opt')[q.ans].classList.add('correct');
+        }
+        explainDiv.style.display = 'block';
+        answered++;
+        scoreNum.textContent = correct + '/' + questions.length;
+        if (answered === questions.length) {
+          const pct = Math.round(correct / questions.length * 100);
+          scoreLbl.textContent = pct >= 80 ? '🎉 훌륭해요! ' + pct + '%' : pct >= 60 ? '👍 잘했어요! ' + pct + '%' : '💪 다시 도전! ' + pct + '%';
+          scoreLbl.style.color = pct >= 80 ? 'var(--gold)' : 'var(--text2)';
+        }
+      });
+      optsDiv.appendChild(btn);
+    });
+
+    item.appendChild(optsDiv);
+    item.appendChild(explainDiv);
+    container.appendChild(item);
+  });
+}
+
+/* ── 퀴즈 데이터 ── */
+const QUIZ_LOGIC = [
+  { q: '"p→q"의 대우(contrapositive)로 옳은 것은?', opts: ['q→p', '¬p→¬q', '¬q→¬p', '¬p→q'], ans: 2, explain: '대우는 ¬q→¬p입니다. 원명제와 대우는 동치입니다.' },
+  { q: 'p=T, q=F일 때 "p→q"의 진릿값은?', opts: ['T', 'F', '알 수 없음', '항상 T'], ans: 1, explain: 'p→q는 ¬p∨q와 같습니다. ¬T∨F = F∨F = F' },
+  { q: '¬(p∨q)와 동치인 식은? (드모르간 법칙)', opts: ['¬p∨¬q', '¬p∧¬q', 'p∧q', '¬p→q'], ans: 1, explain: '드모르간: ¬(A∨B) = ¬A∧¬B' },
+  { q: '"x>5이면 x>3이다"의 역은?', opts: ['x≤5이면 x≤3', 'x>3이면 x>5', 'x≤3이면 x≤5', 'x>5이면 x>3'], ans: 1, explain: '역은 가정과 결론을 바꿉니다: q→p = "x>3이면 x>5이다"' },
+  { q: 'p↔q (쌍조건)이 참이 되는 경우는?', opts: ['p=T, q=F', 'p=F, q=T', 'p=T, q=T', '모든 경우'], ans: 2, explain: 'p↔q는 p와 q의 진릿값이 같을 때 T입니다. (TT 또는 FF)' },
+  { q: '항진명제(tautology)란?', opts: ['항상 거짓인 명제', '항상 참인 명제', '참도 거짓도 아닌 명제', '조건명제'], ans: 1, explain: '항진명제는 변수값에 관계없이 항상 T인 명제입니다. 예) p∨¬p' },
+];
+
+const QUIZ_SET = [
+  { q: '집합 A={1,2,3,4}, B={2,4,6}일 때 |A∪B|는?', opts: ['5', '6', '2', '7'], ans: 1, explain: '|A∪B| = |A|+|B|-|A∩B| = 4+3-2 = 5... 실제로 A∪B={1,2,3,4,6}이므로 5개' },
+  { q: '원소 5개짜리 집합의 부분집합 수는?', opts: ['10', '16', '32', '25'], ans: 2, explain: '원소 n개 집합의 부분집합 수 = 2ⁿ = 2⁵ = 32' },
+  { q: '집합 A={1,2,3}, B={2,3,4}에서 A-B는?', opts: ['{2,3}', '{1}', '{4}', '{1,4}'], ans: 1, explain: 'A-B = A에는 있지만 B에는 없는 원소 = {1}' },
+  { q: '|A|=40, |B|=30, |A∩B|=10일 때 |A∪B|는?', opts: ['60', '70', '80', '50'], ans: 0, explain: '|A∪B| = 40+30-10 = 60 (포함배제의 원리)' },
+  { q: '(A∪B)ᶜ와 동치인 집합은? (드모르간)', opts: ['Aᶜ∪Bᶜ', 'Aᶜ∩Bᶜ', 'A∩B', 'A∪B'], ans: 1, explain: '드모르간: (A∪B)ᶜ = Aᶜ∩Bᶜ' },
+];
+
+const QUIZ_NUMBER = [
+  { q: 'gcd(48, 18)을 유클리드 호제법으로 구하면?', opts: ['3', '6', '9', '12'], ans: 1, explain: '48=18×2+12 → 18=12×1+6 → 12=6×2+0 → gcd=6' },
+  { q: 'lcm(12, 8)은?', opts: ['4', '24', '48', '96'], ans: 1, explain: 'gcd(12,8)=4, lcm = 12×8/4 = 24' },
+  { q: '소수가 아닌 것은?', opts: ['97', '89', '91', '83'], ans: 2, explain: '91 = 7 × 13 (합성수). 나머지는 모두 소수입니다.' },
+  { q: '360의 약수의 개수는? (360 = 2³×3²×5)', opts: ['12', '24', '18', '36'], ans: 1, explain: '약수의 개수 = (3+1)(2+1)(1+1) = 4×3×2 = 24' },
+  { q: '에라토스테네스의 체로 소수 판별 시 n까지 체크할 때, 합성수의 가장 작은 소인수는?', opts: ['n보다 작다', '√n 이하이다', 'n/2 이하이다', '2만 될 수 있다'], ans: 1, explain: '합성수 n = a×b 일 때 min(a,b) ≤ √n 이므로 √n까지만 확인하면 됩니다.' },
+];
+
+const QUIZ_COMBO = [
+  { q: '서로 다른 5개 중 3개를 순서 있게 나열하는 경우의 수 P(5,3)은?', opts: ['10', '60', '20', '30'], ans: 1, explain: 'P(5,3) = 5×4×3 = 60' },
+  { q: '서로 다른 6개 중 2개를 순서 없이 선택하는 C(6,2)는?', opts: ['30', '12', '15', '18'], ans: 2, explain: 'C(6,2) = 6!/(2!×4!) = (6×5)/2 = 15' },
+  { q: '동전 3개를 던질 때 나올 수 있는 모든 경우의 수는?', opts: ['6', '8', '12', '9'], ans: 1, explain: '각 동전이 2가지, 독립이므로 곱의 법칙: 2³=8' },
+  { q: 'C(n,r) = C(n, n-r)인 이유는?', opts: ['순서가 없어서', '조합의 대칭성: 선택≡비선택', 'r이 작을 때만 적용', '계산 오류'], ans: 1, explain: 'r개 선택 = 나머지 (n-r)개를 제외하는 것과 동일합니다.' },
+  { q: 'C(7,3) + C(7,4) = ?', opts: ['C(8,3)', 'C(8,4)', 'C(7,4)', 'C(14,7)'], ans: 1, explain: '파스칼 점화식: C(n,r)+C(n,r+1)=C(n+1,r+1). 즉 C(7,3)+C(7,4)=C(8,4)' },
+];
+
+const QUIZ_GRAPH = [
+  { q: '정점 5개, 간선 7개인 그래프의 모든 차수의 합은?', opts: ['5', '7', '14', '12'], ans: 2, explain: '악수 정리: 모든 차수의 합 = 2×|E| = 2×7 = 14' },
+  { q: '오일러 회로가 존재하기 위한 조건은?', opts: ['홀수 차수 정점 = 2', '홀수 차수 정점 = 0', '모든 차수 = 2', '연결 그래프'], ans: 1, explain: '오일러 회로: 연결 그래프에서 홀수 차수 정점이 0개여야 합니다.' },
+  { q: 'n개의 정점을 가진 트리의 간선 수는?', opts: ['n', 'n-1', 'n+1', 'n(n-1)/2'], ans: 1, explain: '트리는 연결된 비순환 그래프로, n개 정점에 n-1개의 간선을 가집니다.' },
+  { q: '완전 그래프 K₅의 간선 수는?', opts: ['5', '10', '20', '15'], ans: 1, explain: 'Kₙ의 간선 수 = C(n,2) = n(n-1)/2 = 5×4/2 = 10' },
+  { q: '홀수 차수 정점이 3, 3, 2, 2, 2 인 그래프의 간선 수는?', opts: ['5', '6', '7', '8'], ans: 2, explain: '합 = 3+3+2+2+2=12, 간선 수 = 12/2 = 6' },
+];
+
+const QUIZ_BOOL = [
+  { q: 'A=1, B=0일 때 A NAND B의 결과는?', opts: ['0', '1', '2', '오류'], ans: 1, explain: 'NAND = NOT(A AND B) = NOT(1∧0) = NOT(0) = 1' },
+  { q: '드모르간 법칙: (A+B)̄ = ?', opts: ['Ā+B̄', 'Ā·B̄', 'A·B', 'A+B'], ans: 1, explain: '드모르간: ¬(A∨B) = ¬A∧¬B, 즉 Ā·B̄' },
+  { q: 'A⊕A (XOR 자기 자신)의 결과는?', opts: ['A', 'Ā', '0', '1'], ans: 2, explain: 'XOR는 같으면 0, 다르면 1. A⊕A = 0' },
+  { q: 'A+Ā = ? (부울 대수 보수 법칙)', opts: ['A', '0', '1', 'Ā'], ans: 2, explain: '보수 법칙: A+Ā = 1 (OR형 항진)' },
+  { q: 'A·(B+C) = ? (분배 법칙 전개)', opts: ['A·B+C', 'A·B+A·C', 'A+B·C', 'AB+BC'], ans: 1, explain: '부울 대수 분배 법칙: A·(B+C) = A·B + A·C' },
+];
+
+const QUIZ_RECUR = [
+  { q: '등차수열 2, 5, 8, 11, ... 의 10번째 항은?', opts: ['29', '32', '27', '30'], ans: 0, explain: 'a₁=2, d=3. a₁₀ = 2+(10-1)×3 = 2+27 = 29' },
+  { q: '피보나치 수열 F(0)=0,F(1)=1일 때 F(7)은?', opts: ['8', '13', '12', '21'], ans: 1, explain: 'F: 0,1,1,2,3,5,8,13. F(7)=13' },
+  { q: '1×6 보드를 1×1, 1×2 타일로 채우는 경우의 수는?', opts: ['8', '12', '13', '16'], ans: 2, explain: 'f(1)=1,f(2)=2,f(3)=3,f(4)=5,f(5)=8,f(6)=13. 피보나치 형태입니다.' },
+  { q: '등비수열 3, 6, 12, 24, ... 의 6번째 항은?', opts: ['48', '96', '64', '72'], ans: 1, explain: 'a₁=3, r=2. a₆=3×2⁵=3×32=96' },
+  { q: '카탈란 수 C₄의 값은?', opts: ['5', '14', '42', '9'], ans: 1, explain: 'C₀=1,C₁=1,C₂=2,C₃=5,C₄=14. C(8,4)/5 = 70/5 = 14' },
+];
+
+const QUIZ_FUNC = [
+  { q: '|A|=3, |B|=4일 때 전체 함수의 수는?', opts: ['12', '24', '64', '81'], ans: 2, explain: '함수의 수 = nᵐ = 4³ = 64' },
+  { q: '단사함수(일대일 함수)의 조건으로 옳은 것은?', opts: ['f(a)=f(b)이면 a=b', '공역=치역', '|A|=|B|', '역함수 필요'], ans: 0, explain: '단사함수: 서로 다른 입력이 서로 다른 출력을 가짐. f(a)=f(b) → a=b' },
+  { q: '전사함수(onto)가 되려면?', opts: ['|A|≤|B|', '|A|=|B|', '|A|≥|B|', '임의의 경우'], ans: 2, explain: '전사: B의 모든 원소가 적어도 한 번 대응되어야 함 → |A|≥|B|' },
+  { q: '동치관계의 조건 3가지는?', opts: ['반사+대칭+추이', '반사+반대칭+추이', '대칭+추이+완전', '반사+대칭+완전'], ans: 0, explain: '동치관계 = 반사적 + 대칭적 + 추이적 성질 모두 만족' },
+  { q: '|A|=4, |B|=4일 때 전단사함수(bijection)의 수는?', opts: ['16', '24', '256', '12'], ans: 1, explain: '전단사함수 = 전사 단사 = |A|=|B|=4일 때 P(4,4)=4!=24' },
+];
+
+/* ── 퀴즈 초기화 ── */
+buildQuiz('quizLogic', QUIZ_LOGIC);
+buildQuiz('quizSet', QUIZ_SET);
+buildQuiz('quizNumber', QUIZ_NUMBER);
+buildQuiz('quizCombo', QUIZ_COMBO);
+buildQuiz('quizGraph', QUIZ_GRAPH);
+buildQuiz('quizBool', QUIZ_BOOL);
+buildQuiz('quizRecur', QUIZ_RECUR);
+buildQuiz('quizFunc', QUIZ_FUNC);
+
+/* ── 초기 실행 ── */
+calcGCDLCM();
+calcCombo();
+genSeq();
+calcTile();
+calcFunctions();
+checkRelation();
+calcHandshake();
+checkEuler();
+calcPIE();
+calcSet('union');
+</script>
+</body>
+</html>
