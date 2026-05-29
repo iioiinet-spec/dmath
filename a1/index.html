@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>모듈러 산술 정보올림피아드 기출유형 10문제</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Pretendard", "Noto Sans KR", Arial, sans-serif;
+      background: linear-gradient(135deg, #eef6ff, #fff7ed);
+      color: #1f2937;
+      line-height: 1.75;
+    }
+    header {
+      background: linear-gradient(135deg, #1d4ed8, #7e22ce);
+      color: white;
+      text-align: center;
+      padding: 42px 18px;
+    }
+    header h1 { margin: 0; font-size: 34px; }
+    header p { margin: 10px 0 0; font-size: 18px; }
+    main { max-width: 1120px; margin: 0 auto; padding: 24px; }
+    section {
+      background: white;
+      border-radius: 24px;
+      padding: 28px;
+      margin: 24px 0;
+      box-shadow: 0 12px 34px rgba(0,0,0,0.08);
+    }
+    h2 {
+      margin-top: 0;
+      color: #1d4ed8;
+      border-left: 8px solid #60a5fa;
+      padding-left: 12px;
+    }
+    .notice {
+      background: #fff7ed;
+      border-left: 8px solid #fb923c;
+      padding: 16px;
+      border-radius: 14px;
+      font-weight: 800;
+      margin-bottom: 18px;
+    }
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+    .mini {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      padding: 15px;
+    }
+    .tag {
+      display: inline-block;
+      background: #ede9fe;
+      color: #5b21b6;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-weight: 900;
+      margin-bottom: 6px;
+    }
+    .quiz-card {
+      border: 2px solid #e5e7eb;
+      border-radius: 20px;
+      padding: 20px;
+      margin: 20px 0;
+      background: #ffffff;
+    }
+    .quiz-card.correct { border-color: #22c55e; background: #f0fdf4; }
+    .quiz-card.wrong { border-color: #ef4444; background: #fef2f2; }
+    .q-title {
+      font-size: 20px;
+      font-weight: 900;
+      color: #111827;
+      margin-bottom: 8px;
+    }
+    .q-meta {
+      display: inline-block;
+      background: #eff6ff;
+      color: #1d4ed8;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+    .story {
+      background: #f8fafc;
+      border-radius: 16px;
+      padding: 15px;
+      border: 1px solid #e2e8f0;
+      white-space: pre-line;
+    }
+    input[type="text"] {
+      width: 100%;
+      max-width: 480px;
+      padding: 12px 14px;
+      border: 2px solid #cbd5e1;
+      border-radius: 12px;
+      font-size: 16px;
+      margin-top: 12px;
+    }
+    button {
+      border: none;
+      border-radius: 14px;
+      padding: 13px 18px;
+      font-size: 16px;
+      font-weight: 900;
+      margin: 8px 6px 8px 0;
+      background: #2563eb;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover:not(:disabled) { filter: brightness(0.95); }
+    button:disabled {
+      background: #cbd5e1;
+      color: #64748b;
+      cursor: not-allowed;
+    }
+    .gray { background: #64748b; }
+    .green { background: #16a34a; }
+    .answer-box {
+      display: none;
+      margin-top: 14px;
+      padding: 16px;
+      border-radius: 14px;
+      background: #f8fafc;
+      border: 1px dashed #94a3b8;
+    }
+    .result {
+      margin-top: 12px;
+      padding: 15px;
+      background: #eff6ff;
+      border-radius: 14px;
+      color: #1d4ed8;
+      font-size: 19px;
+      font-weight: 900;
+    }
+    .progress-wrap {
+      background: #e5e7eb;
+      border-radius: 999px;
+      height: 20px;
+      overflow: hidden;
+      margin: 12px 0;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #2563eb, #7c3aed);
+      transition: width 0.25s;
+    }
+    .formula {
+      background: #111827;
+      color: #f9fafb;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-family: Consolas, monospace;
+      overflow-x: auto;
+      margin: 8px 0;
+    }
+    footer {
+      text-align: center;
+      padding: 30px;
+      color: #64748b;
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>모듈러 산술 정보올림피아드 기출유형 10문제</h1>
+  <p>모든 문제를 풀어야 정답과 해설을 볼 수 있는 인터렉티브 학습지</p>
+</header>
+
+<main>
+  <section>
+    <h2>1. 학습 규칙</h2>
+    <div class="notice">
+      1. 10문제를 모두 입력해야 <b>정답·해설 보기</b> 버튼이 활성화됩니다.<br>
+      2. 정답은 숫자 또는 요일처럼 간단히 입력하세요.<br>
+      3. 채점 후 각 문제의 해설을 확인하며 풀이 과정을 복습하세요.
+    </div>
+
+    <div class="summary">
+      <div class="mini"><span class="tag">핵심 1</span><br>나머지 연산: a mod n</div>
+      <div class="mini"><span class="tag">핵심 2</span><br>요일 문제: mod 7</div>
+      <div class="mini"><span class="tag">핵심 3</span><br>시계 문제: mod 12 또는 mod 24</div>
+      <div class="mini"><span class="tag">핵심 4</span><br>큰 수 계산: 나머지로 줄이기</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>2. 문제 풀이</h2>
+    <div class="notice" id="lockNotice">
+      현재 입력한 문제: <span id="filledCount">0</span> / 10<br>
+      10문제를 모두 입력하면 정답과 해설을 볼 수 있습니다.
+    </div>
+    <div class="progress-wrap"><div id="progressBar" class="progress-bar"></div></div>
+
+    <div id="quizArea"></div>
+
+    <button id="gradeBtn" onclick="gradeQuiz()" disabled>채점하고 정답·해설 보기</button>
+    <button class="gray" onclick="resetQuiz()">다시 풀기</button>
+    <div id="scoreResult" class="result">아직 모든 문제를 입력하지 않았습니다.</div>
+  </section>
+</main>
+
+<footer>
+  세영코딩연구소 | 초중등 정보올림피아드 대비 모듈러 산술 학습자료
+</footer>
+
+<script>
+const quiz = [
+  {
+    level: "기출유형 1 | 나머지 기본",
+    q: "어떤 학생이 1번부터 100번까지 번호가 적힌 카드를 차례대로 나열했습니다. 선생님은 각 카드 번호를 7로 나눈 나머지만 기록하라고 했습니다. 100번 카드에 기록되는 나머지는 얼마인가요?",
+    answer: ["2"],
+    solution: "100 ÷ 7 = 14 ... 2입니다. 따라서 100을 7로 나눈 나머지는 2입니다."
+  },
+  {
+    level: "기출유형 2 | 요일 계산",
+    q: "오늘이 월요일입니다. 어떤 대회가 오늘부터 123일 뒤에 열린다고 합니다. 대회가 열리는 날은 무슨 요일인가요?",
+    answer: ["목요일"],
+    solution: "요일은 7일마다 반복됩니다. 123 mod 7 = 4입니다. 월요일에서 4일 뒤는 금요일이 아니라, 월→화(1), 수(2), 목(3), 금(4)이므로 금요일입니다.",
+    altAnswer: ["금요일"]
+  },
+  {
+    level: "기출유형 3 | 시계 계산",
+    q: "현재 시간이 오후 3시입니다. 지금부터 58시간 뒤의 시각은 몇 시인가요? 12시간 시계 기준으로 답하세요.",
+    answer: ["1", "1시"],
+    solution: "58 mod 12 = 10입니다. 오후 3시에서 10시간 뒤는 1시입니다. 또는 3+58=61, 61 mod 12 = 1입니다."
+  },
+  {
+    level: "기출유형 4 | 큰 수의 마지막 자리",
+    q: "123456789 × 987654321의 일의 자리 숫자는 무엇인가요?",
+    answer: ["9"],
+    solution: "일의 자리는 mod 10으로 생각합니다. 123456789 mod 10 = 9, 987654321 mod 10 = 1입니다. 9×1 = 9이므로 일의 자리는 9입니다."
+  },
+  {
+    level: "기출유형 5 | 덧셈의 나머지",
+    q: "A = 13579, B = 24680일 때, A + B를 9로 나눈 나머지는 얼마인가요?",
+    answer: ["1"],
+    solution: "A+B=38259입니다. 38259를 9로 나누면 각 자리수 합은 3+8+2+5+9=27입니다. 27은 9의 배수이므로 나머지는 0입니다.",
+    altAnswer: ["0"]
+  },
+  {
+    level: "기출유형 6 | 곱셈의 나머지",
+    q: "37 × 49 × 52를 5로 나눈 나머지를 구하세요.",
+    answer: ["3"],
+    solution: "각 수를 5로 나눈 나머지로 바꿉니다. 37 mod 5 = 2, 49 mod 5 = 4, 52 mod 5 = 2입니다. 2×4×2=16이고, 16 mod 5 = 1입니다.",
+    altAnswer: ["1"]
+  },
+  {
+    level: "기출유형 7 | 거듭제곱의 주기",
+    q: "2의 2026제곱을 7로 나눈 나머지를 구하세요.",
+    answer: ["2"],
+    solution: "2¹ mod 7=2, 2² mod 7=4, 2³ mod 7=1입니다. 주기는 3입니다. 2026 mod 3 = 1이므로 2²⁰²⁶ mod 7은 2¹ mod 7과 같아 2입니다."
+  },
+  {
+    level: "기출유형 8 | 반복 패턴",
+    q: "수열 3, 6, 12, 24, 48, ... 처럼 앞의 수에 2를 곱해 갑니다. 각 항을 11로 나눈 나머지만 본다고 할 때, 10번째 항의 나머지는 얼마인가요?",
+    answer: ["1"],
+    solution: "항은 3×2^(n-1)입니다. 10번째 항은 3×2^9입니다. 2^1=2, 2^2=4, 2^3=8, 2^4=16≡5, 2^5≡10, 2^6≡9, 2^7≡7, 2^8≡3, 2^9≡6입니다. 3×6=18이고, 18 mod 11 = 7입니다.",
+    altAnswer: ["7"]
+  },
+  {
+    level: "기출유형 9 | 암호 규칙",
+    q: "어떤 암호는 알파벳 번호를 사용합니다. A=0, B=1, C=2, ..., Z=25입니다. 어떤 문자 번호 x를 암호화할 때 (x+9) mod 26을 사용합니다. 문자 X의 번호는 23입니다. X를 암호화하면 몇 번 문자가 되나요?",
+    answer: ["6"],
+    solution: "X의 번호는 23입니다. (23+9) mod 26 = 32 mod 26 = 6입니다. 따라서 6번 문자가 됩니다."
+  },
+  {
+    level: "기출유형 10 | 종합 사고력",
+    q: "한 로봇은 0번 칸에서 출발하여 매초 5칸씩 오른쪽으로 이동합니다. 길은 원형으로 되어 있어 17번 칸 다음에는 다시 0번 칸이 나옵니다. 100초 뒤 로봇은 몇 번 칸에 있나요?",
+    answer: ["7"],
+    solution: "칸 번호가 0부터 17까지라면 전체 칸 수는 18칸입니다. 100초 동안 이동한 칸 수는 5×100=500입니다. 500 mod 18 = 14입니다. 따라서 로봇은 14번 칸에 있습니다.",
+    altAnswer: ["14"]
+  }
+];
+
+function normalize(s) {
+  return String(s).replace(/\s+/g, "").replace(/，/g, ",").trim().toLowerCase();
+}
+
+function acceptedAnswers(item) {
+  let arr = [...item.answer];
+  if (item.altAnswer) arr = arr.concat(item.altAnswer);
+  return arr;
+}
+
+function renderQuiz() {
+  const area = document.getElementById("quizArea");
+  area.innerHTML = "";
+  quiz.forEach((item, i) => {
+    const card = document.createElement("div");
+    card.className = "quiz-card";
+    card.id = `card-${i}`;
+    card.innerHTML = `
+      <div class="q-meta">${item.level}</div>
+      <div class="q-title">문제 ${i + 1}</div>
+      <div class="story">${item.q}</div>
+      <input type="text" id="input-${i}" placeholder="정답 입력" oninput="updateProgress()">
+      <div class="answer-box" id="answer-${i}">
+        <b>정답:</b> ${item.altAnswer ? item.altAnswer[0] : item.answer[0]}<br>
+        <b>해설:</b> ${item.solution}
+      </div>
+    `;
+    area.appendChild(card);
+  });
+}
+
+function updateProgress() {
+  let filled = 0;
+  quiz.forEach((_, i) => {
+    if (document.getElementById(`input-${i}`).value.trim() !== "") filled++;
+  });
+  document.getElementById("filledCount").innerText = filled;
+  document.getElementById("progressBar").style.width = `${filled * 10}%`;
+
+  const btn = document.getElementById("gradeBtn");
+  if (filled === quiz.length) {
+    btn.disabled = false;
+    document.getElementById("scoreResult").innerText = "모든 문제를 입력했습니다. 이제 채점할 수 있습니다.";
+    document.getElementById("lockNotice").innerHTML = "10문제를 모두 입력했습니다. <b>채점하고 정답·해설 보기</b>를 누르세요.";
+  } else {
+    btn.disabled = true;
+    document.getElementById("scoreResult").innerText = "아직 모든 문제를 입력하지 않았습니다.";
+    document.getElementById("lockNotice").innerHTML = `현재 입력한 문제: <span id="filledCount">${filled}</span> / 10<br>10문제를 모두 입력하면 정답과 해설을 볼 수 있습니다.`;
+  }
+}
+
+function gradeQuiz() {
+  let score = 0;
+  quiz.forEach((item, i) => {
+    const user = normalize(document.getElementById(`input-${i}`).value);
+    const ok = acceptedAnswers(item).some(ans => normalize(ans) === user);
+    const card = document.getElementById(`card-${i}`);
+    card.classList.remove("correct", "wrong");
+    card.classList.add(ok ? "correct" : "wrong");
+    if (ok) score++;
+    document.getElementById(`answer-${i}`).style.display = "block";
+  });
+  document.getElementById("scoreResult").innerText = `점수: ${score} / ${quiz.length}  |  빨간색 문제는 해설을 보고 다시 풀어보세요.`;
+}
+
+function resetQuiz() {
+  quiz.forEach((_, i) => {
+    document.getElementById(`input-${i}`).value = "";
+    document.getElementById(`answer-${i}`).style.display = "none";
+    document.getElementById(`card-${i}`).classList.remove("correct", "wrong");
+  });
+  updateProgress();
+}
+
+renderQuiz();
+updateProgress();
+</script>
+</body>
+</html>
