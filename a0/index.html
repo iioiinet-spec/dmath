@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>모듈러 산술 인터렉티브 강의자료</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Pretendard", "Noto Sans KR", Arial, sans-serif;
+      background: linear-gradient(135deg, #eef6ff, #fff7ed);
+      color: #1f2937;
+      line-height: 1.75;
+    }
+    header {
+      background: linear-gradient(135deg, #2563eb, #9333ea);
+      color: white;
+      text-align: center;
+      padding: 44px 20px;
+    }
+    header h1 { margin: 0; font-size: 36px; }
+    header p { margin: 12px 0 0; font-size: 18px; }
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: white;
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    nav a {
+      color: #2563eb;
+      text-decoration: none;
+      font-weight: 800;
+      padding: 8px 13px;
+      border-radius: 999px;
+      background: #eff6ff;
+    }
+    main { max-width: 1120px; margin: 0 auto; padding: 24px; }
+    section {
+      background: white;
+      border-radius: 24px;
+      padding: 28px;
+      margin: 24px 0;
+      box-shadow: 0 12px 34px rgba(0,0,0,0.08);
+    }
+    h2 {
+      margin-top: 0;
+      color: #1d4ed8;
+      border-left: 8px solid #60a5fa;
+      padding-left: 12px;
+    }
+    h3 { color: #7e22ce; }
+    .box {
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 18px;
+      padding: 18px;
+      margin: 16px 0;
+    }
+    .important {
+      background: #fff7ed;
+      border-left: 8px solid #fb923c;
+      padding: 15px;
+      border-radius: 14px;
+      font-weight: 800;
+    }
+    .formula {
+      background: #111827;
+      color: #f9fafb;
+      padding: 14px 16px;
+      border-radius: 14px;
+      overflow-x: auto;
+      font-size: 17px;
+      font-family: Consolas, monospace;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 14px;
+    }
+    .card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      padding: 16px;
+    }
+    .tag {
+      display: inline-block;
+      background: #ede9fe;
+      color: #5b21b6;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-weight: 900;
+      margin-bottom: 6px;
+    }
+    input, select {
+      width: 100%;
+      max-width: 320px;
+      padding: 11px 12px;
+      border: 2px solid #cbd5e1;
+      border-radius: 12px;
+      font-size: 16px;
+      margin: 6px 5px 8px 0;
+    }
+    button {
+      border: none;
+      border-radius: 14px;
+      padding: 12px 18px;
+      font-size: 16px;
+      font-weight: 900;
+      margin: 8px 6px 8px 0;
+      background: #2563eb;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover { filter: brightness(0.95); }
+    .gray { background: #64748b; }
+    .green { background: #16a34a; }
+    .result {
+      margin-top: 10px;
+      padding: 14px;
+      background: #eff6ff;
+      border-radius: 14px;
+      font-weight: 900;
+      color: #1d4ed8;
+    }
+    .quiz-card {
+      border: 2px solid #e5e7eb;
+      border-radius: 20px;
+      padding: 18px;
+      margin: 16px 0;
+      background: white;
+    }
+    .quiz-card.correct { border-color: #22c55e; background: #f0fdf4; }
+    .quiz-card.wrong { border-color: #ef4444; background: #fef2f2; }
+    .question-title { font-size: 18px; font-weight: 900; margin-bottom: 8px; }
+    .answer-box {
+      display: none;
+      margin-top: 12px;
+      padding: 14px;
+      border-radius: 14px;
+      background: #f8fafc;
+      border: 1px dashed #94a3b8;
+    }
+    .clock {
+      width: 240px;
+      height: 240px;
+      border: 10px solid #2563eb;
+      border-radius: 50%;
+      margin: 20px auto;
+      position: relative;
+      background: #ffffff;
+    }
+    .clock .num {
+      position: absolute;
+      font-weight: 900;
+      color: #1e3a8a;
+      transform: translate(-50%, -50%);
+    }
+    .hand {
+      position: absolute;
+      width: 5px;
+      height: 85px;
+      background: #ef4444;
+      left: 50%;
+      top: 50%;
+      transform-origin: bottom center;
+      border-radius: 999px;
+    }
+    footer {
+      text-align: center;
+      padding: 32px;
+      color: #64748b;
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>모듈러 산술 인터렉티브 강의자료</h1>
+  <p>나머지, 시계 계산, 요일 계산, 정보올림피아드 기초 정수론</p>
+</header>
+
+<nav>
+  <a href="#concept">개념</a>
+  <a href="#rules">계산법</a>
+  <a href="#tools">실습도구</a>
+  <a href="#examples">예제</a>
+  <a href="#quiz">문제풀이</a>
+</nav>
+
+<main>
+<section id="concept">
+  <h2>1. 모듈러 산술이란?</h2>
+  <div class="box">
+    <h3>1. 핵심 개념</h3>
+    <p>모듈러 산술은 어떤 수를 일정한 수로 나누었을 때의 <b>나머지</b>를 이용하는 계산입니다.</p>
+    <p class="important">쉽게 말하면, “시계처럼 일정한 수가 되면 다시 처음으로 돌아가는 계산”입니다.</p>
+  </div>
+
+  <div class="box">
+    <h3>2. 수학 기호</h3>
+    <p>17을 5로 나누면 몫은 3, 나머지는 2입니다.</p>
+    <div class="formula">17 ≡ 2 (mod 5)</div>
+    <p>읽는 방법: <b>17은 5로 나눈 나머지가 2이다.</b></p>
+  </div>
+
+  <div class="box">
+    <h3>3. 같은 나머지를 가진 수</h3>
+    <p>17, 22, 27, 32를 모두 5로 나누면 나머지가 2입니다.</p>
+    <div class="formula">17 ≡ 22 ≡ 27 ≡ 32 (mod 5)</div>
+  </div>
+</section>
+
+<section id="rules">
+  <h2>2. 모듈러 산술의 계산법</h2>
+  <div class="grid">
+    <div class="card">
+      <span class="tag">덧셈</span>
+      <div class="formula">(a + b) mod n</div>
+      <p>먼저 더한 뒤 나머지를 구해도 되고, 각각 나머지를 구한 뒤 더해도 됩니다.</p>
+      <p>예: (8+9) mod 5 = 17 mod 5 = 2</p>
+    </div>
+    <div class="card">
+      <span class="tag">뺄셈</span>
+      <div class="formula">(a - b) mod n</div>
+      <p>음수가 나오면 n을 더해서 양수 나머지로 바꿉니다.</p>
+      <p>예: (3-5) mod 7 = -2 mod 7 = 5</p>
+    </div>
+    <div class="card">
+      <span class="tag">곱셈</span>
+      <div class="formula">(a × b) mod n</div>
+      <p>큰 수를 곱하기 전에 각각 나머지로 줄이면 계산이 쉬워집니다.</p>
+      <p>예: 13×17 mod 5 = 3×2 mod 5 = 1</p>
+    </div>
+    <div class="card">
+      <span class="tag">거듭제곱</span>
+      <div class="formula">a^k mod n</div>
+      <p>나머지가 반복되는 주기를 찾으면 빠르게 계산할 수 있습니다.</p>
+      <p>예: 2³ mod 7 = 1이므로 주기를 이용합니다.</p>
+    </div>
+  </div>
+</section>
+
+<section id="tools">
+  <h2>3. 인터렉티브 실습 도구</h2>
+
+  <div class="box">
+    <h3>1. 나머지 계산기</h3>
+    <p>두 수를 입력하고 나머지를 계산해 보세요.</p>
+    <input id="numA" type="number" value="17"> ÷
+    <input id="numB" type="number" value="5">
+    <button onclick="calcMod()">나머지 계산</button>
+    <div id="modResult" class="result">17 ÷ 5의 나머지는 2입니다.</div>
+  </div>
+
+  <div class="box">
+    <h3>2. 시계 계산기</h3>
+    <p>현재 시각과 지난 시간을 입력하면 몇 시가 되는지 계산합니다.</p>
+    <input id="nowHour" type="number" value="9" min="1" max="12"> 시에서
+    <input id="plusHour" type="number" value="8"> 시간 뒤
+    <button onclick="calcClock()">시계 계산</button>
+    <div class="clock" id="clock">
+      <div class="hand" id="hand"></div>
+    </div>
+    <div id="clockResult" class="result">9시에서 8시간 뒤는 5시입니다.</div>
+  </div>
+
+  <div class="box">
+    <h3>3. 요일 계산기</h3>
+    <p>오늘 요일에서 며칠 뒤의 요일을 계산합니다.</p>
+    <select id="daySelect">
+      <option value="0">월요일</option>
+      <option value="1">화요일</option>
+      <option value="2">수요일</option>
+      <option value="3">목요일</option>
+      <option value="4">금요일</option>
+      <option value="5">토요일</option>
+      <option value="6">일요일</option>
+    </select>
+    <input id="afterDays" type="number" value="100"> 일 뒤
+    <button onclick="calcDay()">요일 계산</button>
+    <div id="dayResult" class="result">월요일에서 100일 뒤는 수요일입니다.</div>
+  </div>
+</section>
+
+<section id="examples">
+  <h2>4. 강의용 예제</h2>
+  <div class="box">
+    <h3>예제 1. 23 mod 7</h3>
+    <p>23 ÷ 7 = 3 ... 2</p>
+    <p><b>정답: 2</b></p>
+  </div>
+  <div class="box">
+    <h3>예제 2. 오늘이 화요일일 때 45일 뒤</h3>
+    <p>45 mod 7 = 3</p>
+    <p>화요일에서 3일 뒤는 금요일입니다.</p>
+    <p><b>정답: 금요일</b></p>
+  </div>
+  <div class="box">
+    <h3>예제 3. 2¹⁰ mod 7</h3>
+    <p>2¹ = 2, 2² = 4, 2³ = 8 ≡ 1 (mod 7)</p>
+    <p>3번마다 나머지가 반복됩니다.</p>
+    <p>10을 3으로 나누면 나머지가 1이므로 2¹⁰ mod 7 = 2입니다.</p>
+    <p><b>정답: 2</b></p>
+  </div>
+</section>
+
+<section id="quiz">
+  <h2>5. 모듈러 산술 문제풀이</h2>
+  <p class="important">정답을 입력한 뒤 채점하기를 누르세요. 오답이어도 정답과 해설이 표시됩니다.</p>
+  <div id="quizArea"></div>
+  <button onclick="gradeQuiz()">채점하기</button>
+  <button class="gray" onclick="showAnswers()">정답·해설 모두 보기</button>
+  <button class="green" onclick="resetQuiz()">다시 풀기</button>
+  <div id="scoreResult" class="result">아직 채점하지 않았습니다.</div>
+</section>
+</main>
+
+<footer>
+  모듈러 산술 인터렉티브 강의자료 | 세영코딩연구소 수업용
+</footer>
+
+<script>
+const days = ["월요일", "화요일", "수요일", "목요일", "금요일", "토요일", "일요일"];
+
+function positiveMod(a, b) {
+  return ((a % b) + b) % b;
+}
+
+function calcMod() {
+  const a = Number(document.getElementById("numA").value);
+  const b = Number(document.getElementById("numB").value);
+  if (b === 0) {
+    document.getElementById("modResult").innerText = "0으로 나눌 수 없습니다.";
+    return;
+  }
+  const r = positiveMod(a, b);
+  document.getElementById("modResult").innerText = `${a} ÷ ${b}의 나머지는 ${r}입니다. 즉, ${a} ≡ ${r} (mod ${b})입니다.`;
+}
+
+function drawClockNums() {
+  const clock = document.getElementById("clock");
+  for (let i = 1; i <= 12; i++) {
+    const num = document.createElement("div");
+    num.className = "num";
+    num.innerText = i;
+    const angle = (i * 30 - 90) * Math.PI / 180;
+    const x = 120 + Math.cos(angle) * 88;
+    const y = 120 + Math.sin(angle) * 88;
+    num.style.left = x + "px";
+    num.style.top = y + "px";
+    clock.appendChild(num);
+  }
+}
+
+function calcClock() {
+  const now = Number(document.getElementById("nowHour").value);
+  const plus = Number(document.getElementById("plusHour").value);
+  let result = positiveMod(now + plus, 12);
+  if (result === 0) result = 12;
+  document.getElementById("clockResult").innerText = `${now}시에서 ${plus}시간 뒤는 ${result}시입니다.`;
+  document.getElementById("hand").style.transform = `translate(-50%, -100%) rotate(${result * 30}deg)`;
+}
+
+function calcDay() {
+  const start = Number(document.getElementById("daySelect").value);
+  const after = Number(document.getElementById("afterDays").value);
+  const result = positiveMod(start + after, 7);
+  document.getElementById("dayResult").innerText = `${days[start]}에서 ${after}일 뒤는 ${days[result]}입니다.`;
+}
+
+const quiz = [
+  {q:"17 mod 5의 값을 구하세요.", a:["2"], e:"17 ÷ 5 = 3 ... 2이므로 나머지는 2입니다."},
+  {q:"28 mod 6의 값을 구하세요.", a:["4"], e:"28 ÷ 6 = 4 ... 4이므로 나머지는 4입니다."},
+  {q:"9시에서 7시간 뒤는 몇 시인가요?", a:["4","4시"], e:"9+7=16이고, 16 mod 12 = 4입니다."},
+  {q:"오늘이 월요일일 때 10일 뒤는 무슨 요일인가요?", a:["목요일"], e:"10 mod 7 = 3입니다. 월요일에서 3일 뒤는 목요일입니다."},
+  {q:"(8 + 9) mod 5의 값을 구하세요.", a:["2"], e:"8+9=17이고, 17 mod 5 = 2입니다."},
+  {q:"(3 - 5) mod 7의 값을 구하세요.", a:["5"], e:"3-5=-2이고, -2+7=5이므로 나머지는 5입니다."},
+  {q:"13 × 17 mod 5의 값을 구하세요.", a:["1"], e:"13 mod 5 = 3, 17 mod 5 = 2, 3×2=6, 6 mod 5 = 1입니다."},
+  {q:"2¹⁰ mod 7의 값을 구하세요.", a:["2"], e:"2³ ≡ 1 (mod 7)이므로 주기가 3입니다. 10 mod 3 = 1이라서 답은 2입니다."},
+  {q:"123456789 mod 100의 값을 구하세요.", a:["89"], e:"100으로 나눈 나머지는 마지막 두 자리입니다. 따라서 89입니다."},
+  {q:"2, 3, 5로 모두 나누어떨어지는 수는 몇의 배수인가요?", a:["30","30의 배수"], e:"2×3×5=30이므로 30의 배수입니다."},
+  {q:"오늘이 금요일일 때 100일 뒤는 무슨 요일인가요?", a:["일요일"], e:"100 mod 7 = 2입니다. 금요일에서 2일 뒤는 일요일입니다."},
+  {q:"(25 + 38) mod 10의 값을 구하세요.", a:["3"], e:"25+38=63이고, 63 mod 10 = 3입니다."},
+  {q:"(50 - 72) mod 9의 값을 구하세요.", a:["5"], e:"50-72=-22입니다. -22에 9를 세 번 더하면 5입니다."},
+  {q:"7² mod 6의 값을 구하세요.", a:["1"], e:"7²=49이고, 49 mod 6 = 1입니다."},
+  {q:"11시에서 25시간 뒤는 몇 시인가요?", a:["12","12시"], e:"11+25=36이고, 36 mod 12 = 0입니다. 시계에서는 0을 12시로 봅니다."}
+];
+
+function normalize(s) {
+  return String(s).replace(/\s+/g, "").replace(/，/g, ",").trim().toLowerCase();
+}
+
+function renderQuiz() {
+  const area = document.getElementById("quizArea");
+  area.innerHTML = "";
+  quiz.forEach((item, i) => {
+    const card = document.createElement("div");
+    card.className = "quiz-card";
+    card.id = `card-${i}`;
+    card.innerHTML = `
+      <div class="question-title">문제 ${i+1}. ${item.q}</div>
+      <input id="input-${i}" type="text" placeholder="정답을 입력하세요">
+      <div class="answer-box" id="answer-${i}">
+        <b>정답:</b> ${item.a[0]}<br>
+        <b>해설:</b> ${item.e}
+      </div>
+    `;
+    area.appendChild(card);
+  });
+}
+
+function gradeQuiz() {
+  let score = 0;
+  quiz.forEach((item, i) => {
+    const user = normalize(document.getElementById(`input-${i}`).value);
+    const ok = item.a.some(x => normalize(x) === user);
+    const card = document.getElementById(`card-${i}`);
+    card.classList.remove("correct", "wrong");
+    card.classList.add(ok ? "correct" : "wrong");
+    if (ok) score++;
+    document.getElementById(`answer-${i}`).style.display = "block";
+  });
+  document.getElementById("scoreResult").innerText = `점수: ${score} / ${quiz.length}`;
+}
+
+function showAnswers() {
+  quiz.forEach((_, i) => {
+    document.getElementById(`answer-${i}`).style.display = "block";
+  });
+}
+
+function resetQuiz() {
+  quiz.forEach((_, i) => {
+    document.getElementById(`input-${i}`).value = "";
+    document.getElementById(`answer-${i}`).style.display = "none";
+    document.getElementById(`card-${i}`).classList.remove("correct", "wrong");
+  });
+  document.getElementById("scoreResult").innerText = "아직 채점하지 않았습니다.";
+}
+
+drawClockNums();
+calcClock();
+calcDay();
+renderQuiz();
+</script>
+</body>
+</html>
