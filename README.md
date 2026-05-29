@@ -16,6 +16,7 @@ all   :   이산수학 전체 리뷰
 
 ppt  이산수학_1장_수의표현과연산
 http://iioiinet-spec.github.io/dmath/free1/ppt
+a0  :  모듈러 산술
 
 01 이산수학_1장_문제
 http://iioiinet-spec.github.io/dmath/free1/01
