@@ -47,5 +47,5 @@ gi   그래프 학습
  b1_Chapter1_Numbers_and_Patterns  : 기본
  b2_Chapter1_Numbers_and_Patterns_Advanced  : 심화
  b3_Chapter1_Sequences_in_C_and_Python  : 코딩
-
+ bt  1장 수의 규칙  : 개념과 문제풀이 개념정리
 
