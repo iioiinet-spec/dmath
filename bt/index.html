@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>사고력수학 초등부 1장 - 출력과 반복, 수열 인터랙티브 문제</title>
+<style>
+  :root{
+    --bg:#f7fbff;
+    --card:#ffffff;
+    --ink:#172033;
+    --muted:#526070;
+    --brand:#2457d6;
+    --brand2:#00a676;
+    --warn:#f59e0b;
+    --bad:#dc2626;
+    --line:#d7e3f5;
+    --soft:#eef6ff;
+    --goodbg:#eafff3;
+    --badbg:#fff1f1;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:"Malgun Gothic", "Apple SD Gothic Neo", Arial, sans-serif;
+    background:linear-gradient(180deg,#eaf5ff 0%, var(--bg) 260px);
+    color:var(--ink);
+    font-size:20px;
+    line-height:1.75;
+  }
+  header{
+    padding:36px 20px 24px;
+    text-align:center;
+    background:linear-gradient(135deg,#dbeafe,#f0fdf4);
+    border-bottom:3px solid var(--line);
+  }
+  header h1{margin:0 0 10px;font-size:38px;line-height:1.25;color:#12306b}
+  header p{margin:6px auto;max-width:920px;color:#314256;font-size:21px}
+  .wrap{max-width:1120px;margin:0 auto;padding:22px 18px 60px}
+  .nav{
+    position:sticky;top:0;z-index:10;
+    background:rgba(247,251,255,.96);backdrop-filter: blur(8px);
+    padding:12px;border-bottom:2px solid var(--line);
+    display:flex;gap:10px;flex-wrap:wrap;justify-content:center;
+  }
+  .nav a,.btn{
+    border:0;border-radius:14px;background:var(--brand);color:white;
+    padding:10px 15px;text-decoration:none;font-size:18px;font-weight:700;cursor:pointer;
+    box-shadow:0 4px 10px rgba(36,87,214,.18);
+  }
+  .nav a:nth-child(even){background:#0f766e}
+  .section{
+    background:var(--card);border:2px solid var(--line);border-radius:22px;
+    padding:24px;margin:22px 0;box-shadow:0 8px 24px rgba(25,70,140,.08)
+  }
+  h2{font-size:31px;margin:0 0 12px;color:#12306b;border-left:10px solid var(--brand);padding-left:14px}
+  h3{font-size:25px;margin:24px 0 8px;color:#0f5132}
+  .note{background:var(--soft);border:2px solid #bfdbfe;border-radius:18px;padding:16px 18px;margin:14px 0}
+  .rule-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:14px}
+  .rule{background:#fff;border:2px solid var(--line);border-radius:18px;padding:15px}
+  .rule b{display:block;color:var(--brand);font-size:22px;margin-bottom:6px}
+  pre{
+    background:#111827;color:#f8fafc;border-radius:16px;padding:18px;overflow:auto;
+    font-size:22px;line-height:1.45;border:4px solid #334155;
+  }
+  .quiz-card{
+    border:2px solid var(--line);border-radius:20px;background:#fff;padding:18px;margin:18px 0;
+  }
+  .quiz-title{font-size:23px;font-weight:800;color:#1e3a8a;margin-bottom:10px}
+  .quiz-body{font-size:21px;margin:8px 0 14px}
+  .answer-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  input[type="text"]{
+    width:220px;max-width:100%;font-size:22px;padding:12px 14px;border:3px solid #b8c7dc;border-radius:14px;
+    background:#fbfdff;color:#111827;font-weight:700;
+  }
+  input[type="text"]:focus{outline:4px solid #bfdbfe;border-color:var(--brand)}
+  .small-btn{background:#334155;color:#fff;border:0;border-radius:12px;padding:10px 14px;font-size:17px;font-weight:700;cursor:pointer}
+  .feedback{margin-top:12px;font-weight:800;display:none;padding:10px 12px;border-radius:12px}
+  .ok{background:var(--goodbg);color:#047857;border:2px solid #86efac}
+  .no{background:var(--badbg);color:#b91c1c;border:2px solid #fecaca}
+  .solution{display:none;margin-top:12px;background:#fffbeb;border:2px solid #fcd34d;border-radius:16px;padding:14px;color:#422006}
+  .progress{
+    background:#fff;border:2px solid var(--line);border-radius:18px;padding:16px;margin:18px 0;
+    display:flex;gap:12px;flex-wrap:wrap;justify-content:space-between;align-items:center
+  }
+  .bar{height:20px;background:#e5e7eb;border-radius:999px;overflow:hidden;flex:1;min-width:220px;border:1px solid #cbd5e1}
+  .fill{height:100%;width:0;background:linear-gradient(90deg,var(--brand),var(--brand2));transition:.25s}
+  .score{font-size:24px;font-weight:900;color:#12306b}
+  .actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:22px 0}
+  .btn.green{background:#059669}.btn.orange{background:#d97706}.btn.gray{background:#475569}.btn.red{background:#dc2626}
+  .locked{opacity:.72}
+  .badge{display:inline-block;background:#e0f2fe;color:#075985;border:1px solid #7dd3fc;border-radius:999px;padding:2px 10px;font-size:16px;font-weight:800;margin-left:6px}
+  footer{text-align:center;color:#526070;padding:30px;font-size:17px}
+  @media print{
+    .nav,.actions,.small-btn,.progress{display:none!important}
+    body{background:white;font-size:16px}.section{box-shadow:none;break-inside:avoid}pre{font-size:15px}
+    input{border:1px solid #777}.solution,.feedback{display:block!important}
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>사고력수학 초등부 1장</h1>
+  <p><b>출력과 반복, 등차와 등비, 계차수열, 도형수, 피보나치</b></p>
+  <p>초등학교 4~6학년용 인터랙티브 학습지</p>
+</header>
+<nav class="nav">
+  <a href="#concept">개념정리</a>
+  <a href="#practice">문제풀기</a>
+  <a href="#summary">단원정리</a>
+</nav>
+<main class="wrap">
+  <section id="concept" class="section">
+    <h2>1. 개념정리</h2>
+    <div class="note">
+      <b>공부 방법</b><br>
+      1. 먼저 숫자 사이의 차이를 봅니다.<br>
+      2. 차이가 같으면 등차수열입니다.<br>
+      3. 곱해지는 수가 같으면 등비수열입니다.<br>
+      4. 차이에도 규칙이 있으면 계차수열입니다.<br>
+      5. 점 모양으로 보이면 도형수입니다.<br>
+      6. 앞의 두 수를 더해 다음 수가 되면 피보나치 수열입니다.
+    </div>
+    <div class="rule-grid">
+      <div class="rule"><b>출력</b>결과를 화면이나 종이에 보여주는 것입니다.<br>예: <code>*****</code></div>
+      <div class="rule"><b>반복</b>같은 일을 여러 번 하는 것입니다.<br>예: 별을 5번 쓰기</div>
+      <div class="rule"><b>등차수열</b>같은 수를 계속 더하거나 빼는 수열입니다.<br>예: 3, 6, 9, 12</div>
+      <div class="rule"><b>등비수열</b>같은 수를 계속 곱하거나 나누는 수열입니다.<br>예: 2, 4, 8, 16</div>
+      <div class="rule"><b>계차수열</b>숫자 사이의 차이를 보면 규칙이 보이는 수열입니다.<br>예: 1, 3, 6, 10</div>
+      <div class="rule"><b>도형수</b>점을 삼각형, 사각형 모양으로 놓아 만든 수입니다.<br>예: 1, 3, 6, 10</div>
+      <div class="rule"><b>피보나치</b>앞의 두 수를 더해 다음 수를 만듭니다.<br>예: 1, 1, 2, 3, 5</div>
+    </div>
+    <h3>계단 모양 출력</h3>
+    <pre>*
+**
+***
+****
+*****</pre>
+    <p>위 모양은 1개, 2개, 3개, 4개, 5개씩 별이 늘어납니다. 그래서 <b>반복</b>과 <b>삼각수</b>를 함께 배울 수 있습니다.</p>
+  </section>
+
+  <section id="practice" class="section">
+    <h2>2. 문제풀기 <span class="badge">30문제</span></h2>
+    <div class="progress">
+      <div class="score" id="scoreText">푼 문제: 0 / 30</div>
+      <div class="bar"><div class="fill" id="fill"></div></div>
+    </div>
+    <div class="note">정답을 입력한 뒤 <b>개별 확인</b>을 누르면 바로 확인할 수 있습니다. 전체를 풀고 <b>전체 채점</b>을 누르면 점수가 나옵니다.</div>
+    <div id="quizBox"></div>
+    <div class="actions">
+      <button class="btn green" onclick="checkAll()">전체 채점</button>
+      <button class="btn orange" onclick="showAllSolutions()">정답과 해설 모두 보기</button>
+      <button class="btn gray" onclick="hideAllSolutions()">해설 숨기기</button>
+      <button class="btn red" onclick="resetAll()">다시 풀기</button>
+    </div>
+  </section>
+
+  <section id="summary" class="section">
+    <h2>3. 단원정리</h2>
+    <p>1. 출력은 결과를 보여주는 것입니다.</p>
+    <p>2. 반복은 같은 일을 여러 번 하는 것입니다.</p>
+    <p>3. 등차수열은 같은 수를 계속 더하거나 빼는 수열입니다.</p>
+    <p>4. 등비수열은 같은 수를 계속 곱하거나 나누는 수열입니다.</p>
+    <p>5. 계차수열은 차이를 살펴보면 규칙을 찾을 수 있습니다.</p>
+    <p>6. 삼각수는 1부터 차례대로 더한 수입니다.</p>
+    <p>7. 사각수는 같은 수를 두 번 곱한 수입니다.</p>
+    <p>8. 피보나치 수열은 앞의 두 수를 더해서 다음 수를 만듭니다.</p>
+  </section>
+</main>
+<footer>세영코딩연구소 사고력수학 초등부 교재용</footer>
+<script>
+const quizzes = [
+  {cat:'출력과 반복', q:'다음 모양을 출력하려면 별은 모두 몇 개 필요한가요?<pre>*****</pre>', a:'5', sol:'별이 한 줄에 5개 있으므로 정답은 5입니다.'},
+  {cat:'출력과 반복', q:'다음 모양을 출력하려면 별은 모두 몇 개 필요한가요?<pre>*\n*\n*\n*</pre>', a:'4', sol:'별이 세로로 4개 있으므로 정답은 4입니다.'},
+  {cat:'출력과 반복', q:'다음 모양에서 별은 모두 몇 개일까요?<pre>*\n**\n***</pre>', a:'6', sol:'1 + 2 + 3 = 6입니다.'},
+  {cat:'출력과 반복', q:'다음 모양에서 별은 모두 몇 개일까요?<pre>****\n****\n****</pre>', a:'12', sol:'한 줄에 4개씩 3줄입니다. 4 + 4 + 4 = 12입니다.'},
+  {cat:'등차수열', q:'빈칸에 알맞은 수를 넣으세요.<pre>2, 4, 6, 8, □</pre>', a:'10', sol:'2씩 커집니다. 8 + 2 = 10입니다.'},
+  {cat:'등차수열', q:'빈칸에 알맞은 수를 넣으세요.<pre>5, 10, 15, 20, □</pre>', a:'25', sol:'5씩 커집니다. 20 + 5 = 25입니다.'},
+  {cat:'등차수열', q:'빈칸에 알맞은 수를 넣으세요.<pre>10, 17, 24, 31, □</pre>', a:'38', sol:'7씩 커집니다. 31 + 7 = 38입니다.'},
+  {cat:'등차수열', q:'빈칸에 알맞은 수를 넣으세요.<pre>100, 90, 80, 70, □</pre>', a:'60', sol:'10씩 작아집니다. 70 - 10 = 60입니다.'},
+  {cat:'등비수열', q:'빈칸에 알맞은 수를 넣으세요.<pre>2, 4, 8, 16, □</pre>', a:'32', sol:'2씩 곱합니다. 16 × 2 = 32입니다.'},
+  {cat:'등비수열', q:'빈칸에 알맞은 수를 넣으세요.<pre>3, 9, 27, □</pre>', a:'81', sol:'3씩 곱합니다. 27 × 3 = 81입니다.'},
+  {cat:'등비수열', q:'빈칸에 알맞은 수를 넣으세요.<pre>5, 10, 20, 40, □</pre>', a:'80', sol:'2씩 곱합니다. 40 × 2 = 80입니다.'},
+  {cat:'등비수열', q:'빈칸에 알맞은 수를 넣으세요.<pre>81, 27, 9, 3, □</pre>', a:'1', sol:'3으로 나눕니다. 3 ÷ 3 = 1입니다.'},
+  {cat:'계차수열', q:'빈칸에 알맞은 수를 넣으세요.<pre>1, 3, 6, 10, □</pre>', a:'15', sol:'차이는 2, 3, 4입니다. 다음 차이는 5이므로 10 + 5 = 15입니다.'},
+  {cat:'계차수열', q:'빈칸에 알맞은 수를 넣으세요.<pre>2, 6, 12, 20, □</pre>', a:'30', sol:'차이는 4, 6, 8입니다. 다음 차이는 10이므로 20 + 10 = 30입니다.'},
+  {cat:'계차수열', q:'빈칸에 알맞은 수를 넣으세요.<pre>1, 4, 9, 16, □</pre>', a:'25', sol:'차이는 3, 5, 7입니다. 다음 차이는 9이므로 16 + 9 = 25입니다.'},
+  {cat:'계차수열', q:'빈칸에 알맞은 수를 넣으세요.<pre>3, 7, 13, 21, □</pre>', a:'31', sol:'차이는 4, 6, 8입니다. 다음 차이는 10이므로 21 + 10 = 31입니다.'},
+  {cat:'도형수', q:'4번째 삼각수를 구하세요.', a:'10', sol:'4번째 삼각수는 1 + 2 + 3 + 4 = 10입니다.'},
+  {cat:'도형수', q:'6번째 삼각수를 구하세요.', a:'21', sol:'6번째 삼각수는 1 + 2 + 3 + 4 + 5 + 6 = 21입니다.'},
+  {cat:'도형수', q:'5번째 사각수를 구하세요.', a:'25', sol:'5번째 사각수는 5 × 5 = 25입니다.'},
+  {cat:'도형수', q:'8번째 사각수를 구하세요.', a:'64', sol:'8번째 사각수는 8 × 8 = 64입니다.'},
+  {cat:'피보나치', q:'빈칸에 알맞은 수를 넣으세요.<pre>1, 1, 2, 3, 5, □</pre>', a:'8', sol:'앞의 두 수를 더합니다. 3 + 5 = 8입니다.'},
+  {cat:'피보나치', q:'빈칸에 알맞은 수를 넣으세요.<pre>1, 2, 3, 5, 8, □</pre>', a:'13', sol:'앞의 두 수를 더합니다. 5 + 8 = 13입니다.'},
+  {cat:'피보나치', q:'빈칸에 알맞은 수를 넣으세요.<pre>2, 3, 5, 8, 13, □</pre>', a:'21', sol:'앞의 두 수를 더합니다. 8 + 13 = 21입니다.'},
+  {cat:'피보나치', q:'빈칸에 알맞은 수를 넣으세요.<pre>3, 4, 7, 11, 18, □</pre>', a:'29', sol:'앞의 두 수를 더합니다. 11 + 18 = 29입니다.'},
+  {cat:'사고력 심화', q:'빈칸에 알맞은 수를 넣으세요.<pre>1, 2, 4, 7, 11, □</pre>', a:'16', sol:'차이는 1, 2, 3, 4입니다. 다음 차이는 5이므로 11 + 5 = 16입니다.'},
+  {cat:'사고력 심화', q:'빈칸에 알맞은 수를 넣으세요.<pre>2, 4, 7, 11, 16, □</pre>', a:'22', sol:'차이는 2, 3, 4, 5입니다. 다음 차이는 6이므로 16 + 6 = 22입니다.'},
+  {cat:'사고력 심화', q:'빈칸에 알맞은 수를 넣으세요.<pre>1, 2, 6, 24, □</pre>', a:'120', sol:'1×2=2, 2×3=6, 6×4=24입니다. 다음은 24×5=120입니다.'},
+  {cat:'사고력 심화', q:'빈칸에 알맞은 수를 넣으세요.<pre>1, 4, 10, 20, □</pre>', a:'35', sol:'차이는 3, 6, 10입니다. 이 차이는 삼각수처럼 3, 6, 10, 15로 이어집니다. 20 + 15 = 35입니다.'},
+  {cat:'사고력 심화', q:'빈칸에 알맞은 수를 넣으세요.<pre>1, 3, 7, 15, 31, □</pre>', a:'63', sol:'앞의 수에 2를 곱하고 1을 더합니다. 31 × 2 + 1 = 63입니다.'},
+  {cat:'사고력 심화', q:'빈칸에 알맞은 수를 넣으세요.<pre>1, 1, 2, 3, 5, 8, 13, □</pre>', a:'21', sol:'피보나치 수열입니다. 8 + 13 = 21입니다.'}
+];
+
+function norm(v){ return String(v).trim().replace(/\s+/g,''); }
+function render(){
+  const box = document.getElementById('quizBox');
+  box.innerHTML = quizzes.map((x,i)=>`
+    <div class="quiz-card" id="card${i}">
+      <div class="quiz-title">문제 ${i+1}. ${x.cat}</div>
+      <div class="quiz-body">${x.q}</div>
+      <div class="answer-row">
+        <label for="ans${i}"><b>정답:</b></label>
+        <input id="ans${i}" type="text" inputmode="numeric" placeholder="숫자 입력" oninput="updateProgress()" onkeydown="if(event.key==='Enter') checkOne(${i})" />
+        <button class="small-btn" onclick="checkOne(${i})">개별 확인</button>
+      </div>
+      <div class="feedback" id="fb${i}"></div>
+      <div class="solution" id="sol${i}"><b>정답:</b> ${x.a}<br><b>해설:</b> ${x.sol}</div>
+    </div>
+  `).join('');
+  updateProgress();
+}
+function checkOne(i){
+  const inp = document.getElementById('ans'+i);
+  const fb = document.getElementById('fb'+i);
+  const sol = document.getElementById('sol'+i);
+  const user = norm(inp.value);
+  fb.style.display = 'block';
+  if(user === ''){
+    fb.className='feedback no';
+    fb.textContent='아직 답을 입력하지 않았습니다.';
+    return false;
+  }
+  if(user === norm(quizzes[i].a)){
+    fb.className='feedback ok';
+    fb.textContent='정답입니다! 잘했어요.';
+    sol.style.display='block';
+    return true;
+  }else{
+    fb.className='feedback no';
+    fb.textContent='아쉬워요. 다시 생각해 봅시다.';
+    sol.style.display='block';
+    return false;
+  }
+}
+function checkAll(){
+  let correct=0;
+  for(let i=0;i<quizzes.length;i++) if(checkOne(i)) correct++;
+  alert(`전체 채점 결과: ${correct} / ${quizzes.length}개 정답입니다.`);
+  updateProgress();
+}
+function showAllSolutions(){
+  for(let i=0;i<quizzes.length;i++) document.getElementById('sol'+i).style.display='block';
+}
+function hideAllSolutions(){
+  for(let i=0;i<quizzes.length;i++) document.getElementById('sol'+i).style.display='none';
+}
+function resetAll(){
+  if(!confirm('모든 답을 지우고 다시 풀까요?')) return;
+  for(let i=0;i<quizzes.length;i++){
+    document.getElementById('ans'+i).value='';
+    document.getElementById('fb'+i).style.display='none';
+    document.getElementById('sol'+i).style.display='none';
+  }
+  updateProgress();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function updateProgress(){
+  let done=0;
+  for(let i=0;i<quizzes.length;i++){
+    const el = document.getElementById('ans'+i);
+    if(el && norm(el.value) !== '') done++;
+  }
+  document.getElementById('scoreText').textContent = `푼 문제: ${done} / ${quizzes.length}`;
+  document.getElementById('fill').style.width = (done/quizzes.length*100)+'%';
+}
+render();
+</script>
+</body>
+</html>
