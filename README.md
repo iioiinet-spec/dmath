@@ -38,3 +38,14 @@ http://iioiinet-spec.github.io/dmath/free1/01.pdf
 cal  이산수학 계산기
 log  로그
 gi   그래프 학습
+
+
+
+//////사고력수학 : 초등부///////////
+
+01. 수와 연산의 심화-초등부
+ b1_Chapter1_Numbers_and_Patterns  : 기본
+ b2_Chapter1_Numbers_and_Patterns_Advanced  : 심화
+ b3_Chapter1_Sequences_in_C_and_Python  : 코딩
+
+
