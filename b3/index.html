@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>수와 규칙 → C / Python 코드로 출력하기</title>
+<style>
+:root{
+  --bg:#FFFBF3; --paper:#FFFFFF; --ink:#262338; --soft:#6A6A85;
+  --pink:#FF5C8A; --orange:#FF923E; --yellow:#FFCE2E; --green:#27C99A;
+  --blue:#3D7BFF; --purple:#8A6CFF; --line:#EDE4D4;
+  --cbg:#1E2233; --cink:#E8ECF8; --ckey:#FF9F6B; --cstr:#7DE0A6; --cnum:#FFD66B; --ccom:#7C84A8;
+  --shadow:0 6px 0 rgba(0,0,0,.06), 0 16px 34px rgba(0,0,0,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  background:
+    radial-gradient(circle at 10% 6%, #FFE7C2 0, transparent 34%),
+    radial-gradient(circle at 92% 10%, #FFD2E2 0, transparent 34%),
+    radial-gradient(circle at 50% 102%, #CFE6FF 0, transparent 42%),
+    var(--bg);
+  color:var(--ink); font-size:18px; line-height:1.75; min-height:100vh;
+}
+.wrap{max-width:960px;margin:0 auto;padding:24px 18px 90px}
+.hero{text-align:center;background:var(--paper);border:4px solid var(--ink);
+  border-radius:28px;padding:34px 24px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero::before{content:"</> printf  for  range  while  { }";position:absolute;top:10px;left:0;right:0;
+  font-weight:900;font-size:16px;letter-spacing:8px;opacity:.10;text-align:center}
+.badge{display:inline-block;background:var(--yellow);border:3px solid var(--ink);
+  border-radius:999px;padding:4px 18px;font-weight:800;font-size:16px;margin-bottom:10px;
+  box-shadow:0 4px 0 rgba(0,0,0,.15)}
+.hero h1{font-size:36px;font-weight:900;letter-spacing:-1px;line-height:1.2}
+.hero h1 .hl{color:var(--blue)}
+.hero p{margin-top:10px;color:var(--soft);font-size:18px;font-weight:600}
+.nav{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:22px 0 6px}
+.nav button{font-family:inherit;cursor:pointer;border:3px solid var(--ink);
+  background:var(--paper);border-radius:14px;padding:9px 14px;font-weight:800;font-size:15px;
+  box-shadow:0 4px 0 rgba(0,0,0,.12);transition:transform .1s}
+.nav button:hover{transform:translateY(-2px)}
+.nav button.on{background:var(--blue);color:#fff}
+.sec{display:none;animation:pop .35s ease}
+.sec.show{display:block}
+@keyframes pop{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.card{background:var(--paper);border:4px solid var(--ink);border-radius:24px;
+  padding:26px 22px;margin-top:22px;box-shadow:var(--shadow)}
+.card h2{font-size:26px;font-weight:900;display:flex;align-items:center;gap:10px}
+.card h2 .em{font-size:30px}
+.lead{color:var(--soft);font-weight:600;margin:6px 0 18px}
+.box{border-radius:18px;padding:16px 18px;margin:16px 0;border:3px solid var(--ink);font-weight:600}
+.box .t{font-weight:900;font-size:17px;display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.box.def{background:#E9F2FF}.box.tip{background:#E6FBF2}.box.warn{background:#FFEFE3}.box.key{background:#FFF5D6}
+/* code blocks */
+.codewrap{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+@media(max-width:720px){ .codewrap{grid-template-columns:1fr} }
+.codebox{background:var(--cbg);border:3px solid var(--ink);border-radius:16px;overflow:hidden;
+  box-shadow:0 6px 0 rgba(0,0,0,.18)}
+.codebox .head{display:flex;align-items:center;justify-content:space-between;
+  padding:8px 14px;background:rgba(255,255,255,.06);border-bottom:2px solid rgba(255,255,255,.08)}
+.codebox .head .lang{font-weight:900;color:#fff;font-size:15px;display:flex;align-items:center;gap:7px}
+.codebox .head .lang .ic{width:22px;height:22px;border-radius:6px;display:inline-flex;
+  align-items:center;justify-content:center;font-size:13px;font-weight:900}
+.icC{background:#5C8DFF;color:#fff}.icPy{background:#FFD66B;color:#33352b}
+.copybtn{font-family:inherit;cursor:pointer;border:2px solid rgba(255,255,255,.35);
+  background:transparent;color:#cfd6f0;border-radius:9px;padding:3px 10px;font-weight:800;font-size:13px}
+.copybtn:active{transform:scale(.95)}
+.codebox pre{margin:0;padding:14px 16px;overflow-x:auto}
+.codebox code{font-family:"D2Coding","Consolas","Menlo",monospace;font-size:14.5px;line-height:1.7;
+  color:var(--cink);white-space:pre}
+.tk-key{color:var(--ckey);font-weight:700}
+.tk-str{color:var(--cstr)}.tk-num{color:var(--cnum)}.tk-com{color:var(--ccom);font-style:italic}
+.tk-fn{color:#9FD0FF}
+/* output console */
+.console{background:#10131F;border:3px solid var(--ink);border-radius:14px;margin-top:6px;
+  padding:12px 16px;color:#9DF2C4;font-family:"D2Coding","Consolas",monospace;font-size:15px;
+  min-height:48px;white-space:pre-wrap;box-shadow:inset 0 2px 8px rgba(0,0,0,.4)}
+.console .pmt{color:#5C8DFF;font-weight:900}
+/* lab controls */
+.play{background:linear-gradient(180deg,#FFFDF7,#FFF3E0);border:3px dashed var(--orange);
+  border-radius:18px;padding:18px;margin:16px 0}
+.play .ttl{font-weight:900;font-size:18px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.row{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.field{flex:1;min-width:170px}
+.field .lab{font-weight:900;font-size:15px;margin-bottom:4px}
+.slider{width:100%;height:28px;cursor:pointer;accent-color:var(--pink)}
+.btn{font-family:inherit;cursor:pointer;border:3px solid var(--ink);border-radius:12px;
+  padding:9px 18px;font-weight:800;font-size:16px;background:var(--green);color:#fff;
+  box-shadow:0 4px 0 rgba(0,0,0,.18);transition:transform .08s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.18)}
+.btn.alt{background:var(--blue)}
+.pill{display:inline-block;background:#fff;border:3px solid var(--ink);border-radius:999px;
+  padding:2px 14px;font-weight:900;font-size:16px;color:var(--pink)}
+.cmp{width:100%;border-collapse:collapse;margin:10px 0;font-size:15px}
+.cmp th,.cmp td{border:2px solid var(--ink);padding:8px 10px;text-align:left}
+.cmp th{background:#EEF3FF;font-weight:900}
+.cmp td code{background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;
+  font-family:"D2Coding",monospace;font-size:14px}
+.footer{text-align:center;margin-top:34px;color:var(--soft);font-weight:700;font-size:14px}
+@media(max-width:560px){.hero h1{font-size:28px}.card h2{font-size:21px}body{font-size:17px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="hero">
+  <div class="badge">사고력·이산수학 1장 · 코딩 연계</div>
+  <h1>수열을 <span class="hl">코드</span>로 출력하기 💻</h1>
+  <p>손으로 찾은 규칙을 C와 Python으로! 두 언어를 나란히 보고, 값을 바꾸면 결과가 바로 바뀌어요.</p>
+</div>
+<div class="nav">
+  <button data-go="s0" class="on">🧰 준비: 출력과 반복</button>
+  <button data-go="s1">📈 등차·등비</button>
+  <button data-go="s2">🪜 계차수열</button>
+  <button data-go="s3">🔺 도형수</button>
+  <button data-go="s4">🐚 피보나치</button>
+  <button data-go="s5">⚖️ C vs Python</button>
+</div>
+<!-- S0 준비 -->
+<section class="sec show" id="s0">
+  <div class="card">
+    <h2><span class="em">🧰</span> 준비물: 출력하기와 반복하기</h2>
+    <p class="lead">수열을 코드로 만들려면 딱 두 가지면 돼요 — ① 화면에 <b>출력</b>하기, ② 여러 번 <b>반복</b>하기.</p>
+
+    <div class="box def"><div class="t">📘 ① 출력하기</div>
+      C는 <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">printf</code>,
+      Python은 <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">print</code> 로 화면에 글자나 수를 보여줘요.</div>
+
+    <div class="codewrap">
+      <div class="codebox"><div class="head"><span class="lang"><span class="ic icC">C</span>C 언어</span><button class="copybtn">복사</button></div>
+<pre><code><span class="tk-com">// 안녕 출력하기</span>
+<span class="tk-key">#include</span> &lt;stdio.h&gt;
+<span class="tk-key">int</span> <span class="tk-fn">main</span>() {
+    <span class="tk-fn">printf</span>(<span class="tk-str">"안녕 수열!\n"</span>);
+    <span class="tk-key">return</span> <span class="tk-num">0</span>;
+}</code></pre></div>
+      <div class="codebox"><div class="head"><span class="lang"><span class="ic icPy">Py</span>Python</span><button class="copybtn">복사</button></div>
+<pre><code><span class="tk-com"># 안녕 출력하기</span>
+<span class="tk-fn">print</span>(<span class="tk-str">"안녕 수열!"</span>)</code></pre></div>
+    </div>
+
+    <div class="box def"><div class="t">📘 ② 반복하기 (for)</div>
+      같은 일을 여러 번 시킬 때 <b>for 반복문</b>을 써요. "0번부터 n번까지 돌아라"는 뜻이에요.</div>
+
+    <div class="codewrap">
+      <div class="codebox"><div class="head"><span class="lang"><span class="ic icC">C</span>C 언어</span><button class="copybtn">복사</button></div>
+<pre><code><span class="tk-key">for</span> (<span class="tk-key">int</span> i = <span class="tk-num">0</span>; i &lt; <span class="tk-num">5</span>; i++) {
+    <span class="tk-fn">printf</span>(<span class="tk-str">"%d "</span>, i);
+}
+<span class="tk-com">// 출력: 0 1 2 3 4</span></code></pre></div>
+      <div class="codebox"><div class="head"><span class="lang"><span class="ic icPy">Py</span>Python</span><button class="copybtn">복사</button></div>
+<pre><code><span class="tk-key">for</span> i <span class="tk-key">in</span> <span class="tk-fn">range</span>(<span class="tk-num">5</span>):
+    <span class="tk-fn">print</span>(i, end=<span class="tk-str">" "</span>)
+<span class="tk-com"># 출력: 0 1 2 3 4</span></code></pre></div>
+    </div>
+
+    <div class="box tip"><div class="t">💡 기억!</div>
+      C는 문장 끝에 <b>세미콜론(;)</b>과 <b>중괄호 { }</b>가 필요하고, Python은 <b>들여쓰기(띄어쓰기)</b>로 묶어요.
+      <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">%d</code>는 C에서 "여기에 정수를 넣어라"는 뜻이에요.</div>
+  </div>
+</section>
+
+<!-- S1 등차등비 -->
+<section class="sec" id="s1">
+  <div class="card">
+    <h2><span class="em">📈</span> 등차 · 등비 수열 출력</h2>
+    <p class="lead">시작 수에 매번 같은 수를 <b>더하면 등차</b>, <b>곱하면 등비</b>. 슬라이더를 움직이면 코드와 결과가 같이 바뀌어요!</p>
+
+    <div class="play">
+      <div class="ttl">🔬 코드 실험실 — 값을 바꿔보세요</div>
+      <div class="row">
+        <div class="field"><div class="lab">시작 수 a = <span class="pill" id="ag_a">2</span></div>
+          <input type="range" class="slider" id="ag_as" min="1" max="9" value="2"></div>
+        <div class="field"><div class="lab">규칙 수 d = <span class="pill" id="ag_d">3</span></div>
+          <input type="range" class="slider" id="ag_ds" min="2" max="5" value="3"></div>
+        <div class="field"><div class="lab">개수 n = <span class="pill" id="ag_n">6</span></div>
+          <input type="range" class="slider" id="ag_ns" min="3" max="8" value="6"></div>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button class="btn" id="ag_mode">현재: 등차(+) ↔ 바꾸기</button>
+      </div>
+      <div class="codewrap" style="margin-top:14px">
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icC">C</span>C 언어</span><button class="copybtn">복사</button></div>
+          <pre><code id="ag_c"></code></pre></div>
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icPy">Py</span>Python</span><button class="copybtn">복사</button></div>
+          <pre><code id="ag_py"></code></pre></div>
+      </div>
+      <div class="lab" style="font-weight:900">▶ 실행 결과</div>
+      <div class="console" id="ag_out"></div>
+    </div>
+
+    <div class="box key"><div class="t">🔑 코드의 핵심</div>
+      등차는 반복할 때마다 <b>term = term + d</b>, 등비는 <b>term = term × d</b> 한 줄만 달라요!</div>
+  </div>
+</section>
+<!-- S2 계차 -->
+<section class="sec" id="s2">
+  <div class="card">
+    <h2><span class="em">🪜</span> 계차수열 출력</h2>
+    <p class="lead">더하는 수(차이)가 매번 커지는 수열! 차이를 담는 변수 하나를 더 두면 돼요.</p>
+
+    <div class="play">
+      <div class="ttl">🔬 코드 실험실</div>
+      <div class="row">
+        <div class="field"><div class="lab">시작 수 = <span class="pill" id="df_a">1</span></div>
+          <input type="range" class="slider" id="df_as" min="1" max="6" value="1"></div>
+        <div class="field"><div class="lab">첫 차이 = <span class="pill" id="df_d">1</span></div>
+          <input type="range" class="slider" id="df_ds" min="1" max="4" value="1"></div>
+        <div class="field"><div class="lab">차이 증가 = <span class="pill" id="df_s">1</span></div>
+          <input type="range" class="slider" id="df_ss" min="1" max="3" value="1"></div>
+      </div>
+      <div class="codewrap" style="margin-top:14px">
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icC">C</span>C 언어</span><button class="copybtn">복사</button></div>
+          <pre><code id="df_c"></code></pre></div>
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icPy">Py</span>Python</span><button class="copybtn">복사</button></div>
+          <pre><code id="df_py"></code></pre></div>
+      </div>
+      <div class="lab" style="font-weight:900">▶ 실행 결과</div>
+      <div class="console" id="df_out"></div>
+    </div>
+    <div class="box tip"><div class="t">💡 비밀</div>
+      변수 <b>diff</b>가 차이를 기억해요. 매번 <b>term += diff</b> 한 다음 <b>diff += step</b> 으로 차이 자체를 키워요!</div>
+  </div>
+</section>
+
+<!-- S3 도형수 -->
+<section class="sec" id="s3">
+  <div class="card">
+    <h2><span class="em">🔺</span> 도형수 출력 — 삼각수 · 사각수</h2>
+    <p class="lead">삼각수는 1+2+…+n, 사각수는 n×n. 코드로 만들면 규칙이 한눈에!</p>
+
+    <div class="play">
+      <div class="ttl">🔬 코드 실험실</div>
+      <div class="row">
+        <div class="field"><div class="lab">몇 개까지 n = <span class="pill" id="fg_n">6</span></div>
+          <input type="range" class="slider" id="fg_ns" min="3" max="9" value="6"></div>
+        <div class="row" style="margin-top:6px">
+          <button class="btn" id="fg_mode">현재: 삼각수 △ ↔ 바꾸기</button>
+        </div>
+      </div>
+      <div class="codewrap" style="margin-top:14px">
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icC">C</span>C 언어</span><button class="copybtn">복사</button></div>
+          <pre><code id="fg_c"></code></pre></div>
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icPy">Py</span>Python</span><button class="copybtn">복사</button></div>
+          <pre><code id="fg_py"></code></pre></div>
+      </div>
+      <div class="lab" style="font-weight:900">▶ 실행 결과</div>
+      <div class="console" id="fg_out"></div>
+    </div>
+    <div class="box key"><div class="t">🔑 두 가지 방법</div>
+      삼각수는 <b>계속 더하기(sum += i)</b>로, 사각수는 <b>i*i</b> 곱하기로! 같은 도형수도 코드는 여러 방법이 있어요.</div>
+  </div>
+</section>
+<!-- S4 피보나치 -->
+<section class="sec" id="s4">
+  <div class="card">
+    <h2><span class="em">🐚</span> 피보나치 수열 출력</h2>
+    <p class="lead">앞 두 수를 더해 다음 수를! 변수 두 개로 주고받으며 만들어요.</p>
+
+    <div class="play">
+      <div class="ttl">🔬 코드 실험실</div>
+      <div class="row">
+        <div class="field"><div class="lab">몇 개까지 n = <span class="pill" id="fb_n">10</span></div>
+          <input type="range" class="slider" id="fb_ns" min="3" max="15" value="10"></div>
+      </div>
+      <div class="codewrap" style="margin-top:14px">
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icC">C</span>C 언어</span><button class="copybtn">복사</button></div>
+          <pre><code id="fb_c"></code></pre></div>
+        <div class="codebox"><div class="head"><span class="lang"><span class="ic icPy">Py</span>Python</span><button class="copybtn">복사</button></div>
+          <pre><code id="fb_py"></code></pre></div>
+      </div>
+      <div class="lab" style="font-weight:900">▶ 실행 결과</div>
+      <div class="console" id="fb_out"></div>
+    </div>
+    <div class="box tip"><div class="t">💡 변수 바꿔치기</div>
+      <b>a, b = b, a+b</b> 한 줄(Python)이 피보나치의 핵심! C에서는 임시 변수 <b>c</b>를 써서 똑같이 해요.</div>
+  </div>
+</section>
+
+<!-- S5 비교 -->
+<section class="sec" id="s5">
+  <div class="card">
+    <h2><span class="em">⚖️</span> C 와 Python, 무엇이 다를까?</h2>
+    <p class="lead">같은 수열을 만들어도 두 언어는 생김새가 달라요. 한 표로 정리해요.</p>
+
+    <table class="cmp">
+      <tr><th>비교</th><th>C 언어</th><th>Python</th></tr>
+      <tr><td>출력</td><td><code>printf("%d ", x);</code></td><td><code>print(x, end=" ")</code></td></tr>
+      <tr><td>반복(0~n-1)</td><td><code>for(int i=0;i&lt;n;i++)</code></td><td><code>for i in range(n):</code></td></tr>
+      <tr><td>묶는 방법</td><td>중괄호 <code>{ }</code></td><td>들여쓰기(띄어쓰기)</td></tr>
+      <tr><td>문장 끝</td><td>세미콜론 <code>;</code> 필요</td><td>필요 없음</td></tr>
+      <tr><td>변수 선언</td><td><code>int a = 1;</code> (자료형 필요)</td><td><code>a = 1</code> (바로 사용)</td></tr>
+      <tr><td>두 값 교환</td><td>임시 변수 <code>c</code> 사용</td><td><code>a, b = b, a+b</code></td></tr>
+    </table>
+
+    <div class="box def"><div class="t">📘 언제 무엇을?</div>
+      <b>Python</b>은 짧고 쉬워서 아이디어를 빠르게 시험할 때 좋아요.
+      <b>C</b>는 컴퓨터가 어떻게 계산하는지 자세히 배우고, 정보올림피아드(정올)처럼 빠른 속도가 필요할 때 강해요.</div>
+
+    <div class="box warn"><div class="t">⚠️ C에서 조심</div>
+      등비·피보나치는 수가 아주 빨리 커져요. C의 <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">int</code>는 너무 큰 수를 담지 못해요.
+      그럴 땐 <code style="background:#1E2233;color:#E8ECF8;border-radius:6px;padding:1px 7px;font-family:monospace">long long</code>을 쓰고, Python은 걱정 없이 아주 큰 수도 다뤄요!</div>
+
+    <div class="box key"><div class="t">🎯 정리</div>
+      규칙을 손으로 찾고 → 코드로 옮기면 → 컴퓨터가 100개, 1000개도 순식간에 출력해줘요.
+      <b>수학(규칙 찾기)</b> + <b>코딩(자동 출력)</b> = 진짜 문제 해결력! 🚀</div>
+  </div>
+</section>
+
+<div class="footer">세영코딩연구소 · 사고력·이산수학 1장 「수와 규칙」 코딩 연계 (C / Python) · 초등 고학년 / 영재반</div>
+</div>
+<script>
+(function(){
+  "use strict";
+  function $(id){ return document.getElementById(id); }
+
+  /* nav */
+  var navBtns=document.querySelectorAll(".nav button");
+  function goTo(t){
+    var secs=document.querySelectorAll(".sec");
+    for(var i=0;i<secs.length;i++){ secs[i].classList.remove("show"); }
+    $(t).classList.add("show");
+    for(var j=0;j<navBtns.length;j++){ navBtns[j].classList.remove("on"); }
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+  for(var n=0;n<navBtns.length;n++){
+    navBtns[n].addEventListener("click", function(){
+      goTo(this.getAttribute("data-go")); this.classList.add("on");
+    });
+  }
+
+  /* copy buttons */
+  function attachCopy(){
+    var bs=document.querySelectorAll(".copybtn");
+    for(var i=0;i<bs.length;i++){
+      bs[i].onclick=function(){
+        var code=this.parentNode.parentNode.querySelector("code");
+        var txt=code.textContent;
+        var done=this;
+        if(navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(txt).then(function(){ done.textContent="복사됨!"; setTimeout(function(){done.textContent="복사";},1200); });
+        } else {
+          var ta=document.createElement("textarea"); ta.value=txt; document.body.appendChild(ta);
+          ta.select(); try{ document.execCommand("copy"); }catch(e){} document.body.removeChild(ta);
+          done.textContent="복사됨!"; setTimeout(function(){done.textContent="복사";},1200);
+        }
+      };
+    }
+  }
+
+  /* token helpers: build colored code via spans (no eval, safe) */
+  function S(cls,t){ return '<span class="'+cls+'">'+t+'</span>'; }
+  var K=function(t){return S("tk-key",t);}, F=function(t){return S("tk-fn",t);},
+      ST=function(t){return S("tk-str",t);}, N=function(t){return S("tk-num",t);},
+      C=function(t){return S("tk-com",t);};
+
+  /* ---------- S1 등차/등비 ---------- */
+  var agMode="arith";
+  function agRender(){
+    var a=parseInt($("ag_as").value,10), d=parseInt($("ag_ds").value,10), num=parseInt($("ag_ns").value,10);
+    $("ag_a").textContent=a; $("ag_d").textContent=d; $("ag_n").textContent=num;
+    var op = agMode==="arith" ? "+=" : "*=";
+    var opWord = agMode==="arith" ? ("term = term + "+d) : ("term = term * "+d);
+    $("ag_mode").textContent = agMode==="arith" ? "현재: 등차(+) ↔ 바꾸기" : "현재: 등비(×) ↔ 바꾸기";
+    // C code
+    $("ag_c").innerHTML =
+      C("// "+(agMode==="arith"?"등차":"등비")+"수열")+"\n"+
+      K("#include")+" &lt;stdio.h&gt;\n"+
+      K("int")+" "+F("main")+"() {\n"+
+      "    "+K("int")+" term = "+N(a)+";\n"+
+      "    "+K("for")+" ("+K("int")+" i = "+N("0")+"; i &lt; "+N(num)+"; i++) {\n"+
+      "        "+F("printf")+"("+ST('"%d "')+", term);\n"+
+      "        term "+op+" "+N(d)+";\n"+
+      "    }\n"+
+      "    "+K("return")+" "+N("0")+";\n}";
+    // Py code
+    $("ag_py").innerHTML =
+      C("# "+(agMode==="arith"?"등차":"등비")+"수열")+"\n"+
+      "term = "+N(a)+"\n"+
+      K("for")+" i "+K("in")+" "+F("range")+"("+N(num)+"):\n"+
+      "    "+F("print")+"(term, end="+ST('" "')+")\n"+
+      "    term "+op+" "+N(d);
+    // output
+    var out=[], t=a;
+    for(var i=0;i<num;i++){ out.push(t); if(agMode==="arith"){t+=d;}else{t*=d;} }
+    $("ag_out").innerHTML='<span class="pmt">$ </span>'+out.join(" ");
+  }
+  $("ag_as").addEventListener("input",agRender);
+  $("ag_ds").addEventListener("input",agRender);
+  $("ag_ns").addEventListener("input",agRender);
+  $("ag_mode").addEventListener("click",function(){ agMode=(agMode==="arith")?"geo":"arith"; agRender(); });
+  agRender();
+  /* ---------- S2 계차 ---------- */
+  function dfRender(){
+    var a=parseInt($("df_as").value,10), d=parseInt($("df_ds").value,10), step=parseInt($("df_ss").value,10);
+    $("df_a").textContent=a; $("df_d").textContent=d; $("df_s").textContent=step;
+    $("df_c").innerHTML =
+      C("// 계차수열")+"\n"+
+      K("#include")+" &lt;stdio.h&gt;\n"+
+      K("int")+" "+F("main")+"() {\n"+
+      "    "+K("int")+" term = "+N(a)+", diff = "+N(d)+";\n"+
+      "    "+K("for")+" ("+K("int")+" i = "+N("0")+"; i &lt; "+N("7")+"; i++) {\n"+
+      "        "+F("printf")+"("+ST('"%d "')+", term);\n"+
+      "        term += diff;\n"+
+      "        diff += "+N(step)+";\n"+
+      "    }\n"+
+      "    "+K("return")+" "+N("0")+";\n}";
+    $("df_py").innerHTML =
+      C("# 계차수열")+"\n"+
+      "term, diff = "+N(a)+", "+N(d)+"\n"+
+      K("for")+" i "+K("in")+" "+F("range")+"("+N("7")+"):\n"+
+      "    "+F("print")+"(term, end="+ST('" "')+")\n"+
+      "    term += diff\n"+
+      "    diff += "+N(step);
+    var out=[], t=a, df=d;
+    for(var i=0;i<7;i++){ out.push(t); t+=df; df+=step; }
+    $("df_out").innerHTML='<span class="pmt">$ </span>'+out.join(" ");
+  }
+  $("df_as").addEventListener("input",dfRender);
+  $("df_ds").addEventListener("input",dfRender);
+  $("df_ss").addEventListener("input",dfRender);
+  dfRender();
+
+  /* ---------- S3 도형수 ---------- */
+  var fgMode="tri";
+  function fgRender(){
+    var num=parseInt($("fg_ns").value,10);
+    $("fg_n").textContent=num;
+    $("fg_mode").textContent = fgMode==="tri" ? "현재: 삼각수 △ ↔ 바꾸기" : "현재: 사각수 ▦ ↔ 바꾸기";
+    if(fgMode==="tri"){
+      $("fg_c").innerHTML =
+        C("// 삼각수 (1+2+...+i)")+"\n"+
+        K("#include")+" &lt;stdio.h&gt;\n"+
+        K("int")+" "+F("main")+"() {\n"+
+        "    "+K("int")+" sum = "+N("0")+";\n"+
+        "    "+K("for")+" ("+K("int")+" i = "+N("1")+"; i &lt;= "+N(num)+"; i++) {\n"+
+        "        sum += i;\n"+
+        "        "+F("printf")+"("+ST('"%d "')+", sum);\n"+
+        "    }\n"+
+        "    "+K("return")+" "+N("0")+";\n}";
+      $("fg_py").innerHTML =
+        C("# 삼각수 (1+2+...+i)")+"\n"+
+        "sum = "+N("0")+"\n"+
+        K("for")+" i "+K("in")+" "+F("range")+"("+N("1")+", "+N(num+1)+"):\n"+
+        "    sum += i\n"+
+        "    "+F("print")+"(sum, end="+ST('" "')+")";
+      var out=[], s=0;
+      for(var i=1;i<=num;i++){ s+=i; out.push(s); }
+      $("fg_out").innerHTML='<span class="pmt">$ </span>'+out.join(" ");
+    } else {
+      $("fg_c").innerHTML =
+        C("// 사각수 (i*i)")+"\n"+
+        K("#include")+" &lt;stdio.h&gt;\n"+
+        K("int")+" "+F("main")+"() {\n"+
+        "    "+K("for")+" ("+K("int")+" i = "+N("1")+"; i &lt;= "+N(num)+"; i++) {\n"+
+        "        "+F("printf")+"("+ST('"%d "')+", i * i);\n"+
+        "    }\n"+
+        "    "+K("return")+" "+N("0")+";\n}";
+      $("fg_py").innerHTML =
+        C("# 사각수 (i*i)")+"\n"+
+        K("for")+" i "+K("in")+" "+F("range")+"("+N("1")+", "+N(num+1)+"):\n"+
+        "    "+F("print")+"(i * i, end="+ST('" "')+")";
+      var out2=[];
+      for(var j=1;j<=num;j++){ out2.push(j*j); }
+      $("fg_out").innerHTML='<span class="pmt">$ </span>'+out2.join(" ");
+    }
+  }
+  $("fg_ns").addEventListener("input",fgRender);
+  $("fg_mode").addEventListener("click",function(){ fgMode=(fgMode==="tri")?"sq":"tri"; fgRender(); });
+  fgRender();
+
+  /* ---------- S4 피보나치 ---------- */
+  function fbRender(){
+    var num=parseInt($("fb_ns").value,10);
+    $("fb_n").textContent=num;
+    $("fb_c").innerHTML =
+      C("// 피보나치 수열")+"\n"+
+      K("#include")+" &lt;stdio.h&gt;\n"+
+      K("int")+" "+F("main")+"() {\n"+
+      "    "+K("long long")+" a = "+N("1")+", b = "+N("1")+", c;\n"+
+      "    "+K("for")+" ("+K("int")+" i = "+N("0")+"; i &lt; "+N(num)+"; i++) {\n"+
+      "        "+F("printf")+"("+ST('"%lld "')+", a);\n"+
+      "        c = a + b;\n"+
+      "        a = b;\n"+
+      "        b = c;\n"+
+      "    }\n"+
+      "    "+K("return")+" "+N("0")+";\n}";
+    $("fb_py").innerHTML =
+      C("# 피보나치 수열")+"\n"+
+      "a, b = "+N("1")+", "+N("1")+"\n"+
+      K("for")+" i "+K("in")+" "+F("range")+"("+N(num)+"):\n"+
+      "    "+F("print")+"(a, end="+ST('" "')+")\n"+
+      "    a, b = b, a + b";
+    var out=[], a=1, b=1;
+    for(var i=0;i<num;i++){ out.push(a); var c=a+b; a=b; b=c; }
+    $("fb_out").innerHTML='<span class="pmt">$ </span>'+out.join(" ");
+  }
+  $("fb_ns").addEventListener("input",fbRender);
+  fbRender();
+
+  attachCopy();
+})();
+</script>
+</body>
+</html>
