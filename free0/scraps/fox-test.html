@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8">
+<style>
+  body{margin:0;background:#0e1422;display:flex;flex-wrap:wrap;gap:14px;padding:24px;align-items:flex-start;justify-content:center;}
+  :root{--accent:#a8d8ff;}
+  .cell{width:120px;text-align:center;color:#8893b8;font-family:monospace;font-size:11px;}
+  .fox{width:110px;height:110px;}
+  .msvg{filter:drop-shadow(0 4px 10px rgba(0,0,0,.4));}
+</style></head>
+<body>
+<script src="../js/fox-and-story.js"></script>
+<script src="../js/monsters.js"></script>
+<script>
+  const exprs=['neutral','happy','worried','wink','sparkle','sleep'];
+  let h='<div style="width:100%;color:#cfd"><b>FOX</b></div>';
+  exprs.forEach(e=>{ h+=`<div class="cell">${FoxStory.foxSVG(e)}<div>${e}</div></div>`; });
+  h+='<div style="width:100%;color:#cfd"><b>MONSTERS (2D fallback / tower icons)</b></div>';
+  for(let f=1;f<=30;f++){ h+=`<div class="cell">${Monsters.monsterSVG(f,86)}<div>F${f}${Monsters.cfg(f).boss?' ★boss':''}</div></div>`; }
+  document.body.insertAdjacentHTML('beforeend',h);
+</script>
+</body></html>

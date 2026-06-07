@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>산술의 탑 · TOWER OF ARITHMOS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Gowun+Dodum&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080b16; --bg2:#0e1422; --panel:#141c30; --panel2:#1a2440;
+  --ink:#eaf0ff; --muted:#8893b8; --dim:#5a648a;
+  --gold:#f7c948; --cyan:#3fe0cf; --violet:#a07bf2; --crimson:#ff5d6c; --green:#52e08a;
+  --line:rgba(255,255,255,.09); --line2:rgba(255,255,255,.05);
+  --accent:#3fe0cf; --accent-soft:rgba(63,224,207,.16);
+  --good:#52e08a; --bad:#ff5d6c;
+  --r:18px;
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+html,body{margin:0; padding:0; height:100%;}
+body{
+  font-family:'Gowun Dodum',sans-serif;
+  background:var(--bg); color:var(--ink);
+  overflow:hidden; position:fixed; inset:0;
+  user-select:none; touch-action:manipulation;
+}
+#bg-canvas{position:fixed; inset:0; z-index:0;}
+#fx-canvas{position:fixed; inset:0; z-index:90; pointer-events:none;}
+
+#stage{
+  position:relative; z-index:10;
+  height:100%; width:100%;
+  display:flex; align-items:center; justify-content:center;
+  padding:env(safe-area-inset-top) 14px env(safe-area-inset-bottom);
+}
+.screen{
+  width:100%; max-width:540px; height:100%;
+  display:none; flex-direction:column;
+  padding:22px 6px;
+}
+.screen.on{display:flex; animation:screenIn .5s cubic-bezier(.2,.9,.25,1);}
+@keyframes screenIn{from{opacity:0; transform:translateY(14px) scale(.99);}to{opacity:1; transform:none;}}
+
+/* ---------- TITLE ---------- */
+#title{align-items:center; justify-content:center; text-align:center; gap:0;}
+.crest{
+  font-size:78px; line-height:1; margin-bottom:6px;
+  filter:drop-shadow(0 0 24px var(--accent));
+  animation:bob 4s ease-in-out infinite;
+}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-2deg);}50%{transform:translateY(-12px) rotate(2deg);}}
+.t-sub{
+  font-family:'JetBrains Mono',monospace; letter-spacing:.42em;
+  font-size:11px; color:var(--accent); margin-bottom:8px; padding-left:.42em;
+  text-transform:uppercase;
+}
+.t-main{
+  font-family:'Do Hyeon',sans-serif; font-size:clamp(42px,13vw,68px);
+  line-height:.96; margin:0 0 2px;
+  background:linear-gradient(180deg,#fff,var(--accent) 160%);
+  -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+  text-shadow:0 0 40px rgba(63,224,207,.25);
+}
+.t-tag{color:var(--muted); font-size:14px; margin:14px 0 34px; line-height:1.7;}
+.t-tag b{color:var(--gold);}
+.menu{display:flex; flex-direction:column; gap:12px; width:min(320px,86%);}
+
+/* ---------- BUTTONS ---------- */
+.btn{
+  font-family:'Do Hyeon',sans-serif; font-size:18px;
+  border:none; border-radius:14px; padding:16px 20px;
+  color:var(--ink); cursor:pointer; position:relative;
+  background:var(--panel); border:1px solid var(--line);
+  transition:transform .12s ease, box-shadow .2s, background .2s;
+  display:flex; align-items:center; justify-content:center; gap:10px;
+}
+.btn:active{transform:scale(.96);}
+.btn.primary{
+  background:linear-gradient(135deg,var(--accent),#2fb8a8);
+  color:#04211d; border:none; box-shadow:0 8px 24px -8px var(--accent);
+}
+.btn.primary:hover{box-shadow:0 12px 30px -8px var(--accent);}
+.btn.ghost{background:rgba(255,255,255,.04);}
+.btn .k{font-family:'JetBrains Mono',monospace; font-size:12px; opacity:.55; letter-spacing:.1em;}
+
+/* ---------- TOPBAR ---------- */
+.topbar{
+  display:flex; align-items:center; gap:10px; margin-bottom:16px; padding:0 6px;
+}
+.iconbtn{
+  width:42px; height:42px; flex:0 0 auto; border-radius:12px;
+  background:var(--panel); border:1px solid var(--line); color:var(--ink);
+  font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center;
+}
+.iconbtn:active{transform:scale(.92);}
+.topbar h2{
+  font-family:'Do Hyeon',sans-serif; font-size:20px; margin:0; flex:1;
+  letter-spacing:.02em;
+}
+.statpill{
+  font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:700;
+  background:var(--panel); border:1px solid var(--line); border-radius:10px;
+  padding:8px 11px; display:flex; align-items:center; gap:6px; color:var(--gold);
+}
+
+/* ---------- TOWER MAP ---------- */
+.tower-scroll{flex:1; overflow-y:auto; overflow-x:hidden; padding:4px 6px 30px; scrollbar-width:thin;}
+.tower-scroll::-webkit-scrollbar{width:6px;}
+.tower-scroll::-webkit-scrollbar-thumb{background:var(--line); border-radius:3px;}
+.floor{
+  position:relative; display:flex; align-items:center; gap:14px;
+  background:var(--panel); border:1px solid var(--line); border-radius:16px;
+  padding:14px 16px; margin-bottom:10px; cursor:pointer;
+  transition:transform .12s, border-color .2s, background .2s;
+  overflow:hidden;
+}
+.floor::before{
+  content:''; position:absolute; left:0; top:0; bottom:0; width:4px;
+  background:var(--fc,var(--accent));
+}
+.floor:active{transform:scale(.985);}
+.floor.locked{opacity:.5; cursor:not-allowed; filter:grayscale(.6);}
+.floor.cleared{border-color:var(--fc,var(--accent));}
+.floor:not(.locked):hover{background:var(--panel2); border-color:var(--fc,var(--accent));}
+.fglyph{
+  width:54px; height:54px; flex:0 0 auto; border-radius:14px;
+  display:flex; align-items:center; justify-content:center; font-size:28px;
+  background:radial-gradient(circle at 50% 35%,var(--fc,var(--accent))22,transparent 70%);
+  border:1px solid var(--fc,var(--accent)); color:var(--fc,var(--accent));
+  text-shadow:0 0 14px var(--fc,var(--accent));
+}
+.finfo{flex:1; min-width:0;}
+.fnum{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--dim); letter-spacing:.16em;}
+.fname{font-family:'Do Hyeon',sans-serif; font-size:17px; margin:1px 0; color:var(--ink);}
+.fgrade{font-size:12px; color:var(--muted);}
+.fstars{font-size:13px; letter-spacing:1px; white-space:nowrap; color:var(--gold);}
+.fstars .e{color:var(--dim);}
+.flock{font-size:18px; color:var(--dim);}
+
+/* ---------- BATTLE ---------- */
+#battle{padding:18px 6px 14px;}
+.bar-row{display:flex; flex-direction:column; gap:5px; margin-bottom:8px;}
+.bar-head{display:flex; justify-content:space-between; align-items:baseline; font-size:12px;}
+.bar-head .nm{font-family:'Do Hyeon',sans-serif; font-size:15px;}
+.bar-head .hp{font-family:'JetBrains Mono',monospace; color:var(--muted); font-size:12px;}
+.bar-track{height:13px; border-radius:8px; background:rgba(255,255,255,.07); overflow:hidden; position:relative; border:1px solid var(--line2);}
+.bar-fill{height:100%; border-radius:8px; transition:width .5s cubic-bezier(.3,.8,.3,1); position:relative;}
+.bar-fill::after{content:''; position:absolute; inset:0; background:linear-gradient(180deg,rgba(255,255,255,.35),transparent 60%);}
+.bar-fill.foe{background:linear-gradient(90deg,#ff7a87,var(--crimson));}
+.bar-fill.hero{background:linear-gradient(90deg,var(--green),#2fb8a8);}
+
+.battle-scene{
+  position:relative; height:152px; margin:6px 0 4px;
+  display:flex; align-items:center; justify-content:center;
+}
+.guardian{
+  position:relative; display:flex; flex-direction:column; align-items:center; gap:6px;
+}
+.g-orb{
+  width:108px; height:108px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center; font-size:54px;
+  background:radial-gradient(circle at 50% 38%,var(--fc) -10%,transparent 66%);
+  border:2px solid var(--fc); color:#fff;
+  text-shadow:0 0 22px var(--fc); box-shadow:0 0 50px -6px var(--fc), inset 0 0 30px -10px var(--fc);
+  animation:gpulse 2.6s ease-in-out infinite;
+}
+@keyframes gpulse{0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(-7px) scale(1.03);}}
+.g-orb.hurt{animation:ghurt .42s;}
+@keyframes ghurt{0%{filter:brightness(2.4) saturate(.3);}30%{transform:translateX(-9px) scale(.95);}60%{transform:translateX(7px);}100%{transform:none;}}
+.g-orb.defeated{animation:gdie .8s forwards;}
+@keyframes gdie{to{transform:scale(0) rotate(180deg); opacity:0; filter:blur(8px);}}
+.g-name{font-family:'Do Hyeon',sans-serif; font-size:14px; color:var(--fc); text-shadow:0 0 12px var(--fc);}
+.g-ring{
+  position:absolute; width:138px; height:138px; border-radius:50%;
+  border:1px dashed var(--fc); opacity:.35; top:6px;
+  animation:spin 14s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.combo{
+  position:absolute; top:-4px; right:2px; text-align:right;
+  font-family:'Do Hyeon',sans-serif; pointer-events:none;
+}
+.combo .n{font-size:34px; line-height:1; color:var(--gold); text-shadow:0 0 18px var(--gold);}
+.combo .l{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.22em; color:var(--gold); opacity:.8;}
+.combo.show .n{animation:comboBump .35s;}
+@keyframes comboBump{0%{transform:scale(1.6);}100%{transform:scale(1);}}
+.combo.hidden{opacity:0;}
+
+/* timer ring */
+.tcorner{position:absolute; top:0; left:2px;}
+.tcorner svg{transform:rotate(-90deg);}
+.tcorner .num{
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  font-family:'JetBrains Mono',monospace; font-size:14px; font-weight:700;
+}
+
+/* problem card */
+.qcard{
+  background:var(--panel); border:1px solid var(--line); border-radius:var(--r);
+  padding:16px 16px 18px; flex:1; display:flex; flex-direction:column;
+  min-height:0; overflow:hidden;
+}
+.qmeta{display:flex; gap:8px; align-items:center; margin-bottom:10px; flex-wrap:wrap;}
+.tag{
+  font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.08em;
+  padding:4px 8px; border-radius:7px; background:var(--accent-soft); color:var(--accent);
+  border:1px solid var(--accent); white-space:nowrap;
+}
+.tag.grade{background:rgba(255,255,255,.05); color:var(--muted); border-color:var(--line);}
+.qprog{margin-left:auto; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--dim);}
+.qbody{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:0; gap:12px; padding:6px 0;}
+.qtext{
+  font-size:clamp(19px,5.4vw,26px); text-align:center; line-height:1.5;
+  white-space:pre-line; word-break:keep-all;
+}
+.qtext .mono{font-family:'JetBrains Mono',monospace; font-weight:700;}
+.qsvg{
+  background:#fbfcff; border-radius:14px; padding:10px; max-width:240px; width:100%;
+  box-shadow:0 6px 20px -8px rgba(0,0,0,.6); display:flex; justify-content:center;
+}
+.qsvg svg{width:100%; height:auto; max-height:180px;}
+
+/* choices */
+.choices{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px;}
+.choices.single{grid-template-columns:1fr;}
+.choice{
+  font-family:'JetBrains Mono','Gowun Dodum',monospace; font-weight:700;
+  font-size:clamp(15px,4.4vw,19px);
+  background:var(--panel2); border:1.5px solid var(--line);
+  border-radius:13px; padding:15px 12px; color:var(--ink); cursor:pointer;
+  transition:transform .1s, border-color .15s, background .15s;
+  min-height:54px; display:flex; align-items:center; justify-content:center;
+  text-align:center; word-break:break-all; line-height:1.3;
+}
+.choice:active{transform:scale(.96);}
+.choice:hover{border-color:var(--accent);}
+.choice.correct{background:rgba(82,224,138,.18); border-color:var(--good); color:var(--good); animation:cpop .4s;}
+.choice.wrong{background:rgba(255,93,108,.16); border-color:var(--bad); color:var(--bad); animation:cshake .4s;}
+.choice.dim{opacity:.4;}
+.choice.locked{pointer-events:none;}
+@keyframes cpop{0%{transform:scale(1);}40%{transform:scale(1.06);}100%{transform:scale(1);}}
+@keyframes cshake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
+
+/* feedback line */
+.fbline{
+  text-align:center; font-family:'Do Hyeon',sans-serif; font-size:15px;
+  height:24px; margin-top:10px; opacity:0; transition:opacity .2s;
+}
+.fbline.show{opacity:1;}
+.fbline.good{color:var(--good);} .fbline.bad{color:var(--bad);}
+
+/* damage float */
+.dmgfloat{
+  position:absolute; font-family:'Do Hyeon',sans-serif; font-size:30px; font-weight:bold;
+  pointer-events:none; z-index:5; text-shadow:0 2px 8px rgba(0,0,0,.6);
+}
+@keyframes dmgUp{0%{opacity:0; transform:translateY(6px) scale(.7);}20%{opacity:1; transform:translateY(-6px) scale(1.1);}100%{opacity:0; transform:translateY(-44px) scale(1);}}
+
+/* ---------- RESULT ---------- */
+#result{align-items:center; justify-content:center; text-align:center; gap:0;}
+.r-banner{font-family:'Do Hyeon',sans-serif; font-size:clamp(34px,11vw,54px); line-height:1; margin-bottom:6px;}
+.r-banner.win{color:var(--gold); text-shadow:0 0 36px var(--gold);}
+.r-banner.lose{color:var(--crimson); text-shadow:0 0 30px var(--crimson);}
+.r-stars{font-size:46px; letter-spacing:8px; margin:10px 0 6px; height:54px;}
+.r-stars .s{display:inline-block; animation:starPop .5s backwards;}
+.r-stars .e{color:var(--dim);}
+@keyframes starPop{from{transform:scale(0) rotate(-40deg); opacity:0;}to{transform:none; opacity:1;}}
+.r-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px; width:min(340px,90%); margin:16px 0 26px;}
+.r-stat{background:var(--panel); border:1px solid var(--line); border-radius:13px; padding:13px;}
+.r-stat .v{font-family:'JetBrains Mono',monospace; font-size:24px; font-weight:700; color:var(--accent);}
+.r-stat .l{font-size:12px; color:var(--muted); margin-top:2px;}
+.r-actions{display:flex; flex-direction:column; gap:11px; width:min(320px,86%);}
+
+/* toast */
+#toast{
+  position:fixed; left:50%; bottom:32px; transform:translateX(-50%) translateY(20px);
+  background:var(--panel2); border:1px solid var(--accent); color:var(--ink);
+  padding:12px 20px; border-radius:12px; font-size:14px; z-index:200;
+  opacity:0; transition:.35s; pointer-events:none; max-width:90vw; text-align:center;
+  box-shadow:0 10px 30px -10px rgba(0,0,0,.7);
+}
+#toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+.shake{animation:scn 0.32s;}
+@keyframes scn{0%,100%{transform:translate(0,0);}20%{transform:translate(-7px,3px);}40%{transform:translate(6px,-4px);}60%{transform:translate(-5px,-2px);}80%{transform:translate(4px,3px);}}
+
+.hint{font-size:12px; color:var(--dim); margin-top:14px; line-height:1.6;}
+.muteToggle{position:fixed; top:calc(env(safe-area-inset-top) + 10px); right:12px; z-index:120;}
+</style>
+</head>
+<body>
+<canvas id="bg-canvas"></canvas>
+<div id="stage"></div>
+<canvas id="fx-canvas"></canvas>
+<button class="iconbtn muteToggle" id="muteBtn" title="소리">🔊</button>
+<div id="toast"></div>
+<script>
+/* ============================================================
+   MATH ENGINE  (math-problem-engine.js  — 원본 그대로 임베드)
+   Stage 1~20, 61 problem types, SVG renderers, inverse-gen, mal-rule distractors
+   ============================================================ */
+(function(){
+const R = {
+  int(min, max){ return Math.floor(Math.random()*(max-min+1))+min; },
+  pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; },
+  nonZero(min, max){ let v; do{ v=this.int(min,max); }while(v===0); return v; },
+  signed(min, max){ return (Math.random()<0.5?1:-1)*this.int(min,max); },
+  multiple(min, max, multiple){ const lo=Math.ceil(min/multiple), hi=Math.floor(max/multiple); return this.int(lo,hi)*multiple; },
+  shuffle(arr){ const a=[...arr]; for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; },
+};
+function gcd(a,b){ a=Math.abs(a); b=Math.abs(b); while(b){ [a,b]=[b,a%b]; } return a; }
+function lcm(a,b){ return Math.abs(a*b)/gcd(a,b); }
+function reduceFrac(n,d){ const g=gcd(Math.abs(n),Math.abs(d)); return [n/g,d/g]; }
+function fmtFrac(n,d){ if(d===1) return `${n}`; const [rn,rd]=reduceFrac(n,d); return `${rn}/${rd}`; }
+function fmt(n){ return n<0?`(${n})`:`${n}`; }
+function nearbyDist(ans, count=3){
+  const candidates=[ans+1,ans-1,ans+2,ans-2,ans*2,Math.round(ans/2),-ans,ans+10,ans-10];
+  const result=[]; const seen=new Set([ans]);
+  for(const c of candidates){ if(!seen.has(c)){ seen.add(c); result.push(c);} if(result.length>=count) break; }
+  return result;
+}
+function fracDist(n,d){
+  const [rn,rd]=reduceFrac(n,d);
+  return [ `${rn+1}/${rd}`, rn-1>0?`${rn-1}/${rd}`:`${rn+2}/${rd}`, rd>2?`${rn}/${rd-1}`:`${rn}/${rd+1}` ];
+}
+
+const SVG = {
+  rectangle(w,h){
+    const SCALE=Math.min(28,200/Math.max(w,h)); const sw=w*SCALE, sh=h*SCALE; const vw=sw+90, vh=sh+70;
+    return `<svg viewBox="0 0 ${vw} ${vh}" xmlns="http://www.w3.org/2000/svg">
+  <rect x="45" y="15" width="${sw}" height="${sh}" fill="#dbeafe" stroke="#2563eb" stroke-width="2" rx="2"/>
+  <text x="${45+sw/2}" y="10" text-anchor="middle" font-size="13" fill="#1e40af" font-family="sans-serif">${w} cm</text>
+  <text x="${45+sw+14}" y="${15+sh/2+4}" text-anchor="middle" font-size="13" fill="#1e40af" font-family="sans-serif">${h} cm</text>
+  <text x="${45+sw/2}" y="${15+sh/2+6}" text-anchor="middle" font-size="20" fill="#dc2626" font-weight="bold" font-family="sans-serif">?</text>
+</svg>`;
+  },
+  triangle(b,h){
+    const SCALE=Math.min(26,180/Math.max(b,h)); const sb=b*SCALE, sh=h*SCALE; const vw=sb+90, vh=sh+70;
+    const pts=`45,${sh+20} ${45+sb},${sh+20} 45,20`;
+    return `<svg viewBox="0 0 ${vw} ${vh}" xmlns="http://www.w3.org/2000/svg">
+  <polygon points="${pts}" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/>
+  <rect x="45" y="${sh+12}" width="8" height="8" fill="none" stroke="#ca8a04" stroke-width="1.5"/>
+  <text x="${45+sb/2}" y="${sh+46}" text-anchor="middle" font-size="13" fill="#92400e" font-family="sans-serif">${b} cm</text>
+  <text x="18" y="${20+sh/2+4}" text-anchor="middle" font-size="13" fill="#92400e" font-family="sans-serif">${h} cm</text>
+  <text x="${45+sb/4}" y="${sh-8}" text-anchor="middle" font-size="20" fill="#dc2626" font-weight="bold" font-family="sans-serif">?</text>
+</svg>`;
+  },
+  circle(r){
+    const SCALE=Math.min(28,110/r); const sr=r*SCALE; const vw=sr*2+80, vh=sr*2+60; const cx=vw/2, cy=vh/2;
+    return `<svg viewBox="0 0 ${vw} ${vh}" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="${cx}" cy="${cy}" r="${sr}" fill="#f3e8ff" stroke="#7c3aed" stroke-width="2"/>
+  <line x1="${cx}" y1="${cy}" x2="${cx+sr}" y2="${cy}" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <text x="${cx+sr/2}" y="${cy-7}" text-anchor="middle" font-size="13" fill="#5b21b6" font-family="sans-serif">${r} cm</text>
+  <text x="${cx}" y="${cy+8}" text-anchor="middle" font-size="20" fill="#dc2626" font-weight="bold" font-family="sans-serif">?</text>
+</svg>`;
+  },
+  sector(r,deg){
+    const SCALE=Math.min(20,120/r); const sr=r*SCALE; const vw=sr*2+80, vh=sr*2+60; const cx=vw/2, cy=vh/2;
+    const rad=(deg*Math.PI)/180; const x1=cx+sr, y1=cy; const x2=cx+sr*Math.cos(rad), y2=cy-sr*Math.sin(rad); const large=deg>180?1:0;
+    return `<svg viewBox="0 0 ${vw} ${vh}" xmlns="http://www.w3.org/2000/svg">
+  <path d="M ${cx} ${cy} L ${x1} ${y1} A ${sr} ${sr} 0 ${large} 0 ${x2.toFixed(1)} ${y2.toFixed(1)} Z" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+  <text x="${cx+sr/2}" y="${cy+5}" font-size="12" fill="#166534" font-family="sans-serif">${r}cm</text>
+  <text x="${cx+18}" y="${cy-12}" font-size="12" fill="#166534" font-family="sans-serif">${deg}°</text>
+  <text x="${cx-10}" y="${cy-sr/3}" font-size="16" fill="#dc2626" font-weight="bold" font-family="sans-serif">?</text>
+</svg>`;
+  },
+  pythagorean(a,b,missing){
+    const SCALE=20; const sa=a*SCALE, sb=b*SCALE; const vw=sb+100, vh=sa+80; const pts=`50,${sa+20} ${50+sb},${sa+20} 50,20`;
+    const vals={ a:`${a}`, b:`${b}`, c:`${Math.round(Math.sqrt(a*a+b*b))}` }; if(missing) vals[missing]='?';
+    const col=(k)=>(k===missing?'#dc2626':'#374151');
+    return `<svg viewBox="0 0 ${vw} ${vh}" xmlns="http://www.w3.org/2000/svg">
+  <polygon points="${pts}" fill="#fff7ed" stroke="#ea580c" stroke-width="2"/>
+  <rect x="50" y="${sa+12}" width="8" height="8" fill="none" stroke="#ea580c" stroke-width="1.5"/>
+  <text x="${50+sb/2}" y="${sa+48}" text-anchor="middle" font-size="13" fill="${col('b')}" font-family="sans-serif">${vals.b} cm</text>
+  <text x="22" y="${20+sa/2+4}" text-anchor="middle" font-size="13" fill="${col('a')}" font-family="sans-serif">${vals.a} cm</text>
+  <text x="${50+sb/2+20}" y="${20+sa/2-4}" text-anchor="middle" font-size="13" fill="${col('c')}" font-family="sans-serif">${vals.c} cm</text>
+</svg>`;
+  },
+  linearFunc(slope,intercept){
+    const RANGE=5,S=36; const W=S*RANGE*2+60,H=S*RANGE*2+60; const ox=W/2,oy=H/2;
+    let g=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">`;
+    for(let i=-RANGE;i<=RANGE;i++){ const x=ox+i*S,y=oy+i*S;
+      g+=`<line x1="${x}" y1="${oy-RANGE*S}" x2="${x}" y2="${oy+RANGE*S}" stroke="#e5e7eb" stroke-width="0.5"/>`;
+      g+=`<line x1="${ox-RANGE*S}" y1="${y}" x2="${ox+RANGE*S}" y2="${y}" stroke="#e5e7eb" stroke-width="0.5"/>`; }
+    g+=`<line x1="${ox-RANGE*S}" y1="${oy}" x2="${ox+RANGE*S}" y2="${oy}" stroke="#6b7280" stroke-width="1.5"/>`;
+    g+=`<line x1="${ox}" y1="${oy+RANGE*S}" x2="${ox}" y2="${oy-RANGE*S}" stroke="#6b7280" stroke-width="1.5"/>`;
+    g+=`<text x="${ox+RANGE*S+8}" y="${oy+5}" font-size="13" fill="#6b7280" font-family="sans-serif">x</text>`;
+    g+=`<text x="${ox+5}" y="${oy-RANGE*S-5}" font-size="13" fill="#6b7280" font-family="sans-serif">y</text>`;
+    for(let i=-RANGE+1;i<=RANGE-1;i++){ if(i===0) continue;
+      g+=`<text x="${ox+i*S}" y="${oy+16}" text-anchor="middle" font-size="10" fill="#9ca3af" font-family="sans-serif">${i}</text>`;
+      g+=`<text x="${ox-14}" y="${oy-i*S+4}" text-anchor="middle" font-size="10" fill="#9ca3af" font-family="sans-serif">${i}</text>`; }
+    const fx1=-RANGE,fy1=slope*fx1+intercept; const fx2=RANGE,fy2=slope*fx2+intercept;
+    g+=`<line x1="${ox+fx1*S}" y1="${oy-fy1*S}" x2="${ox+fx2*S}" y2="${oy-fy2*S}" stroke="#dc2626" stroke-width="2.5"/>`;
+    g+=`<circle cx="${ox}" cy="${oy-intercept*S}" r="4" fill="#2563eb"/>`;
+    g+=`</svg>`; return g;
+  },
+  parabola(a,p=0,q=0){
+    const RANGE=4,S=38; const W=S*RANGE*2+80,H=S*RANGE*2+60; const ox=W/2,oy=H/2;
+    let g=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">`;
+    for(let i=-RANGE;i<=RANGE;i++){ const x=ox+i*S,y=oy+i*S;
+      g+=`<line x1="${x}" y1="${oy-RANGE*S}" x2="${x}" y2="${oy+RANGE*S}" stroke="#e5e7eb" stroke-width="0.5"/>`;
+      g+=`<line x1="${ox-RANGE*S}" y1="${y}" x2="${ox+RANGE*S}" y2="${y}" stroke="#e5e7eb" stroke-width="0.5"/>`; }
+    g+=`<line x1="${ox-RANGE*S}" y1="${oy}" x2="${ox+RANGE*S}" y2="${oy}" stroke="#6b7280" stroke-width="1.5"/>`;
+    g+=`<line x1="${ox}" y1="${oy+RANGE*S}" x2="${ox}" y2="${oy-RANGE*S}" stroke="#6b7280" stroke-width="1.5"/>`;
+    let d='';
+    for(let xv=-RANGE;xv<=RANGE;xv+=0.05){ const yv=a*(xv-p)*(xv-p)+q; const sx=ox+xv*S, sy=oy-yv*S; if(sy<-10||sy>H+10) continue; d+= d===''?`M ${sx.toFixed(1)} ${sy.toFixed(1)}`:` L ${sx.toFixed(1)} ${sy.toFixed(1)}`; }
+    g+=`<path d="${d}" fill="none" stroke="#dc2626" stroke-width="2"/>`;
+    const vx=ox+p*S, vy=oy-q*S;
+    g+=`<circle cx="${vx}" cy="${vy}" r="4" fill="#2563eb"/>`;
+    g+=`<text x="${vx+6}" y="${vy-5}" font-size="11" fill="#2563eb" font-family="sans-serif">(${p},${q})</text>`;
+    g+=`</svg>`; return g;
+  },
+};
+const PROBLEMS = {
+  ADD_1D:{ stage:1, grade:'초등 1학년', topic:'한 자리 덧셈',
+    generate(){ const a=R.int(1,9),b=R.int(1,9); return {a,b,ans:a+b}; },
+    template:p=>`${p.a} + ${p.b} = ?`, answer:p=>p.ans, distractors:p=>nearbyDist(p.ans), renderType:'text' },
+  SUB_1D:{ stage:1, grade:'초등 1학년', topic:'한 자리 뺄셈',
+    generate(){ const ans=R.int(1,8); const b=R.int(1,9-ans); return {a:ans+b,b,ans}; },
+    template:p=>`${p.a} - ${p.b} = ?`, answer:p=>p.ans, distractors:p=>nearbyDist(p.ans), renderType:'text' },
+  CMP_NUM:{ stage:1, grade:'초등 1학년', topic:'수의 크기 비교',
+    generate(){ const a=R.int(1,20),b=R.int(1,20); return {a,b,ans:a>b?'>':a<b?'<':'='}; },
+    template:p=>`${p.a}  □  ${p.b}  (□에 >, =, < 중 하나)`, answer:p=>p.ans, distractors:()=>['>','=','<'], renderType:'text' },
+
+  MUL_TABLE:{ stage:2, grade:'초등 2학년', topic:'구구단',
+    generate(){ const a=R.int(2,9),b=R.int(2,9); return {a,b,ans:a*b}; },
+    template:p=>`${p.a} × ${p.b} = ?`, answer:p=>p.ans,
+    distractors:p=>[(p.a+1)*p.b,(p.a-1)*p.b,p.a*(p.b+1)].filter(d=>d!==p.ans), renderType:'text' },
+  DIV_EXACT:{ stage:2, grade:'초등 2학년', topic:'나눗셈 (나머지 없음)',
+    generate(){ const ans=R.int(2,9),b=R.int(2,9); return {a:ans*b,b,ans}; },
+    template:p=>`${p.a} ÷ ${p.b} = ?`, answer:p=>p.ans, distractors:p=>nearbyDist(p.ans), renderType:'text' },
+  ADD_2D:{ stage:2, grade:'초등 2학년', topic:'두 자리 덧셈',
+    generate(){ const a=R.int(11,85),b=R.int(11,99-a); return {a,b,ans:a+b}; },
+    template:p=>`${p.a} + ${p.b} = ?`, answer:p=>p.ans,
+    distractors:p=>[p.ans-10,p.ans+10,p.ans-1].filter(d=>d>0&&d!==p.ans).slice(0,3), renderType:'text' },
+
+  FRAC_SAME:{ stage:3, grade:'초등 3~4학년', topic:'동분모 분수 덧셈',
+    generate(){ const d=R.int(5,10); const a=R.int(1,d-2),b=R.int(1,d-1-a); return {a,b,d,ans:fmtFrac(a+b,d)}; },
+    template:p=>`${p.a}/${p.d} + ${p.b}/${p.d} = ?`, answer:p=>p.ans, distractors:p=>fracDist(p.a+p.b,p.d), renderType:'text' },
+  RECT_AREA:{ stage:3, grade:'초등 3~4학년', topic:'직사각형 넓이',
+    generate(){ const w=R.int(2,14),h=R.int(2,14); return {w,h,ans:w*h}; },
+    template:p=>`가로 ${p.w}cm, 세로 ${p.h}cm인 직사각형의 넓이는? (단위: cm²)`, answer:p=>p.ans,
+    distractors:p=>[p.w+p.h,p.ans+p.w,p.ans-p.h].filter(d=>d>0&&d!==p.ans).slice(0,3),
+    renderType:'svg', svg:p=>SVG.rectangle(p.w,p.h) },
+  MUL_2D:{ stage:3, grade:'초등 3~4학년', topic:'두 자리 곱셈',
+    generate(){ const a=R.int(11,30),b=R.int(11,30); return {a,b,ans:a*b}; },
+    template:p=>`${p.a} × ${p.b} = ?`, answer:p=>p.ans,
+    distractors:p=>[p.ans+p.a,p.ans-p.b,p.ans+10].filter(d=>d!==p.ans).slice(0,3), renderType:'text' },
+
+  FRAC_DIFF:{ stage:4, grade:'초등 5학년', topic:'이분모 분수 덧셈 (통분)',
+    generate(){ const denoms=[[2,3],[2,5],[3,4],[4,6],[3,5]]; const [pd,qd]=R.pick(denoms);
+      const a=R.int(1,pd-1),b=R.int(1,qd-1); const l=lcm(pd,qd); const sumN=a*(l/pd)+b*(l/qd);
+      return {a,b,pd,qd,ans:fmtFrac(sumN,l)}; },
+    template:p=>`${p.a}/${p.pd} + ${p.b}/${p.qd} = ?`, answer:p=>p.ans,
+    distractors:p=>{ const [n,d]=p.ans.includes('/')?p.ans.split('/').map(Number):[Number(p.ans),1]; return fracDist(n,d); }, renderType:'text' },
+  TRI_AREA:{ stage:4, grade:'초등 5학년', topic:'삼각형 넓이',
+    generate(){ const b=R.multiple(2,16,2),h=R.multiple(2,16,2); return {b,h,ans:(b*h)/2}; },
+    template:p=>`밑변 ${p.b}cm, 높이 ${p.h}cm인 삼각형의 넓이는? (단위: cm²)`, answer:p=>p.ans,
+    distractors:p=>[p.b*p.h,p.ans+p.b,p.ans-p.h/2].filter(d=>d>0&&d!==p.ans).slice(0,3),
+    renderType:'svg', svg:p=>SVG.triangle(p.b,p.h) },
+  DECIMAL_MUL:{ stage:4, grade:'초등 5학년', topic:'소수 곱셈',
+    generate(){ const i=R.int(1,9),d=R.int(1,9),b=R.int(2,9); const ans=Math.round((i+d/10)*b*10)/10; return {a:`${i}.${d}`,b,ans}; },
+    template:p=>`${p.a} × ${p.b} = ?`, answer:p=>p.ans,
+    distractors:p=>[p.ans*10,p.ans+0.1,p.ans-0.1].filter(d=>d!==p.ans).slice(0,3), renderType:'text' },
+
+  FRAC_MUL:{ stage:5, grade:'초등 6학년', topic:'분수 곱셈',
+    generate(){ const a=R.int(2,5),b=R.int(2,5),k=R.int(1,6); return {a,b,c:b*k,d:a,ans:k}; },
+    template:p=>`${p.a}/${p.b} × ${p.c}/${p.d} = ?`, answer:p=>p.ans, distractors:p=>nearbyDist(p.ans), renderType:'text' },
+  CIRCLE_AREA:{ stage:5, grade:'초등 6학년', topic:'원의 넓이 (π=3.14)',
+    generate(){ const r=R.int(1,8); return {r,ans:Math.round(3.14*r*r*100)/100}; },
+    template:p=>`반지름 ${p.r}cm인 원의 넓이는? (π = 3.14, 단위: cm²)`, answer:p=>p.ans,
+    distractors:p=>[Math.round(3.14*(2*p.r)*(2*p.r)*100)/100,Math.round(2*3.14*p.r*100)/100,p.ans+3.14].filter(d=>d!==p.ans).slice(0,3),
+    renderType:'svg', svg:p=>SVG.circle(p.r) },
+  RATIO:{ stage:5, grade:'초등 6학년', topic:'비례식',
+    generate(){ let a,b,c,ans; for(let t=0;t<50;t++){ a=R.int(2,8);b=R.int(2,8);c=R.int(2,8); if((b*c)%a===0){ ans=(b*c)/a; break; } } return {a,b,c,ans}; },
+    template:p=>`${p.a} : ${p.b} = ${p.c} : x   →   x = ?`, answer:p=>p.ans, distractors:p=>nearbyDist(p.ans), renderType:'text' },
+
+  INT_ADD:{ stage:6, grade:'중학교 1학년', topic:'정수의 덧셈 (음수 포함)',
+    generate(){ const a=R.signed(1,15),b=R.signed(1,15); return {a,b,ans:a+b}; },
+    template:p=>`${fmt(p.a)} + ${fmt(p.b)} = ?`, answer:p=>p.ans,
+    distractors:p=>[p.ans+1,p.ans-1,-p.ans].filter(d=>d!==p.ans).slice(0,3), renderType:'text' },
+  INT_MUL:{ stage:6, grade:'중학교 1학년', topic:'정수의 곱셈 (부호 포함)',
+    generate(){ const a=R.nonZero(-9,9),b=R.nonZero(-9,9); return {a,b,ans:a*b}; },
+    template:p=>`${fmt(p.a)} × ${fmt(p.b)} = ?`, answer:p=>p.ans,
+    distractors:p=>[Math.abs(p.ans),-p.ans,p.ans+Math.abs(p.a)].filter(d=>d!==p.ans).slice(0,3), renderType:'text' },
+  PRIME_FACTOR:{ stage:6, grade:'중학교 1학년', topic:'소인수분해',
+    generate(){ const primes=[2,3,5,7,11,13]; let n,ans; const type=R.pick(['pp','p2p']);
+      if(type==='pp'){ const p1=R.pick(primes),p2=R.pick(primes.filter(x=>x!==p1)); n=p1*p2; ans=`${Math.min(p1,p2)} × ${Math.max(p1,p2)}`; }
+      else{ const p1=R.pick([2,3,5]),p2=R.pick(primes.filter(x=>x!==p1)); n=p1*p1*p2; ans=n<=200?`${p1}² × ${p2}`:`${p1} × ${p2}`; if(n>200) n=p1*p2; }
+      return {n,ans}; },
+    template:p=>`${p.n}을 소인수분해하면?`, answer:p=>p.ans,
+    distractors:p=>{ const wrong=[`${p.n} × 1`,`1 × ${p.n}`,`2 × ${Math.round(p.n/2)}`].filter(d=>d!==p.ans); return wrong.slice(0,3); }, renderType:'text' },
+
+  LINEAR_EQ_1:{ stage:7, grade:'중학교 1학년', topic:'일차방정식 (기본형)',
+    generate(){ const ans=R.nonZero(-10,10),a=R.nonZero(-5,5),b=R.int(-15,15); const c=a*ans+b; return {a,b,c,ans}; },
+    template:p=>`${p.a}x ${p.b>=0?'+':''}${p.b} = ${p.c}  →  x = ?`, answer:p=>p.ans,
+    distractors:p=>[p.ans+1,p.ans-1,-p.ans].filter(d=>d!==p.ans).slice(0,3), renderType:'text' },
+  LINEAR_EQ_2:{ stage:7, grade:'중학교 1학년', topic:'일차방정식 (이항)',
+    generate(){ let a,c; do{ a=R.nonZero(-4,4); c=R.nonZero(-4,4); }while(a===c); const ans=R.nonZero(-8,8),b=R.int(-10,10); const d=(a-c)*ans+b; return {a,b,c,d,ans}; },
+    template:p=>`${p.a}x ${p.b>=0?'+':''}${p.b} = ${p.c}x ${p.d>=0?'+':''}${p.d}  →  x = ?`, answer:p=>p.ans, distractors:p=>nearbyDist(p.ans), renderType:'text' },
+  LINEAR_EQ_APP:{ stage:7, grade:'중학교 1학년', topic:'일차방정식 활용 (나이 문제)',
+    generate(){ let d,x; for(let t=0;t<50;t++){ d=R.int(1,8); x=R.int(5,20); if((2*x+d)%2===0) break; } return {d,s:2*x+d,ans:x}; },
+    template:p=>`형은 동생보다 ${p.d}살 많습니다. 형과 동생의 나이 합이 ${p.s}살일 때, 동생의 나이는?`, answer:p=>p.ans,
+    distractors:p=>[p.ans+1,p.ans-1,p.ans+p.d].filter(d=>d>0&&d!==p.ans).slice(0,3), renderType:'text' },
+
+  POLYGON_ANGLE:{ stage:8, grade:'중학교 1학년', topic:'다각형 내각의 합',
+    generate(){ const n=R.int(3,10); return {n,ans:(n-2)*180}; },
+    template:p=>`${p.n}각형 내각의 합은?`, answer:p=>p.ans,
+    distractors:p=>[(p.n-1)*180,p.n*180,(p.n-2)*180+90].filter(d=>d!==p.ans).slice(0,3), renderType:'text' },
+  SECTOR_ARC:{ stage:8, grade:'중학교 1학년', topic:'부채꼴 호의 길이',
+    generate(){ const r=R.int(2,10); const deg=R.pick([30,45,60,90,120,150,180]); const ans=Math.round(2*3.14*r*(deg/360)*100)/100; return {r,deg,ans}; },
+    template:p=>`반지름 ${p.r}cm, 중심각 ${p.deg}°인 부채꼴의 호의 길이는? (π=3.14)`, answer:p=>p.ans,
+    distractors:p=>[Math.round(3.14*p.r*p.r*(p.deg/360)*100)/100,Math.round(2*3.14*p.r*100)/100,p.ans*2].filter(d=>d!==p.ans).slice(0,3),
+    renderType:'svg', svg:p=>SVG.sector(p.r,p.deg) },
+  PRISM_VOL:{ stage:8, grade:'중학교 1학년', topic:'직육면체 부피',
+    generate(){ const l=R.int(2,9),w=R.int(2,9),h=R.int(2,9); return {l,w,h,ans:l*w*h}; },
+    template:p=>`가로 ${p.l}cm, 세로 ${p.w}cm, 높이 ${p.h}cm인 직육면체의 부피는? (단위: cm³)`, answer:p=>p.ans,
+    distractors:p=>[2*(p.l*p.w+p.w*p.h+p.l*p.h),p.l*p.w+p.h,p.ans+p.l*p.w].filter(d=>d!==p.ans).slice(0,3), renderType:'text' },
+
+  INEQUALITY_1:{ stage:9, grade:'중학교 2학년', topic:'일차부등식',
+    generate(){ const a=R.nonZero(-4,4); const xBound=R.int(-5,5); const b=R.int(-10,10); const c=a>0?a*xBound+b-1:a*xBound+b+1; const sign=a>0?'>':'<'; return {a,b,c,ans:`x ${sign} ${xBound}`}; },
+    template:p=>`${p.a}x ${p.b>=0?'+':''}${p.b} > ${p.c}  →  x의 범위는?`, answer:p=>p.ans,
+    distractors:p=>{ const m=p.ans.match(/x\s*([<>])\s*(-?\d+)/); const s=m[1],n=Number(m[2]); return [`x ${s} ${n+1}`,`x ${s} ${n-1}`,`x ${s==='>'?'<':'>'} ${n}`]; }, renderType:'text' },
+  SIMUL_EQ:{ stage:9, grade:'중학교 2학년', topic:'연립방정식',
+    generate(){ let a1,b1,a2,b2; const x=R.nonZero(-5,5),y=R.nonZero(-5,5); do{ a1=R.nonZero(-3,3);b1=R.nonZero(-3,3);a2=R.nonZero(-3,3);b2=R.nonZero(-3,3); }while(a1*b2===a2*b1); const c1=a1*x+b1*y,c2=a2*x+b2*y; return {a1,b1,c1,a2,b2,c2,x,y}; },
+    template:p=>`다음 연립방정식의 해를 구하시오.\n${p.a1}x ${p.b1>=0?'+':''}${p.b1}y = ${p.c1}\n${p.a2}x ${p.b2>=0?'+':''}${p.b2}y = ${p.c2}`,
+    answer:p=>`x = ${p.x}, y = ${p.y}`, distractors:p=>[`x = ${p.x+1}, y = ${p.y}`,`x = ${p.x}, y = ${p.y+1}`,`x = ${p.y}, y = ${p.x}`], renderType:'text' },
+  CYCLE_DEC:{ stage:9, grade:'중학교 2학년', topic:'순환소수 → 분수 변환',
+    generate(){ const pool=[{dec:'0.3̄',ans:'1/3'},{dec:'0.6̄',ans:'2/3'},{dec:'0.1̄6̄',ans:'1/6'},{dec:'0.8̄3̄',ans:'5/6'},{dec:'0.1̄',ans:'1/9'},{dec:'0.4̄',ans:'4/9'},{dec:'0.7̄',ans:'7/9'},{dec:'0.ẇ',ans:'1/11'}]; return R.pick(pool); },
+    template:p=>`순환소수 ${p.dec}을(를) 분수로 나타내면?`, answer:p=>p.ans,
+    distractors:p=>{ const [n,d]=p.ans.split('/').map(Number); return [`${n+1}/${d}`,`${n}/${d+1}`,`${n}/${d-1||1}`].filter(s=>s!==p.ans); }, renderType:'text' },
+
+  LINEAR_FUNC_VAL:{ stage:10, grade:'중학교 2학년', topic:'일차함수 값 계산',
+    generate(){ const a=R.nonZero(-5,5),b=R.int(-10,10),xv=R.int(-5,5); return {a,b,xv,ans:a*xv+b}; },
+    template:p=>`y = ${p.a}x ${p.b>=0?'+':''}${p.b}에서 x = ${p.xv}일 때, y = ?`, answer:p=>p.ans, distractors:p=>nearbyDist(p.ans), renderType:'text' },
+  LINEAR_FUNC_GRAPH:{ stage:10, grade:'중학교 2학년', topic:'일차함수 그래프 (기울기/y절편)',
+    generate(){ const a=R.pick([-3,-2,-1,1,2,3]),b=R.int(-4,4); return {a,b}; },
+    template:p=>`y = ${p.a}x ${p.b>=0?'+':''}${p.b}의 기울기와 y절편은?`, answer:p=>`기울기 = ${p.a}, y절편 = ${p.b}`,
+    distractors:p=>[`기울기 = ${p.b}, y절편 = ${p.a}`,`기울기 = ${-p.a}, y절편 = ${p.b}`,`기울기 = ${p.a}, y절편 = ${-p.b}`],
+    renderType:'svg', svg:p=>SVG.linearFunc(p.a,p.b) },
+  LINEAR_FUNC_XINT:{ stage:10, grade:'중학교 2학년', topic:'일차함수 x절편',
+    generate(){ const a=R.nonZero(-3,3); const xint=R.nonZero(-5,5); const b=-a*xint; return {a,b,ans:xint}; },
+    template:p=>`일차함수 y = ${p.a}x ${p.b>=0?'+':''}${p.b}의 x절편은?`, answer:p=>p.ans, distractors:p=>nearbyDist(p.ans), renderType:'text' },
+
+  SIMILAR_RATIO:{ stage:11, grade:'중학교 2학년', topic:'닮음비 계산',
+    generate(){ const ratio=R.int(2,4),side=R.int(3,10); return {ratio,side,ans:side*ratio}; },
+    template:p=>`두 삼각형의 닮음비가 1 : ${p.ratio}이고, 작은 삼각형의 한 변이 ${p.side}cm일 때 대응변의 길이는?`, answer:p=>p.ans,
+    distractors:p=>[p.side+p.ratio,p.ans+1,p.ans-p.ratio].filter(d=>d>0&&d!==p.ans).slice(0,3), renderType:'text' },
+  PYTHAGORAS_1:{ stage:11, grade:'중학교 2학년', topic:'피타고라스 정리',
+    generate(){ const triples=[[3,4,5],[5,12,13],[8,15,17],[6,8,10],[9,12,15]]; const [a,b,c]=R.pick(triples); const missing=R.pick(['a','b','c']); const vals={a,b,c}; return {a,b,c,missing,ans:vals[missing]}; },
+    template(p){ const show=(k)=>(k===p.missing?'?':`${p[k]}cm`); return `직각삼각형에서 밑변 = ${show('a')}, 높이 = ${show('b')}, 빗변 = ${show('c')}  →  ? = ?`; },
+    answer:p=>p.ans, distractors:p=>nearbyDist(p.ans), renderType:'svg', svg:p=>SVG.pythagorean(p.a,p.b,p.missing) },
+  PYTHAGORAS_APP:{ stage:11, grade:'중학교 2학년', topic:'피타고라스 활용 (사다리)',
+    generate(){ const triples=[[3,4,5],[5,12,13],[8,15,17]]; const [a,b,c]=R.pick(triples); const k=R.int(1,3); return {ground:a*k,height:b*k,ans:c*k}; },
+    template:p=>`벽에서 ${p.ground}m 떨어진 곳에 발을 두고, ${p.height}m 높이 지점에 기댄 사다리의 길이는?`, answer:p=>p.ans, distractors:p=>nearbyDist(p.ans), renderType:'text' },
+
+  PROB_BASIC:{ stage:12, grade:'중학교 2학년', topic:'기본 확률',
+    generate(){ const total=R.int(4,15),fav=R.int(1,total-1); return {total,fav,ans:fmtFrac(fav,total)}; },
+    template:p=>`주머니에 공 ${p.total}개 중 빨간 공이 ${p.fav}개입니다. 임의로 꺼낸 공이 빨간 공일 확률은?`, answer:p=>p.ans, distractors:p=>fracDist(p.fav,p.total), renderType:'text' },
+  PROB_COMP:{ stage:12, grade:'중학교 2학년', topic:'여사건 확률',
+    generate(){ let n,d; do{ n=R.int(1,5); d=R.int(4,9); }while(n>=d); return {n,d,ans:fmtFrac(d-n,d)}; },
+    template:p=>`어떤 사건이 일어날 확률이 ${p.n}/${p.d}일 때, 이 사건이 일어나지 않을 확률은?`, answer:p=>p.ans, distractors:p=>fracDist(p.d-p.n,p.d), renderType:'text' },
+  PROB_MULT:{ stage:12, grade:'중학교 2학년', topic:'확률의 곱 (독립사건)',
+    generate(){ const p1n=R.int(1,3),p1d=R.int(p1n+1,5); const p2n=R.int(1,3),p2d=R.int(p2n+1,5); return {p1n,p1d,p2n,p2d,ans:fmtFrac(p1n*p2n,p1d*p2d)}; },
+    template:p=>`P(A) = ${p.p1n}/${p.p1d}, P(B) = ${p.p2n}/${p.p2d}일 때, A와 B가 동시에 일어날 확률은?`, answer:p=>p.ans, distractors:p=>fracDist(p.p1n*p.p2n,p.p1d*p.p2d), renderType:'text' },
+
+  SQRT_BASIC:{ stage:13, grade:'중학교 3학년', topic:'제곱근 계산 (완전제곱수)',
+    generate(){ const ans=R.int(2,12); return {n:ans*ans,ans}; },
+    template:p=>`√${p.n} = ?`, answer:p=>p.ans, distractors:p=>[p.ans+1,p.ans-1,p.n/2].filter(d=>d>0&&d!==p.ans).slice(0,3), renderType:'text' },
+  SQRT_SIMPLIFY:{ stage:13, grade:'중학교 3학년', topic:'제곱근 간단히 하기',
+    generate(){ const a=R.int(2,5); const k=R.pick([2,3,5,6,7,10]); return {n:a*a*k,a,k,ans:`${a}√${k}`}; },
+    template:p=>`√${p.n}을 가장 간단한 형태로 나타내면?`, answer:p=>p.ans,
+    distractors:p=>[`${p.a+1}√${p.k}`,`${p.a}√${p.k+1}`,`${p.a-1}√${p.k*p.a}`].filter(d=>d!==p.ans), renderType:'text' },
+  SQRT_ARITH:{ stage:13, grade:'중학교 3학년', topic:'제곱근 사칙연산 (동류항)',
+    generate(){ const k=R.pick([2,3,5,6]); const a=R.int(1,5),b=R.int(1,5); return {a,b,k,ans:`${a+b}√${k}`}; },
+    template:p=>`${p.a}√${p.k} + ${p.b}√${p.k} = ?`, answer:p=>p.ans,
+    distractors:p=>[`${p.a+p.b+1}√${p.k}`,`${p.a*p.b}√${p.k}`,`${p.a+p.b}√${p.k*2}`].filter(d=>d!==p.ans), renderType:'text' },
+
+  QUAD_FACTOR:{ stage:14, grade:'중학교 3학년', topic:'이차방정식 (인수분해)',
+    generate(){ let pv,qv; do{ pv=R.int(-6,6); qv=R.int(-6,6); }while(pv===qv); const b=pv+qv,c=pv*qv; return {b,c,pv,qv,ans:`x = ${-pv} 또는 x = ${-qv}`}; },
+    template:p=>`x² ${p.b>=0?'+':''}${p.b}x ${p.c>=0?'+':''}${p.c} = 0  →  x = ?`, answer:p=>p.ans,
+    distractors:p=>[`x = ${p.pv} 또는 x = ${p.qv}`,`x = ${-p.pv} 또는 x = ${-p.qv+1}`,`x = ${-p.pv+1} 또는 x = ${-p.qv}`].filter(d=>d!==p.ans), renderType:'text' },
+  QUAD_FORMULA:{ stage:14, grade:'중학교 3학년', topic:'이차방정식 (근의 공식)',
+    generate(){ let pv,qv; do{ pv=R.int(-4,4); qv=R.int(-4,4); }while(pv===qv); const b=-(pv+qv),c=pv*qv; return {b,c,pv,qv,ans:`x = ${pv} 또는 x = ${qv}`}; },
+    template:p=>`근의 공식을 이용하여 x² ${p.b>=0?'+':''}${p.b}x ${p.c>=0?'+':''}${p.c} = 0을 풀면?`, answer:p=>p.ans,
+    distractors:p=>[`x = ${p.pv+1} 또는 x = ${p.qv}`,`x = ${p.pv} 또는 x = ${p.qv+1}`,`x = ${-p.pv} 또는 x = ${-p.qv}`].filter(d=>d!==p.ans), renderType:'text' },
+  QUAD_EQ_APP:{ stage:14, grade:'중학교 3학년', topic:'이차방정식 활용',
+    generate(){ const x=R.int(3,12); return {n:x*(x+1),ans:x}; },
+    template:p=>`연속하는 두 자연수의 곱이 ${p.n}일 때, 더 작은 수는?`, answer:p=>p.ans,
+    distractors:p=>[p.ans+1,p.ans-1,p.ans+2].filter(d=>d>0&&d!==p.ans).slice(0,3), renderType:'text' },
+
+  QUAD_FUNC_VAL:{ stage:15, grade:'중학교 3학년', topic:'y = ax² 값 계산',
+    generate(){ const a=R.pick([-3,-2,-1,1,2,3]); const xv=R.nonZero(-4,4); return {a,xv,ans:a*xv*xv}; },
+    template:p=>`y = ${p.a}x²에서 x = ${p.xv}일 때, y = ?`, answer:p=>p.ans, distractors:p=>nearbyDist(p.ans), renderType:'text' },
+  QUAD_FUNC_VERTEX:{ stage:15, grade:'중학교 3학년', topic:'이차함수 꼭짓점 좌표',
+    generate(){ const a=R.pick([-2,-1,1,2]); const pv=R.int(-4,4),q=R.int(-4,4); return {a,pv,q,ans:`(${pv}, ${q})`}; },
+    template:p=>`y = ${p.a}(x ${p.pv>=0?'-':'+'}${Math.abs(p.pv)})² ${p.q>=0?'+':''}${p.q}의 꼭짓점 좌표는?`, answer:p=>p.ans,
+    distractors:p=>[`(${-p.pv}, ${p.q})`,`(${p.pv}, ${-p.q})`,`(${p.pv+1}, ${p.q})`].filter(d=>d!==p.ans),
+    renderType:'svg', svg:p=>SVG.parabola(p.a,p.pv,p.q) },
+  QUAD_FUNC_MAXMIN:{ stage:15, grade:'중학교 3학년', topic:'이차함수 최댓값/최솟값',
+    generate(){ const a=R.pick([-2,-1,1,2]); const pv=R.int(-3,3),q=R.int(-5,5); const isMax=a<0; return {a,pv,q,isMax,ans:q}; },
+    template:p=>`y = ${p.a}(x ${p.pv>=0?'-':'+'}${Math.abs(p.pv)})² ${p.q>=0?'+':''}${p.q}의 ${p.isMax?'최댓값':'최솟값'}은?`, answer:p=>p.ans, distractors:p=>nearbyDist(p.ans), renderType:'text' },
+
+  TRIG_SPECIAL:{ stage:16, grade:'중학교 3학년', topic:'특수각 삼각비',
+    generate(){ const pool=[{deg:30,fn:'sin',ans:'1/2'},{deg:30,fn:'cos',ans:'√3/2'},{deg:30,fn:'tan',ans:'√3/3'},{deg:45,fn:'sin',ans:'√2/2'},{deg:45,fn:'cos',ans:'√2/2'},{deg:45,fn:'tan',ans:'1'},{deg:60,fn:'sin',ans:'√3/2'},{deg:60,fn:'cos',ans:'1/2'},{deg:60,fn:'tan',ans:'√3'}]; return R.pick(pool); },
+    template:p=>`${p.fn}(${p.deg}°) = ?`, answer:p=>p.ans,
+    distractors:()=>{ const all=['1/2','√3/2','√2/2','√3/3','√3','1']; return R.shuffle(all).slice(0,3); }, renderType:'text' },
+  TRIG_FIND_SIDE:{ stage:16, grade:'중학교 3학년', topic:'삼각비로 변의 길이',
+    generate(){ const triples=[[3,4,5],[5,12,13],[8,15,17],[6,8,10]]; const [a,b,c]=R.pick(triples); const k=R.int(1,3); return {a:a*k,b:b*k,c:c*k,ans:b*k}; },
+    template:p=>`직각삼각형에서 빗변 = ${p.c}cm, 밑변 = ${p.a}cm일 때 높이는?`, answer:p=>p.ans, distractors:p=>nearbyDist(p.ans),
+    renderType:'svg', svg:p=>SVG.pythagorean(p.a,p.b,'b') },
+  TRIG_AREA:{ stage:16, grade:'중학교 3학년', topic:'삼각비로 삼각형 넓이',
+    generate(){ const a=R.int(2,10),b=R.int(2,10); const entry=R.pick([{deg:30,sin:0.5,sinStr:'1/2'},{deg:60,sin:Math.sqrt(3)/2,sinStr:'√3/2'},{deg:90,sin:1,sinStr:'1'},{deg:120,sin:Math.sqrt(3)/2,sinStr:'√3/2'},{deg:150,sin:0.5,sinStr:'1/2'}]); const ans=Math.round(0.5*a*b*entry.sin*100)/100; return {a,b,deg:entry.deg,sinStr:entry.sinStr,ans}; },
+    template:p=>`두 변 ${p.a}cm, ${p.b}cm이고 끼인각이 ${p.deg}°인 삼각형의 넓이는?`, answer:p=>p.ans,
+    distractors:p=>[Math.round(p.a*p.b/2*100)/100,p.ans*2,Math.round(p.ans+p.a)].filter(d=>d!==p.ans).slice(0,3), renderType:'text' },
+
+  QUAD_DISCRIMINANT:{ stage:17, grade:'중학교 3학년', topic:'이차방정식 판별식',
+    generate(){ const cases=[{b:4,c:3,D:4,ans:'서로 다른 두 실수 근'},{b:6,c:9,D:0,ans:'중근 (실수 근 1개)'},{b:2,c:5,D:-16,ans:'실수 근 없음'}]; const base=R.pick(cases); const a=R.pick([1,2,3]); return {...base,a}; },
+    template:p=>`${p.a}x² + ${p.b}x + ${p.c} = 0의 근의 종류는?`, answer:p=>p.ans,
+    distractors:()=>['서로 다른 두 실수 근','중근 (실수 근 1개)','실수 근 없음'], renderType:'text' },
+  STATS_AVG:{ stage:17, grade:'중학교 3학년', topic:'평균과 중앙값',
+    generate(){ const n=R.pick([5,7]); const data=Array.from({length:n},()=>R.int(1,20)).sort((a,b)=>a-b); const avg=Math.round(data.reduce((s,x)=>s+x,0)/n*10)/10; const median=data[Math.floor(n/2)]; const q=R.pick(['avg','median']); return {data,avg,median,q,ans:q==='avg'?avg:median}; },
+    template:p=>`자료 [${p.data.join(', ')}]의 ${p.q==='avg'?'평균':'중앙값'}은?`, answer:p=>p.ans, distractors:p=>nearbyDist(p.ans), renderType:'text' },
+  STATS_VARIANCE:{ stage:17, grade:'중학교 3학년', topic:'분산',
+    generate(){ const avgVal=R.int(3,8); const devs=[R.int(-3,3),R.int(-3,3),R.int(-3,3),R.int(-3,3),R.int(-3,3)]; const data=devs.map(d=>avgVal+d); const variance=Math.round(devs.map(d=>d*d).reduce((s,x)=>s+x,0)/5*10)/10; return {data,avgVal,variance,ans:variance}; },
+    template:p=>`자료 [${p.data.join(', ')}]의 분산은? (평균 = ${p.avgVal})`, answer:p=>p.ans, distractors:p=>nearbyDist(p.ans), renderType:'text' },
+
+  CIRCLE_INSCRIBED_ANGLE:{ stage:18, grade:'중학교 3학년', topic:'원주각과 중심각',
+    generate(){ const center=R.multiple(20,160,20); return {center,ans:center/2}; },
+    template:p=>`중심각이 ${p.center}°일 때, 같은 호에 대한 원주각의 크기는?`, answer:p=>p.ans,
+    distractors:p=>[p.center,p.ans+10,p.ans-10].filter(d=>d>0&&d!==p.ans).slice(0,3), renderType:'text' },
+  CIRCLE_TANGENT:{ stage:18, grade:'중학교 3학년', topic:'접선의 성질',
+    generate(){ const tl=R.int(3,12); return {tl,ans:tl}; },
+    template:p=>`원 밖의 점 P에서 원에 두 접선을 그었을 때, 한 접선의 길이가 ${p.tl}cm이면 다른 접선의 길이는?`, answer:p=>p.ans,
+    distractors:p=>[p.ans+1,p.ans-1,p.ans*2].filter(d=>d>0&&d!==p.ans).slice(0,3), renderType:'text' },
+  CIRCLE_CHORD:{ stage:18, grade:'중학교 3학년', topic:'현과 중심',
+    generate(){ const pool=[[3,4,5],[5,12,13],[8,15,17]]; const [d,half,r]=R.pick(pool); return {r,d,half,ans:half*2}; },
+    template:p=>`반지름 ${p.r}인 원에서 원의 중심으로부터 거리가 ${p.d}인 현의 길이는?`, answer:p=>p.ans,
+    distractors:p=>[p.half,p.ans+2,p.ans-2].filter(d=>d>0&&d!==p.ans).slice(0,3), renderType:'text' },
+
+  STATS_STD_COMPARE:{ stage:19, grade:'중학교 3학년', topic:'표준편차 비교',
+    generate(){ const cases=[{stdA:2.1,stdB:4.5,q:'성적이 더 고른 반',ans:'A반'},{stdA:3.0,stdB:1.2,q:'성적 분포가 더 넓은 반',ans:'A반'},{stdA:5.0,stdB:2.0,q:'표준편차가 더 작은 반',ans:'B반'}]; return R.pick(cases); },
+    template:p=>`A반 표준편차 = ${p.stdA}, B반 표준편차 = ${p.stdB}. "${p.q}"은?`, answer:p=>p.ans,
+    distractors:()=>['A반','B반','두 반 같음','알 수 없음'], renderType:'text' },
+  STATS_RELATIVE_FREQ:{ stage:19, grade:'중학교 3학년', topic:'상대도수',
+    generate(){ const total=R.pick([20,25,40,50]); const freq=R.int(2,total-2); return {total,freq,ans:Math.round(freq/total*100)/100}; },
+    template:p=>`전체 ${p.total}명 중 ${p.freq}명이 해당 계급에 속할 때, 상대도수는?`, answer:p=>p.ans,
+    distractors:p=>[Math.round((p.freq-1)/p.total*100)/100,Math.round(p.freq/(p.total+5)*100)/100,Math.round(p.ans*2*100)/100].filter(d=>d!==p.ans).slice(0,3), renderType:'text' },
+  STATS_SCATTER:{ stage:19, grade:'중학교 3학년', topic:'산점도와 상관관계',
+    generate(){ return R.pick([{desc:'키가 클수록 몸무게가 많이 나가는 경향',ans:'양의 상관관계'},{desc:'기온이 높을수록 코코아 판매량이 줄어드는 경향',ans:'음의 상관관계'},{desc:'신발 사이즈와 수학 성적의 관계',ans:'상관관계 없음'},{desc:'공부 시간이 길수록 시험 점수가 높아지는 경향',ans:'양의 상관관계'}]); },
+    template:p=>`"${p.desc}"가 나타날 때 산점도의 특징은?`, answer:p=>p.ans,
+    distractors:()=>['양의 상관관계','음의 상관관계','상관관계 없음'], renderType:'text' },
+
+  COMP_QUAD_FUNC:{ stage:20, grade:'중학교 3학년', topic:'이차함수 종합',
+    generate(){ const a=R.pick([-2,-1,1,2]); const pv=R.int(-3,3),q=R.int(-4,4); const xv=pv+R.pick([-2,-1,1,2]); return {a,pv,q,xv,ans:a*Math.pow(xv-pv,2)+q}; },
+    template:p=>`y = ${p.a}(x ${p.pv>=0?'-':'+'}${Math.abs(p.pv)})² ${p.q>=0?'+':''}${p.q}에서 x = ${p.xv}일 때, y = ?`, answer:p=>p.ans,
+    distractors:p=>nearbyDist(p.ans), renderType:'svg', svg:p=>SVG.parabola(p.a,p.pv,p.q) },
+  COMP_TRIG_PYTHAG:{ stage:20, grade:'중학교 3학년', topic:'삼각비 + 피타고라스 종합',
+    generate(){ const triples=[[3,4,5],[5,12,13],[8,15,17]]; const [a,b,c]=R.pick(triples); const fn=R.pick(['sin','cos','tan']); const ans=fn==='sin'?`${b}/${c}`:fn==='cos'?`${a}/${c}`:`${b}/${a}`; return {a,b,c,fn,ans}; },
+    template:p=>`직각삼각형에서 밑변=${p.a}, 높이=${p.b}, 빗변=${p.c}일 때 ${p.fn}(θ) = ?`, answer:p=>p.ans,
+    distractors:p=>[`${p.b}/${p.c}`,`${p.a}/${p.c}`,`${p.b}/${p.a}`,`${p.a}/${p.b}`].filter(o=>o!==p.ans).slice(0,3),
+    renderType:'svg', svg:p=>SVG.pythagorean(p.a,p.b,null) },
+  COMP_STAT_PROB:{ stage:20, grade:'중학교 3학년', topic:'통계 + 확률 종합',
+    generate(){ const n=6; const data=Array.from({length:n},()=>R.int(1,10)).sort((a,b)=>a-b); const avg=data.reduce((s,x)=>s+x,0)/n; const aboveCnt=data.filter(x=>x>avg).length; return {data,avg:Math.round(avg*10)/10,aboveCnt,ans:fmtFrac(aboveCnt,n)}; },
+    template:p=>`자료 [${p.data.join(', ')}]의 평균은 ${p.avg}입니다. 이 자료에서 임의로 하나를 뽑을 때 평균보다 큰 값일 확률은?`, answer:p=>p.ans,
+    distractors:p=>fracDist(p.aboveCnt,6), renderType:'text' },
+};
+
+const STAGE_MAP = {
+  1:['ADD_1D','SUB_1D','CMP_NUM'], 2:['MUL_TABLE','DIV_EXACT','ADD_2D'], 3:['FRAC_SAME','RECT_AREA','MUL_2D'],
+  4:['FRAC_DIFF','TRI_AREA','DECIMAL_MUL'], 5:['FRAC_MUL','CIRCLE_AREA','RATIO'], 6:['INT_ADD','INT_MUL','PRIME_FACTOR'],
+  7:['LINEAR_EQ_1','LINEAR_EQ_2','LINEAR_EQ_APP'], 8:['POLYGON_ANGLE','SECTOR_ARC','PRISM_VOL'], 9:['INEQUALITY_1','SIMUL_EQ','CYCLE_DEC'],
+  10:['LINEAR_FUNC_VAL','LINEAR_FUNC_GRAPH','LINEAR_FUNC_XINT'], 11:['SIMILAR_RATIO','PYTHAGORAS_1','PYTHAGORAS_APP'],
+  12:['PROB_BASIC','PROB_COMP','PROB_MULT'], 13:['SQRT_BASIC','SQRT_SIMPLIFY','SQRT_ARITH'], 14:['QUAD_FACTOR','QUAD_FORMULA','QUAD_EQ_APP'],
+  15:['QUAD_FUNC_VAL','QUAD_FUNC_VERTEX','QUAD_FUNC_MAXMIN'], 16:['TRIG_SPECIAL','TRIG_FIND_SIDE','TRIG_AREA'],
+  17:['QUAD_DISCRIMINANT','STATS_AVG','STATS_VARIANCE'], 18:['CIRCLE_INSCRIBED_ANGLE','CIRCLE_TANGENT','CIRCLE_CHORD'],
+  19:['STATS_STD_COMPARE','STATS_RELATIVE_FREQ','STATS_SCATTER'], 20:['COMP_QUAD_FUNC','COMP_TRIG_PYTHAG','COMP_STAT_PROB'],
+};
+
+function generateProblem(stage, typeId=null){
+  const types=STAGE_MAP[stage]; if(!types) throw new Error(`Invalid stage: ${stage}`);
+  const id=typeId||R.pick(types); const def=PROBLEMS[id]; if(!def) throw new Error(`Unknown problem type: ${id}`);
+  const params=def.generate();
+  const correctAns=String(def.answer(params));
+  let wrongs=def.distractors(params).map(String).filter(d=>d!==correctAns).slice(0,3);
+  while(wrongs.length<3){
+    const fallback=String(nearbyDist(Number(correctAns),1)[0]);
+    if(!wrongs.includes(fallback)&&fallback!==correctAns) wrongs.push(fallback);
+    else wrongs.push(String(Number(correctAns)+wrongs.length+5));
+  }
+  return {
+    typeId:id, stage:def.stage, grade:def.grade, topic:def.topic,
+    questionText:def.template(params), answer:correctAns,
+    choices:R.shuffle([correctAns,...wrongs.slice(0,3)]),
+    renderType:def.renderType, svgContent:def.renderType==='svg'?def.svg(params):null,
+  };
+}
+function generateStageSet(stage){ return STAGE_MAP[stage].map(id=>generateProblem(stage,id)); }
+
+window.MathEngine = { generateProblem, generateStageSet, PROBLEMS, STAGE_MAP };
+})();
+</script>
+
+<script>
+/* ============================================================
+   TOWER OF ARITHMOS  —  game layer on top of MathEngine
+   ============================================================ */
+const ME = window.MathEngine;
+const $ = (s,r=document)=>r.querySelector(s);
+const stageEl = $('#stage');
+
+/* ---------- floor / guardian metadata (20 floors) ---------- */
+const FLOORS = [
+  {n:'수의 새싹',      g:'🌱', c:'#7fd97a'},
+  {n:'구구의 정령',    g:'✦',  c:'#7fd97a'},
+  {n:'넓이의 파수꾼',  g:'◆',  c:'#f0b95a'},
+  {n:'분수의 환영',    g:'❖',  c:'#f0b95a'},
+  {n:'원환의 수호자',  g:'◉',  c:'#f0b95a'},
+  {n:'음수의 그림자',  g:'◐',  c:'#3fe0cf'},
+  {n:'균형의 저울',    g:'⚖',  c:'#3fe0cf'},
+  {n:'각의 건축가',    g:'△',  c:'#3fe0cf'},
+  {n:'경계의 문지기',  g:'≷',  c:'#62a8ff'},
+  {n:'직선의 항해사',  g:'╱',  c:'#62a8ff'},
+  {n:'닮은 자의 거울', g:'⧓',  c:'#62a8ff'},
+  {n:'운명의 주사위',  g:'⚄',  c:'#62a8ff'},
+  {n:'근원의 뿌리',    g:'√',  c:'#a07bf2'},
+  {n:'이중근의 마녀',  g:'✕',  c:'#a07bf2'},
+  {n:'포물선의 용',    g:'∪',  c:'#a07bf2'},
+  {n:'삼각의 현자',    g:'∡',  c:'#ff7aa0'},
+  {n:'분포의 점성술사',g:'✺',  c:'#ff7aa0'},
+  {n:'원환의 대공',    g:'⊙',  c:'#ff7aa0'},
+  {n:'상관의 예언자',  g:'∿',  c:'#ff7aa0'},
+  {n:'탑의 군주',      g:'♛',  c:'#f7c948'},
+];
+const GRADE_OF = s => ME.PROBLEMS[ME.STAGE_MAP[s][0]].grade;
+const hitsNeeded = s => s===20?8 : s>=11?6 : 5;
+const heroDmg   = s => 14 + Math.floor(s*1.2);
+
+/* ---------- persistence (works locally; safe no-op in sandbox) ---------- */
+const KEY='arithmos_save_v1';
+const mem={};
+function loadSave(){
+  try{ const r=localStorage.getItem(KEY); if(r) return JSON.parse(r); }catch(e){}
+  if(mem[KEY]) return JSON.parse(mem[KEY]);
+  return {stars:{}, totalScore:0};
+}
+function writeSave(d){
+  const s=JSON.stringify(d);
+  try{ localStorage.setItem(KEY,s); }catch(e){}
+  mem[KEY]=s;
+}
+let SAVE=loadSave();
+const isUnlocked = s => s===1 || (SAVE.stars[s-1]>=1);
+const maxUnlocked = ()=>{ let m=1; for(let s=1;s<=20;s++){ if(isUnlocked(s)) m=s; } return m; };
+
+/* ---------- audio (procedural SFX) ---------- */
+let AC=null, muted=false;
+function ac(){ if(!AC){ try{ AC=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } if(AC&&AC.state==='suspended') AC.resume(); return AC; }
+function tone(freq,t0,dur,type='sine',vol=.18){
+  const c=ac(); if(!c||muted) return;
+  const o=c.createOscillator(), g=c.createGain();
+  o.type=type; o.frequency.value=freq;
+  o.connect(g); g.connect(c.destination);
+  const t=c.currentTime+t0;
+  g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(vol,t+0.015);
+  g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+  o.start(t); o.stop(t+dur+0.02);
+}
+const sfx={
+  tap(){ tone(420,0,.07,'triangle',.10); },
+  correct(){ tone(660,0,.12,'triangle',.16); tone(880,.08,.16,'triangle',.16); tone(1180,.17,.2,'sine',.12); },
+  wrong(){ tone(180,0,.18,'sawtooth',.14); tone(120,.07,.22,'sawtooth',.12); },
+  combo(n){ tone(700+n*40,0,.1,'square',.10); },
+  clear(){ [523,659,784,1046,1318].forEach((f,i)=>tone(f,i*.09,.3,'triangle',.16)); },
+  lose(){ [440,392,330,247].forEach((f,i)=>tone(f,i*.13,.34,'sawtooth',.14)); },
+  hit(){ tone(90,0,.16,'square',.16); },
+};
+$('#muteBtn').onclick=()=>{ muted=!muted; $('#muteBtn').textContent=muted?'🔇':'🔊'; if(!muted) sfx.tap(); };
+
+/* ---------- toast ---------- */
+let toastT=null;
+function toast(msg){ const e=$('#toast'); e.textContent=msg; e.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>e.classList.remove('show'),1900); }
+
+/* ---------- background canvas (drifting glyphs) ---------- */
+const bg=$('#bg-canvas'), bx=bg.getContext('2d');
+let bgGlyphs=[], accent='#3fe0cf';
+const GLYPHS='+−×÷=√∑π∞∫≠≈△◯□◇xy²³½⅓∠%012345789'.split('');
+function sizeCanvas(c){ const d=Math.min(devicePixelRatio||1,2); c.width=innerWidth*d; c.height=innerHeight*d; c.style.width=innerWidth+'px'; c.style.height=innerHeight+'px'; return d; }
+let bgDpr=1, fxDpr=1;
+function initBg(){
+  bgDpr=sizeCanvas(bg);
+  bgGlyphs=[];
+  const N=Math.round(innerWidth*innerHeight/26000)+18;
+  for(let i=0;i<N;i++) bgGlyphs.push({
+    x:Math.random()*innerWidth, y:Math.random()*innerHeight,
+    s:8+Math.random()*22, vy:-(.12+Math.random()*.4), vx:(Math.random()-.5)*.18,
+    a:.04+Math.random()*.12, g:GLYPHS[(Math.random()*GLYPHS.length)|0], rot:Math.random()*6,
+  });
+}
+function drawBg(){
+  bx.setTransform(bgDpr,0,0,bgDpr,0,0);
+  bx.clearRect(0,0,innerWidth,innerHeight);
+  const grd=bx.createRadialGradient(innerWidth/2,innerHeight*0.2,40,innerWidth/2,innerHeight*0.5,innerHeight*0.95);
+  grd.addColorStop(0,'rgba(20,28,48,0.9)'); grd.addColorStop(1,'rgba(8,11,22,1)');
+  bx.fillStyle=grd; bx.fillRect(0,0,innerWidth,innerHeight);
+  bx.font='600 16px "JetBrains Mono", monospace';
+  for(const p of bgGlyphs){
+    p.y+=p.vy; p.x+=p.vx; p.rot+=0.002;
+    if(p.y< -30){ p.y=innerHeight+20; p.x=Math.random()*innerWidth; }
+    if(p.x<-30)p.x=innerWidth+20; if(p.x>innerWidth+30)p.x=-20;
+    bx.save(); bx.translate(p.x,p.y); bx.rotate(Math.sin(p.rot)*0.25);
+    bx.globalAlpha=p.a; bx.fillStyle=accent;
+    bx.font=`600 ${p.s}px "JetBrains Mono", monospace`;
+    bx.fillText(p.g,0,0); bx.restore();
+  }
+  requestAnimationFrame(drawBg);
+}
+
+/* ---------- fx canvas (bursts) ---------- */
+const fx=$('#fx-canvas'), fxx=fx.getContext('2d');
+let parts=[];
+function initFx(){ fxDpr=sizeCanvas(fx); }
+function burst(x,y,color,count,power){
+  for(let i=0;i<count;i++){
+    const a=Math.random()*Math.PI*2, sp=power*(.4+Math.random());
+    parts.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-1.2,life:1,col:color,sz:2+Math.random()*3.5});
+  }
+}
+function drawFx(){
+  fxx.setTransform(fxDpr,0,0,fxDpr,0,0);
+  fxx.clearRect(0,0,innerWidth,innerHeight);
+  for(let i=parts.length-1;i>=0;i--){
+    const p=parts[i]; p.x+=p.vx; p.y+=p.vy; p.vy+=0.16; p.vx*=.98; p.life-=0.022;
+    if(p.life<=0){ parts.splice(i,1); continue; }
+    fxx.globalAlpha=Math.max(0,p.life); fxx.fillStyle=p.col;
+    fxx.beginPath(); fxx.arc(p.x,p.y,p.sz*p.life,0,7); fxx.fill();
+  }
+  fxx.globalAlpha=1;
+  requestAnimationFrame(drawFx);
+}
+function burstAt(el,color,count=26,power=6){
+  const r=el.getBoundingClientRect();
+  burst(r.left+r.width/2, r.top+r.height/2, color, count, power);
+}
+addEventListener('resize',()=>{ initBg(); initFx(); });
+initBg(); initFx(); drawBg(); drawFx();
+
+function setAccent(col){
+  accent=col;
+  document.documentElement.style.setProperty('--accent',col);
+  document.documentElement.style.setProperty('--accent-soft',hexA(col,.16));
+}
+function hexA(hex,a){ const h=hex.replace('#',''); const n=parseInt(h.length===3?h.split('').map(x=>x+x).join(''):h,16); return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`; }
+
+/* ============================================================
+   SCREENS
+   ============================================================ */
+function show(html){ stageEl.innerHTML=html; }
+function star(k){ return '<span class="'+(k?'s':'e')+'">'+(k?'★':'☆')+'</span>'; }
+function starStr(n){ let s=''; for(let i=0;i<3;i++) s+=star(i<n); return s; }
+
+/* ----- TITLE ----- */
+function renderTitle(){
+  setAccent('#3fe0cf');
+  const totalStars=Object.values(SAVE.stars).reduce((a,b)=>a+b,0);
+  show(`
+  <section class="screen on" id="title">
+    <div class="crest">♜</div>
+    <div class="t-sub">Tower of Arithmos</div>
+    <h1 class="t-main">산술의 탑</h1>
+    <p class="t-tag">20층의 수호자가 기다린다.<br>수식을 베고 <b>탑의 군주</b>에게 오르라.</p>
+    <div class="menu">
+      <button class="btn primary" id="b-climb">⚔ 등반 시작 <span class="k">${totalStars}/60★</span></button>
+      <button class="btn ghost" id="b-practice">🎯 자유 연습</button>
+      ${totalStars>0?'<button class="btn ghost" id="b-reset">↺ 기록 초기화</button>':''}
+    </div>
+    <p class="hint">초1 ~ 중3 · 20스테이지 · 61문제 타입<br>정답으로 수호자를 공격, 콤보로 점수를 키워라</p>
+  </section>`);
+  $('#b-climb').onclick=()=>{ sfx.tap(); renderTower(false); };
+  $('#b-practice').onclick=()=>{ sfx.tap(); renderTower(true); };
+  const rb=$('#b-reset'); if(rb) rb.onclick=()=>{ if(confirm('모든 등반 기록을 지울까?')){ SAVE={stars:{},totalScore:0}; writeSave(SAVE); renderTitle(); } };
+}
+
+/* ----- TOWER MAP ----- */
+function renderTower(practice){
+  setAccent('#3fe0cf');
+  const totalStars=Object.values(SAVE.stars).reduce((a,b)=>a+b,0);
+  let rows='';
+  for(let s=20;s>=1;s--){
+    const f=FLOORS[s-1], unlocked=practice||isUnlocked(s), stars=SAVE.stars[s]||0;
+    rows+=`<div class="floor ${unlocked?'':'locked'} ${stars>0?'cleared':''}" data-s="${s}" style="--fc:${f.c}">
+      <div class="fglyph">${f.g}</div>
+      <div class="finfo">
+        <div class="fnum">FLOOR ${String(s).padStart(2,'0')} · ${GRADE_OF(s)}</div>
+        <div class="fname">${f.n}</div>
+        <div class="fgrade">${ME.STAGE_MAP[s].length}가지 유형</div>
+      </div>
+      ${unlocked?`<div class="fstars">${starStr(stars)}</div>`:`<div class="flock">🔒</div>`}
+    </div>`;
+  }
+  show(`
+  <section class="screen on">
+    <div class="topbar">
+      <button class="iconbtn" id="back">←</button>
+      <h2>${practice?'연습할 층 선택':'탑'}</h2>
+      <div class="statpill">★ ${totalStars}<span style="color:var(--muted)">/60</span></div>
+    </div>
+    <div class="tower-scroll">${rows}
+      <p class="hint" style="text-align:center">${practice?'연습 모드: HP·게임오버 없이 무한 풀이':'한 층을 깨면 다음 층이 열린다'}</p>
+    </div>
+  </section>`);
+  $('#back').onclick=()=>{ sfx.tap(); renderTitle(); };
+  stageEl.querySelectorAll('.floor').forEach(el=>{
+    const s=+el.dataset.s;
+    el.onclick=()=>{
+      if(!practice && !isUnlocked(s)){ sfx.wrong(); toast('아직 잠긴 층이다. 아래 층부터 깨라.'); return; }
+      sfx.tap(); startBattle(s, practice);
+    };
+  });
+  // scroll to highest unlocked
+  if(!practice){ const t=stageEl.querySelector(`.floor[data-s="${maxUnlocked()}"]`); if(t) t.scrollIntoView({block:'center'}); }
+}
+
+/* ============================================================
+   BATTLE
+   ============================================================ */
+let B=null, timerId=null;
+function startBattle(stage, practice){
+  const f=FLOORS[stage-1];
+  setAccent(f.c);
+  B={ stage, practice, f, heroHP:100, need:hitsNeeded(stage), hits:0, wrong:0, combo:0, maxCombo:0,
+      score:0, total:0, qStart:0, locked:true, cur:null, qIndex:0 };
+  show(`
+  <section class="screen on" id="battle">
+    <div class="topbar">
+      <button class="iconbtn" id="flee">←</button>
+      <h2 style="color:${f.c}">${f.g} ${f.n}</h2>
+      <div class="statpill" id="scorepill">◈ 0</div>
+    </div>
+
+    <div class="bar-row">
+      <div class="bar-head"><span class="nm" style="color:${f.c}">${f.n}</span><span class="hp" id="foehp"></span></div>
+      <div class="bar-track"><div class="bar-fill foe" id="foefill" style="width:100%"></div></div>
+    </div>
+
+    <div class="battle-scene" id="scene">
+      <div class="tcorner"><svg width="46" height="46" viewBox="0 0 46 46">
+        <circle cx="23" cy="23" r="19" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="4"/>
+        <circle id="tring" cx="23" cy="23" r="19" fill="none" stroke="${f.c}" stroke-width="4"
+          stroke-linecap="round" stroke-dasharray="119.4" stroke-dashoffset="0"/>
+      </svg><div class="num" id="tnum">–</div></div>
+      <div class="combo hidden" id="combo"><div class="n" id="combon">0</div><div class="l">COMBO</div></div>
+      <div class="guardian">
+        <div class="g-ring" style="border-color:${f.c}"></div>
+        <div class="g-orb" id="orb" style="--fc:${f.c}">${f.g}</div>
+        <div class="g-name">${GRADE_OF(stage)}</div>
+      </div>
+    </div>
+
+    <div class="bar-row" id="herorow">
+      <div class="bar-head"><span class="nm">🛡 도전자</span><span class="hp" id="herohp"></span></div>
+      <div class="bar-track"><div class="bar-fill hero" id="herofill" style="width:100%"></div></div>
+    </div>
+
+    <div class="qcard">
+      <div class="qmeta">
+        <span class="tag" id="t-topic">—</span>
+        <span class="tag grade" id="t-grade">—</span>
+        <span class="qprog" id="t-prog"></span>
+      </div>
+      <div class="qbody">
+        <div class="qsvg" id="qsvg" style="display:none"></div>
+        <div class="qtext" id="qtext"></div>
+      </div>
+      <div class="choices" id="choices"></div>
+      <div class="fbline" id="fbline"></div>
+    </div>
+  </section>`);
+
+  if(B.practice){ $('#herorow').style.display='none'; }
+  $('#flee').onclick=()=>{ sfx.tap(); stopTimer(); renderTower(B.practice); };
+  updateBars();
+  nextQuestion();
+}
+
+function updateBars(){
+  const foe=Math.max(0, 1 - B.hits/B.need);
+  $('#foefill').style.width=(foe*100)+'%';
+  $('#foehp').textContent=`${B.hits} / ${B.need} 타격`;
+  $('#herofill').style.width=Math.max(0,B.heroHP)+'%';
+  $('#herohp').textContent=`HP ${Math.max(0,B.heroHP)}`;
+  $('#scorepill').textContent='◈ '+B.score;
+}
+
+function fmtQuestion(t){
+  // wrap math-ish lines in mono for crispness; keep Korean prose normal
+  return t.replace(/[<&>]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));
+}
+
+function sanitizeChoices(p){
+  let cs=[...new Set(p.choices)].filter(c=>c!=='NaN'&&c!=='undefined'&&c!=='null'&&c!=='');
+  if(!cs.includes(p.answer)) cs.push(p.answer);
+  return ME===window.MathEngine ? shuffle(cs) : cs;
+}
+function shuffle(a){ a=[...a]; for(let i=a.length-1;i>0;i--){ const j=(Math.random()*(i+1))|0; [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+function nextQuestion(){
+  B.qIndex++;
+  const p=ME.generateProblem(B.stage);
+  B.cur=p;
+  const choices=sanitizeChoices(p);
+  $('#t-topic').textContent=p.topic;
+  $('#t-grade').textContent=p.grade;
+  $('#t-prog').textContent=B.practice?`문제 ${B.qIndex}`:`타격 ${B.hits}/${B.need}`;
+  // question body
+  const svgBox=$('#qsvg');
+  if(p.renderType==='svg' && p.svgContent){ svgBox.style.display='flex'; svgBox.innerHTML=p.svgContent; }
+  else { svgBox.style.display='none'; svgBox.innerHTML=''; }
+  $('#qtext').innerHTML=fmtQuestion(p.questionText);
+  // choices
+  const cbox=$('#choices');
+  cbox.className='choices'+(choices.length<=1?' single':choices.length===3?'':'');
+  if(choices.length===2||choices.length===3) cbox.classList.add('single');
+  cbox.innerHTML=choices.map((c,i)=>`<button class="choice" data-v="${c.replace(/"/g,'&quot;')}">${fmtQuestion(c)}</button>`).join('');
+  cbox.querySelectorAll('.choice').forEach(b=>b.onclick=()=>answer(b, b.dataset.v));
+  $('#fbline').className='fbline';
+  B.locked=false;
+  startTimer();
+}
+
+/* timer */
+const TLEN=()=> B.stage>=14?28:22;
+function startTimer(){
+  stopTimer();
+  B.qStart=performance.now();
+  const dur=TLEN()*1000, ring=$('#tring'), C=119.4;
+  $('#tnum').textContent=TLEN();
+  timerId=setInterval(()=>{
+    const el=performance.now()-B.qStart, left=Math.max(0,dur-el), frac=left/dur;
+    if(ring) ring.style.strokeDashoffset=(C*(1-frac)).toFixed(1);
+    const num=$('#tnum'); if(num) num.textContent=Math.ceil(left/1000);
+    if(left<=0){ stopTimer(); timeout(); }
+  },100);
+}
+function stopTimer(){ if(timerId){ clearInterval(timerId); timerId=null; } }
+function elapsedSec(){ return (performance.now()-B.qStart)/1000; }
+
+function answer(btn, val){
+  if(B.locked) return;
+  B.locked=true; stopTimer();
+  const correct = (val===B.cur.answer);
+  document.querySelectorAll('.choice').forEach(b=>{ b.classList.add('locked'); if(b.dataset.v!==B.cur.answer) b.classList.add('dim'); });
+  if(correct){ onCorrect(btn); } else { btn.classList.remove('dim'); btn.classList.add('wrong'); onWrong(); }
+  // always reveal the right one
+  document.querySelectorAll('.choice').forEach(b=>{ if(b.dataset.v===B.cur.answer){ b.classList.remove('dim'); b.classList.add('correct'); } });
+}
+
+function onCorrect(btn){
+  const t=elapsedSec();
+  const speed = t<=6?1.5 : t<=14?1.2 : 1.0;
+  B.combo++; B.maxCombo=Math.max(B.maxCombo,B.combo);
+  const mult=Math.min(1+Math.floor(B.combo/3)*0.5, 4);
+  const gain=Math.round(100*speed*mult);
+  B.score+=gain; B.hits++;
+  sfx.correct(); if(B.combo>=2) sfx.combo(B.combo);
+  showCombo();
+  burstAt($('#orb'), B.f.c, 30, 7);
+  burstAt(btn, '#52e08a', 14, 5);
+  floatText($('#orb'), '-1', B.f.c);
+  floatText(btn, '+'+gain, '#52e08a');
+  const orb=$('#orb'); orb.classList.add('hurt'); setTimeout(()=>orb.classList.remove('hurt'),420);
+  hitShake();
+  fb('good', t<=6?`완벽! 빠르다 ×${mult}`:`정답! +${gain}`);
+  updateBars();
+  if(B.hits>=B.need){ setTimeout(()=>victory(),650); }
+  else setTimeout(nextQuestion, 750);
+}
+
+function onWrong(){
+  B.combo=0; B.wrong++; hideCombo();
+  sfx.wrong();
+  fb('bad', `정답은 ${B.cur.answer}`);
+  if(!B.practice){
+    const dmg=heroDmg(B.stage);
+    B.heroHP=Math.max(0,B.heroHP-dmg);
+    sfx.hit();
+    floatText($('#herofill'), '-'+dmg, '#ff5d6c');
+    burstAt($('#herofill'), '#ff5d6c', 16, 5);
+    bigShake();
+    updateBars();
+    if(B.heroHP<=0){ setTimeout(()=>defeat(),700); return; }
+  } else { updateBars(); }
+  setTimeout(nextQuestion, 1250);
+}
+
+function timeout(){
+  if(B.locked) return; B.locked=true;
+  document.querySelectorAll('.choice').forEach(b=>{ b.classList.add('locked'); if(b.dataset.v===B.cur.answer){ b.classList.add('correct'); } else b.classList.add('dim'); });
+  fb('bad','시간 초과!');
+  onWrongCore();
+}
+function onWrongCore(){
+  B.combo=0; B.wrong++; hideCombo(); sfx.wrong();
+  if(!B.practice){
+    const dmg=heroDmg(B.stage); B.heroHP=Math.max(0,B.heroHP-dmg); sfx.hit();
+    floatText($('#herofill'), '-'+dmg, '#ff5d6c'); bigShake(); updateBars();
+    if(B.heroHP<=0){ setTimeout(()=>defeat(),700); return; }
+  } else updateBars();
+  setTimeout(nextQuestion, 1250);
+}
+
+/* feedback / combo / float / shake */
+function fb(kind,msg){ const e=$('#fbline'); if(!e) return; e.textContent=msg; e.className='fbline show '+kind; }
+function showCombo(){ const c=$('#combo'); if(B.combo<2){ hideCombo(); return; } c.classList.remove('hidden'); c.classList.add('show'); $('#combon').textContent='×'+B.combo; setTimeout(()=>c.classList.remove('show'),360); }
+function hideCombo(){ const c=$('#combo'); if(c) c.classList.add('hidden'); }
+function floatText(el,txt,col){
+  const r=el.getBoundingClientRect(); const d=document.createElement('div');
+  d.className='dmgfloat'; d.textContent=txt; d.style.color=col;
+  d.style.left=(r.left+r.width/2)+'px'; d.style.top=(r.top+r.height/2-10)+'px';
+  d.style.transform='translate(-50%,-50%)'; d.style.animation='dmgUp 1s forwards';
+  document.body.appendChild(d); setTimeout(()=>d.remove(),1000);
+}
+function hitShake(){ const s=$('#scene'); if(s){ s.classList.remove('shake'); void s.offsetWidth; s.classList.add('shake'); } }
+function bigShake(){ const s=$('#battle'); if(s){ s.classList.remove('shake'); void s.offsetWidth; s.classList.add('shake'); } }
+
+/* ----- outcomes ----- */
+function victory(){
+  stopTimer();
+  if(B.practice){ // endless: respawn same floor
+    toast('수호자 처치! 다음 수호자 등장'); sfx.clear();
+    B.hits=0; B.combo=0; B.qIndex=B.qIndex; updateBars();
+    const orb=$('#orb'); orb.classList.add('defeated');
+    setTimeout(()=>{ orb.classList.remove('defeated'); nextQuestion(); }, 850);
+    return;
+  }
+  const orb=$('#orb'); orb.classList.add('defeated');
+  burstAt(orb, B.f.c, 60, 10); sfx.clear();
+  let stars = B.wrong===0?3 : B.wrong<=2?2 : 1;
+  const prev=SAVE.stars[B.stage]||0;
+  if(stars>prev) SAVE.stars[B.stage]=stars;
+  SAVE.totalScore=(SAVE.totalScore||0)+B.score; writeSave(SAVE);
+  setTimeout(()=>renderResult(true, stars, prev), 900);
+}
+function defeat(){
+  stopTimer(); sfx.lose();
+  renderResult(false, 0, SAVE.stars[B.stage]||0);
+}
+
+function renderResult(win, stars, prevStars){
+  const f=B.f, acc = B.qIndex>0 ? Math.round(B.hits/(B.hits+B.wrong)*100)||0 : 0;
+  const newUnlock = win && B.stage<20 && prevStars===0;
+  show(`
+  <section class="screen on" id="result">
+    <div class="r-banner ${win?'win':'lose'}">${win?'층 정복!':'쓰러졌다…'}</div>
+    <div style="color:var(--muted);font-size:14px">FLOOR ${String(B.stage).padStart(2,'0')} · ${f.n}</div>
+    <div class="r-stars">${win?[0,1,2].map(i=>`<span class="${i<stars?'s':'e'}" style="animation-delay:${i*.18}s">${i<stars?'★':'☆'}</span>`).join(''):'💀'}</div>
+    <div class="r-grid">
+      <div class="r-stat"><div class="v">${B.score}</div><div class="l">획득 점수</div></div>
+      <div class="r-stat"><div class="v">${B.hits}<span style="font-size:14px;color:var(--muted)">/${B.need}</span></div><div class="l">타격 수</div></div>
+      <div class="r-stat"><div class="v">×${B.maxCombo}</div><div class="l">최대 콤보</div></div>
+      <div class="r-stat"><div class="v">${acc}%</div><div class="l">정확도</div></div>
+    </div>
+    ${newUnlock?`<p class="hint" style="color:var(--gold);font-size:14px;margin:0 0 14px">🔓 FLOOR ${B.stage+1} · ${FLOORS[B.stage].n} 개방!</p>`:''}
+    <div class="r-actions">
+      ${win&&B.stage<20?`<button class="btn primary" id="r-next">▲ 다음 층으로</button>`:''}
+      ${win&&B.stage===20?`<button class="btn primary" id="r-home">👑 탑의 정상! 처음으로</button>`:''}
+      <button class="btn ghost" id="r-retry">↻ 이 층 다시</button>
+      ${!(win&&B.stage===20)?`<button class="btn ghost" id="r-tower">🗺 탑 지도</button>`:''}
+    </div>
+  </section>`);
+  const next=$('#r-next'); if(next) next.onclick=()=>{ sfx.tap(); startBattle(B.stage+1,false); };
+  const retry=$('#r-retry'); if(retry) retry.onclick=()=>{ sfx.tap(); startBattle(B.stage,B.practice); };
+  const tw=$('#r-tower'); if(tw) tw.onclick=()=>{ sfx.tap(); renderTower(B.practice); };
+  const hm=$('#r-home'); if(hm) hm.onclick=()=>{ sfx.tap(); renderTitle(); };
+}
+
+/* ---------- boot ---------- */
+renderTitle();
+</script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8">
+<style>
+  body{margin:0;background:#0b1020;display:flex;flex-wrap:wrap;gap:14px;padding:24px;align-items:flex-start;justify-content:center;}
+  :root{--accent:#7fd9e8;}
+  .cell{width:120px;text-align:center;color:#8893b8;font-family:monospace;font-size:11px;}
+  .fox{width:96px;height:96px;}
+  .eu-draw{animation:euDraw 1.6s ease forwards;}
+  @keyframes euDraw{from{stroke-dashoffset:190;}to{stroke-dashoffset:0;}}
+  h3{color:#cfe;width:100%;font-family:monospace;margin:18px 0 0;}
+</style></head>
+<body>
+<script src="../js/monsters.js"></script>
+<script src="../js/fox-and-story.js"></script>
+<script>
+  let h='<h3>// 마스코트 오일러 (표정 = 위상자 각도)</h3>';
+  ['neutral','happy','sparkle','wink','worried','sleep'].forEach(e=>{ h+=`<div class="cell">${FoxStory.foxSVG(e)}<div>${e}</div></div>`; });
+  h+='<h3>// 탑 층 시질 (수식 라인아트, 30층)</h3>';
+  for(let f=1;f<=30;f++){ h+=`<div class="cell" style="width:84px">${Monsters.monsterSVG(f,76)}<div>F${f}</div></div>`; }
+  document.body.insertAdjacentHTML('beforeend',h);
+</script>
+</body></html>
