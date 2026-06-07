@@ -49,3 +49,5 @@ gi   그래프 학습
  b3_Chapter1_Sequences_in_C_and_Python  : 코딩
  bt  1장 수의 규칙  : 개념과 문제풀이 개념정리
 
+ 우주가 만들 "산술의 탑"  미완성
+
