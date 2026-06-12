@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>계차수열 인터렉티브 실습실</title>
+<style>
+  :root{
+    --bg:#fffdf4; --card:#ffffff; --ink:#1f2937; --muted:#5b6472;
+    --brand:#2563eb; --brand2:#f97316; --good:#16a34a; --line:#d7dee9;
+    --soft:#eef6ff; --yellow:#fff7cc; --pink:#ffeef6; --green:#effbf1;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:linear-gradient(180deg,#fff7d7,#f7fbff 45%,#fffdf4);font-family:Arial,'Noto Sans KR',sans-serif;color:var(--ink);font-size:20px;line-height:1.65}
+  .wrap{max-width:1180px;margin:0 auto;padding:24px}
+  header{background:#fff;border:3px solid #111827;border-radius:28px;padding:30px;box-shadow:0 12px 0 #111827;margin-bottom:24px}
+  h1{font-size:42px;margin:0 0 10px;color:#0f172a;letter-spacing:-1px}
+  h2{font-size:30px;margin:0 0 14px;color:#111827}
+  h3{font-size:24px;margin:16px 0 8px;color:#1e3a8a}
+  .tag{display:inline-block;background:#111827;color:#fff;border-radius:999px;padding:6px 14px;font-weight:bold;margin-right:8px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .card{background:var(--card);border:2px solid #111827;border-radius:22px;padding:22px;box-shadow:0 6px 0 rgba(17,24,39,.18);margin-bottom:18px}
+  .card.soft{background:var(--soft)} .card.yellow{background:var(--yellow)} .card.green{background:var(--green)} .card.pink{background:var(--pink)}
+  label{display:block;font-weight:bold;margin:12px 0 6px}
+  input,select,button,textarea{font:inherit;border:2px solid #111827;border-radius:14px;padding:10px 12px;background:#fff;color:#111827}
+  input,select{width:100%}
+  button{cursor:pointer;font-weight:bold;background:#2563eb;color:#fff;box-shadow:0 4px 0 #111827;transition:.12s}
+  button:hover{transform:translateY(-1px)}
+  button.secondary{background:#f97316}.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+  .formula{font-size:25px;background:#111827;color:#fff;border-radius:18px;padding:15px 18px;margin:12px 0;font-weight:bold}
+  .note{color:var(--muted);font-size:18px}.big{font-size:26px;font-weight:bold;color:#0f172a}
+  .pill{display:inline-flex;align-items:center;justify-content:center;min-width:54px;height:54px;border:2px solid #111827;border-radius:16px;background:#fff;margin:5px;font-weight:bold;box-shadow:0 3px 0 #111827}
+  .pill.diff{background:#ffedd5}.pill.seq{background:#dbeafe}.pill.dd{background:#dcfce7}
+  .arrow{font-weight:bold;color:#ef4444;margin:0 2px}.resultBox{min-height:80px;background:#f8fafc;border:2px dashed #334155;border-radius:18px;padding:14px;overflow-x:auto}
+  table{border-collapse:collapse;width:100%;font-size:18px;background:#fff;border-radius:14px;overflow:hidden}th,td{border:1px solid #94a3b8;padding:9px;text-align:center}th{background:#e0f2fe;color:#0f172a}
+  canvas{width:100%;height:260px;border:2px solid #111827;border-radius:18px;background:#fff}
+  pre{background:#0b1020;color:#e5e7eb;border-radius:18px;padding:18px;overflow:auto;font-size:16px;line-height:1.55;border:2px solid #111827;white-space:pre-wrap}.codeTitle{display:flex;justify-content:space-between;align-items:center;gap:10px}.codeTitle button{font-size:16px;padding:6px 10px;background:#475569}
+  .quiz{border-top:2px dashed #94a3b8;margin-top:14px;padding-top:14px}.ok{color:#15803d;font-weight:bold}.bad{color:#dc2626;font-weight:bold}
+  @media(max-width:900px){.grid{grid-template-columns:1fr}h1{font-size:34px}.wrap{padding:14px}body{font-size:18px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <span class="tag">초등 사고력수학</span><span class="tag">1장 수와 규칙</span>
+  <h1>계차수열 직접 만들기 실습실</h1>
+  <p class="big">숫자 사이의 차이를 보면 숨어 있는 규칙을 찾을 수 있어요.</p>
+  <p>이 화면에서는 첫 번째 수, 처음 차이, 차이가 커지는 규칙을 직접 바꾸면서 계차수열을 만들어 봅니다.</p>
+</header>
+
+<section class="card yellow">
+  <h2>1. 계차수열이란?</h2>
+  <p>계차수열은 수열의 숫자 사이의 <b>차이</b>를 다시 살펴보면 규칙이 보이는 수열입니다.</p>
+  <div class="formula">수열: 1, 3, 6, 10, 15<br>차이: 2, 3, 4, 5</div>
+  <p>위 수열은 차이가 2, 3, 4, 5처럼 1씩 커지므로 계차수열입니다.</p>
+</section>
+
+<div class="grid">
+  <section class="card">
+    <h2>2. 내 계차수열 만들기</h2>
+    <label>첫 번째 수</label>
+    <input id="first" type="number" value="1" />
+    <label>처음 차이</label>
+    <input id="diff" type="number" value="2" />
+    <label>차이가 매번 얼마나 변하나요?</label>
+    <input id="diffStep" type="number" value="1" />
+    <label>몇 개까지 만들까요?</label>
+    <input id="count" type="number" value="8" min="3" max="20" />
+    <div class="btns">
+      <button onclick="makeSequence()">수열 만들기</button>
+      <button class="secondary" onclick="randomExample()">예시 랜덤</button>
+    </div>
+    <p class="note">예: 첫 수 1, 처음 차이 2, 차이 변화 1이면 1, 3, 6, 10, 15...가 됩니다.</p>
+  </section>
+
+  <section class="card soft">
+    <h2>3. 만들어진 수열</h2>
+    <h3>수열</h3>
+    <div id="seqView" class="resultBox"></div>
+    <h3>숫자 사이의 차이</h3>
+    <div id="diffView" class="resultBox"></div>
+    <h3>차이의 변화</h3>
+    <div id="ddView" class="resultBox"></div>
+  </section>
+</div>
+
+<section class="card green">
+  <h2>4. 표로 확인하기</h2>
+  <div id="tableView"></div>
+</section>
+
+<section class="card">
+  <h2>5. 그래프로 확인하기</h2>
+  <p>막대가 점점 더 빠르게 커지면 차이가 커지고 있다는 뜻입니다.</p>
+  <canvas id="chart" width="1000" height="360"></canvas>
+</section>
+
+<section class="card pink">
+  <h2>6. 오늘의 실습 문제</h2>
+  <p>아래 조건으로 계차수열을 만들 때, 6번째 수는 무엇일까요?</p>
+  <div class="formula">첫 번째 수 = 2, 처음 차이 = 3, 차이 변화 = 2</div>
+  <p>직접 위 입력칸에 넣어 확인해 보세요.</p>
+  <label>나의 답</label>
+  <input id="quizAns" type="number" placeholder="6번째 수를 입력하세요" />
+  <div class="btns"><button onclick="checkQuiz()">정답 확인</button></div>
+  <div id="quizResult" class="quiz"></div>
+</section>
+
+<section class="card">
+  <h2>7. C 코드와 파이썬 코드</h2>
+  <p>아래 코드는 현재 입력한 값으로 계차수열을 만드는 방법입니다.</p>
+  <div class="grid">
+    <div>
+      <div class="codeTitle"><h3>C 코드</h3><button onclick="copyCode('cCode')">복사</button></div>
+      <pre id="cCode"></pre>
+    </div>
+    <div>
+      <div class="codeTitle"><h3>Python 코드</h3><button onclick="copyCode('pyCode')">복사</button></div>
+      <pre id="pyCode"></pre>
+    </div>
+  </div>
+</section>
+
+<section class="card yellow">
+  <h2>8. 정리</h2>
+  <p>계차수열을 만들 때는 다음 순서로 생각합니다.</p>
+  <p><b>1.</b> 첫 번째 수를 정합니다.</p>
+  <p><b>2.</b> 처음 차이를 정합니다.</p>
+  <p><b>3.</b> 차이가 어떻게 변하는지 정합니다.</p>
+  <p><b>4.</b> 이전 수에 현재 차이를 더해서 다음 수를 만듭니다.</p>
+</section>
+</div>
+
+<script>
+function val(id){ return Number(document.getElementById(id).value); }
+function makeSequence(){
+  let first = val('first');
+  let diff = val('diff');
+  let diffStep = val('diffStep');
+  let count = Math.max(3, Math.min(20, val('count') || 8));
+  document.getElementById('count').value = count;
+
+  let seq = [first];
+  let diffs = [];
+  let d = diff;
+  for(let i=1;i<count;i++){
+    diffs.push(d);
+    seq.push(seq[seq.length-1] + d);
+    d += diffStep;
+  }
+  let dd = [];
+  for(let i=1;i<diffs.length;i++) dd.push(diffs[i]-diffs[i-1]);
+
+  renderPills('seqView', seq, 'seq');
+  renderPills('diffView', diffs, 'diff');
+  renderPills('ddView', dd, 'dd');
+  renderTable(seq,diffs,dd);
+  drawChart(seq);
+  updateCodes(first,diff,diffStep,count);
+}
+function renderPills(id, arr, cls){
+  const el=document.getElementById(id);
+  if(arr.length===0){ el.innerHTML='<span class="note">아직 값이 없습니다.</span>'; return; }
+  el.innerHTML = arr.map((x,i)=>`<span class="pill ${cls}">${x}</span>${i<arr.length-1?'<span class="arrow">→</span>':''}`).join('');
+}
+function renderTable(seq,diffs,dd){
+  let html='<table><thead><tr><th>번호</th><th>수열 값</th><th>다음 수로 가는 차이</th><th>차이의 변화</th></tr></thead><tbody>';
+  for(let i=0;i<seq.length;i++){
+    html += `<tr><td>${i+1}번째</td><td>${seq[i]}</td><td>${i<diffs.length?diffs[i]:''}</td><td>${i<dd.length?dd[i]:''}</td></tr>`;
+  }
+  html+='</tbody></table>';
+  document.getElementById('tableView').innerHTML=html;
+}
+function drawChart(seq){
+  const c=document.getElementById('chart'), ctx=c.getContext('2d');
+  ctx.clearRect(0,0,c.width,c.height);
+  const pad=55, w=c.width-pad*2, h=c.height-pad*2;
+  const min=Math.min(0,...seq), max=Math.max(...seq,1);
+  ctx.lineWidth=2; ctx.strokeStyle='#111827';
+  ctx.beginPath(); ctx.moveTo(pad,pad); ctx.lineTo(pad,c.height-pad); ctx.lineTo(c.width-pad,c.height-pad); ctx.stroke();
+  const bw=w/seq.length*0.62;
+  seq.forEach((v,i)=>{
+    const x=pad + i*(w/seq.length) + (w/seq.length-bw)/2;
+    const bh = (v-min)/(max-min||1)*h;
+    const y = c.height-pad-bh;
+    ctx.fillStyle='#60a5fa'; ctx.fillRect(x,y,bw,bh);
+    ctx.strokeStyle='#111827'; ctx.strokeRect(x,y,bw,bh);
+    ctx.fillStyle='#111827'; ctx.font='20px Arial'; ctx.textAlign='center';
+    ctx.fillText(v, x+bw/2, Math.max(24,y-8));
+    ctx.fillText(i+1, x+bw/2, c.height-pad+28);
+  });
+  ctx.fillStyle='#111827'; ctx.font='22px Arial'; ctx.textAlign='left';
+  ctx.fillText('값', 12, 38); ctx.fillText('순서', c.width-95, c.height-18);
+}
+function updateCodes(first,diff,diffStep,count){
+  document.getElementById('cCode').textContent = `#include <stdio.h>\n\nint main() {\n    int first = ${first};      // 첫 번째 수\n    int diff = ${diff};       // 처음 차이\n    int diffStep = ${diffStep};   // 차이의 변화\n    int count = ${count};      // 만들 숫자 개수\n\n    int current = first;\n\n    printf("%d ", current);\n\n    for (int i = 2; i <= count; i++) {\n        current = current + diff;\n        printf("%d ", current);\n        diff = diff + diffStep;\n    }\n\n    return 0;\n}`;
+  document.getElementById('pyCode').textContent = `first = ${first}       # 첫 번째 수\ndiff = ${diff}        # 처음 차이\ndiff_step = ${diffStep}   # 차이의 변화\ncount = ${count}       # 만들 숫자 개수\n\ncurrent = first\nprint(current, end=" ")\n\nfor i in range(2, count + 1):\n    current = current + diff\n    print(current, end=" ")\n    diff = diff + diff_step`;
+}
+function randomExample(){
+  const examples=[ [1,2,1,8], [2,3,2,8], [5,4,3,7], [10,-1,-1,8], [1,3,2,9], [4,1,1,10] ];
+  const e=examples[Math.floor(Math.random()*examples.length)];
+  ['first','diff','diffStep','count'].forEach((id,i)=>document.getElementById(id).value=e[i]);
+  makeSequence();
+}
+function checkQuiz(){
+  let ans=Number(document.getElementById('quizAns').value);
+  let first=2,diff=3,step=2,current=first;
+  for(let i=2;i<=6;i++){ current += diff; diff += step; }
+  const el=document.getElementById('quizResult');
+  if(ans===current){
+    el.innerHTML='<p class="ok">정답입니다! 6번째 수는 '+current+'입니다.</p><p>수열은 2, 5, 10, 17, 26, 37입니다. 차이는 3, 5, 7, 9, 11입니다.</p>';
+  }else{
+    el.innerHTML='<p class="bad">아직 정답이 아닙니다.</p><p>차이가 3, 5, 7, 9, 11처럼 2씩 커지는지 다시 확인해 보세요.</p>';
+  }
+}
+function copyCode(id){
+  navigator.clipboard.writeText(document.getElementById(id).textContent);
+  alert('코드를 복사했습니다.');
+}
+['first','diff','diffStep','count'].forEach(id=>document.getElementById(id).addEventListener('input',makeSequence));
+makeSequence();
+</script>
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>심화 수열 패턴 실습실 - 사칙연산 수열 만들기</title>
+<style>
+  :root{
+    --bg:#f7fbff; --card:#ffffff; --ink:#102033; --muted:#4b6078;
+    --blue:#2563eb; --blue2:#dbeafe; --green:#16a34a; --yellow:#fff7cc;
+    --red:#dc2626; --line:#d7e3f4; --code:#0f172a; --codeText:#e5e7eb;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Arial,'Noto Sans KR',sans-serif;background:var(--bg);color:var(--ink);font-size:20px;line-height:1.65}
+  header{background:linear-gradient(135deg,#2563eb,#38bdf8);color:white;padding:34px 22px;text-align:center}
+  header h1{margin:0;font-size:36px;letter-spacing:-1px}
+  header p{margin:10px 0 0;font-size:20px;opacity:.96}
+  main{max-width:1180px;margin:0 auto;padding:24px}
+  .card{background:var(--card);border:2px solid var(--line);border-radius:22px;padding:24px;margin:22px 0;box-shadow:0 10px 24px rgba(30,64,175,.08)}
+  h2{font-size:28px;margin:0 0 14px;color:#1d4ed8}.sub{color:var(--muted);font-size:18px}
+  .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}.col6{grid-column:span 6}.col4{grid-column:span 4}.col3{grid-column:span 3}.col12{grid-column:span 12}
+  label{display:block;font-weight:700;margin-bottom:6px} input,select,button,textarea{font:inherit;border-radius:14px;border:2px solid #c7d7ee;padding:10px 12px;background:white;color:var(--ink);width:100%}
+  button{background:#2563eb;color:white;border:none;font-weight:800;cursor:pointer;transition:.15s;box-shadow:0 6px 0 #1e40af} button:hover{transform:translateY(-1px)} button:active{transform:translateY(3px);box-shadow:0 3px 0 #1e40af}
+  .btn2{background:#16a34a;box-shadow:0 6px 0 #166534}.btn3{background:#f59e0b;box-shadow:0 6px 0 #b45309}.btn4{background:#64748b;box-shadow:0 6px 0 #334155}.btnRed{background:#dc2626;box-shadow:0 6px 0 #991b1b}
+  .patternRow{display:grid;grid-template-columns:1.1fr 1fr 1.3fr auto;gap:10px;align-items:end;background:#f8fbff;border:2px dashed #c7d7ee;border-radius:18px;padding:14px;margin:12px 0}
+  .smallBtn{padding:8px 12px;min-width:70px;box-shadow:none;border-radius:12px;font-size:17px}
+  .pill{display:inline-block;background:var(--blue2);border:1px solid #93c5fd;color:#1e3a8a;border-radius:999px;padding:6px 12px;margin:4px;font-weight:700;font-size:17px}
+  table{width:100%;border-collapse:collapse;background:white;border-radius:18px;overflow:hidden;font-size:18px} th,td{border:1px solid #d7e3f4;padding:10px;text-align:center} th{background:#eaf3ff;color:#1e3a8a}.answer{background:#fff7cc;border:2px solid #fde68a;border-radius:18px;padding:18px;font-weight:700}.warn{color:#dc2626;font-weight:800}
+  pre{background:var(--code);color:var(--codeText);padding:18px;border-radius:18px;overflow:auto;font-size:16px;line-height:1.5;min-height:260px}.codeTabs{display:flex;gap:10px;margin:10px 0}.tab{background:#e2e8f0;color:#0f172a;box-shadow:none}.tab.active{background:#2563eb;color:white}
+  canvas{width:100%;height:280px;background:white;border:2px solid #d7e3f4;border-radius:18px}.quiz{border:2px solid #c7d7ee;border-radius:18px;padding:16px;margin:14px 0;background:#fbfdff}.hidden{display:none}
+  .bigResult{font-size:28px;font-weight:900;color:#1d4ed8}.stepBox{background:#f8fbff;border-left:8px solid #2563eb;border-radius:14px;padding:16px;margin:12px 0}
+  @media(max-width:850px){.col6,.col4,.col3{grid-column:span 12}.patternRow{grid-template-columns:1fr}.smallBtn{width:100%}body{font-size:18px}header h1{font-size:29px}}
+</style>
+</head>
+<body>
+<header>
+  <h1>심화 수열 패턴 실습실</h1>
+  <p>덧셈 · 뺄셈 · 곱셈 · 나눗셈을 섞어서 나만의 수열을 만들고 C/Python 코드까지 확인하기</p>
+</header>
+<main>
+  <section class="card">
+    <h2>1. 수열 만들기</h2>
+    <p class="sub">첫 수를 정하고, 반복할 연산 규칙을 추가하세요. 규칙은 위에서 아래 순서대로 반복 적용됩니다.</p>
+    <div class="grid">
+      <div class="col3"><label>첫 수</label><input id="start" type="number" value="2"></div>
+      <div class="col3"><label>몇 개 만들까?</label><input id="count" type="number" value="12" min="2" max="50"></div>
+      <div class="col3"><label>나눗셈 방식</label><select id="divMode"><option value="int">초등 정수 나눗셈</option><option value="real">소수 나눗셈</option></select></div>
+      <div class="col3"><label>추천 패턴</label><select id="preset" onchange="loadPreset()"><option value="custom">직접 만들기</option><option value="addmul">+3, ×2 반복</option><option value="mulsub">×2, -1 반복</option><option value="diff">계차 응용 +1,+2,+3...</option><option value="zigzag">+10, ÷2, +3 반복</option><option value="hard">×3, -2, ÷2, +5 반복</option></select></div>
+    </div>
+    <div id="patterns"></div>
+    <div class="grid">
+      <div class="col3"><button onclick="addPattern('+',1)">+ 규칙 추가</button></div>
+      <div class="col3"><button class="btn2" onclick="addPattern('-',1)">- 규칙 추가</button></div>
+      <div class="col3"><button class="btn3" onclick="addPattern('*',2)">× 규칙 추가</button></div>
+      <div class="col3"><button class="btn4" onclick="addPattern('/',2)">÷ 규칙 추가</button></div>
+    </div>
+    <div style="margin-top:16px" class="grid">
+      <div class="col6"><button onclick="makeSequence()">수열 만들기 / 코드 갱신</button></div>
+      <div class="col6"><button class="btnRed" onclick="resetPattern()">규칙 초기화</button></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>2. 만들어진 수열 확인</h2>
+    <div id="ruleText" class="answer">규칙을 추가한 뒤 수열 만들기를 누르세요.</div>
+    <div id="sequencePills" style="margin:14px 0"></div>
+    <canvas id="chart" width="1000" height="280"></canvas>
+    <div id="tableWrap" style="margin-top:16px"></div>
+  </section>
+
+  <section class="card">
+    <h2>3. 규칙을 말로 설명하기</h2>
+    <div id="explain" class="stepBox">아직 수열이 만들어지지 않았습니다.</div>
+  </section>
+
+  <section class="card">
+    <h2>4. C와 Python 코드</h2>
+    <p class="sub">현재 만든 규칙과 같은 수열을 출력하는 코드입니다. 아이들이 패턴을 수학에서 코딩으로 연결해 볼 수 있습니다.</p>
+    <div class="codeTabs">
+      <button class="tab active" onclick="showCode('c')">C 코드</button>
+      <button class="tab" onclick="showCode('py')">Python 코드</button>
+    </div>
+    <pre id="codeBox"></pre>
+  </section>
+
+  <section class="card">
+    <h2>5. 실습 문제</h2>
+    <p class="sub">아래 문제를 풀고 정답 확인을 눌러 보세요.</p>
+    <div id="quizArea"></div>
+    <button onclick="checkQuiz()">정답 확인</button>
+    <div id="quizResult" class="answer hidden" style="margin-top:16px"></div>
+  </section>
+</main>
+<script>
+let patterns=[]; let seq=[]; let codeMode='c';
+const quiz=[
+  {q:'첫 수 2에서 +3, ×2를 반복하면 네 번째 수는?', a:'20', h:'2 → 5(+3) → 10(×2) → 13(+3) → 26(×2)이 아니라, 첫 수을 1번째로 세면 4번째는 13입니다.', real:'13'},
+  {q:'수열 3, 6, 5, 10, 9, 18은 어떤 규칙이 반복될까요?', a:'*2,-1', real:'*2,-1', h:'3×2=6, 6-1=5, 5×2=10, 10-1=9입니다.'},
+  {q:'1, 4, 8, 11, 22, 25에서 반복되는 규칙은?', a:'+3,*2,+3,*2', real:'+3,*2', h:'1+3=4, 4×2=8, 8+3=11, 11×2=22입니다.'},
+  {q:'첫 수 100에서 ÷2, -5를 반복하면 5번째 수는?', a:'20', real:'20', h:'100 → 50 → 45 → 22(정수나눗셈) → 17 이므로 정수 나눗셈이면 5번째는 17입니다.', intReal:'17'}
+];
+function opName(op){return op==='*'?'×':op==='/'?'÷':op}
+function addPattern(op,val){patterns.push({op,val:Number(val)}); renderPatterns(); makeSequence();}
+function removePattern(i){patterns.splice(i,1);renderPatterns();makeSequence();}
+function renderPatterns(){
+  const box=document.getElementById('patterns'); box.innerHTML='';
+  patterns.forEach((p,i)=>{
+    const row=document.createElement('div'); row.className='patternRow';
+    row.innerHTML=`<div><label>${i+1}번째 규칙</label><select onchange="patterns[${i}].op=this.value; makeSequence(); renderPatterns();"><option value="+" ${p.op==='+'?'selected':''}>더하기 +</option><option value="-" ${p.op==='-'?'selected':''}>빼기 -</option><option value="*" ${p.op==='*'?'selected':''}>곱하기 ×</option><option value="/" ${p.op==='/'?'selected':''}>나누기 ÷</option></select></div><div><label>숫자</label><input type="number" value="${p.val}" onchange="patterns[${i}].val=Number(this.value); makeSequence();"></div><div><label>설명</label><div class="pill">이전 수 ${opName(p.op)} ${p.val}</div></div><button class="smallBtn btnRed" onclick="removePattern(${i})">삭제</button>`;
+    box.appendChild(row);
+  });
+}
+function applyOp(x,p){
+  if(p.op==='+') return x+p.val; if(p.op==='-') return x-p.val; if(p.op==='*') return x*p.val;
+  if(p.op==='/'){ if(p.val===0) return NaN; return document.getElementById('divMode').value==='int'?Math.trunc(x/p.val):x/p.val; }
+}
+function fmt(x){return Number.isInteger(x)?String(x):x.toFixed(2)}
+function makeSequence(){
+  const start=Number(document.getElementById('start').value); const count=Math.max(2,Math.min(50,Number(document.getElementById('count').value)||10));
+  seq=[start]; if(patterns.length===0){updateViews();return;}
+  let x=start;
+  for(let i=1;i<count;i++){const p=patterns[(i-1)%patterns.length]; x=applyOp(x,p); if(!isFinite(x)){break;} seq.push(x);}
+  updateViews();
+}
+function updateViews(){
+  const rule=patterns.length?patterns.map((p,i)=>`${i+1}. 이전 수 ${opName(p.op)} ${p.val}`).join(' → '):'규칙 없음';
+  document.getElementById('ruleText').innerHTML=`<span class="bigResult">반복 규칙</span><br>${rule}`;
+  document.getElementById('sequencePills').innerHTML=seq.map((v,i)=>`<span class="pill">${i+1}번째: ${fmt(v)}</span>`).join('');
+  let html='<table><tr><th>순서</th><th>수</th><th>적용한 규칙</th></tr>';
+  seq.forEach((v,i)=>{let r=i===0?'첫 수':`${opName(patterns[(i-1)%patterns.length]?.op||'')} ${patterns[(i-1)%patterns.length]?.val??''}`;html+=`<tr><td>${i+1}</td><td>${fmt(v)}</td><td>${r}</td></tr>`}); html+='</table>'; document.getElementById('tableWrap').innerHTML=html;
+  drawChart(); explain(); updateCode();
+}
+function drawChart(){
+  const c=document.getElementById('chart'), ctx=c.getContext('2d'); ctx.clearRect(0,0,c.width,c.height); ctx.font='18px Arial'; ctx.fillStyle='#102033';
+  if(seq.length<2){ctx.fillText('수열을 만들면 그래프가 나타납니다.',30,40);return;}
+  const min=Math.min(...seq), max=Math.max(...seq), pad=45, w=c.width-pad*2, h=c.height-pad*2;
+  ctx.strokeStyle='#d7e3f4';ctx.lineWidth=2; for(let i=0;i<5;i++){let y=pad+i*h/4;ctx.beginPath();ctx.moveTo(pad,y);ctx.lineTo(c.width-pad,y);ctx.stroke();}
+  function px(i){return pad+i*w/(seq.length-1)} function py(v){return max===min?c.height/2:pad+(max-v)*h/(max-min)}
+  ctx.strokeStyle='#2563eb';ctx.lineWidth=4;ctx.beginPath();seq.forEach((v,i)=>{if(i===0)ctx.moveTo(px(i),py(v));else ctx.lineTo(px(i),py(v));});ctx.stroke();
+  seq.forEach((v,i)=>{ctx.fillStyle='#2563eb';ctx.beginPath();ctx.arc(px(i),py(v),7,0,Math.PI*2);ctx.fill();ctx.fillStyle='#102033'; if(i%2===0||seq.length<16)ctx.fillText(fmt(v),px(i)-12,py(v)-12);});
+}
+function explain(){
+  if(!patterns.length){document.getElementById('explain').innerHTML='규칙을 추가하세요.';return;}
+  let s='<b>생각하는 순서</b><br>1. 첫 수를 확인합니다.<br>2. 첫 번째 규칙부터 차례대로 계산합니다.<br>3. 마지막 규칙까지 사용하면 다시 첫 번째 규칙으로 돌아갑니다.<br><br><b>이번 수열 계산 예</b><br>';
+  for(let i=1;i<Math.min(seq.length,7);i++){let p=patterns[(i-1)%patterns.length];s+=`${i}. ${fmt(seq[i-1])} ${opName(p.op)} ${p.val} = ${fmt(seq[i])}<br>`}
+  document.getElementById('explain').innerHTML=s;
+}
+function updateCode(){
+  const start=Number(document.getElementById('start').value), count=Number(document.getElementById('count').value)||10;
+  const ops=patterns.map(p=>p.op), vals=patterns.map(p=>p.val); const m=patterns.length||1; const intDiv=document.getElementById('divMode').value==='int';
+  const cOps=ops.map(o=>`'${o}'`).join(', '); const cVals=vals.join(', ');
+  const cCode=`#include <stdio.h>\n\nint main() {\n    long long x = ${start};\n    int n = ${count};\n    char op[${m}] = { ${patterns.length?cOps:"'+'"} };\n    long long val[${m}] = { ${patterns.length?cVals:'0'} };\n\n    printf("%lld ", x);\n\n    for (int i = 1; i < n; i++) {\n        int k = (i - 1) % ${m};\n\n        if (op[k] == '+') x = x + val[k];\n        else if (op[k] == '-') x = x - val[k];\n        else if (op[k] == '*') x = x * val[k];\n        else if (op[k] == '/') x = x / val[k];\n\n        printf("%lld ", x);\n    }\n\n    return 0;\n}`;
+  const pyCode=`x = ${start}\nn = ${count}\nops = [${ops.map(o=>`'${o}'`).join(', ')}]\nvals = [${vals.join(', ')}]\n\nprint(x, end=' ')\n\nfor i in range(1, n):\n    k = (i - 1) % ${m}\n\n    if ops[k] == '+':\n        x = x + vals[k]\n    elif ops[k] == '-':\n        x = x - vals[k]\n    elif ops[k] == '*':\n        x = x * vals[k]\n    elif ops[k] == '/':\n        x = ${intDiv?'x // vals[k]':'x / vals[k]'}\n\n    print(x, end=' ')`;
+  window.cCode=cCode; window.pyCode=pyCode; document.getElementById('codeBox').textContent=codeMode==='c'?cCode:pyCode;
+}
+function showCode(m){codeMode=m;document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));event.target.classList.add('active');updateCode();}
+function resetPattern(){patterns=[];renderPatterns();makeSequence();}
+function loadPreset(){const v=document.getElementById('preset').value; if(v==='custom')return; patterns=[];
+  if(v==='addmul')patterns=[{op:'+',val:3},{op:'*',val:2}];
+  if(v==='mulsub')patterns=[{op:'*',val:2},{op:'-',val:1}];
+  if(v==='zigzag')patterns=[{op:'+',val:10},{op:'/',val:2},{op:'+',val:3}];
+  if(v==='hard')patterns=[{op:'*',val:3},{op:'-',val:2},{op:'/',val:2},{op:'+',val:5}];
+  if(v==='diff')patterns=[{op:'+',val:1},{op:'+',val:2},{op:'+',val:3},{op:'+',val:4},{op:'+',val:5}];
+  renderPatterns();makeSequence();}
+function buildQuiz(){document.getElementById('quizArea').innerHTML=quiz.map((x,i)=>`<div class="quiz"><b>문제 ${i+1}.</b> ${x.q}<input id="q${i}" placeholder="정답 입력"></div>`).join('')}
+function normalize(s){return String(s).replace(/×/g,'*').replace(/ /g,'').toLowerCase();}
+function checkQuiz(){let out='',score=0;quiz.forEach((q,i)=>{let user=normalize(document.getElementById('q'+i).value);let ans=normalize(q.intReal||q.real);let ok=user===ans; if(ok)score++; out+=`<p><b>문제 ${i+1}: ${ok?'정답':'오답'}</b><br>정답: ${q.intReal||q.real}<br>해설: ${q.h}</p>`}); const r=document.getElementById('quizResult'); r.classList.remove('hidden'); r.innerHTML=`<div class="bigResult">${score} / ${quiz.length}개 정답</div>`+out;}
+['start','count','divMode'].forEach(id=>document.addEventListener('input',e=>{if(e.target.id===id)makeSequence()}));
+patterns=[{op:'+',val:3},{op:'*',val:2}];renderPatterns();makeSequence();buildQuiz();
+</script>
+</body>
+</html>
