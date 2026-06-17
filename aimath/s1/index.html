@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1회차 | 인공지능의 개념과 텍스트 데이터의 표현</title>
+<style>
+:root{
+  --bg:#fbf9f4;
+  --paper:#ffffff;
+  --paper-soft:#f4f1e8;
+  --line:#dcd5c2;
+  --line-soft:#e8e2d2;
+  --navy-900:#1a2332;
+  --blue:#1c5fd6;
+  --blue-soft:#e8f0fd;
+  --blue-deep:#0f3d8c;
+  --cyan:#0f9488;
+  --cyan-soft:#e3f6f3;
+  --amber:#b3650a;
+  --amber-soft:#fdf0dd;
+  --pink:#c23a6b;
+  --text:#1f2430;
+  --text-dim:#3d4452;
+  --text-faint:#7a8195;
+  --white:#ffffff;
+  --good:#0f8a5f;
+  --good-soft:#e5f6ee;
+  --bad:#c4314b;
+  --bad-soft:#fceaee;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+  line-height:1.85;
+  font-size:16px;
+  -webkit-font-smoothing:antialiased;
+}
+body{padding-bottom:80px;}
+
+/* ===== Top nav ===== */
+#topnav{
+  position:sticky;top:0;z-index:100;
+  background:rgba(251,249,244,0.95);
+  backdrop-filter:blur(10px);
+  border-bottom:2px solid var(--line);
+  padding:14px 20px;
+}
+.nav-inner{
+  max-width:980px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:16px;
+}
+.nav-title{
+  font-size:15px;font-weight:800;color:var(--blue-deep);
+  letter-spacing:0.3px;
+}
+.nav-title .num{
+  display:inline-block;background:var(--blue);color:var(--white);
+  font-size:12.5px;font-weight:800;border-radius:6px;
+  padding:3px 9px;margin-right:8px;
+}
+.progress-wrap{
+  flex:1;max-width:320px;height:8px;background:var(--paper-soft);
+  border:1px solid var(--line);border-radius:6px;overflow:hidden;
+}
+#progress-bar{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,var(--blue),var(--cyan));
+  transition:width .3s ease;
+}
+.progress-label{font-size:13px;font-weight:700;color:var(--text-faint);min-width:48px;text-align:right;}
+
+/* ===== Page nav buttons ===== */
+#pagenav{
+  max-width:980px;margin:14px auto 0;padding:0 20px;
+  display:flex;gap:6px;flex-wrap:wrap;
+}
+.pg-btn{
+  border:1.5px solid var(--line);background:var(--paper);
+  color:var(--text-dim);font-size:12.5px;font-weight:700;
+  border-radius:20px;padding:7px 13px;cursor:pointer;
+  transition:all .2s;white-space:nowrap;
+}
+.pg-btn:hover{border-color:var(--blue);color:var(--blue-deep);}
+.pg-btn.active{background:var(--blue);color:var(--white);border-color:var(--blue);}
+.pg-btn.done{color:var(--cyan);border-color:var(--cyan);}
+.pg-btn.done::after{content:" ✓";}
+
+/* ===== Main container ===== */
+#main{max-width:980px;margin:0 auto;padding:28px 20px 0;}
+.page{display:none;animation:fadeIn .35s ease;}
+.page.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+.hero{
+  background:linear-gradient(135deg,var(--blue-soft),var(--paper));
+  border:1.5px solid var(--line);border-radius:18px;
+  padding:40px 32px;margin-bottom:24px;
+  position:relative;overflow:hidden;
+}
+.hero::before{
+  content:"";position:absolute;top:-60px;right:-60px;
+  width:240px;height:240px;border-radius:50%;
+  background:radial-gradient(circle,rgba(28,95,214,0.10),transparent 70%);
+}
+.hero-eyebrow{
+  font-size:13.5px;font-weight:800;color:var(--cyan);
+  letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;
+}
+.hero h1{font-size:30px;font-weight:800;color:var(--navy-900);margin-bottom:14px;letter-spacing:-0.3px;}
+.hero p{font-size:16px;color:var(--text-dim);max-width:640px;}
+
+.section-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:13.5px;font-weight:800;color:var(--blue-deep);
+  background:var(--blue-soft);border:1.5px solid #b8d0f5;
+  border-radius:8px;padding:7px 15px;margin-bottom:18px;
+}
+
+h2.sec-title{font-size:23px;font-weight:800;color:var(--navy-900);margin:0 0 16px;letter-spacing:-0.2px;}
+h3.sub-title{font-size:18px;font-weight:800;color:var(--blue-deep);margin:28px 0 12px;}
+
+.card{
+  background:var(--paper);border:1.5px solid var(--line);
+  border-radius:14px;padding:24px;margin-bottom:18px;
+  box-shadow:0 1px 3px rgba(0,0,0,0.04);
+}
+.card p{color:var(--text-dim);font-size:16px;margin-bottom:10px;}
+.card p:last-child{margin-bottom:0;}
+.card strong{color:var(--navy-900);}
+
+.callout{
+  border-left:4px solid var(--blue);background:var(--blue-soft);
+  border-radius:0 10px 10px 0;padding:16px 20px;margin:16px 0;
+}
+.callout.amber{border-left-color:var(--amber);background:var(--amber-soft);}
+.callout.cyan{border-left-color:var(--cyan);background:var(--cyan-soft);}
+.callout-label{font-size:12.5px;font-weight:800;letter-spacing:1px;margin-bottom:6px;color:var(--blue-deep);}
+.callout.amber .callout-label{color:var(--amber);}
+.callout.cyan .callout-label{color:var(--cyan);}
+.callout p{color:var(--text-dim);font-size:15px;}
+
+.def-box{
+  background:var(--paper-soft);border:1.5px solid #d4cdb5;
+  border-radius:12px;padding:18px 22px;margin:16px 0;
+}
+.def-box .term{color:var(--cyan);font-weight:800;font-size:16px;margin-bottom:6px;}
+.def-box .formula{
+  font-family:'Cambria Math','Times New Roman',serif;
+  font-size:17px;color:var(--navy-900);background:var(--paper);
+  border-radius:8px;padding:12px 16px;margin-top:10px;text-align:center;
+  border:1.5px solid var(--line);
+}
+
+.diagram-row{display:flex;gap:16px;flex-wrap:wrap;margin:18px 0;}
+.diagram-box{
+  flex:1;min-width:200px;background:var(--paper);
+  border:1.5px solid var(--line);border-radius:12px;
+  padding:18px;text-align:center;
+  box-shadow:0 1px 3px rgba(0,0,0,0.04);
+}
+.diagram-box .icon{font-size:32px;margin-bottom:8px;}
+.diagram-box .label{font-weight:800;color:var(--navy-900);font-size:15px;margin-bottom:6px;}
+.diagram-box .desc{font-size:13px;color:var(--text-faint);}
+
+table.data-table{
+  width:100%;border-collapse:collapse;margin:16px 0;
+  font-size:14.5px;
+}
+table.data-table th{
+  background:var(--blue-deep);color:var(--white);
+  padding:11px 12px;font-weight:700;text-align:center;
+  border:1px solid var(--blue-deep);
+}
+table.data-table td{
+  padding:11px 12px;text-align:center;color:var(--text-dim);
+  border:1px solid var(--line);background:var(--paper);
+}
+
+/* vector / set visualization */
+.vec-display{
+  display:flex;align-items:center;justify-content:center;gap:4px;
+  font-family:'Cambria Math',serif;font-size:18px;color:var(--navy-900);
+  background:var(--paper-soft);border:1.5px solid var(--line);
+  border-radius:10px;padding:16px;margin:14px 0;flex-wrap:wrap;
+}
+.vec-comp{
+  display:inline-flex;flex-direction:column;align-items:center;
+  margin:0 6px;
+}
+.vec-comp .val{
+  background:var(--blue-soft);border:1px solid #b8d0f5;border-radius:6px;padding:4px 10px;
+  color:var(--blue-deep);font-weight:800;
+}
+.vec-comp .lbl{font-size:10.5px;color:var(--text-faint);margin-top:4px;}
+
+/* Tabs */
+.tabgroup{margin:18px 0;}
+.tabs{display:flex;gap:8px;border-bottom:2px solid var(--line);margin-bottom:18px;flex-wrap:wrap;}
+.tab-btn{
+  background:none;border:none;color:var(--text-faint);
+  font-size:14.5px;font-weight:700;padding:10px 16px;cursor:pointer;
+  border-bottom:3px solid transparent;transition:all .2s;
+}
+.tab-btn:hover{color:var(--text);}
+.tab-btn.active{color:var(--blue-deep);border-bottom-color:var(--blue);}
+.tabpanel{display:none;}
+.tabpanel.active{display:block;animation:fadeIn .3s ease;}
+
+/* Quiz / check */
+.quiz{
+  background:var(--paper);border:1.5px solid var(--line);
+  border-radius:14px;padding:22px;margin:18px 0;
+  box-shadow:0 1px 3px rgba(0,0,0,0.04);
+}
+.quiz-q{font-weight:700;color:var(--navy-900);font-size:16px;margin-bottom:14px;}
+.quiz-q .qnum{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:25px;height:25px;background:var(--blue);color:var(--white);
+  border-radius:50%;font-size:13px;font-weight:800;margin-right:8px;
+}
+.opt-list{display:flex;flex-direction:column;gap:8px;}
+.opt-btn{
+  text-align:left;background:var(--paper-soft);border:1.5px solid var(--line);
+  color:var(--text-dim);padding:13px 16px;border-radius:10px;
+  cursor:pointer;font-size:15px;transition:all .2s;
+}
+.opt-btn:hover{border-color:var(--blue);background:var(--blue-soft);}
+.opt-btn.correct{border-color:var(--good);background:var(--good-soft);color:var(--good);font-weight:700;}
+.opt-btn.wrong{border-color:var(--bad);background:var(--bad-soft);color:var(--bad);font-weight:700;}
+.feedback{margin-top:12px;font-size:14.5px;padding:11px 15px;border-radius:8px;display:none;font-weight:600;}
+.feedback.show{display:block;}
+.feedback.correct{background:var(--good-soft);color:var(--good);border:1px solid #b8e6d0;}
+.feedback.wrong{background:var(--bad-soft);color:var(--bad);border:1px solid #f3c0ca;}
+
+.fill-quiz input[type=text]{
+  background:var(--paper);border:1.5px solid var(--line);
+  color:var(--text);padding:10px 14px;border-radius:8px;
+  font-size:15px;width:160px;margin:0 6px;
+}
+.fill-quiz input[type=text]:focus{outline:none;border-color:var(--blue);}
+.check-btn{
+  background:var(--blue);color:var(--white);border:none;
+  padding:11px 24px;border-radius:8px;font-weight:700;font-size:14.5px;
+  cursor:pointer;margin-top:10px;transition:all .2s;
+}
+.check-btn:hover{background:var(--blue-deep);}
+
+/* Hint toggle */
+.hint-toggle{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--amber-soft);border:1.5px solid #e8c896;
+  color:var(--amber);font-size:14px;font-weight:700;
+  padding:9px 17px;border-radius:8px;cursor:pointer;margin-top:8px;
+  transition:all .2s;
+}
+.hint-toggle:hover{background:#fae6c4;}
+.hint-content{
+  display:none;margin-top:10px;padding:14px 18px;
+  background:var(--amber-soft);border-left:4px solid var(--amber);
+  border-radius:0 10px 10px 0;font-size:15px;color:var(--text-dim);
+}
+.hint-content.show{display:block;animation:fadeIn .3s ease;}
+
+/* Nav buttons bottom */
+.nav-buttons{
+  display:flex;justify-content:space-between;margin-top:32px;gap:12px;
+}
+.nav-buttons button{
+  background:var(--paper);border:1.5px solid var(--line);
+  color:var(--text);padding:13px 26px;border-radius:10px;
+  font-weight:700;font-size:15px;cursor:pointer;transition:all .2s;
+}
+.nav-buttons button:hover{border-color:var(--blue);color:var(--blue-deep);}
+.nav-buttons button:disabled{opacity:.35;cursor:not-allowed;}
+.nav-buttons .next-btn{background:var(--blue);border-color:var(--blue);color:var(--white);}
+.nav-buttons .next-btn:hover{background:var(--blue-deep);}
+
+/* responsive */
+@media(max-width:640px){
+  .hero{padding:28px 20px;}
+  .hero h1{font-size:24px;}
+  .diagram-row{flex-direction:column;}
+}
+
+.weight-diagram{
+  display:flex;align-items:center;justify-content:center;gap:18px;
+  background:var(--paper-soft);border:1.5px solid var(--line);
+  border-radius:12px;padding:24px;margin:16px 0;flex-wrap:wrap;
+}
+.w-input{display:flex;flex-direction:column;gap:10px;}
+.w-row{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--text-dim);font-weight:600;}
+.w-row .x{color:var(--cyan);font-weight:800;}
+.w-row .w{color:var(--amber);font-weight:800;}
+.arrow-big{font-size:24px;color:var(--text-faint);}
+.threshold-box{
+  background:var(--paper);border:1.5px solid var(--blue);
+  border-radius:10px;padding:14px 18px;text-align:center;font-size:14px;
+}
+
+.minicard-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:16px 0;}
+@media(max-width:640px){.minicard-grid{grid-template-columns:1fr;}}
+.minicard{
+  background:var(--paper);border:1.5px solid var(--line);
+  border-radius:12px;padding:18px;
+  box-shadow:0 1px 3px rgba(0,0,0,0.04);
+}
+.minicard .mc-title{font-weight:800;color:var(--navy-900);font-size:15px;margin-bottom:8px;}
+.minicard .mc-desc{font-size:13.5px;color:var(--text-faint);line-height:1.7;}
+
+.endnote{
+  text-align:center;color:var(--text-faint);font-size:13px;
+  margin-top:40px;padding-top:20px;border-top:1.5px solid var(--line);
+}
+</style>
+</head>
+<body>
+
+<div id="topnav">
+  <div class="nav-inner">
+    <div class="nav-title"><span class="num">1회차</span>AI 개념과 텍스트 데이터의 표현</div>
+    <div class="progress-wrap"><div id="progress-bar"></div></div>
+    <div class="progress-label" id="progress-label">0%</div>
+  </div>
+</div>
+
+<div id="pagenav"></div>
+
+<div id="main">
+
+<!-- ===== PAGE 0: 인트로 ===== -->
+<div class="page" id="pg0">
+  <div class="hero">
+    <div class="hero-eyebrow">SESSION 01 · 3시간</div>
+    <h1>인공지능의 개념과<br>텍스트 데이터의 표현</h1>
+    <p>컴퓨터는 글자를 읽지 못합니다. 그런데 어떻게 인공지능은 문장을 이해하고, 댓글의 분위기를 파악할까요?
+    오늘은 인공지능이 무엇인지, 어떻게 학습하는지부터 시작해서 — 문장을 <strong>집합</strong>과 <strong>벡터</strong>라는
+    수학적 도구로 바꾸는 첫걸음을 배웁니다.</p>
+  </div>
+
+  <div class="card">
+    <h2 class="sec-title" style="font-size:18px;margin-bottom:14px;">📋 오늘의 학습 목표</h2>
+    <p>① 인공지능의 개념과 지도학습·비지도학습·강화학습의 차이를 설명할 수 있다.</p>
+    <p>② 퍼셉트론의 가중치·임곗값·활성화함수 계산 과정을 이해한다.</p>
+    <p>③ 집합의 표현법과 연산(합집합, 교집합)을 텍스트 데이터에 적용할 수 있다.</p>
+    <p>④ 텍스트 데이터를 단어집합과 0/1 벡터로 표현할 수 있다.</p>
+  </div>
+
+  <div class="minicard-grid">
+    <div class="minicard">
+      <div class="mc-title">🧭 Ⅰ단원</div>
+      <div class="mc-desc">인공지능의 개념과 학습 방식<br>빅데이터의 특징(3V)</div>
+    </div>
+    <div class="minicard">
+      <div class="mc-title">🧭 Ⅱ단원</div>
+      <div class="mc-desc">텍스트 데이터의 표현<br>(집합 · 벡터)</div>
+    </div>
+    <div class="minicard">
+      <div class="mc-title">⏱ 시간 배분</div>
+      <div class="mc-desc">개념 45분 · 표현 80분<br>실습/정리 55분</div>
+    </div>
+  </div>
+
+  <div class="callout cyan">
+    <div class="callout-label">학습 안내</div>
+    <p>각 페이지를 순서대로 진행하며, "확인하기" 문제는 직접 풀어본 후 정답을 확인하세요.
+    하단의 <strong>다음 →</strong> 버튼이나 상단 탭을 눌러 이동할 수 있습니다.</p>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevPage()" disabled>← 이전</button>
+    <button class="next-btn" onclick="nextPage()">학습 시작하기 →</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 1: AI란 무엇인가 ===== -->
+<div class="page" id="pg1">
+  <div class="section-tag">Ⅰ-1 · 인공지능의 개념과 학습 방식</div>
+  <h2 class="sec-title">인공지능이란 무엇인가요?</h2>
+
+  <div class="card">
+    <p>현재 우리 사회는 교통, 금융, 경제, 경영 등 다양한 분야에서 인공지능의 발전과 더불어 크고 작은 변화를 겪고 있습니다.
+    자율 주행 자동차, 사물 인터넷, 데이터 기반 의사 결정 등 여러 분야의 기술에 인공지능이 적용되어 변화를 이끌고 있습니다.</p>
+  </div>
+
+  <div class="def-box">
+    <div class="term">인공지능 (Artificial Intelligence)</div>
+    <p style="color:var(--text-dim);font-size:14px;">인간의 지능과 사고 과정을 모방하여 학습, 추론, 지각 능력 등을 실현한 기술.
+    1956년 미국 다트머스 대학에서 열린 학회에서 처음 등장한 용어로, 이 학회에서는
+    <strong>"인간이 수행하는 지적 작업 절차를 컴퓨터로 시뮬레이션한 것"</strong>이라고 정의하였습니다.</p>
+  </div>
+
+  <h3 class="sub-title">인공지능 · 기계학습 · 딥러닝의 관계</h3>
+  <div class="diagram-row">
+    <div class="diagram-box" style="border-color:var(--blue);">
+      <div class="icon">🧠</div>
+      <div class="label">인공지능 (AI)</div>
+      <div class="desc">인간의 지능과 사고 과정을 모방하여 학습, 추론, 지각 능력 등을 실현한 기술 — 가장 큰 범주</div>
+    </div>
+    <div class="diagram-box" style="border-color:var(--cyan);">
+      <div class="icon">📊</div>
+      <div class="label">기계학습 (ML)</div>
+      <div class="desc">컴퓨터가 데이터를 이용해 스스로 학습하여 문제를 해결하는 기술 — AI의 하위 분야</div>
+    </div>
+    <div class="diagram-box" style="border-color:var(--amber);">
+      <div class="icon">🕸️</div>
+      <div class="label">딥러닝 (DL)</div>
+      <div class="desc">인공신경망을 활용해 스스로 사람처럼 학습·정보처리 — ML의 하위 분야</div>
+    </div>
+  </div>
+
+  <div class="quiz" id="q1">
+    <div class="quiz-q"><span class="qnum">Q</span>다음 중 1956년 다트머스 학회에서 정의한 인공지능의 의미로 가장 적절한 것은?</div>
+    <div class="opt-list">
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q1',false,'fb1','','컴퓨터로 시뮬레이션한 것이 핵심 표현입니다. 다시 생각해보세요.')">인간의 뇌세포를 그대로 복제한 기계 장치</button>
+      <button class="opt-btn" data-correct="true" onclick="selectOption(this,'q1',true,'fb1','정답입니다! 인간이 수행하는 지적 작업 절차를 컴퓨터로 시뮬레이션한 것이 다트머스 학회의 정의입니다.','')">인간이 수행하는 지적 작업 절차를 컴퓨터로 시뮬레이션한 것</button>
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q1',false,'fb1','','단순 자동화 프로그램과는 다른 개념입니다.')">정해진 규칙만 따르는 자동화 프로그램</button>
+    </div>
+    <div class="feedback" id="fb1"></div>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevPage()">← 이전</button>
+    <button class="next-btn" onclick="nextPage()">다음 →</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 2: 학습방법 ===== -->
+<div class="page" id="pg2">
+  <div class="section-tag">Ⅰ-1 · 인공지능의 학습 방법</div>
+  <h2 class="sec-title">인공지능은 어떻게 학습할까요?</h2>
+
+  <div class="card">
+    <p>일반적인 컴퓨터 프로그램은 주어진 데이터를 프로그래밍 언어로 작성된 명령에 따라 처리합니다.
+    반면 인공지능은 학습 데이터의 특징이나 규칙을 <strong>스스로 찾아내고</strong>, 새로운 데이터에 그 규칙을 적용하여
+    예측, 분류 등 다양한 작업을 수행합니다.</p>
+  </div>
+
+  <div class="tabgroup" id="tab-learn">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('tab-learn',0)">지도학습</button>
+      <button class="tab-btn" onclick="switchTab('tab-learn',1)">비지도학습</button>
+      <button class="tab-btn" onclick="switchTab('tab-learn',2)">강화학습</button>
+    </div>
+
+    <div class="tabpanel active">
+      <div class="def-box">
+        <div class="term">지도학습 (Supervised Learning)</div>
+        <p style="color:var(--text-dim);font-size:14px;">정답(레이블)이 포함된 데이터를 이용하여 인공지능을 학습시키는 방법.
+        데이터에 포함된 다양한 속성과 정답 사이의 관계를 학습하여 규칙을 발견하고, 이 규칙으로 새로운 입력값의 정답을 예측합니다.</p>
+      </div>
+      <div class="callout">
+        <div class="callout-label">예시</div>
+        <p>'고양이', '개' 이미지에 레이블을 붙여 학습시키면, 인공지능은 귀의 모양·코의 크기 등 특징을 추출하여
+        정답과 연관 지어 학습합니다. 이후 새로운 이미지가 들어오면 특징을 분석해 개/고양이 중 어디에 속하는지 분류합니다.</p>
+      </div>
+    </div>
+
+    <div class="tabpanel">
+      <div class="def-box">
+        <div class="term">비지도학습 (Unsupervised Learning)</div>
+        <p style="color:var(--text-dim);font-size:14px;">정답(레이블)이 포함되지 않은 데이터를 이용하는 학습 방법.
+        정답이 없는 데이터에서 공통적인 특징을 추출하거나 비슷한 경향성을 가진 데이터끼리 무리를 짓는 방법(<strong>군집화, clustering</strong>)으로
+        데이터의 특성을 파악합니다.</p>
+      </div>
+      <div class="callout cyan">
+        <div class="callout-label">예시</div>
+        <p>카드사가 나이와 연 지출액에 따라 고객을 군집화하면, 분석되지 않았던 데이터에서도 비슷한 특성을 가진
+        고객 집단을 찾아 맞춤형 서비스를 개발할 수 있습니다.</p>
+      </div>
+    </div>
+
+    <div class="tabpanel">
+      <div class="def-box">
+        <div class="term">강화학습 (Reinforcement Learning)</div>
+        <p style="color:var(--text-dim);font-size:14px;">각 시행에 따라 피드백을 받으며 학습하는 방법. 미리 데이터를 주는 것이 아니라
+        시행을 반복하며 성공하면 보상을 높이고, 실패하면 보상을 낮추는 방식으로 행동을 학습시킵니다.</p>
+      </div>
+      <div class="callout amber">
+        <div class="callout-label">예시</div>
+        <p>자율 주행 로봇, 자율 주차 기능, 그리고 바둑 AI <strong>알파고</strong>가 강화학습을 활용한 대표적인 예입니다.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz" id="q2">
+    <div class="quiz-q"><span class="qnum">Q</span>알파고의 학습 방법으로 가장 적절한 것은?</div>
+    <div class="opt-list">
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q2',false,'fb2','','알파고는 레이블 데이터만으로 학습한 것이 아닙니다.')">지도학습</button>
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q2',false,'fb2','','군집화가 핵심은 아닙니다.')">비지도학습</button>
+      <button class="opt-btn" data-correct="true" onclick="selectOption(this,'q2',true,'fb2','정답입니다! 알파고는 대국을 반복하며 승패에 따른 보상으로 학습한 강화학습의 대표 사례입니다.','')">강화학습</button>
+    </div>
+    <div class="feedback" id="fb2"></div>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevPage()">← 이전</button>
+    <button class="next-btn" onclick="nextPage()">다음 →</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 3: 퍼셉트론 ===== -->
+<div class="page" id="pg3">
+  <div class="section-tag">Ⅰ-1 · 딥러닝과 퍼셉트론</div>
+  <h2 class="sec-title">딥러닝은 무엇인가요?</h2>
+
+  <div class="card">
+    <p>인간의 뇌는 1000억 개가 넘는 뉴런으로 구성되어 있으며, 뉴런은 그물 형태로 연결된 신경망을 이루고
+    전기적 신호를 통해 정보를 전달합니다. 신경 세포 뉴런을 모델로 만든 것이 <strong>퍼셉트론</strong>이고,
+    퍼셉트론으로 구성된 신경망의 정보 전달 과정을 수학적으로 모델링한 것이 <strong>인공신경망</strong>입니다.</p>
+  </div>
+
+  <h3 class="sub-title">퍼셉트론의 계산 과정</h3>
+  <div class="card">
+    <p>퍼셉트론은 입력값 x₁, x₂, x₃, …의 중요도에 따라 가중치 w₁, w₂, w₃, …을 부여한 후,
+    x₁w₁ + x₂w₂ + x₃w₃ + ⋯ 의 값을 계산합니다. 이 계산 결과를 활성화함수의 임곗값과 비교하여 출력값을 내보냅니다.</p>
+  </div>
+
+  <div class="weight-diagram">
+    <div class="w-input">
+      <div class="w-row"><span class="x">x₁ = 1</span> × <span class="w">w₁ = 0.7</span></div>
+      <div class="w-row"><span class="x">x₂ = 4</span> × <span class="w">w₂ = 0.6</span></div>
+      <div class="w-row"><span class="x">x₃ = 2</span> × <span class="w">w₃ = 0.4</span></div>
+    </div>
+    <div class="arrow-big">→</div>
+    <div class="threshold-box">
+      <div style="color:var(--text-faint);font-size:11px;margin-bottom:4px;">가중합 x</div>
+      <div style="color:var(--cyan);font-weight:800;font-size:20px;">3.9</div>
+      <div style="color:var(--text-faint);font-size:11px;margin-top:8px;">= 1×0.7 + 4×0.6 + 2×0.4</div>
+    </div>
+    <div class="arrow-big">→</div>
+    <div class="threshold-box" style="border-color:var(--good);">
+      <div style="color:var(--text-faint);font-size:11px;margin-bottom:4px;">활성화함수 r(x)</div>
+      <div style="color:var(--text-dim);font-size:12px;">r(x) = 0 (x&lt;3)<br>r(x) = 1 (x≥3)</div>
+      <div style="color:var(--good);font-weight:800;font-size:18px;margin-top:6px;">출력 = 1</div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">핵심 용어</div>
+    <p><strong>활성화함수</strong>: 가중합이 특정 임곗값을 넘는지에 따라 0 또는 상수를 출력하는 함수.<br>
+    <strong>임곗값</strong>: 출력값을 결정하는 기준이 되는 값.</p>
+  </div>
+
+  <h3 class="sub-title">단층퍼셉트론 → 다층퍼셉트론(딥러닝)</h3>
+  <div class="card">
+    <p>최초의 퍼셉트론인 단층퍼셉트론은 입력층과 출력층으로만 구성되어 단순한 문제만 해결할 수 있었습니다.
+    이후 입력층과 출력층 사이에 <strong>은닉층(Hidden Layer)</strong>이 추가된 다층퍼셉트론이 개발되었고,
+    이 학습 방법이 곧 <strong>딥러닝</strong>입니다. 딥러닝은 자율 주행 자동차나 생성형 AI 챗봇 등에서
+    획기적인 발전으로 이어졌습니다.</p>
+  </div>
+
+  <div class="quiz fill-quiz" id="q3">
+    <div class="quiz-q"><span class="qnum">Q</span>입력값 x₁=2, x₂=3, x₃=1에 대한 가중치가 각각 w₁=0.2, w₂=0.4, w₃=0.1이고,
+    활성화함수가 r(x) = 0 (x&lt;1), 2 (x≥1)인 퍼셉트론이 있다. 가중합 x와 출력값 r(x)를 구하시오.</div>
+    <div style="margin:10px 0;color:var(--text-dim);font-size:14px;">
+      가중합 x = <input type="text" id="q3-x" placeholder="값"> &nbsp;&nbsp; 출력값 r(x) = <input type="text" id="q3-r" placeholder="값">
+    </div>
+    <button class="check-btn" onclick="checkFill(['q3-x','q3-r'],['1.7','2'],'fb3','정답입니다! x = 2×0.2+3×0.4+1×0.1 = 1.7 이고 1.7≥1 이므로 r(x)=2 입니다.','다시 계산해보세요. x = 2×0.2+3×0.4+1×0.1 입니다.')">정답 확인</button>
+    <div class="feedback" id="fb3"></div>
+    <button class="hint-toggle" onclick="toggleHint('hint3')">💡 힌트 보기</button>
+    <div class="hint-content" id="hint3">x = x₁w₁ + x₂w₂ + x₃w₃ 를 먼저 계산한 다음, 그 값이 1보다 큰지 작은지에 따라 r(x)를 결정하세요.</div>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevPage()">← 이전</button>
+    <button class="next-btn" onclick="nextPage()">다음 →</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 4: 빅데이터 ===== -->
+<div class="page" id="pg4">
+  <div class="section-tag">Ⅰ-3 · 인공지능과 빅데이터의 활용</div>
+  <h2 class="sec-title">빅데이터의 특징과 공정성</h2>
+
+  <div class="card">
+    <p>디지털 환경에서 생성되는 데이터로 수치와 문자, 영상 데이터를 포함한 대규모 데이터를 <strong>빅데이터</strong>라고 합니다.
+    빅데이터는 일반적으로 3가지 특징(3V)으로 설명됩니다.</p>
+  </div>
+
+  <div class="minicard-grid">
+    <div class="minicard" style="border-color:var(--blue);">
+      <div class="mc-title">📦 크기 (Volume)</div>
+      <div class="mc-desc">데이터의 양이 매우 크다는 특징. 대규모 데이터를 의미합니다.</div>
+    </div>
+    <div class="minicard" style="border-color:var(--cyan);">
+      <div class="mc-title">⚡ 속도 (Velocity)</div>
+      <div class="mc-desc">데이터가 생성되고 처리되는 속도가 빠르다는 특징.</div>
+    </div>
+    <div class="minicard" style="border-color:var(--amber);">
+      <div class="mc-title">🌐 다양성 (Variety)</div>
+      <div class="mc-desc">수치, 문자, 영상 등 다양한 형태의 데이터로 구성된다는 특징.</div>
+    </div>
+  </div>
+
+  <h3 class="sub-title">데이터 편향과 공정성</h3>
+  <div class="callout amber">
+    <div class="callout-label">왜 중요할까?</div>
+    <p>인공지능이 학습하는 데이터에 편향이 있으면, 그 결과로 내려지는 판단도 편향될 수 있습니다.
+    데이터의 공정성을 지키기 위해서는 국가·기업·개인 차원에서 법과 윤리 강령을 마련하고,
+    공정성을 검증할 수 있는 시스템을 만들어야 합니다.</p>
+  </div>
+
+  <div class="quiz" id="q4">
+    <div class="quiz-q"><span class="qnum">Q</span>빅데이터를 활용하는 과정에서 데이터 공정성을 지키기 위한 노력으로 적절하지 <u>않은</u> 것은?</div>
+    <div class="opt-list">
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q4',false,'fb4','','이는 공정성을 추구하는 적절한 방법입니다.')">법이나 매뉴얼을 통해 데이터 공정성을 추구하는 큰 틀을 마련한다</button>
+      <button class="opt-btn" data-correct="true" onclick="selectOption(this,'q4',true,'fb4','정답입니다! 인공지능의 결론을 무조건 옳다고 받아들이는 것은 오히려 편향을 방치하는 위험한 태도입니다.','')">인공지능이 내리는 결론은 대부분 옳다고 받아들인다</button>
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q4',false,'fb4','','이는 공정성을 추구하는 적절한 방법입니다.')">데이터 공정성을 검증할 수 있는 시스템을 만든다</button>
+    </div>
+    <div class="feedback" id="fb4"></div>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevPage()">← 이전</button>
+    <button class="next-btn" onclick="nextPage()">다음 →</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 5: 집합 ===== -->
+<div class="page" id="pg5">
+  <div class="section-tag">Ⅱ-1 · 텍스트 데이터의 표현 (1)</div>
+  <h2 class="sec-title">집합으로 텍스트를 표현하기</h2>
+
+  <div class="callout cyan">
+    <div class="callout-label">왜 집합이 필요할까?</div>
+    <p>컴퓨터는 문장과 단어로 이루어진 텍스트 데이터를 사람처럼 글자 형태로 인식할 수 없습니다.
+    컴퓨터가 데이터를 인식하게 하려면, 데이터를 <strong>수와 수학 기호</strong>를 이용하여 표현해야 합니다.
+    그 첫 번째 도구가 바로 집합입니다.</p>
+  </div>
+
+  <h3 class="sub-title">집합의 기본 개념</h3>
+  <div class="def-box">
+    <div class="term">집합 (Set)</div>
+    <p style="color:var(--text-dim);font-size:14px;">주어진 기준에 의하여 그 대상을 분명하게 정할 수 있을 때, 그 대상들의 모임을 집합이라고 하며,
+    집합을 이루는 대상 하나하나를 <strong>원소</strong>라고 합니다.</p>
+  </div>
+
+  <table class="data-table">
+    <tr><th>표현법</th><th>설명</th><th>예시</th></tr>
+    <tr><td>원소나열법</td><td>{ } 안에 모든 원소를 나열</td><td>{2, 4, 6, 8, 10}</td></tr>
+    <tr><td>조건제시법</td><td>원소들의 공통된 성질을 제시</td><td>{x | x는 10 이하의 짝수}</td></tr>
+  </table>
+
+  <h3 class="sub-title">집합의 연산</h3>
+  <div class="diagram-row">
+    <div class="diagram-box" style="border-color:var(--blue);">
+      <div class="icon">∪</div>
+      <div class="label">합집합 A∪B</div>
+      <div class="desc">A에 속하거나 B에 속하는 모든 원소로 이루어진 집합</div>
+    </div>
+    <div class="diagram-box" style="border-color:var(--cyan);">
+      <div class="icon">∩</div>
+      <div class="label">교집합 A∩B</div>
+      <div class="desc">A에 속하면서 B에도 속하는 모든 원소로 이루어진 집합</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <p style="font-size:14px;">예를 들어 A = {1, 2, 3, 4}, B = {1, 3, 5, 7, 9}일 때</p>
+    <div class="vec-display">A∪B = {1, 2, 3, 4, 5, 7, 9}</div>
+    <div class="vec-display">A∩B = {1, 3}</div>
+  </div>
+
+  <div class="quiz" id="q5">
+    <div class="quiz-q"><span class="qnum">Q</span>두 집합 A={2,4,6,8,10}, B={0,4,8,12}에 대하여 A∩B는?</div>
+    <div class="opt-list">
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q5',false,'fb5','','교집합은 공통 원소만 포함합니다.')">{0, 2, 4, 6, 8, 10, 12}</button>
+      <button class="opt-btn" data-correct="true" onclick="selectOption(this,'q5',true,'fb5','정답입니다! 두 집합에 공통으로 들어있는 원소는 4와 8입니다.','')">{4, 8}</button>
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q5',false,'fb5','','이것은 A의 원소 전체입니다. 교집합과 혼동하지 마세요.')">{2, 4, 6, 8, 10}</button>
+    </div>
+    <div class="feedback" id="fb5"></div>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevPage()">← 이전</button>
+    <button class="next-btn" onclick="nextPage()">다음 →</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 6: 단어집합 ===== -->
+<div class="page" id="pg6">
+  <div class="section-tag">Ⅱ-1 · 텍스트 데이터의 표현 (2)</div>
+  <h2 class="sec-title">텍스트를 단어집합으로 만들기</h2>
+
+  <div class="card">
+    <p>다음은 한 음식점을 방문한 사람들의 댓글입니다. 이 텍스트를 집합으로 표현해 봅시다.</p>
+  </div>
+
+  <table class="data-table">
+    <tr><th>댓글</th><th>내용</th></tr>
+    <tr><td>A</td><td>분위기도 신선한 재료도 좋다.</td></tr>
+    <tr><td>B</td><td>맛은 보통이고 분위기는 최고예요.</td></tr>
+    <tr><td>C</td><td>멋있는 분위기! 최고의 재료!</td></tr>
+  </table>
+
+  <h3 class="sub-title">텍스트 전처리 2단계</h3>
+  <div class="minicard-grid" style="grid-template-columns:1fr 1fr;">
+    <div class="minicard" style="border-color:var(--blue);">
+      <div class="mc-title">① 단어 분리</div>
+      <div class="mc-desc">띄어쓰기를 기준으로 문장을 단어별로 분리합니다.</div>
+    </div>
+    <div class="minicard" style="border-color:var(--amber);">
+      <div class="mc-title">② 불용어 제거</div>
+      <div class="mc-desc">의미 분석에 불필요한 조사·접미사·구두점(불용어)을 제거하고 원형으로 바꿉니다.</div>
+    </div>
+  </div>
+
+  <div class="callout amber">
+    <div class="callout-label">불용어(Stopwords)란?</div>
+    <p>문장에서 의미를 분석하는 데 불필요한 단어. 주로 조사, 접미사, 접속사, 구두점 등을 의미합니다.
+    예) '분위기도', '분위기는' → 조사를 제거하고 '분위기'로 통일.</p>
+  </div>
+
+  <h3 class="sub-title">전처리 결과 → 단어집합</h3>
+  <div class="card">
+    <p style="font-size:14px;">불용어를 제거하고 남은 단어를 원소로 하는 집합을 각각 만들면:</p>
+    <div class="vec-display" style="font-size:15px;">A = {분위기, 신선하다, 재료, 좋다}</div>
+    <div class="vec-display" style="font-size:15px;">B = {맛, 보통, 분위기, 최고}</div>
+    <div class="vec-display" style="font-size:15px;">C = {멋있다, 분위기, 최고, 재료}</div>
+  </div>
+
+  <div class="callout cyan">
+    <div class="callout-label">전체 단어집합 X</div>
+    <p>세 집합의 합집합 A∪B∪C를 집합 X라고 하면,</p>
+    <div class="vec-display" style="font-size:15px;">X = {분위기, 신선하다, 재료, 좋다, 맛, 보통, 최고, 멋있다}</div>
+    <p>이 X는 세 댓글 전체로 구성한 <strong>단어집합</strong>입니다. 이렇게 만든 단어집합은 음식점의
+    분위기나 맛을 파악하는 데 도움을 줍니다.</p>
+  </div>
+
+  <div class="quiz" id="q6">
+    <div class="quiz-q"><span class="qnum">Q</span>"현대는 사람과 인공지능이 협업하는 시대이다."에서 조사를 제거하고 남은 단어들로
+    이루어진 단어집합으로 가장 적절한 것은?</div>
+    <div class="opt-list">
+      <button class="opt-btn" data-correct="true" onclick="selectOption(this,'q6',true,'fb6','정답입니다! 조사(는, 와, 이, 하는)를 제거하고 의미 단위만 남깁니다.','')">{현대, 사람, 인공지능, 협업하다, 시대}</button>
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q6',false,'fb6','','조사가 그대로 남아있습니다. 조사를 제거해야 합니다.')">{현대는, 사람과, 인공지능이, 협업하는, 시대이다}</button>
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q6',false,'fb6','','너무 일부 단어만 남았습니다.')">{현대, 시대}</button>
+    </div>
+    <div class="feedback" id="fb6"></div>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevPage()">← 이전</button>
+    <button class="next-btn" onclick="nextPage()">다음 →</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 7: 벡터 ===== -->
+<div class="page" id="pg7">
+  <div class="section-tag">Ⅱ-1 · 텍스트 데이터의 표현 (3)</div>
+  <h2 class="sec-title">벡터란 무엇인가요?</h2>
+
+  <div class="card">
+    <p>어느 음료수 회사가 신제품 관련 설문조사를 했습니다. 고객 A, B, C, D의 평가 점수가 각각 3, 4, 4, 5점이었습니다.
+    이 점수를 순서쌍으로 (3, 4, 4, 5)라고 나타낼 수 있습니다.</p>
+  </div>
+
+  <div class="def-box">
+    <div class="term">벡터 (Vector)</div>
+    <p style="color:var(--text-dim);font-size:14px;">여러 개의 수를 순서쌍의 형태로 표현한 것을 벡터라 하고, 기호로 a⃗ 와 같이 나타냅니다.
+    순서쌍을 이루는 수 하나하나를 그 벡터의 <strong>성분</strong>이라고 합니다.</p>
+  </div>
+
+  <div class="vec-display">
+    <span style="margin-right:8px;">a⃗ = (</span>
+    <span class="vec-comp"><span class="val">3</span><span class="lbl">1번째</span></span>
+    <span class="vec-comp"><span class="val">4</span><span class="lbl">2번째</span></span>
+    <span class="vec-comp"><span class="val">4</span><span class="lbl">3번째</span></span>
+    <span class="vec-comp"><span class="val">5</span><span class="lbl">4번째</span></span>
+    <span>)</span>
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">서로 같은 벡터</div>
+    <p>두 벡터 a⃗=(a₁,a₂,…,aₙ), b⃗=(b₁,b₂,…,bₙ)의 대응하는 성분끼리 서로 같을 때
+    (즉 a₁=b₁, a₂=b₂, …, aₙ=bₙ), 두 벡터는 서로 같다고 하며 a⃗=b⃗로 나타냅니다.</p>
+  </div>
+
+  <div class="quiz fill-quiz" id="q7">
+    <div class="quiz-q"><span class="qnum">Q</span>두 벡터 a⃗=(p+2, 1, 3), b⃗=(1, 1, 3q)에 대하여 a⃗=b⃗일 때, 실수 p, q의 값을 구하시오.</div>
+    <div style="margin:10px 0;color:var(--text-dim);font-size:14px;">
+      p = <input type="text" id="q7-p" placeholder="값"> &nbsp;&nbsp; q = <input type="text" id="q7-q" placeholder="값">
+    </div>
+    <button class="check-btn" onclick="checkFill(['q7-p','q7-q'],['-1','1'],'fb7','정답입니다! p+2=1 이므로 p=-1, 3=3q 이므로 q=1 입니다.','다시 확인해보세요. 대응하는 성분끼리 비교하면 됩니다: p+2=1, 3=3q')">정답 확인</button>
+    <div class="feedback" id="fb7"></div>
+    <button class="hint-toggle" onclick="toggleHint('hint7')">💡 힌트 보기</button>
+    <div class="hint-content" id="hint7">첫 번째 성분끼리, 두 번째 성분끼리, 세 번째 성분끼리 각각 같다고 놓고 방정식을 세우세요.</div>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevPage()">← 이전</button>
+    <button class="next-btn" onclick="nextPage()">다음 →</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 8: 텍스트→벡터 ===== -->
+<div class="page" id="pg8">
+  <div class="section-tag">Ⅱ-1 · 텍스트 데이터의 표현 (4)</div>
+  <h2 class="sec-title">텍스트 데이터를 벡터로 표현하기</h2>
+
+  <div class="card">
+    <p>앞에서 만든 단어집합 X = {분위기, 신선하다, 재료, 좋다, 맛, 보통, 최고, 멋있다}를 이용해
+    세 댓글 A, B, C를 벡터로 표현해 봅시다. 단어집합 X에 속하는 단어들을 순서대로 나열하고,
+    그 단어가 각 댓글에 속하면 <strong>1</strong>, 속하지 않으면 <strong>0</strong>으로 표시합니다.</p>
+  </div>
+
+  <table class="data-table">
+    <tr><th></th><th>분위기</th><th>신선하다</th><th>재료</th><th>좋다</th><th>맛</th><th>보통</th><th>최고</th><th>멋있다</th></tr>
+    <tr><td><strong>A</strong></td><td>1</td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+    <tr><td><strong>B</strong></td><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>1</td><td>0</td></tr>
+    <tr><td><strong>C</strong></td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
+  </table>
+
+  <div class="card">
+    <p style="font-size:14px;">위 표를 이용해 댓글 A, B, C를 각각 벡터로 표현하면:</p>
+    <div class="vec-display" style="font-size:14px;">a⃗ = (1, 1, 1, 1, 0, 0, 0, 0)</div>
+    <div class="vec-display" style="font-size:14px;">b⃗ = (1, 0, 0, 0, 1, 1, 1, 0)</div>
+    <div class="vec-display" style="font-size:14px;">c⃗ = (1, 0, 1, 0, 0, 0, 1, 1)</div>
+  </div>
+
+  <div class="callout cyan">
+    <div class="callout-label">왜 이렇게 표현할까?</div>
+    <p>문장으로 이루어진 텍스트 데이터를 벡터로 표현하면 인공지능이 데이터를 인식할 수 있게 되고,
+    대량의 데이터를 빠른 속도로 처리할 수 있습니다. 이것이 텍스트 데이터를 수치화하는 가장 기본적인 방법입니다.</p>
+  </div>
+
+  <h3 class="sub-title">스스로 해보기</h3>
+  <div class="quiz" id="q8">
+    <div class="quiz-q"><span class="qnum">Q</span>영화 댓글 "몰입감 최고! 연출이 멋졌어요."에서 불용어를 제거하면
+    {몰입감, 최고, 연출, 멋지다}가 됩니다. 이 댓글을 단어집합 X={몰입감, 최고, 연출, 멋지다, 음악, 좋다}에 대한
+    0/1 벡터로 나타내면?</div>
+    <div class="opt-list">
+      <button class="opt-btn" data-correct="true" onclick="selectOption(this,'q8',true,'fb8','정답입니다! 몰입감(1), 최고(1), 연출(1), 멋지다(1), 음악(0), 좋다(0) 순서로 표현됩니다.','')">(1, 1, 1, 1, 0, 0)</button>
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q8',false,'fb8','','음악과 좋다는 이 댓글에 등장하지 않으므로 0이어야 합니다.')">(1, 1, 1, 1, 1, 1)</button>
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q8',false,'fb8','','순서가 단어집합 X의 순서와 일치해야 합니다.')">(0, 0, 0, 0, 1, 1)</button>
+    </div>
+    <div class="feedback" id="fb8"></div>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevPage()">← 이전</button>
+    <button class="next-btn" onclick="nextPage()">다음 →</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 9: 마무리 ===== -->
+<div class="page" id="pg9">
+  <div class="section-tag">정리 · Wrap-up</div>
+  <h2 class="sec-title">1회차 핵심 정리</h2>
+
+  <div class="card">
+    <h3 class="sub-title" style="margin-top:0;">오늘 배운 것</h3>
+    <p><strong>① 인공지능의 개념</strong> — 인간의 지능을 모방하여 학습·추론·지각을 실현한 기술. 지도학습, 비지도학습, 강화학습으로 구분.</p>
+    <p><strong>② 퍼셉트론</strong> — 입력값×가중치의 합을 활성화함수의 임곗값과 비교해 출력값을 결정. 은닉층이 추가되면 딥러닝.</p>
+    <p><strong>③ 빅데이터의 3V</strong> — 크기(Volume), 속도(Velocity), 다양성(Variety). 데이터 공정성이 중요.</p>
+    <p><strong>④ 집합과 단어집합</strong> — 텍스트를 단어 단위로 분리하고 불용어를 제거하여 집합으로 표현.</p>
+    <p><strong>⑤ 벡터</strong> — 단어집합을 기준으로 각 텍스트를 0/1로 이루어진 벡터로 변환.</p>
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">다음 회차 예고</div>
+    <p>2회차에서는 0/1 벡터의 한계(빈도 정보 없음)를 보완하는 <strong>빈도수 벡터</strong>와 <strong>TF-IDF</strong>를 배우고,
+    벡터 사이의 거리를 재는 <strong>자카드·유클리드·코사인 유사도</strong>를 학습합니다.</p>
+  </div>
+
+  <h3 class="sub-title">종합 확인 문제</h3>
+  <div class="quiz" id="q9">
+    <div class="quiz-q"><span class="qnum">Q</span>다음 중 텍스트 데이터를 벡터로 표현하는 과정의 순서로 옳은 것은?</div>
+    <div class="opt-list">
+      <button class="opt-btn" data-correct="true" onclick="selectOption(this,'q9',true,'fb9','정답입니다! 단어 분리 → 불용어 제거 → 단어집합 구성 → 0/1 벡터화 순서입니다.','')">단어 분리 → 불용어 제거 → 단어집합 구성 → 0/1 벡터화</button>
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q9',false,'fb9','','벡터화는 단어집합을 만든 다음 마지막 단계입니다.')">0/1 벡터화 → 단어 분리 → 불용어 제거</button>
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q9',false,'fb9','','불용어 제거가 단어집합 구성보다 먼저 이루어져야 합니다.')">단어집합 구성 → 단어 분리 → 불용어 제거</button>
+    </div>
+    <div class="feedback" id="fb9"></div>
+  </div>
+
+  <div class="card" style="text-align:center;background:linear-gradient(135deg,var(--cyan-soft),var(--paper));">
+    <p style="color:var(--navy-900);font-size:17px;font-weight:800;margin-bottom:6px;">🎉 1회차 학습 완료!</p>
+    <p style="font-size:13.5px;">상단 진도바가 100%가 되었는지 확인하고, 다음 시간에 만나요.</p>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevPage()">← 이전</button>
+    <button class="next-btn" disabled>학습 완료 ✓</button>
+  </div>
+
+  <div class="endnote">인공지능 수학 · 1회차 · 강은주 외, 「인공지능 수학」 교과서 기반 자료</div>
+</div>
+
+</div>
+
+<script>
+/* ============ PAGE DEFINITIONS ============ */
+var PAGES = [
+  {id:"pg0", label:"인트로"},
+  {id:"pg1", label:"AI란?"},
+  {id:"pg2", label:"학습방법"},
+  {id:"pg3", label:"퍼셉트론"},
+  {id:"pg4", label:"빅데이터"},
+  {id:"pg5", label:"집합"},
+  {id:"pg6", label:"단어집합"},
+  {id:"pg7", label:"벡터"},
+  {id:"pg8", label:"텍스트→벡터"},
+  {id:"pg9", label:"마무리"}
+];
+
+var currentPage = 0;
+var visited = {};
+
+function buildPageNav(){
+  var nav = document.getElementById("pagenav");
+  PAGES.forEach(function(p, i){
+    var btn = document.createElement("button");
+    btn.className = "pg-btn";
+    btn.id = "navbtn-"+i;
+    btn.textContent = (i+1)+". "+p.label;
+    btn.onclick = function(){ goPage(i); };
+    nav.appendChild(btn);
+  });
+}
+
+function goPage(n){
+  if(n < 0 || n >= PAGES.length) return;
+  document.querySelectorAll(".page").forEach(function(el){ el.classList.remove("active"); });
+  var target = document.getElementById(PAGES[n].id);
+  if(target) target.classList.add("active");
+  document.querySelectorAll(".pg-btn").forEach(function(el){ el.classList.remove("active"); });
+  var navbtn = document.getElementById("navbtn-"+n);
+  if(navbtn) navbtn.classList.add("active");
+  visited[n] = true;
+  currentPage = n;
+  updateProgress();
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+function updateProgress(){
+  var visitedCount = Object.keys(visited).length;
+  var pct = Math.round((visitedCount / PAGES.length) * 100);
+  document.getElementById("progress-bar").style.width = pct + "%";
+  document.getElementById("progress-label").textContent = pct + "%";
+  PAGES.forEach(function(p, i){
+    var navbtn = document.getElementById("navbtn-"+i);
+    if(navbtn && visited[i]) navbtn.classList.add("done");
+  });
+}
+
+function nextPage(){ goPage(currentPage+1); }
+function prevPage(){ goPage(currentPage-1); }
+
+function switchTab(groupId, idx){
+  var group = document.getElementById(groupId);
+  if(!group) return;
+  var btns = group.querySelectorAll(".tab-btn");
+  var panels = group.querySelectorAll(".tabpanel");
+  btns.forEach(function(b, i){ b.classList.toggle("active", i===idx); });
+  panels.forEach(function(p, i){ p.classList.toggle("active", i===idx); });
+}
+
+function toggleHint(id){
+  var el = document.getElementById(id);
+  if(el) el.classList.toggle("show");
+}
+
+function selectOption(btnEl, groupId, isCorrect, feedbackId, correctMsg, wrongMsg){
+  var group = document.getElementById(groupId);
+  var btns = group.querySelectorAll(".opt-btn");
+  btns.forEach(function(b){ b.classList.remove("correct","wrong"); b.disabled = true; });
+  btnEl.classList.add(isCorrect ? "correct" : "wrong");
+  if(!isCorrect){
+    btns.forEach(function(b){
+      if(b.dataset.correct === "true") b.classList.add("correct");
+    });
+  }
+  var fb = document.getElementById(feedbackId);
+  if(fb){
+    fb.textContent = isCorrect ? correctMsg : wrongMsg;
+    fb.className = "feedback show " + (isCorrect ? "correct" : "wrong");
+  }
+}
+
+function checkFill(inputIds, answers, feedbackId, correctMsg, wrongMsg){
+  var allCorrect = true;
+  inputIds.forEach(function(id, i){
+    var input = document.getElementById(id);
+    var val = (input.value || "").trim().replace(/\s/g,"");
+    var ans = answers[i].replace(/\s/g,"");
+    if(val !== ans){ allCorrect = false; input.style.borderColor = "var(--bad)"; }
+    else { input.style.borderColor = "var(--good)"; }
+  });
+  var fb = document.getElementById(feedbackId);
+  fb.textContent = allCorrect ? correctMsg : wrongMsg;
+  fb.className = "feedback show " + (allCorrect ? "correct" : "wrong");
+}
+
+buildPageNav();
+goPage(0);
+</script>
+
+</body>
+</html>

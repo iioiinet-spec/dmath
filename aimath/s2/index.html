@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2회차 | 텍스트 데이터의 정보추출과 분석</title>
+<style>
+:root{
+  --bg:#fbf9f4;
+  --paper:#ffffff;
+  --paper-soft:#f4f1e8;
+  --line:#dcd5c2;
+  --line-soft:#e8e2d2;
+  --navy-900:#1a2332;
+  --blue:#1c5fd6;
+  --blue-soft:#e8f0fd;
+  --blue-deep:#0f3d8c;
+  --cyan:#0f9488;
+  --cyan-soft:#e3f6f3;
+  --amber:#b3650a;
+  --amber-soft:#fdf0dd;
+  --pink:#c23a6b;
+  --text:#1f2430;
+  --text-dim:#3d4452;
+  --text-faint:#7a8195;
+  --white:#ffffff;
+  --good:#0f8a5f;
+  --good-soft:#e5f6ee;
+  --bad:#c4314b;
+  --bad-soft:#fceaee;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+  line-height:1.85;
+  font-size:16px;
+  -webkit-font-smoothing:antialiased;
+}
+body{padding-bottom:80px;}
+
+/* ===== Top nav ===== */
+#topnav{
+  position:sticky;top:0;z-index:100;
+  background:rgba(251,249,244,0.95);
+  backdrop-filter:blur(10px);
+  border-bottom:2px solid var(--line);
+  padding:14px 20px;
+}
+.nav-inner{
+  max-width:980px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:16px;
+}
+.nav-title{
+  font-size:15px;font-weight:800;color:var(--blue-deep);
+  letter-spacing:0.3px;
+}
+.nav-title .num{
+  display:inline-block;background:var(--blue);color:var(--white);
+  font-size:12.5px;font-weight:800;border-radius:6px;
+  padding:3px 9px;margin-right:8px;
+}
+.progress-wrap{
+  flex:1;max-width:320px;height:8px;background:var(--paper-soft);
+  border:1px solid var(--line);border-radius:6px;overflow:hidden;
+}
+#progress-bar{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,var(--blue),var(--cyan));
+  transition:width .3s ease;
+}
+.progress-label{font-size:13px;font-weight:700;color:var(--text-faint);min-width:48px;text-align:right;}
+
+/* ===== Page nav buttons ===== */
+#pagenav{
+  max-width:980px;margin:14px auto 0;padding:0 20px;
+  display:flex;gap:6px;flex-wrap:wrap;
+}
+.pg-btn{
+  border:1.5px solid var(--line);background:var(--paper);
+  color:var(--text-dim);font-size:12.5px;font-weight:700;
+  border-radius:20px;padding:7px 13px;cursor:pointer;
+  transition:all .2s;white-space:nowrap;
+}
+.pg-btn:hover{border-color:var(--blue);color:var(--blue-deep);}
+.pg-btn.active{background:var(--blue);color:var(--white);border-color:var(--blue);}
+.pg-btn.done{color:var(--cyan);border-color:var(--cyan);}
+.pg-btn.done::after{content:" ✓";}
+
+/* ===== Main container ===== */
+#main{max-width:980px;margin:0 auto;padding:28px 20px 0;}
+.page{display:none;animation:fadeIn .35s ease;}
+.page.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+.hero{
+  background:linear-gradient(135deg,var(--blue-soft),var(--paper));
+  border:1.5px solid var(--line);border-radius:18px;
+  padding:40px 32px;margin-bottom:24px;
+  position:relative;overflow:hidden;
+}
+.hero::before{
+  content:"";position:absolute;top:-60px;right:-60px;
+  width:240px;height:240px;border-radius:50%;
+  background:radial-gradient(circle,rgba(28,95,214,0.10),transparent 70%);
+}
+.hero-eyebrow{
+  font-size:13.5px;font-weight:800;color:var(--cyan);
+  letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;
+}
+.hero h1{font-size:30px;font-weight:800;color:var(--navy-900);margin-bottom:14px;letter-spacing:-0.3px;}
+.hero p{font-size:16px;color:var(--text-dim);max-width:640px;}
+
+.section-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:13.5px;font-weight:800;color:var(--blue-deep);
+  background:var(--blue-soft);border:1.5px solid #b8d0f5;
+  border-radius:8px;padding:7px 15px;margin-bottom:18px;
+}
+
+h2.sec-title{font-size:23px;font-weight:800;color:var(--navy-900);margin:0 0 16px;letter-spacing:-0.2px;}
+h3.sub-title{font-size:18px;font-weight:800;color:var(--blue-deep);margin:28px 0 12px;}
+
+.card{
+  background:var(--paper);border:1.5px solid var(--line);
+  border-radius:14px;padding:24px;margin-bottom:18px;
+  box-shadow:0 1px 3px rgba(0,0,0,0.04);
+}
+.card p{color:var(--text-dim);font-size:16px;margin-bottom:10px;}
+.card p:last-child{margin-bottom:0;}
+.card strong{color:var(--navy-900);}
+
+.callout{
+  border-left:4px solid var(--blue);background:var(--blue-soft);
+  border-radius:0 10px 10px 0;padding:16px 20px;margin:16px 0;
+}
+.callout.amber{border-left-color:var(--amber);background:var(--amber-soft);}
+.callout.cyan{border-left-color:var(--cyan);background:var(--cyan-soft);}
+.callout-label{font-size:12.5px;font-weight:800;letter-spacing:1px;margin-bottom:6px;color:var(--blue-deep);}
+.callout.amber .callout-label{color:var(--amber);}
+.callout.cyan .callout-label{color:var(--cyan);}
+.callout p{color:var(--text-dim);font-size:15px;}
+
+.def-box{
+  background:var(--paper-soft);border:1.5px solid #d4cdb5;
+  border-radius:12px;padding:18px 22px;margin:16px 0;
+}
+.def-box .term{color:var(--cyan);font-weight:800;font-size:16px;margin-bottom:6px;}
+.def-box .formula{
+  font-family:'Cambria Math','Times New Roman',serif;
+  font-size:17px;color:var(--navy-900);background:var(--paper);
+  border-radius:8px;padding:12px 16px;margin-top:10px;text-align:center;
+  border:1.5px solid var(--line);
+}
+
+.diagram-row{display:flex;gap:16px;flex-wrap:wrap;margin:18px 0;}
+.diagram-box{
+  flex:1;min-width:200px;background:var(--paper);
+  border:1.5px solid var(--line);border-radius:12px;
+  padding:18px;text-align:center;
+  box-shadow:0 1px 3px rgba(0,0,0,0.04);
+}
+.diagram-box .icon{font-size:32px;margin-bottom:8px;}
+.diagram-box .label{font-weight:800;color:var(--navy-900);font-size:15px;margin-bottom:6px;}
+.diagram-box .desc{font-size:13px;color:var(--text-faint);}
+
+table.data-table{
+  width:100%;border-collapse:collapse;margin:16px 0;
+  font-size:14.5px;
+}
+table.data-table th{
+  background:var(--blue-deep);color:var(--white);
+  padding:11px 12px;font-weight:700;text-align:center;
+  border:1px solid var(--blue-deep);
+}
+table.data-table td{
+  padding:11px 12px;text-align:center;color:var(--text-dim);
+  border:1px solid var(--line);background:var(--paper);
+}
+
+/* vector / set visualization */
+.vec-display{
+  display:flex;align-items:center;justify-content:center;gap:4px;
+  font-family:'Cambria Math',serif;font-size:18px;color:var(--navy-900);
+  background:var(--paper-soft);border:1.5px solid var(--line);
+  border-radius:10px;padding:16px;margin:14px 0;flex-wrap:wrap;
+}
+.vec-comp{
+  display:inline-flex;flex-direction:column;align-items:center;
+  margin:0 6px;
+}
+.vec-comp .val{
+  background:var(--blue-soft);border:1px solid #b8d0f5;border-radius:6px;padding:4px 10px;
+  color:var(--blue-deep);font-weight:800;
+}
+.vec-comp .lbl{font-size:10.5px;color:var(--text-faint);margin-top:4px;}
+
+/* Tabs */
+.tabgroup{margin:18px 0;}
+.tabs{display:flex;gap:8px;border-bottom:2px solid var(--line);margin-bottom:18px;flex-wrap:wrap;}
+.tab-btn{
+  background:none;border:none;color:var(--text-faint);
+  font-size:14.5px;font-weight:700;padding:10px 16px;cursor:pointer;
+  border-bottom:3px solid transparent;transition:all .2s;
+}
+.tab-btn:hover{color:var(--text);}
+.tab-btn.active{color:var(--blue-deep);border-bottom-color:var(--blue);}
+.tabpanel{display:none;}
+.tabpanel.active{display:block;animation:fadeIn .3s ease;}
+
+/* Quiz / check */
+.quiz{
+  background:var(--paper);border:1.5px solid var(--line);
+  border-radius:14px;padding:22px;margin:18px 0;
+  box-shadow:0 1px 3px rgba(0,0,0,0.04);
+}
+.quiz-q{font-weight:700;color:var(--navy-900);font-size:16px;margin-bottom:14px;}
+.quiz-q .qnum{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:25px;height:25px;background:var(--blue);color:var(--white);
+  border-radius:50%;font-size:13px;font-weight:800;margin-right:8px;
+}
+.opt-list{display:flex;flex-direction:column;gap:8px;}
+.opt-btn{
+  text-align:left;background:var(--paper-soft);border:1.5px solid var(--line);
+  color:var(--text-dim);padding:13px 16px;border-radius:10px;
+  cursor:pointer;font-size:15px;transition:all .2s;
+}
+.opt-btn:hover{border-color:var(--blue);background:var(--blue-soft);}
+.opt-btn.correct{border-color:var(--good);background:var(--good-soft);color:var(--good);font-weight:700;}
+.opt-btn.wrong{border-color:var(--bad);background:var(--bad-soft);color:var(--bad);font-weight:700;}
+.feedback{margin-top:12px;font-size:14.5px;padding:11px 15px;border-radius:8px;display:none;font-weight:600;}
+.feedback.show{display:block;}
+.feedback.correct{background:var(--good-soft);color:var(--good);border:1px solid #b8e6d0;}
+.feedback.wrong{background:var(--bad-soft);color:var(--bad);border:1px solid #f3c0ca;}
+
+.fill-quiz input[type=text]{
+  background:var(--paper);border:1.5px solid var(--line);
+  color:var(--text);padding:10px 14px;border-radius:8px;
+  font-size:15px;width:160px;margin:0 6px;
+}
+.fill-quiz input[type=text]:focus{outline:none;border-color:var(--blue);}
+.check-btn{
+  background:var(--blue);color:var(--white);border:none;
+  padding:11px 24px;border-radius:8px;font-weight:700;font-size:14.5px;
+  cursor:pointer;margin-top:10px;transition:all .2s;
+}
+.check-btn:hover{background:var(--blue-deep);}
+
+/* Hint toggle */
+.hint-toggle{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--amber-soft);border:1.5px solid #e8c896;
+  color:var(--amber);font-size:14px;font-weight:700;
+  padding:9px 17px;border-radius:8px;cursor:pointer;margin-top:8px;
+  transition:all .2s;
+}
+.hint-toggle:hover{background:#fae6c4;}
+.hint-content{
+  display:none;margin-top:10px;padding:14px 18px;
+  background:var(--amber-soft);border-left:4px solid var(--amber);
+  border-radius:0 10px 10px 0;font-size:15px;color:var(--text-dim);
+}
+.hint-content.show{display:block;animation:fadeIn .3s ease;}
+
+/* Nav buttons bottom */
+.nav-buttons{
+  display:flex;justify-content:space-between;margin-top:32px;gap:12px;
+}
+.nav-buttons button{
+  background:var(--paper);border:1.5px solid var(--line);
+  color:var(--text);padding:13px 26px;border-radius:10px;
+  font-weight:700;font-size:15px;cursor:pointer;transition:all .2s;
+}
+.nav-buttons button:hover{border-color:var(--blue);color:var(--blue-deep);}
+.nav-buttons button:disabled{opacity:.35;cursor:not-allowed;}
+.nav-buttons .next-btn{background:var(--blue);border-color:var(--blue);color:var(--white);}
+.nav-buttons .next-btn:hover{background:var(--blue-deep);}
+
+/* responsive */
+@media(max-width:640px){
+  .hero{padding:28px 20px;}
+  .hero h1{font-size:24px;}
+  .diagram-row{flex-direction:column;}
+}
+
+.weight-diagram{
+  display:flex;align-items:center;justify-content:center;gap:18px;
+  background:var(--paper-soft);border:1.5px solid var(--line);
+  border-radius:12px;padding:24px;margin:16px 0;flex-wrap:wrap;
+}
+.w-input{display:flex;flex-direction:column;gap:10px;}
+.w-row{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--text-dim);font-weight:600;}
+.w-row .x{color:var(--cyan);font-weight:800;}
+.w-row .w{color:var(--amber);font-weight:800;}
+.arrow-big{font-size:24px;color:var(--text-faint);}
+.threshold-box{
+  background:var(--paper);border:1.5px solid var(--blue);
+  border-radius:10px;padding:14px 18px;text-align:center;font-size:14px;
+}
+
+.minicard-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:16px 0;}
+@media(max-width:640px){.minicard-grid{grid-template-columns:1fr;}}
+.minicard{
+  background:var(--paper);border:1.5px solid var(--line);
+  border-radius:12px;padding:18px;
+  box-shadow:0 1px 3px rgba(0,0,0,0.04);
+}
+.minicard .mc-title{font-weight:800;color:var(--navy-900);font-size:15px;margin-bottom:8px;}
+.minicard .mc-desc{font-size:13.5px;color:var(--text-faint);line-height:1.7;}
+
+.endnote{
+  text-align:center;color:var(--text-faint);font-size:13px;
+  margin-top:40px;padding-top:20px;border-top:1.5px solid var(--line);
+}
+</style>
+</head>
+<body>
+
+<div id="topnav">
+  <div class="nav-inner">
+    <div class="nav-title"><span class="num">2회차</span>텍스트 데이터의 정보추출과 분석</div>
+    <div class="progress-wrap"><div id="progress-bar"></div></div>
+    <div class="progress-label" id="progress-label">0%</div>
+  </div>
+</div>
+
+<div id="pagenav"></div>
+
+<div id="main">
+
+<!-- ===== PAGE 0: 인트로 ===== -->
+<div class="page" id="pg0">
+  <div class="hero">
+    <div class="hero-eyebrow">SESSION 02 · 3시간</div>
+    <h1>텍스트 데이터의<br>정보추출과 분석</h1>
+    <p>지난 시간 0과 1만으로 단어의 등장 여부를 표현했습니다. 그런데 "최고"라는 단어가
+    3번 나온 문장과 1번 나온 문장은 분명 다른 느낌이죠. 오늘은 단어가 <strong>몇 번</strong> 나왔는지를
+    벡터에 담는 방법과, 두 문장이 얼마나 <strong>비슷한지</strong>를 숫자로 재는 유사도를 배웁니다.</p>
+  </div>
+
+  <div class="card">
+    <h2 class="sec-title" style="font-size:18px;margin-bottom:14px;">📋 오늘의 학습 목표</h2>
+    <p>① 빈도수 벡터와 단어가방(Bag of Words)으로 텍스트를 요약하고 주제어를 찾을 수 있다.</p>
+    <p>② TF-IDF를 이용해 문서별로 중요한 단어를 구분할 수 있다.</p>
+    <p>③ 자카드 유사도, 유클리드 유사도, 코사인 유사도를 각각 계산할 수 있다.</p>
+    <p>④ 유사도를 이용해 실생활 문제(문장완성, 추천 등)를 해결할 수 있다.</p>
+  </div>
+
+  <div class="minicard-grid">
+    <div class="minicard">
+      <div class="mc-title">🧭 정보추출</div>
+      <div class="mc-desc">빈도수 벡터 · 단어가방 · TF-IDF</div>
+    </div>
+    <div class="minicard">
+      <div class="mc-title">🧭 분석</div>
+      <div class="mc-desc">자카드 · 유클리드 · 코사인 유사도</div>
+    </div>
+    <div class="minicard">
+      <div class="mc-title">⏱ 시간 배분</div>
+      <div class="mc-desc">정보추출 70분 · 유사도 80분<br>실습/정리 30분</div>
+    </div>
+  </div>
+
+  <div class="callout cyan">
+    <div class="callout-label">지난 시간 복습</div>
+    <p>단어집합 X = {분위기, 신선하다, 재료, 좋다, 맛, 보통, 최고, 멋있다}를 기준으로
+    각 댓글을 0과 1로만 표현했었죠. 오늘은 이 표현 방식을 한층 더 발전시켜 봅니다.</p>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevPage()" disabled>← 이전</button>
+    <button class="next-btn" onclick="nextPage()">학습 시작하기 →</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 1: 빈도수 벡터 ===== -->
+<div class="page" id="pg1">
+  <div class="section-tag">Ⅱ-2 · 텍스트 데이터의 정보 추출 (1)</div>
+  <h2 class="sec-title">텍스트 데이터를 어떻게 요약하나요?</h2>
+
+  <div class="card">
+    <p>앞에서 텍스트의 문장들을 성분이 0 또는 1인 벡터로 나타내어 보았는데, 이 방법으로는
+    주어진 데이터에서 특정 단어가 <strong>얼마나 자주</strong> 출현하는지는 알 수 없습니다.
+    하지만 단어들이 출현하는 빈도수를 벡터로 나타내면, 그 단어가 얼마나 자주 사용되었는지 알 수 있고
+    텍스트의 <strong>주제어</strong>도 찾을 수 있습니다.</p>
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">예시 상황</div>
+    <p>한 애견용품점의 구매 후기 3개로 텍스트 데이터를 요약하고 주제어를 찾는 방법을 알아봅시다.</p>
+  </div>
+
+  <table class="data-table">
+    <tr><th>후기</th><th>내용</th></tr>
+    <tr><td>A</td><td>애견재킷 추천합니다. 디자인이 예쁘고 가격이 저렴해서 추천해요.</td></tr>
+    <tr><td>B</td><td>애견재킷 추천! 애견재킷 사이즈도 다양해요!</td></tr>
+    <tr><td>C</td><td>예쁜 애견재킷 추천! 디자인이 예뻐요.</td></tr>
+  </table>
+
+  <div class="card">
+    <p style="font-size:14px;">불용어를 제거한 단어집합은 각각 다음과 같습니다.</p>
+    <div class="vec-display" style="font-size:14.5px;">A = {애견재킷, 추천, 디자인, 예쁘다, 가격, 저렴하다}</div>
+    <div class="vec-display" style="font-size:14.5px;">B = {애견재킷, 추천, 사이즈, 다양하다}</div>
+    <div class="vec-display" style="font-size:14.5px;">C = {예쁘다, 애견재킷, 추천, 디자인}</div>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevPage()">← 이전</button>
+    <button class="next-btn" onclick="nextPage()">다음 →</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 2: 단어가방 ===== -->
+<div class="page" id="pg2">
+  <div class="section-tag">Ⅱ-2 · 텍스트 데이터의 정보 추출 (2)</div>
+  <h2 class="sec-title">단어가방(Bag of Words)과 빈도수 벡터</h2>
+
+  <div class="def-box">
+    <div class="term">단어가방 (Bag of Words)</div>
+    <p style="color:var(--text-dim);font-size:15px;">텍스트 데이터에 출현하는 단어들을 모두 분해하여 하나의 가방에 넣은 것.
+    단어가방 안에서 각 단어의 중복 횟수를 세면, 전체 텍스트에서 그 단어가 몇 번 나왔는지(출현 빈도수)를 알 수 있습니다.</p>
+  </div>
+
+  <h3 class="sub-title">출현 빈도수 표</h3>
+  <table class="data-table">
+    <tr><th></th><th>애견재킷</th><th>추천</th><th>디자인</th><th>예쁘다</th><th>가격</th><th>저렴하다</th><th>사이즈</th><th>다양하다</th></tr>
+    <tr><td><strong>후기 A</strong></td><td>1</td><td>2</td><td>1</td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td></tr>
+    <tr><td><strong>후기 B</strong></td><td>2</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
+    <tr><td><strong>후기 C</strong></td><td>1</td><td>1</td><td>1</td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+    <tr><td><strong>전체 후기</strong></td><td>4</td><td>4</td><td>2</td><td>3</td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+  </table>
+
+  <div class="card">
+    <p style="font-size:14px;">위 표를 빈도수 벡터로 나타내면:</p>
+    <div class="vec-display" style="font-size:14px;">a⃗ = (1, 2, 1, 1, 1, 1, 0, 0)</div>
+    <div class="vec-display" style="font-size:14px;">b⃗ = (2, 1, 0, 0, 0, 0, 1, 1)</div>
+    <div class="vec-display" style="font-size:14px;">c⃗ = (1, 1, 1, 2, 0, 0, 0, 0)</div>
+    <div class="vec-display" style="font-size:14px;">x⃗ = (4, 4, 2, 3, 1, 1, 1, 1) <span style="font-size:11px;color:var(--text-faint);margin-left:8px;">(전체 후기)</span></div>
+  </div>
+
+  <div class="callout cyan">
+    <div class="callout-label">주제어 찾기</div>
+    <p>출현 빈도수가 가장 높은 단어를 주제어라고 할 수 있습니다.
+    후기 A의 주제어는 <strong>'추천'</strong>(2회), 후기 B의 주제어는 <strong>'애견재킷'</strong>(2회), 후기 C의 주제어는 <strong>'예쁘다'</strong>(2회)입니다.
+    전체 후기에서는 '애견재킷'과 '추천'이 공동 주제어(4회)입니다.</p>
+  </div>
+
+  <div class="quiz" id="q2">
+    <div class="quiz-q"><span class="qnum">Q</span>미세먼지 기사 제목 두 개 "미세먼지 증가, 마스크 착용하세요. 마스크 필수! 꼭 착용!"에서
+    '마스크'는 2번, '착용'은 2번 나옵니다. 이 기사의 주제어로 가장 적절한 단어 묶음은?</div>
+    <div class="opt-list">
+      <button class="opt-btn" data-correct="true" onclick="selectOption(this,'q2',true,'fb2','정답입니다! 출현 빈도수가 가장 높은 단어들이 주제어입니다.','')">마스크, 착용</button>
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q2',false,'fb2','','증가와 필수는 각각 1번만 등장하여 빈도수가 낮습니다.')">증가, 필수</button>
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q2',false,'fb2','','꼭은 부사로 불용어에 해당하며 의미상 핵심 단어가 아닙니다.')">꼭, 미세먼지</button>
+    </div>
+    <div class="feedback" id="fb2"></div>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevPage()">← 이전</button>
+    <button class="next-btn" onclick="nextPage()">다음 →</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 3: TF-IDF ===== -->
+<div class="page" id="pg3">
+  <div class="section-tag">Ⅱ-2 · 텍스트 데이터의 정보 추출 (3)</div>
+  <h2 class="sec-title">TF-IDF: 정말 중요한 단어 찾기</h2>
+
+  <div class="callout amber">
+    <div class="callout-label">왜 빈도수만으로는 부족할까?</div>
+    <p>여러 문서에 공통으로 자주 등장하는 단어(예: '그리고', '그것')는 출현 빈도수는 높지만
+    그 문서만의 중요한 단어는 아닙니다. 어떤 단어가 <strong>특정 문서 내에서만 두드러지게</strong> 중요한지
+    알아내려면 다른 지표가 필요합니다. 그것이 TF-IDF입니다.</p>
+  </div>
+
+  <div class="tabgroup" id="tab-tfidf">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('tab-tfidf',0)">TF (단어빈도)</button>
+      <button class="tab-btn" onclick="switchTab('tab-tfidf',1)">DF (문서빈도)</button>
+      <button class="tab-btn" onclick="switchTab('tab-tfidf',2)">IDF & TF-IDF</button>
+    </div>
+
+    <div class="tabpanel active">
+      <div class="def-box">
+        <div class="term">단어빈도 (TF, Term Frequency)</div>
+        <p style="color:var(--text-dim);font-size:15px;">각 문서에서 특정 단어가 출현하는 횟수.
+        한 문서 안에서 그 단어가 얼마나 자주 쓰였는지를 나타냅니다.</p>
+      </div>
+    </div>
+
+    <div class="tabpanel">
+      <div class="def-box">
+        <div class="term">문서빈도 (DF, Document Frequency)</div>
+        <p style="color:var(--text-dim);font-size:15px;">특정 단어가 출현하는 <strong>문서의 개수</strong>.
+        예를 들어 전체 10개 문서 중 7개 문서에 '인공지능'이 등장하면 DF=7입니다.</p>
+      </div>
+    </div>
+
+    <div class="tabpanel">
+      <div class="def-box">
+        <div class="term">역문서빈도 (IDF) & TF-IDF</div>
+        <p style="color:var(--text-dim);font-size:15px;">전체 문서 수를 k라고 할 때,</p>
+        <div class="formula">IDF = k / DF</div>
+        <p style="color:var(--text-dim);font-size:15px;margin-top:10px;">그리고 최종 지표는</p>
+        <div class="formula">TF-IDF = TF × IDF</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout cyan">
+    <div class="callout-label">핵심 포인트</div>
+    <p>어떤 단어가 한 문서에서는 자주 나오지만(TF가 큼), 전체 문서 중에서는 적은 수의 문서에만
+    등장한다면(DF가 작아서 IDF가 큼) → TF-IDF 값이 커집니다. 즉, <strong>TF-IDF가 클수록 그 단어는
+    해당 문서 내에서 특히 중요한 단어</strong>라는 뜻입니다.</p>
+  </div>
+
+  <div class="quiz" id="q3">
+    <div class="quiz-q"><span class="qnum">Q</span>전체 문서 수가 100개이고, 어떤 단어 A가 4개의 문서에서만 등장한다면 IDF는?</div>
+    <div class="opt-list">
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q3',false,'fb3','','IDF = k/DF 공식을 다시 확인하세요.')">4</button>
+      <button class="opt-btn" data-correct="true" onclick="selectOption(this,'q3',true,'fb3','정답입니다! IDF = k/DF = 100/4 = 25 입니다.','')">25</button>
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q3',false,'fb3','','이는 DF값입니다. IDF는 k를 DF로 나눈 값입니다.')">0.04</button>
+    </div>
+    <div class="feedback" id="fb3"></div>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevPage()">← 이전</button>
+    <button class="next-btn" onclick="nextPage()">다음 →</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 4: 자카드 유사도 ===== -->
+<div class="page" id="pg4">
+  <div class="section-tag">Ⅱ-3 · 텍스트 데이터의 분석 (1)</div>
+  <h2 class="sec-title">자카드 유사도</h2>
+
+  <div class="card">
+    <p>이제 두 텍스트 데이터가 얼마나 비슷한지를 수치로 나타내는 <strong>유사도</strong>를 배워봅니다.
+    가장 먼저 배울 것은 집합을 이용한 자카드 유사도입니다.</p>
+  </div>
+
+  <div class="def-box">
+    <div class="term">자카드 유사도 (Jaccard Similarity)</div>
+    <p style="color:var(--text-dim);font-size:15px;">두 텍스트 데이터 A와 B의 단어집합이 A, B일 때,</p>
+    <div class="formula">J(A, B) = n(A∩B) / n(A∪B)</div>
+    <p style="color:var(--text-dim);font-size:14.5px;margin-top:10px;">즉, <strong>공통으로 등장하는 단어의 수</strong>를 <strong>전체 등장하는 단어 수</strong>로 나눈 값입니다.</p>
+  </div>
+
+  <div class="callout cyan">
+    <div class="callout-label">값의 의미</div>
+    <p>자카드 유사도의 값이 1에 가까울수록 두 텍스트는 더 유사합니다. (값의 범위: 0 ~ 1)</p>
+  </div>
+
+  <div class="card">
+    <p style="font-size:14.5px;">예를 들어 A = {분위기, 신선하다, 재료, 좋다}, B = {애견재킷, 추천, 사이즈, 다양하다}라면
+    공통 원소가 없으므로 A∩B = ∅이고, J(A,B) = 0/8 = 0 입니다. 즉 두 텍스트는 전혀 유사하지 않습니다.</p>
+  </div>
+
+  <div class="quiz fill-quiz" id="q4">
+    <div class="quiz-q"><span class="qnum">Q</span>두 단어집합 A={사과, 바나나, 포도, 딸기}, B={바나나, 포도, 수박}에 대하여
+    자카드 유사도 J(A,B)를 분수로 구하시오. (예: 2/5 형태로 입력)</div>
+    <div style="margin:10px 0;color:var(--text-dim);font-size:15px;">
+      J(A, B) = <input type="text" id="q4-ans" placeholder="예: 2/5">
+    </div>
+    <button class="check-btn" onclick="checkFill(['q4-ans'],['2/5'],'fb4','정답입니다! A∩B={바나나,포도} → n=2, A∪B={사과,바나나,포도,딸기,수박} → n=5. J=2/5 입니다.','다시 계산해보세요. 교집합의 원소 개수를 합집합의 원소 개수로 나눠야 합니다.')">정답 확인</button>
+    <div class="feedback" id="fb4"></div>
+    <button class="hint-toggle" onclick="toggleHint('hint4')">💡 힌트 보기</button>
+    <div class="hint-content" id="hint4">먼저 A∩B(공통 단어)와 A∪B(전체 단어, 중복 없이)를 각각 구해보세요.</div>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevPage()">← 이전</button>
+    <button class="next-btn" onclick="nextPage()">다음 →</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 5: 유클리드 유사도 ===== -->
+<div class="page" id="pg5">
+  <div class="section-tag">Ⅱ-3 · 텍스트 데이터의 분석 (2)</div>
+  <h2 class="sec-title">유클리드 유사도</h2>
+
+  <div class="card">
+    <p>좌표평면 위의 두 점 사이의 거리 공식을 기억하시나요? 이 개념을 벡터로 확장하면
+    두 텍스트(벡터)가 공간에서 얼마나 가까운지 알 수 있습니다.</p>
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">복습: 두 점 사이의 거리</div>
+    <p>좌표평면 위의 두 점 (x₁, y₁), (x₂, y₂) 사이의 거리는 √[(x₁-x₂)² + (y₁-y₂)²] 입니다.</p>
+  </div>
+
+  <div class="def-box">
+    <div class="term">유클리드 유사도 (Euclidean Similarity)</div>
+    <p style="color:var(--text-dim);font-size:15px;">두 텍스트 데이터 A와 B를 나타내는 벡터가 각각
+    a⃗=(a₁,a₂,…,aₙ), b⃗=(b₁,b₂,…,bₙ)일 때, 유클리드 유사도는 다음과 같습니다.</p>
+    <div class="formula">√[(a₁-b₁)² + (a₂-b₂)² + ⋯ + (aₙ-bₙ)²]</div>
+    <p style="color:var(--text-dim);font-size:14.5px;margin-top:10px;">이것은 두 벡터의 <strong>종점 사이의 거리</strong>입니다.</p>
+  </div>
+
+  <div class="callout amber">
+    <div class="callout-label">값의 의미 (주의!)</div>
+    <p>유클리드 유사도의 값이 <strong>0에 가까울수록</strong> 더 유사합니다. 자카드/코사인 유사도와는
+    반대 방향으로 해석한다는 점에 유의하세요 — 이건 사실 '거리'이기 때문에, 거리가 가까울수록(값이 작을수록) 유사한 것입니다.</p>
+  </div>
+
+  <div class="quiz fill-quiz" id="q5">
+    <div class="quiz-q"><span class="qnum">Q</span>두 벡터 a⃗=(1, 2, 3), b⃗=(4, 2, 1)의 유클리드 유사도(거리)를 구하시오.</div>
+    <div style="margin:10px 0;color:var(--text-dim);font-size:15px;">
+      값 = <input type="text" id="q5-ans" placeholder="예: 4 또는 루트13">
+    </div>
+    <button class="check-btn" onclick="checkFill(['q5-ans'],['루트13'],'fb5','정답입니다! √[(1-4)²+(2-2)²+(3-1)²] = √(9+0+4) = √13 입니다.','다시 계산해보세요. 각 성분의 차를 제곱해서 더한 후 루트를 씌우면 됩니다. 정답은 \u201c루트13\u201d으로 입력하세요.')">정답 확인</button>
+    <div class="feedback" id="fb5"></div>
+    <button class="hint-toggle" onclick="toggleHint('hint5')">💡 힌트 보기</button>
+    <div class="hint-content" id="hint5">(1-4)² + (2-2)² + (3-1)² 을 먼저 계산한 다음 √ 를 씌우세요.</div>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevPage()">← 이전</button>
+    <button class="next-btn" onclick="nextPage()">다음 →</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 6: 코사인 유사도 ===== -->
+<div class="page" id="pg6">
+  <div class="section-tag">Ⅱ-3 · 텍스트 데이터의 분석 (3)</div>
+  <h2 class="sec-title">코사인 유사도</h2>
+
+  <div class="card">
+    <p>벡터의 <strong>방향</strong>이 얼마나 비슷한지를 측정하는 방법입니다. 텍스트 데이터 분석에서
+    가장 널리 쓰이는 유사도 지표 중 하나입니다.</p>
+  </div>
+
+  <div class="def-box">
+    <div class="term">코사인 유사도 (Cosine Similarity)</div>
+    <p style="color:var(--text-dim);font-size:15px;">두 벡터 a⃗=(a₁,…,aₙ), b⃗=(b₁,…,bₙ)일 때,</p>
+    <div class="formula">(a₁b₁ + a₂b₂ + ⋯ + aₙbₙ) / [√(a₁²+⋯+aₙ²) × √(b₁²+⋯+bₙ²)]</div>
+  </div>
+
+  <div class="callout cyan">
+    <div class="callout-label">값의 의미</div>
+    <p>코사인 유사도의 값이 <strong>1에 가까울수록</strong> 더 유사합니다. (자카드 유사도와 같은 해석 방향)</p>
+  </div>
+
+  <h3 class="sub-title">예제: 단어 임베딩과 코사인 유사도</h3>
+  <div class="card">
+    <p style="font-size:14.5px;">단어를 벡터로 표현(단어 임베딩)했을 때, 비슷한 의미를 가진 단어는 벡터의 방향이 비슷합니다.</p>
+  </div>
+  <table class="data-table">
+    <tr><th>단어</th><th>고양이</th><th>물고기</th><th>강아지</th><th>귀엽다</th></tr>
+    <tr><td>벡터</td><td>(1, 0, 2)</td><td>(1, 1, 2)</td><td>(0, 2, 1)</td><td>(0, 0, 1)</td></tr>
+  </table>
+
+  <div class="card">
+    <p style="font-size:14.5px;"><strong>'귀엽다'</strong>와 가장 유사한 단어를 찾아봅시다. '귀엽다'=(0,0,1)과 '고양이'=(1,0,2)의 코사인 유사도는:</p>
+    <div class="formula">(0×1 + 0×0 + 1×2) / (√1 × √5) = 2/√5 ≈ 0.894</div>
+    <p style="font-size:14px;margin-top:10px;">같은 방식으로 계산하면 '귀엽다'-'물고기'≈0.816, '귀엽다'-'강아지'≈0.447입니다.
+    따라서 <strong>2/√5 &gt; 2/√6 &gt; 1/√5</strong> 이므로 '귀엽다'와 가장 유사한 단어는 <strong>'고양이'</strong>입니다.</p>
+  </div>
+
+  <div class="quiz" id="q6">
+    <div class="quiz-q"><span class="qnum">Q</span>"___는 귀엽다."라는 문장의 빈칸에 들어갈 가장 적합한 단어는 위 표를 기준으로 무엇일까요?</div>
+    <div class="opt-list">
+      <button class="opt-btn" data-correct="true" onclick="selectOption(this,'q6',true,'fb6','정답입니다! 코사인 유사도가 가장 큰 \u2018고양이\u2019가 \u2018귀엽다\u2019와 가장 유사한 단어입니다.','')">고양이</button>
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q6',false,'fb6','','물고기의 유사도는 고양이보다 작습니다.')">물고기</button>
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q6',false,'fb6','','강아지의 유사도가 셋 중 가장 작습니다.')">강아지</button>
+    </div>
+    <div class="feedback" id="fb6"></div>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevPage()">← 이전</button>
+    <button class="next-btn" onclick="nextPage()">다음 →</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 7: 유사도 비교 ===== -->
+<div class="page" id="pg7">
+  <div class="section-tag">Ⅱ-3 · 세 가지 유사도 비교</div>
+  <h2 class="sec-title">세 가지 유사도, 언제 무엇을 쓸까?</h2>
+
+  <table class="data-table">
+    <tr><th>유사도</th><th>계산 대상</th><th>값이 클수록</th><th>값의 범위</th></tr>
+    <tr><td><strong>자카드</strong></td><td>집합(단어의 존재 여부)</td><td>더 유사함</td><td>0 ~ 1</td></tr>
+    <tr><td><strong>유클리드</strong></td><td>벡터(좌표 사이의 거리)</td><td>덜 유사함 ⚠</td><td>0 ~ ∞</td></tr>
+    <tr><td><strong>코사인</strong></td><td>벡터(방향의 일치도)</td><td>더 유사함</td><td>-1 ~ 1</td></tr>
+  </table>
+
+  <div class="callout amber">
+    <div class="callout-label">자주 헷갈리는 포인트</div>
+    <p>유클리드 유사도는 이름에 '유사도'가 들어가지만 실제로는 <strong>거리</strong>를 계산합니다.
+    그래서 다른 두 유사도와 반대로, 값이 작을수록 더 유사하다고 해석합니다. 시험에서 자주 함정으로 등장하는 부분입니다.</p>
+  </div>
+
+  <div class="diagram-row">
+    <div class="diagram-box" style="border-color:var(--blue);">
+      <div class="icon">🔢</div>
+      <div class="label">자카드</div>
+      <div class="desc">단어가 같은지 다른지(0/1)만 보는 가장 단순한 방법. 빈도수는 무시.</div>
+    </div>
+    <div class="diagram-box" style="border-color:var(--cyan);">
+      <div class="icon">📏</div>
+      <div class="label">유클리드</div>
+      <div class="desc">벡터의 실제 위치(좌표) 차이를 그대로 반영. 크기에 민감.</div>
+    </div>
+    <div class="diagram-box" style="border-color:var(--amber);">
+      <div class="icon">🧭</div>
+      <div class="label">코사인</div>
+      <div class="desc">벡터의 방향(비율)만 비교. 문서 길이가 달라도 안정적이라 텍스트 분석에 많이 쓰임.</div>
+    </div>
+  </div>
+
+  <div class="quiz" id="q7">
+    <div class="quiz-q"><span class="qnum">Q</span>유클리드 유사도의 값이 0에 가까울수록 의미하는 것은?</div>
+    <div class="opt-list">
+      <button class="opt-btn" data-correct="true" onclick="selectOption(this,'q7',true,'fb7','정답입니다! 유클리드 유사도는 \u2018거리\u2019이므로 0에 가까울수록 두 벡터가 가깝다는, 즉 더 유사하다는 뜻입니다.','')">두 텍스트(벡터)가 더 유사하다</button>
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q7',false,'fb7','','반대로 해석했습니다. 거리가 0에 가까우면 더 유사한 것입니다.')">두 텍스트(벡터)가 더 유사하지 않다</button>
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q7',false,'fb7','','벡터의 길이와는 직접 관련이 없습니다.')">두 벡터의 성분 개수가 같다</button>
+    </div>
+    <div class="feedback" id="fb7"></div>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevPage()">← 이전</button>
+    <button class="next-btn" onclick="nextPage()">다음 →</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 8: 실습 - 문장완성 ===== -->
+<div class="page" id="pg8">
+  <div class="section-tag">문제해결력 코딩 · 실습</div>
+  <h2 class="sec-title">유사도를 이용하여 문장 완성하기</h2>
+
+  <div class="callout cyan">
+    <div class="callout-label">STEP 1 · 분석</div>
+    <p>구하려고 하는 것: 문장의 빈칸에 들어갈 단어. 알 수 있는 것: 각 단어를 의미하는 벡터,
+    그리고 코사인 유사도를 이용하여 단어 간 유사도를 구할 수 있다는 사실.</p>
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">STEP 2 · 계획</div>
+    <p>① '귀엽다'와 다른 세 단어 사이의 코사인 유사도를 구한다.<br>
+    ② 코사인 유사도 값이 가장 큰 단어가 가장 유사한 단어이다.<br>
+    ③ 찾은 단어를 빈칸에 넣어 문장을 완성한다.</p>
+  </div>
+
+  <div class="callout amber">
+    <div class="callout-label">STEP 3 · 실행</div>
+    <p>'귀엽다'=(0,0,1)과 각 단어의 코사인 유사도를 계산하면:<br>
+    고양이 → 2/√5 ≈ 0.894 (가장 큼) · 물고기 → 2/√6 ≈ 0.816 · 강아지 → 1/√5 ≈ 0.447<br>
+    따라서 빈칸에 들어갈 단어는 <strong>'고양이'</strong>이고, 문장은 <strong>"고양이는 귀엽다."</strong>로 완성됩니다.</p>
+  </div>
+
+  <h3 class="sub-title">🖊 스스로 해보기</h3>
+  <div class="card">
+    <p>유클리드 유사도(거리)를 이용하여 같은 문장의 빈칸에 들어갈 단어를 찾아보고,
+    코사인 유사도를 이용했을 때의 결과와 비교해 보세요. (힌트: 유클리드 거리는 값이 작을수록 유사합니다)</p>
+  </div>
+
+  <div class="quiz fill-quiz" id="q8">
+    <div class="quiz-q"><span class="qnum">Q</span>'귀엽다'=(0,0,1)과 '강아지'=(0,2,1) 사이의 유클리드 거리(유사도)를 구하시오.</div>
+    <div style="margin:10px 0;color:var(--text-dim);font-size:15px;">
+      값 = <input type="text" id="q8-ans" placeholder="예: 2">
+    </div>
+    <button class="check-btn" onclick="checkFill(['q8-ans'],['2'],'fb8','정답입니다! √[(0-0)²+(0-2)²+(1-1)²] = √4 = 2 입니다.','다시 계산해보세요. 두 벡터의 대응 성분끼리 차를 구해 제곱하고 더한 후 루트를 씌우세요.')">정답 확인</button>
+    <div class="feedback" id="fb8"></div>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevPage()">← 이전</button>
+    <button class="next-btn" onclick="nextPage()">다음 →</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 9: 마무리 ===== -->
+<div class="page" id="pg9">
+  <div class="section-tag">정리 · Wrap-up</div>
+  <h2 class="sec-title">2회차 핵심 정리</h2>
+
+  <div class="card">
+    <h3 class="sub-title" style="margin-top:0;">오늘 배운 것</h3>
+    <p><strong>① 빈도수 벡터</strong> — 단어의 출현 횟수를 벡터로 표현하면 주제어를 찾을 수 있다.</p>
+    <p><strong>② 단어가방(Bag of Words)</strong> — 텍스트에 등장하는 모든 단어를 모아 빈도수를 계산하는 방법.</p>
+    <p><strong>③ TF-IDF</strong> — 단어빈도(TF) × 역문서빈도(IDF)로, 한 문서에서 특히 중요한 단어를 찾는 지표.</p>
+    <p><strong>④ 자카드 유사도</strong> — n(A∩B)/n(A∪B), 1에 가까울수록 유사.</p>
+    <p><strong>⑤ 유클리드 유사도</strong> — 벡터 사이의 거리, 0에 가까울수록 유사 (반대 해석 주의!).</p>
+    <p><strong>⑥ 코사인 유사도</strong> — 벡터의 방향 일치도, 1에 가까울수록 유사. 텍스트 분석에서 가장 많이 사용.</p>
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">다음 회차 예고</div>
+    <p>3회차에서는 텍스트가 아닌 <strong>이미지</strong> 데이터를 수학적으로 표현하는 방법을 배웁니다.
+    픽셀과 행렬, 그리고 행렬을 이용해 컬러 이미지를 RGB로 분리하는 방법까지 다룹니다.</p>
+  </div>
+
+  <h3 class="sub-title">종합 확인 문제</h3>
+  <div class="quiz" id="q9">
+    <div class="quiz-q"><span class="qnum">Q</span>두 문서의 길이(단어 총개수)가 크게 다를 때도 비교적 안정적으로 유사도를 측정할 수 있는 방법은?</div>
+    <div class="opt-list">
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q9',false,'fb9','','유클리드 거리는 벡터의 크기(길이)에 민감하게 반응합니다.')">유클리드 유사도</button>
+      <button class="opt-btn" data-correct="true" onclick="selectOption(this,'q9',true,'fb9','정답입니다! 코사인 유사도는 벡터의 방향만 비교하므로 문서 길이의 영향을 적게 받습니다.','')">코사인 유사도</button>
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q9',false,'fb9','','자카드 유사도는 단어의 존재 여부만 보며 빈도 정보를 활용하지 않습니다.')">자카드 유사도</button>
+    </div>
+    <div class="feedback" id="fb9"></div>
+  </div>
+
+  <div class="card" style="text-align:center;background:linear-gradient(135deg,var(--cyan-soft),var(--paper));">
+    <p style="color:var(--navy-900);font-size:17px;font-weight:800;margin-bottom:6px;">🎉 2회차 학습 완료!</p>
+    <p style="font-size:13.5px;">상단 진도바가 100%가 되었는지 확인하고, 다음 시간에 만나요.</p>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevPage()">← 이전</button>
+    <button class="next-btn" disabled>학습 완료 ✓</button>
+  </div>
+
+  <div class="endnote">인공지능 수학 · 2회차 · 강은주 외, 「인공지능 수학」 교과서 기반 자료</div>
+</div>
+
+</div>
+
+<script>
+/* ============ PAGE DEFINITIONS ============ */
+var PAGES = [
+  {id:"pg0", label:"인트로"},
+  {id:"pg1", label:"빈도수벡터"},
+  {id:"pg2", label:"단어가방"},
+  {id:"pg3", label:"TF-IDF"},
+  {id:"pg4", label:"자카드유사도"},
+  {id:"pg5", label:"유클리드유사도"},
+  {id:"pg6", label:"코사인유사도"},
+  {id:"pg7", label:"유사도 비교"},
+  {id:"pg8", label:"실습: 문장완성"},
+  {id:"pg9", label:"마무리"}
+];
+
+var currentPage = 0;
+var visited = {};
+
+function buildPageNav(){
+  var nav = document.getElementById("pagenav");
+  PAGES.forEach(function(p, i){
+    var btn = document.createElement("button");
+    btn.className = "pg-btn";
+    btn.id = "navbtn-"+i;
+    btn.textContent = (i+1)+". "+p.label;
+    btn.onclick = function(){ goPage(i); };
+    nav.appendChild(btn);
+  });
+}
+
+function goPage(n){
+  if(n < 0 || n >= PAGES.length) return;
+  document.querySelectorAll(".page").forEach(function(el){ el.classList.remove("active"); });
+  var target = document.getElementById(PAGES[n].id);
+  if(target) target.classList.add("active");
+  document.querySelectorAll(".pg-btn").forEach(function(el){ el.classList.remove("active"); });
+  var navbtn = document.getElementById("navbtn-"+n);
+  if(navbtn) navbtn.classList.add("active");
+  visited[n] = true;
+  currentPage = n;
+  updateProgress();
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+function updateProgress(){
+  var visitedCount = Object.keys(visited).length;
+  var pct = Math.round((visitedCount / PAGES.length) * 100);
+  document.getElementById("progress-bar").style.width = pct + "%";
+  document.getElementById("progress-label").textContent = pct + "%";
+  PAGES.forEach(function(p, i){
+    var navbtn = document.getElementById("navbtn-"+i);
+    if(navbtn && visited[i]) navbtn.classList.add("done");
+  });
+}
+
+function nextPage(){ goPage(currentPage+1); }
+function prevPage(){ goPage(currentPage-1); }
+
+function switchTab(groupId, idx){
+  var group = document.getElementById(groupId);
+  if(!group) return;
+  var btns = group.querySelectorAll(".tab-btn");
+  var panels = group.querySelectorAll(".tabpanel");
+  btns.forEach(function(b, i){ b.classList.toggle("active", i===idx); });
+  panels.forEach(function(p, i){ p.classList.toggle("active", i===idx); });
+}
+
+function toggleHint(id){
+  var el = document.getElementById(id);
+  if(el) el.classList.toggle("show");
+}
+
+function selectOption(btnEl, groupId, isCorrect, feedbackId, correctMsg, wrongMsg){
+  var group = document.getElementById(groupId);
+  var btns = group.querySelectorAll(".opt-btn");
+  btns.forEach(function(b){ b.classList.remove("correct","wrong"); b.disabled = true; });
+  btnEl.classList.add(isCorrect ? "correct" : "wrong");
+  if(!isCorrect){
+    btns.forEach(function(b){
+      if(b.dataset.correct === "true") b.classList.add("correct");
+    });
+  }
+  var fb = document.getElementById(feedbackId);
+  if(fb){
+    fb.textContent = isCorrect ? correctMsg : wrongMsg;
+    fb.className = "feedback show " + (isCorrect ? "correct" : "wrong");
+  }
+}
+
+function checkFill(inputIds, answers, feedbackId, correctMsg, wrongMsg){
+  var allCorrect = true;
+  inputIds.forEach(function(id, i){
+    var input = document.getElementById(id);
+    var val = (input.value || "").trim().replace(/\s/g,"");
+    var ans = answers[i].replace(/\s/g,"");
+    if(val !== ans){ allCorrect = false; input.style.borderColor = "var(--bad)"; }
+    else { input.style.borderColor = "var(--good)"; }
+  });
+  var fb = document.getElementById(feedbackId);
+  fb.textContent = allCorrect ? correctMsg : wrongMsg;
+  fb.className = "feedback show " + (allCorrect ? "correct" : "wrong");
+}
+
+buildPageNav();
+goPage(0);
+</script>
+
+</body>
+</html>

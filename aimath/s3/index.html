@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3회차 | 이미지 데이터의 표현과 변환</title>
+<style>
+:root{
+  --bg:#fbf9f4;
+  --paper:#ffffff;
+  --paper-soft:#f4f1e8;
+  --line:#dcd5c2;
+  --line-soft:#e8e2d2;
+  --navy-900:#1a2332;
+  --blue:#1c5fd6;
+  --blue-soft:#e8f0fd;
+  --blue-deep:#0f3d8c;
+  --cyan:#0f9488;
+  --cyan-soft:#e3f6f3;
+  --amber:#b3650a;
+  --amber-soft:#fdf0dd;
+  --pink:#c23a6b;
+  --text:#1f2430;
+  --text-dim:#3d4452;
+  --text-faint:#7a8195;
+  --white:#ffffff;
+  --good:#0f8a5f;
+  --good-soft:#e5f6ee;
+  --bad:#c4314b;
+  --bad-soft:#fceaee;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+  line-height:1.85;
+  font-size:16px;
+  -webkit-font-smoothing:antialiased;
+}
+body{padding-bottom:80px;}
+
+/* ===== Top nav ===== */
+#topnav{
+  position:sticky;top:0;z-index:100;
+  background:rgba(251,249,244,0.95);
+  backdrop-filter:blur(10px);
+  border-bottom:2px solid var(--line);
+  padding:14px 20px;
+}
+.nav-inner{
+  max-width:980px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:16px;
+}
+.nav-title{
+  font-size:15px;font-weight:800;color:var(--blue-deep);
+  letter-spacing:0.3px;
+}
+.nav-title .num{
+  display:inline-block;background:var(--blue);color:var(--white);
+  font-size:12.5px;font-weight:800;border-radius:6px;
+  padding:3px 9px;margin-right:8px;
+}
+.progress-wrap{
+  flex:1;max-width:320px;height:8px;background:var(--paper-soft);
+  border:1px solid var(--line);border-radius:6px;overflow:hidden;
+}
+#progress-bar{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,var(--blue),var(--cyan));
+  transition:width .3s ease;
+}
+.progress-label{font-size:13px;font-weight:700;color:var(--text-faint);min-width:48px;text-align:right;}
+
+/* ===== Page nav buttons ===== */
+#pagenav{
+  max-width:980px;margin:14px auto 0;padding:0 20px;
+  display:flex;gap:6px;flex-wrap:wrap;
+}
+.pg-btn{
+  border:1.5px solid var(--line);background:var(--paper);
+  color:var(--text-dim);font-size:12.5px;font-weight:700;
+  border-radius:20px;padding:7px 13px;cursor:pointer;
+  transition:all .2s;white-space:nowrap;
+}
+.pg-btn:hover{border-color:var(--blue);color:var(--blue-deep);}
+.pg-btn.active{background:var(--blue);color:var(--white);border-color:var(--blue);}
+.pg-btn.done{color:var(--cyan);border-color:var(--cyan);}
+.pg-btn.done::after{content:" ✓";}
+
+/* ===== Main container ===== */
+#main{max-width:980px;margin:0 auto;padding:28px 20px 0;}
+.page{display:none;animation:fadeIn .35s ease;}
+.page.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+.hero{
+  background:linear-gradient(135deg,var(--blue-soft),var(--paper));
+  border:1.5px solid var(--line);border-radius:18px;
+  padding:40px 32px;margin-bottom:24px;
+  position:relative;overflow:hidden;
+}
+.hero::before{
+  content:"";position:absolute;top:-60px;right:-60px;
+  width:240px;height:240px;border-radius:50%;
+  background:radial-gradient(circle,rgba(28,95,214,0.10),transparent 70%);
+}
+.hero-eyebrow{
+  font-size:13.5px;font-weight:800;color:var(--cyan);
+  letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;
+}
+.hero h1{font-size:30px;font-weight:800;color:var(--navy-900);margin-bottom:14px;letter-spacing:-0.3px;}
+.hero p{font-size:16px;color:var(--text-dim);max-width:640px;}
+
+.section-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:13.5px;font-weight:800;color:var(--blue-deep);
+  background:var(--blue-soft);border:1.5px solid #b8d0f5;
+  border-radius:8px;padding:7px 15px;margin-bottom:18px;
+}
+
+h2.sec-title{font-size:23px;font-weight:800;color:var(--navy-900);margin:0 0 16px;letter-spacing:-0.2px;}
+h3.sub-title{font-size:18px;font-weight:800;color:var(--blue-deep);margin:28px 0 12px;}
+
+.card{
+  background:var(--paper);border:1.5px solid var(--line);
+  border-radius:14px;padding:24px;margin-bottom:18px;
+  box-shadow:0 1px 3px rgba(0,0,0,0.04);
+}
+.card p{color:var(--text-dim);font-size:16px;margin-bottom:10px;}
+.card p:last-child{margin-bottom:0;}
+.card strong{color:var(--navy-900);}
+
+.callout{
+  border-left:4px solid var(--blue);background:var(--blue-soft);
+  border-radius:0 10px 10px 0;padding:16px 20px;margin:16px 0;
+}
+.callout.amber{border-left-color:var(--amber);background:var(--amber-soft);}
+.callout.cyan{border-left-color:var(--cyan);background:var(--cyan-soft);}
+.callout-label{font-size:12.5px;font-weight:800;letter-spacing:1px;margin-bottom:6px;color:var(--blue-deep);}
+.callout.amber .callout-label{color:var(--amber);}
+.callout.cyan .callout-label{color:var(--cyan);}
+.callout p{color:var(--text-dim);font-size:15px;}
+
+.def-box{
+  background:var(--paper-soft);border:1.5px solid #d4cdb5;
+  border-radius:12px;padding:18px 22px;margin:16px 0;
+}
+.def-box .term{color:var(--cyan);font-weight:800;font-size:16px;margin-bottom:6px;}
+.def-box .formula{
+  font-family:'Cambria Math','Times New Roman',serif;
+  font-size:17px;color:var(--navy-900);background:var(--paper);
+  border-radius:8px;padding:12px 16px;margin-top:10px;text-align:center;
+  border:1.5px solid var(--line);
+}
+
+.diagram-row{display:flex;gap:16px;flex-wrap:wrap;margin:18px 0;}
+.diagram-box{
+  flex:1;min-width:200px;background:var(--paper);
+  border:1.5px solid var(--line);border-radius:12px;
+  padding:18px;text-align:center;
+  box-shadow:0 1px 3px rgba(0,0,0,0.04);
+}
+.diagram-box .icon{font-size:32px;margin-bottom:8px;}
+.diagram-box .label{font-weight:800;color:var(--navy-900);font-size:15px;margin-bottom:6px;}
+.diagram-box .desc{font-size:13px;color:var(--text-faint);}
+
+table.data-table{
+  width:100%;border-collapse:collapse;margin:16px 0;
+  font-size:14.5px;
+}
+table.data-table th{
+  background:var(--blue-deep);color:var(--white);
+  padding:11px 12px;font-weight:700;text-align:center;
+  border:1px solid var(--blue-deep);
+}
+table.data-table td{
+  padding:11px 12px;text-align:center;color:var(--text-dim);
+  border:1px solid var(--line);background:var(--paper);
+}
+
+/* vector / set visualization */
+.vec-display{
+  display:flex;align-items:center;justify-content:center;gap:4px;
+  font-family:'Cambria Math',serif;font-size:18px;color:var(--navy-900);
+  background:var(--paper-soft);border:1.5px solid var(--line);
+  border-radius:10px;padding:16px;margin:14px 0;flex-wrap:wrap;
+}
+.vec-comp{
+  display:inline-flex;flex-direction:column;align-items:center;
+  margin:0 6px;
+}
+.vec-comp .val{
+  background:var(--blue-soft);border:1px solid #b8d0f5;border-radius:6px;padding:4px 10px;
+  color:var(--blue-deep);font-weight:800;
+}
+.vec-comp .lbl{font-size:10.5px;color:var(--text-faint);margin-top:4px;}
+
+/* Tabs */
+.tabgroup{margin:18px 0;}
+.tabs{display:flex;gap:8px;border-bottom:2px solid var(--line);margin-bottom:18px;flex-wrap:wrap;}
+.tab-btn{
+  background:none;border:none;color:var(--text-faint);
+  font-size:14.5px;font-weight:700;padding:10px 16px;cursor:pointer;
+  border-bottom:3px solid transparent;transition:all .2s;
+}
+.tab-btn:hover{color:var(--text);}
+.tab-btn.active{color:var(--blue-deep);border-bottom-color:var(--blue);}
+.tabpanel{display:none;}
+.tabpanel.active{display:block;animation:fadeIn .3s ease;}
+
+/* Quiz / check */
+.quiz{
+  background:var(--paper);border:1.5px solid var(--line);
+  border-radius:14px;padding:22px;margin:18px 0;
+  box-shadow:0 1px 3px rgba(0,0,0,0.04);
+}
+.quiz-q{font-weight:700;color:var(--navy-900);font-size:16px;margin-bottom:14px;}
+.quiz-q .qnum{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:25px;height:25px;background:var(--blue);color:var(--white);
+  border-radius:50%;font-size:13px;font-weight:800;margin-right:8px;
+}
+.opt-list{display:flex;flex-direction:column;gap:8px;}
+.opt-btn{
+  text-align:left;background:var(--paper-soft);border:1.5px solid var(--line);
+  color:var(--text-dim);padding:13px 16px;border-radius:10px;
+  cursor:pointer;font-size:15px;transition:all .2s;
+}
+.opt-btn:hover{border-color:var(--blue);background:var(--blue-soft);}
+.opt-btn.correct{border-color:var(--good);background:var(--good-soft);color:var(--good);font-weight:700;}
+.opt-btn.wrong{border-color:var(--bad);background:var(--bad-soft);color:var(--bad);font-weight:700;}
+.feedback{margin-top:12px;font-size:14.5px;padding:11px 15px;border-radius:8px;display:none;font-weight:600;}
+.feedback.show{display:block;}
+.feedback.correct{background:var(--good-soft);color:var(--good);border:1px solid #b8e6d0;}
+.feedback.wrong{background:var(--bad-soft);color:var(--bad);border:1px solid #f3c0ca;}
+
+.fill-quiz input[type=text]{
+  background:var(--paper);border:1.5px solid var(--line);
+  color:var(--text);padding:10px 14px;border-radius:8px;
+  font-size:15px;width:160px;margin:0 6px;
+}
+.fill-quiz input[type=text]:focus{outline:none;border-color:var(--blue);}
+.check-btn{
+  background:var(--blue);color:var(--white);border:none;
+  padding:11px 24px;border-radius:8px;font-weight:700;font-size:14.5px;
+  cursor:pointer;margin-top:10px;transition:all .2s;
+}
+.check-btn:hover{background:var(--blue-deep);}
+
+/* Hint toggle */
+.hint-toggle{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--amber-soft);border:1.5px solid #e8c896;
+  color:var(--amber);font-size:14px;font-weight:700;
+  padding:9px 17px;border-radius:8px;cursor:pointer;margin-top:8px;
+  transition:all .2s;
+}
+.hint-toggle:hover{background:#fae6c4;}
+.hint-content{
+  display:none;margin-top:10px;padding:14px 18px;
+  background:var(--amber-soft);border-left:4px solid var(--amber);
+  border-radius:0 10px 10px 0;font-size:15px;color:var(--text-dim);
+}
+.hint-content.show{display:block;animation:fadeIn .3s ease;}
+
+/* Nav buttons bottom */
+.nav-buttons{
+  display:flex;justify-content:space-between;margin-top:32px;gap:12px;
+}
+.nav-buttons button{
+  background:var(--paper);border:1.5px solid var(--line);
+  color:var(--text);padding:13px 26px;border-radius:10px;
+  font-weight:700;font-size:15px;cursor:pointer;transition:all .2s;
+}
+.nav-buttons button:hover{border-color:var(--blue);color:var(--blue-deep);}
+.nav-buttons button:disabled{opacity:.35;cursor:not-allowed;}
+.nav-buttons .next-btn{background:var(--blue);border-color:var(--blue);color:var(--white);}
+.nav-buttons .next-btn:hover{background:var(--blue-deep);}
+
+/* responsive */
+@media(max-width:640px){
+  .hero{padding:28px 20px;}
+  .hero h1{font-size:24px;}
+  .diagram-row{flex-direction:column;}
+}
+
+.weight-diagram{
+  display:flex;align-items:center;justify-content:center;gap:18px;
+  background:var(--paper-soft);border:1.5px solid var(--line);
+  border-radius:12px;padding:24px;margin:16px 0;flex-wrap:wrap;
+}
+.w-input{display:flex;flex-direction:column;gap:10px;}
+.w-row{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--text-dim);font-weight:600;}
+.w-row .x{color:var(--cyan);font-weight:800;}
+.w-row .w{color:var(--amber);font-weight:800;}
+.arrow-big{font-size:24px;color:var(--text-faint);}
+.threshold-box{
+  background:var(--paper);border:1.5px solid var(--blue);
+  border-radius:10px;padding:14px 18px;text-align:center;font-size:14px;
+}
+
+.minicard-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:16px 0;}
+@media(max-width:640px){.minicard-grid{grid-template-columns:1fr;}}
+.minicard{
+  background:var(--paper);border:1.5px solid var(--line);
+  border-radius:12px;padding:18px;
+  box-shadow:0 1px 3px rgba(0,0,0,0.04);
+}
+.minicard .mc-title{font-weight:800;color:var(--navy-900);font-size:15px;margin-bottom:8px;}
+.minicard .mc-desc{font-size:13.5px;color:var(--text-faint);line-height:1.7;}
+
+.endnote{
+  text-align:center;color:var(--text-faint);font-size:13px;
+  margin-top:40px;padding-top:20px;border-top:1.5px solid var(--line);
+}
+
+/* ===== Matrix / pixel grid visualization ===== */
+.matrix-wrap{
+  display:flex;align-items:center;justify-content:center;gap:14px;
+  margin:18px 0;flex-wrap:wrap;
+}
+.matrix-bracket{font-size:48px;color:var(--text-faint);font-weight:300;line-height:1;}
+.matrix-grid{
+  display:inline-grid;gap:3px;background:var(--paper);
+  padding:10px;border-radius:8px;border:1.5px solid var(--line);
+}
+.matrix-cell{
+  display:flex;align-items:center;justify-content:center;
+  width:38px;height:38px;font-size:13px;font-weight:700;
+  border-radius:4px;color:var(--navy-900);background:var(--paper-soft);
+  border:1px solid var(--line-soft);
+}
+.matrix-cell.bw-1{background:#ffffff;border-color:#888;color:#1a1a1a;}
+.matrix-cell.bw-0{background:#2a2a2a;border-color:#2a2a2a;color:#fff;}
+.matrix-cell.r-ch{background:#fde2e2;color:#9c1c1c;border-color:#f3b8b8;}
+.matrix-cell.g-ch{background:#e1f5e6;color:#1c7a35;border-color:#b8e6c4;}
+.matrix-cell.b-ch{background:#e2ecfd;color:#1c4c9c;border-color:#b8d0f5;}
+
+.pixel-grid{
+  display:inline-grid;gap:0;border:2px solid var(--navy-900);
+  border-radius:4px;overflow:hidden;
+}
+.pixel-cell{width:32px;height:32px;}
+
+.rgb-row{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin:18px 0;}
+.rgb-channel{text-align:center;}
+.rgb-channel .ch-label{font-weight:800;font-size:13px;margin-bottom:8px;}
+.rgb-channel.r .ch-label{color:#c23a3a;}
+.rgb-channel.g .ch-label{color:#2a8a4a;}
+.rgb-channel.b .ch-label{color:#2a5ac2;}
+
+.slider-demo{
+  background:var(--paper-soft);border:1.5px solid var(--line);
+  border-radius:12px;padding:20px;margin:16px 0;text-align:center;
+}
+.slider-demo input[type=range]{width:80%;max-width:320px;margin:14px 0;accent-color:var(--blue);}
+.slider-demo .slider-value{font-weight:800;color:var(--blue-deep);font-size:16px;}
+</style>
+</head>
+<body>
+
+<div id="topnav">
+  <div class="nav-inner">
+    <div class="nav-title"><span class="num">3회차</span>이미지 데이터의 표현과 변환</div>
+    <div class="progress-wrap"><div id="progress-bar"></div></div>
+    <div class="progress-label" id="progress-label">0%</div>
+  </div>
+</div>
+
+<div id="pagenav"></div>
+
+<div id="main">
+
+<!-- ===== PAGE 0: 인트로 ===== -->
+<div class="page" id="pg0">
+  <div class="hero">
+    <div class="hero-eyebrow">SESSION 03 · 3시간</div>
+    <h1>이미지 데이터의<br>표현과 변환</h1>
+    <p>스마트폰으로 꽃을 찍으면 AI가 꽃 이름을 알려줍니다. 컴퓨터는 사진을 어떻게 '이해'할까요?
+    답은 <strong>행렬</strong>입니다. 오늘은 이미지를 숫자로 이루어진 행렬로 바꾸는 방법과,
+    행렬의 연산으로 이미지를 자유롭게 변형하는 원리를 배웁니다.</p>
+  </div>
+
+  <div class="card">
+    <h2 class="sec-title" style="font-size:18px;margin-bottom:14px;">📋 오늘의 학습 목표</h2>
+    <p>① 픽셀과 행렬의 개념을 이해하고, 흑백·컬러 이미지를 행렬로 표현할 수 있다.</p>
+    <p>② 전치행렬을 이용해 이미지의 구도를 바꿀 수 있다.</p>
+    <p>③ 행렬의 덧셈·뺄셈으로 두 이미지를 합성할 수 있다.</p>
+    <p>④ 행렬의 실수배로 이미지의 밝기를 조절할 수 있다.</p>
+  </div>
+
+  <div class="minicard-grid">
+    <div class="minicard">
+      <div class="mc-title">🧭 Ⅲ-1 표현</div>
+      <div class="mc-desc">픽셀 · 행렬 · 흑백(0/1, 명도) · RGB</div>
+    </div>
+    <div class="minicard">
+      <div class="mc-title">🧭 Ⅲ-2 변환</div>
+      <div class="mc-desc">전치행렬 · 덧셈/뺄셈 · 실수배</div>
+    </div>
+    <div class="minicard">
+      <div class="mc-title">⏱ 시간 배분</div>
+      <div class="mc-desc">표현 80분 · 변환 80분<br>실습/정리 20분</div>
+    </div>
+  </div>
+
+  <div class="callout cyan">
+    <div class="callout-label">지난 시간 복습</div>
+    <p>텍스트는 집합과 벡터로 표현했었죠. 오늘 배울 이미지는 <strong>행렬</strong>로 표현합니다.
+    벡터가 한 줄로 늘어선 숫자라면, 행렬은 숫자를 가로·세로로 펼쳐놓은 표라고 생각하면 됩니다.</p>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevPage()" disabled>← 이전</button>
+    <button class="next-btn" onclick="nextPage()">학습 시작하기 →</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 1: 픽셀과 행렬 ===== -->
+<div class="page" id="pg1">
+  <div class="section-tag">Ⅲ-1 · 이미지 데이터의 표현 (1)</div>
+  <h2 class="sec-title">픽셀과 행렬이란 무엇인가요?</h2>
+
+  <div class="card">
+    <p>컴퓨터에서 이미지를 계속 확대해 보면, 아주 작은 사각형 모양이 모여 이미지를 구성하고 있다는
+    것을 알 수 있습니다. 이 작은 사각형을 <strong>픽셀</strong>이라고 하며, 각 픽셀은 숫자로 표현된 색상
+    정보를 가지고 있습니다.</p>
+  </div>
+
+  <div class="def-box">
+    <div class="term">행렬 (Matrix)</div>
+    <p style="color:var(--text-dim);font-size:15px;">여러 개의 수 또는 문자를 직사각형 형태로 배열하여 괄호로 묶어 나타낸 것을 행렬이라 하고,
+    행렬을 이루는 각각의 수를 그 행렬의 <strong>성분</strong>이라고 합니다. m개의 행과 n개의 열로 이루어진 행렬을
+    m×n 행렬이라고 합니다.</p>
+  </div>
+
+  <h3 class="sub-title">행렬의 행과 열</h3>
+  <div class="matrix-wrap">
+    <span class="matrix-bracket">[</span>
+    <div class="matrix-grid" style="grid-template-columns:repeat(3,1fr);">
+      <div class="matrix-cell">7</div><div class="matrix-cell">11</div><div class="matrix-cell">13</div>
+      <div class="matrix-cell">14</div><div class="matrix-cell">18</div><div class="matrix-cell">25</div>
+    </div>
+    <span class="matrix-bracket">]</span>
+  </div>
+  <div class="card">
+    <p style="font-size:14px;text-align:center;">이 행렬은 2개의 행과 3개의 열로 이루어진 <strong>2×3 행렬</strong>입니다.
+    제2행 제3열의 성분(25)을 a₂₃와 같이 나타냅니다.</p>
+  </div>
+
+  <div class="quiz" id="q1">
+    <div class="quiz-q"><span class="qnum">Q</span>3개의 행과 1개의 열로 이루어진 행렬을 무엇이라고 하나요?</div>
+    <div class="opt-list">
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q1',false,'fb1','','행과 열의 개수가 반대입니다.')">1×3 행렬</button>
+      <button class="opt-btn" data-correct="true" onclick="selectOption(this,'q1',true,'fb1','정답입니다! 행이 먼저, 열이 나중에 오므로 3×1 행렬입니다.','')">3×1 행렬</button>
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q1',false,'fb1','','성분이 3개라고 해서 3×3은 아닙니다.')">3×3 행렬</button>
+    </div>
+    <div class="feedback" id="fb1"></div>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevPage()">← 이전</button>
+    <button class="next-btn" onclick="nextPage()">다음 →</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 2: 흑백 이미지 ===== -->
+<div class="page" id="pg2">
+  <div class="section-tag">Ⅲ-1 · 이미지 데이터의 표현 (2)</div>
+  <h2 class="sec-title">흑백 이미지를 행렬로 표현하기</h2>
+
+  <div class="card">
+    <p>가장 단순한 흑백 이미지는 검은색과 흰색, 두 가지 색만으로 이루어집니다.
+    불이 꺼진 곳을 <strong>0</strong>, 켜진 곳(흰색)을 <strong>1</strong>이라 하면 이미지를 행렬로 나타낼 수 있습니다.</p>
+  </div>
+
+  <h3 class="sub-title">예시: 3×3 흑백 이미지</h3>
+  <div class="matrix-wrap">
+    <div class="pixel-grid" style="grid-template-columns:repeat(3,32px);">
+      <div class="pixel-cell" style="background:#fff;"></div>
+      <div class="pixel-cell" style="background:#1a1a1a;"></div>
+      <div class="pixel-cell" style="background:#fff;"></div>
+      <div class="pixel-cell" style="background:#1a1a1a;"></div>
+      <div class="pixel-cell" style="background:#1a1a1a;"></div>
+      <div class="pixel-cell" style="background:#fff;"></div>
+      <div class="pixel-cell" style="background:#fff;"></div>
+      <div class="pixel-cell" style="background:#1a1a1a;"></div>
+      <div class="pixel-cell" style="background:#fff;"></div>
+    </div>
+    <span style="font-size:20px;color:var(--text-faint);">→</span>
+    <div class="matrix-wrap" style="margin:0;">
+      <span class="matrix-bracket">[</span>
+      <div class="matrix-grid" style="grid-template-columns:repeat(3,1fr);">
+        <div class="matrix-cell bw-1">1</div><div class="matrix-cell bw-0">0</div><div class="matrix-cell bw-1">1</div>
+        <div class="matrix-cell bw-0">0</div><div class="matrix-cell bw-0">0</div><div class="matrix-cell bw-1">1</div>
+        <div class="matrix-cell bw-1">1</div><div class="matrix-cell bw-0">0</div><div class="matrix-cell bw-1">1</div>
+      </div>
+      <span class="matrix-bracket">]</span>
+    </div>
+  </div>
+
+  <div class="callout cyan">
+    <div class="callout-label">핵심 원리</div>
+    <p>흰색 픽셀은 1, 검은색 픽셀은 0으로 바꾸면, 이미지 전체가 0과 1로 이루어진 행렬이 됩니다.
+    이렇게 하면 컴퓨터가 이미지를 숫자 데이터로 처리할 수 있게 됩니다.</p>
+  </div>
+
+  <div class="quiz" id="q2">
+    <div class="quiz-q"><span class="qnum">Q</span>검은색을 0, 흰색을 1이라 할 때, 모든 칸이 흰색인 2×2 이미지를 행렬로 나타내면?</div>
+    <div class="opt-list">
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q2',false,'fb2','','흰색은 1로 나타냅니다.')">[[0,0],[0,0]]</button>
+      <button class="opt-btn" data-correct="true" onclick="selectOption(this,'q2',true,'fb2','정답입니다! 모든 칸이 흰색이므로 전부 1이 됩니다.','')">[[1,1],[1,1]]</button>
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q2',false,'fb2','','흑백 이미지는 0과 1만 사용합니다.')">[[2,2],[2,2]]</button>
+    </div>
+    <div class="feedback" id="fb2"></div>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevPage()">← 이전</button>
+    <button class="next-btn" onclick="nextPage()">다음 →</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 3: 명도와 행렬 ===== -->
+<div class="page" id="pg3">
+  <div class="section-tag">Ⅲ-1 · 이미지 데이터의 표현 (3)</div>
+  <h2 class="sec-title">다양한 명도의 흑백 이미지</h2>
+
+  <div class="card">
+    <p>병원의 방사선·초음파 영상처럼, 실제 흑백 이미지에는 검은색과 흰색뿐 아니라 다양한 명도의
+    회색이 있습니다. 이를 표현하려면 0과 1만으로는 부족합니다.</p>
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">명도 표현 방법</div>
+    <p>검은색은 <strong>0</strong>, 흰색은 <strong>255</strong>로 정하고, 그 사이의 회색은 명도에 따라
+    0과 255 사이의 정수 값을 각 픽셀에 부여합니다.</p>
+  </div>
+
+  <div class="slider-demo">
+    <p style="font-size:14px;color:var(--text-dim);margin-bottom:6px;">슬라이더를 움직여 명도값에 따른 색을 확인해보세요</p>
+    <input type="range" id="grayslider" min="0" max="255" value="128" oninput="updateGrayDemo(this.value)">
+    <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-top:10px;">
+      <div id="graybox" style="width:60px;height:60px;background:rgb(128,128,128);border:2px solid var(--navy-900);border-radius:8px;"></div>
+      <div class="slider-value">명도값: <span id="grayval">128</span></div>
+    </div>
+  </div>
+
+  <h3 class="sub-title">예시: 명도 행렬</h3>
+  <div class="matrix-wrap">
+    <span class="matrix-bracket">[</span>
+    <div class="matrix-grid" style="grid-template-columns:repeat(3,1fr);">
+      <div class="matrix-cell" style="background:rgb(110,110,110);color:#fff;">110</div>
+      <div class="matrix-cell" style="background:rgb(139,139,139);color:#fff;">139</div>
+      <div class="matrix-cell" style="background:rgb(169,169,169);color:#1a1a1a;">169</div>
+      <div class="matrix-cell" style="background:rgb(105,105,105);color:#fff;">105</div>
+      <div class="matrix-cell" style="background:rgb(139,139,139);color:#fff;">139</div>
+      <div class="matrix-cell" style="background:rgb(160,160,160);color:#1a1a1a;">160</div>
+      <div class="matrix-cell" style="background:rgb(90,90,90);color:#fff;">90</div>
+      <div class="matrix-cell" style="background:rgb(112,112,112);color:#fff;">112</div>
+      <div class="matrix-cell" style="background:rgb(130,130,130);color:#fff;">130</div>
+    </div>
+    <span class="matrix-bracket">]</span>
+  </div>
+
+  <div class="quiz" id="q3">
+    <div class="quiz-q"><span class="qnum">Q</span>다양한 명도의 흑백 이미지에서 가장 밝은 흰색을 나타내는 값은?</div>
+    <div class="opt-list">
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q3',false,'fb3','','0은 가장 어두운 검은색입니다.')">0</button>
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q3',false,'fb3','','이것은 중간 회색에 가까운 값입니다.')">128</button>
+      <button class="opt-btn" data-correct="true" onclick="selectOption(this,'q3',true,'fb3','정답입니다! 255가 가장 밝은 흰색을 의미합니다.','')">255</button>
+    </div>
+    <div class="feedback" id="fb3"></div>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevPage()">← 이전</button>
+    <button class="next-btn" onclick="nextPage()">다음 →</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 4: 컬러(RGB) ===== -->
+<div class="page" id="pg4">
+  <div class="section-tag">Ⅲ-1 · 이미지 데이터의 표현 (4)</div>
+  <h2 class="sec-title">컬러 이미지를 행렬로 표현하기</h2>
+
+  <div class="card">
+    <p>컬러 이미지에서 각 픽셀의 색은 빛의 3원색인 <strong>R(빨강) · G(초록) · B(파랑)</strong>의 조합으로
+    표현됩니다. 각 색상은 0부터 255까지의 값을 가지며, 이 세 값의 조합으로 다양한 색을 만듭니다.</p>
+  </div>
+
+  <table class="data-table">
+    <tr><th>색상</th><th>빨간색</th><th>초록색</th><th>파란색</th><th>혼합색</th></tr>
+    <tr><td>R값</td><td>255</td><td>0</td><td>0</td><td>137</td></tr>
+    <tr><td>G값</td><td>0</td><td>255</td><td>0</td><td>126</td></tr>
+    <tr><td>B값</td><td>0</td><td>0</td><td>255</td><td>213</td></tr>
+    <tr><td>순서쌍</td><td>(255,0,0)</td><td>(0,255,0)</td><td>(0,0,255)</td><td>(137,126,213)</td></tr>
+  </table>
+
+  <div class="callout cyan">
+    <div class="callout-label">컬러 이미지 = 3개의 행렬</div>
+    <p>컬러 이미지는 각 픽셀의 색상 정보를 R, G, B 세 가지로 분리하여, <strong>3개의 행렬</strong>로 나타낼 수 있습니다.
+    각 행렬은 0~255 사이의 정수를 성분으로 가집니다.</p>
+  </div>
+
+  <h3 class="sub-title">예시: 4개 픽셀의 컬러 이미지 → 3개 행렬</h3>
+  <div class="pixel-grid" style="grid-template-columns:repeat(2,48px);margin:0 auto 16px;display:grid;">
+    <div class="pixel-cell" style="width:48px;height:48px;background:rgb(255,0,0);"></div>
+    <div class="pixel-cell" style="width:48px;height:48px;background:rgb(0,0,255);"></div>
+    <div class="pixel-cell" style="width:48px;height:48px;background:rgb(0,255,0);"></div>
+    <div class="pixel-cell" style="width:48px;height:48px;background:rgb(137,126,213);"></div>
+  </div>
+
+  <div class="rgb-row">
+    <div class="rgb-channel r">
+      <div class="ch-label">R 행렬</div>
+      <div class="matrix-grid" style="grid-template-columns:repeat(2,1fr);">
+        <div class="matrix-cell r-ch">255</div><div class="matrix-cell r-ch">0</div>
+        <div class="matrix-cell r-ch">0</div><div class="matrix-cell r-ch">137</div>
+      </div>
+    </div>
+    <div class="rgb-channel g">
+      <div class="ch-label">G 행렬</div>
+      <div class="matrix-grid" style="grid-template-columns:repeat(2,1fr);">
+        <div class="matrix-cell g-ch">0</div><div class="matrix-cell g-ch">0</div>
+        <div class="matrix-cell g-ch">255</div><div class="matrix-cell g-ch">126</div>
+      </div>
+    </div>
+    <div class="rgb-channel b">
+      <div class="ch-label">B 행렬</div>
+      <div class="matrix-grid" style="grid-template-columns:repeat(2,1fr);">
+        <div class="matrix-cell b-ch">0</div><div class="matrix-cell b-ch">255</div>
+        <div class="matrix-cell b-ch">0</div><div class="matrix-cell b-ch">213</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz fill-quiz" id="q4">
+    <div class="quiz-q"><span class="qnum">Q</span>어떤 픽셀의 R, G, B 값이 각각 0, 0, 0일 때 이 픽셀의 색은 무엇인가요?</div>
+    <div style="margin:10px 0;color:var(--text-dim);font-size:15px;">
+      색상 = <input type="text" id="q4-ans" placeholder="색 이름">
+    </div>
+    <button class="check-btn" onclick="checkFill(['q4-ans'],['검은색'],'fb4','정답입니다! R,G,B 모두 0이면 빛이 전혀 없는 검은색입니다.','다시 생각해보세요. R,G,B가 모두 0이면 어떤 색일까요?')">정답 확인</button>
+    <div class="feedback" id="fb4"></div>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevPage()">← 이전</button>
+    <button class="next-btn" onclick="nextPage()">다음 →</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 5: 전치행렬 ===== -->
+<div class="page" id="pg5">
+  <div class="section-tag">Ⅲ-2 · 이미지 데이터의 변환 (1)</div>
+  <h2 class="sec-title">전치행렬로 이미지 구도 바꾸기</h2>
+
+  <div class="def-box">
+    <div class="term">전치행렬 (Transpose Matrix)</div>
+    <p style="color:var(--text-dim);font-size:15px;">m×n 행렬 A에 대하여 전치행렬 Aᵗ는 행렬 A의 행과 열을 바꿔서 얻어진 n×m 행렬입니다.
+    즉, 행렬 A의 제i행은 행렬 Aᵗ의 제i열이 됩니다.</p>
+  </div>
+
+  <div class="matrix-wrap">
+    <div>
+      <p style="text-align:center;font-size:12.5px;color:var(--text-faint);margin-bottom:6px;">행렬 A (2×3)</p>
+      <span class="matrix-bracket">[</span>
+      <div class="matrix-grid" style="grid-template-columns:repeat(3,1fr);display:inline-grid;">
+        <div class="matrix-cell">7</div><div class="matrix-cell">3</div><div class="matrix-cell">4</div>
+        <div class="matrix-cell">2</div><div class="matrix-cell">9</div><div class="matrix-cell">6</div>
+      </div>
+      <span class="matrix-bracket">]</span>
+    </div>
+    <span style="font-size:24px;color:var(--text-faint);">→</span>
+    <div>
+      <p style="text-align:center;font-size:12.5px;color:var(--text-faint);margin-bottom:6px;">전치행렬 Aᵗ (3×2)</p>
+      <span class="matrix-bracket">[</span>
+      <div class="matrix-grid" style="grid-template-columns:repeat(2,1fr);display:inline-grid;">
+        <div class="matrix-cell">7</div><div class="matrix-cell">2</div>
+        <div class="matrix-cell">3</div><div class="matrix-cell">9</div>
+        <div class="matrix-cell">4</div><div class="matrix-cell">6</div>
+      </div>
+      <span class="matrix-bracket">]</span>
+    </div>
+  </div>
+
+  <h3 class="sub-title">전치행렬과 이미지 구도 변경</h3>
+  <div class="card">
+    <p style="font-size:14.5px;">검은색을 0, 흰색을 1이라 하여 이미지를 행렬로 나타내면 전치행렬을 이용해 이미지의
+    구도(가로↔세로)를 바꿀 수 있습니다.</p>
+  </div>
+
+  <div class="matrix-wrap">
+    <div>
+      <p style="text-align:center;font-size:12px;color:var(--text-faint);margin-bottom:6px;">원본 A (4×4)</p>
+      <div class="matrix-grid" style="grid-template-columns:repeat(4,1fr);display:inline-grid;">
+        <div class="matrix-cell bw-1">1</div><div class="matrix-cell bw-0">0</div><div class="matrix-cell bw-0">0</div><div class="matrix-cell bw-0">0</div>
+        <div class="matrix-cell bw-1">1</div><div class="matrix-cell bw-1">1</div><div class="matrix-cell bw-1">1</div><div class="matrix-cell bw-0">0</div>
+        <div class="matrix-cell bw-0">0</div><div class="matrix-cell bw-0">0</div><div class="matrix-cell bw-1">1</div><div class="matrix-cell bw-1">1</div>
+        <div class="matrix-cell bw-1">1</div><div class="matrix-cell bw-0">0</div><div class="matrix-cell bw-0">0</div><div class="matrix-cell bw-1">1</div>
+      </div>
+    </div>
+    <span style="font-size:24px;color:var(--text-faint);">전치 →</span>
+    <div>
+      <p style="text-align:center;font-size:12px;color:var(--text-faint);margin-bottom:6px;">Aᵗ (4×4)</p>
+      <div class="matrix-grid" style="grid-template-columns:repeat(4,1fr);display:inline-grid;">
+        <div class="matrix-cell bw-1">1</div><div class="matrix-cell bw-1">1</div><div class="matrix-cell bw-0">0</div><div class="matrix-cell bw-1">1</div>
+        <div class="matrix-cell bw-0">0</div><div class="matrix-cell bw-1">1</div><div class="matrix-cell bw-0">0</div><div class="matrix-cell bw-0">0</div>
+        <div class="matrix-cell bw-0">0</div><div class="matrix-cell bw-1">1</div><div class="matrix-cell bw-1">1</div><div class="matrix-cell bw-0">0</div>
+        <div class="matrix-cell bw-0">0</div><div class="matrix-cell bw-0">0</div><div class="matrix-cell bw-1">1</div><div class="matrix-cell bw-1">1</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz" id="q5">
+    <div class="quiz-q"><span class="qnum">Q</span>2×4 행렬 A의 전치행렬 Aᵗ는 몇 행 몇 열의 행렬인가요?</div>
+    <div class="opt-list">
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q5',false,'fb5','','행과 열이 바뀝니다.')">2×4 행렬</button>
+      <button class="opt-btn" data-correct="true" onclick="selectOption(this,'q5',true,'fb5','정답입니다! 전치행렬은 행과 열을 바꾸므로 2\u00d74 \u2192 4\u00d72가 됩니다.','')">4×2 행렬</button>
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q5',false,'fb5','','성분의 개수는 같지만 행렬의 모양(행\u00d7열)이 다릅니다.')">4×4 행렬</button>
+    </div>
+    <div class="feedback" id="fb5"></div>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevPage()">← 이전</button>
+    <button class="next-btn" onclick="nextPage()">다음 →</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 6: 행렬의 합성 ===== -->
+<div class="page" id="pg6">
+  <div class="section-tag">Ⅲ-2 · 이미지 데이터의 변환 (2)</div>
+  <h2 class="sec-title">행렬의 덧셈·뺄셈으로 이미지 합성하기</h2>
+
+  <div class="def-box">
+    <div class="term">행렬의 덧셈과 뺄셈</div>
+    <p style="color:var(--text-dim);font-size:15px;">두 행렬 A, B가 같은 꼴(행과 열의 수가 각각 같음)일 때, 대응하는 성분끼리 더하거나 뺀 값을
+    성분으로 하는 행렬을 각각 A+B, A-B라고 합니다.</p>
+  </div>
+
+  <div class="matrix-wrap">
+    <div class="matrix-grid" style="grid-template-columns:repeat(2,1fr);display:inline-grid;">
+      <div class="matrix-cell bw-1">1</div><div class="matrix-cell bw-0">0</div>
+      <div class="matrix-cell bw-1">1</div><div class="matrix-cell bw-0">0</div>
+    </div>
+    <span style="font-size:22px;color:var(--text-faint);">+</span>
+    <div class="matrix-grid" style="grid-template-columns:repeat(2,1fr);display:inline-grid;">
+      <div class="matrix-cell bw-0">0</div><div class="matrix-cell bw-1">1</div>
+      <div class="matrix-cell bw-0">0</div><div class="matrix-cell bw-0">0</div>
+    </div>
+    <span style="font-size:22px;color:var(--text-faint);">=</span>
+    <div class="matrix-grid" style="grid-template-columns:repeat(2,1fr);display:inline-grid;">
+      <div class="matrix-cell bw-1">1</div><div class="matrix-cell bw-1">1</div>
+      <div class="matrix-cell bw-1">1</div><div class="matrix-cell bw-0">0</div>
+    </div>
+  </div>
+
+  <div class="callout amber">
+    <div class="callout-label">이미지 합성의 원리</div>
+    <p>검은색(0), 흰색(1)인 두 이미지를 더하면, 두 이미지 중 하나라도 흰색(1)인 부분이 결과에도
+    흰색으로 나타납니다. 이렇게 행렬의 덧셈으로 두 이미지를 합성할 수 있습니다.
+    (성분의 합이 1 이상이면 흰색, 0이면 검은색으로 처리)</p>
+  </div>
+
+  <div class="quiz fill-quiz" id="q6">
+    <div class="quiz-q"><span class="qnum">Q</span>두 행렬 A=[[2,-5],[9,7]], B=[[1,0],[-2,3]]에 대하여 A-B의 (1,1) 성분과 (2,2) 성분을 각각 구하시오.</div>
+    <div style="margin:10px 0;color:var(--text-dim);font-size:15px;">
+      (1,1) 성분 = <input type="text" id="q6-a" placeholder="값"> &nbsp;&nbsp; (2,2) 성분 = <input type="text" id="q6-b" placeholder="값">
+    </div>
+    <button class="check-btn" onclick="checkFill(['q6-a','q6-b'],['1','4'],'fb6','정답입니다! (1,1): 2-1=1, (2,2): 7-3=4 입니다.','다시 계산해보세요. 대응하는 성분끼리 빼면 됩니다.')">정답 확인</button>
+    <div class="feedback" id="fb6"></div>
+    <button class="hint-toggle" onclick="toggleHint('hint6')">💡 힌트 보기</button>
+    <div class="hint-content" id="hint6">A-B는 A의 각 성분에서 B의 대응하는 성분을 빼면 됩니다. (1,1)성분은 첫 번째 행, 첫 번째 열의 값입니다.</div>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevPage()">← 이전</button>
+    <button class="next-btn" onclick="nextPage()">다음 →</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 7: 밝기 조절 ===== -->
+<div class="page" id="pg7">
+  <div class="section-tag">Ⅲ-2 · 이미지 데이터의 변환 (3)</div>
+  <h2 class="sec-title">행렬의 실수배로 밝기 조절하기</h2>
+
+  <div class="def-box">
+    <div class="term">행렬의 실수배</div>
+    <p style="color:var(--text-dim);font-size:15px;">임의의 실수 k에 대하여 행렬 A의 각 성분을 k배한 것을 성분으로 하는 행렬을
+    행렬 A의 k배라고 하고, 기호로 kA와 같이 나타냅니다.</p>
+  </div>
+
+  <div class="slider-demo">
+    <p style="font-size:14px;color:var(--text-dim);margin-bottom:6px;">배율(k)을 조절하여 밝기 변화를 확인해보세요</p>
+    <input type="range" id="brightslider" min="0.2" max="2" step="0.1" value="1" oninput="updateBrightDemo(this.value)">
+    <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-top:10px;">
+      <div id="brightbox" style="width:60px;height:60px;background:rgb(120,120,120);border:2px solid var(--navy-900);border-radius:8px;"></div>
+      <div class="slider-value">배율 k = <span id="brightval">1.0</span></div>
+    </div>
+  </div>
+
+  <h3 class="sub-title">예시: 명도 행렬에 실수배 적용</h3>
+  <div class="matrix-wrap">
+    <div>
+      <p style="text-align:center;font-size:12px;color:var(--text-faint);margin-bottom:6px;">½A (어두워짐)</p>
+      <div class="matrix-grid" style="grid-template-columns:repeat(3,1fr);display:inline-grid;">
+        <div class="matrix-cell" style="background:rgb(60,60,60);color:#fff;">60</div>
+        <div class="matrix-cell" style="background:rgb(30,30,30);color:#fff;">30</div>
+        <div class="matrix-cell" style="background:rgb(30,30,30);color:#fff;">30</div>
+      </div>
+    </div>
+    <div>
+      <p style="text-align:center;font-size:12px;color:var(--text-faint);margin-bottom:6px;">A (원본)</p>
+      <div class="matrix-grid" style="grid-template-columns:repeat(3,1fr);display:inline-grid;">
+        <div class="matrix-cell" style="background:rgb(120,120,120);color:#fff;">120</div>
+        <div class="matrix-cell" style="background:rgb(60,60,60);color:#fff;">60</div>
+        <div class="matrix-cell" style="background:rgb(60,60,60);color:#fff;">60</div>
+      </div>
+    </div>
+    <div>
+      <p style="text-align:center;font-size:12px;color:var(--text-faint);margin-bottom:6px;">2A (밝아짐)</p>
+      <div class="matrix-grid" style="grid-template-columns:repeat(3,1fr);display:inline-grid;">
+        <div class="matrix-cell" style="background:rgb(240,240,240);color:#1a1a1a;">240</div>
+        <div class="matrix-cell" style="background:rgb(120,120,120);color:#fff;">120</div>
+        <div class="matrix-cell" style="background:rgb(120,120,120);color:#fff;">120</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout cyan">
+    <div class="callout-label">핵심 규칙</div>
+    <p>이미지 행렬에 <strong>1보다 작은 양수</strong>를 곱하면 이미지가 어두워지고,
+    <strong>1보다 큰 수</strong>를 곱하면 이미지가 밝아집니다.</p>
+  </div>
+
+  <div class="quiz" id="q7">
+    <div class="quiz-q"><span class="qnum">Q</span>명도가 100인 픽셀에 0.5를 곱하면 명도는 어떻게 변하나요?</div>
+    <div class="opt-list">
+      <button class="opt-btn" data-correct="true" onclick="selectOption(this,'q7',true,'fb7','정답입니다! 100\u00d70.5=50으로 명도값이 작아져 더 어두워집니다.','')">50이 되어 더 어두워진다</button>
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q7',false,'fb7','','1보다 작은 수를 곱하면 명도값이 작아집니다.')">200이 되어 더 밝아진다</button>
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q7',false,'fb7','','실수배를 하면 값이 변합니다.')">변화가 없다</button>
+    </div>
+    <div class="feedback" id="fb7"></div>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevPage()">← 이전</button>
+    <button class="next-btn" onclick="nextPage()">다음 →</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 8: 종합 실습 ===== -->
+<div class="page" id="pg8">
+  <div class="section-tag">종합 실습</div>
+  <h2 class="sec-title">행렬 연산으로 이미지 직접 변형하기</h2>
+
+  <div class="callout">
+    <div class="callout-label">문제 상황</div>
+    <p>아래 세 행렬 A, B, C는 각각 검은색 0, 흰색 1로 나타낸 3×3 이미지입니다.
+    행렬 연산을 이용해 새로운 이미지를 만들어 봅시다.</p>
+  </div>
+
+  <div class="matrix-wrap">
+    <div>
+      <p style="text-align:center;font-size:12px;color:var(--text-faint);margin-bottom:6px;">A</p>
+      <div class="matrix-grid" style="grid-template-columns:repeat(3,1fr);display:inline-grid;">
+        <div class="matrix-cell bw-1">1</div><div class="matrix-cell bw-0">0</div><div class="matrix-cell bw-0">0</div>
+        <div class="matrix-cell bw-0">0</div><div class="matrix-cell bw-1">1</div><div class="matrix-cell bw-0">0</div>
+        <div class="matrix-cell bw-0">0</div><div class="matrix-cell bw-0">0</div><div class="matrix-cell bw-1">1</div>
+      </div>
+    </div>
+    <div>
+      <p style="text-align:center;font-size:12px;color:var(--text-faint);margin-bottom:6px;">B</p>
+      <div class="matrix-grid" style="grid-template-columns:repeat(3,1fr);display:inline-grid;">
+        <div class="matrix-cell bw-0">0</div><div class="matrix-cell bw-0">0</div><div class="matrix-cell bw-1">1</div>
+        <div class="matrix-cell bw-0">0</div><div class="matrix-cell bw-0">0</div><div class="matrix-cell bw-0">0</div>
+        <div class="matrix-cell bw-1">1</div><div class="matrix-cell bw-0">0</div><div class="matrix-cell bw-0">0</div>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="sub-title">🖊 스스로 해보기</h3>
+  <div class="quiz fill-quiz" id="q8">
+    <div class="quiz-q"><span class="qnum">Q</span>행렬 A+B의 (1,1) 성분과 (1,3) 성분을 각각 구하시오. (단, 1 이상은 1로, 0은 0으로 처리)</div>
+    <div style="margin:10px 0;color:var(--text-dim);font-size:15px;">
+      (1,1) 성분 = <input type="text" id="q8-a" placeholder="값"> &nbsp;&nbsp; (1,3) 성분 = <input type="text" id="q8-b" placeholder="값">
+    </div>
+    <button class="check-btn" onclick="checkFill(['q8-a','q8-b'],['1','1'],'fb8','정답입니다! (1,1): A=1,B=0 \u2192 1+0=1. (1,3): A=0,B=1 \u2192 0+1=1 입니다.','다시 확인해보세요. 각 행렬의 해당 위치 성분을 더하면 됩니다.')">정답 확인</button>
+    <div class="feedback" id="fb8"></div>
+    <button class="hint-toggle" onclick="toggleHint('hint8')">💡 힌트 보기</button>
+    <div class="hint-content" id="hint8">A의 1행1열은 1, B의 1행1열은 0입니다. A의 1행3열은 0, B의 1행3열은 1입니다. 두 값을 각각 더해보세요.</div>
+  </div>
+
+  <div class="callout amber">
+    <div class="callout-label">생각해보기</div>
+    <p>A+B로 만들어진 이미지는 어떤 모양일까요? A는 왼쪽 위에서 오른쪽 아래로 이어지는 대각선,
+    B는 오른쪽 위에서 왼쪽 아래로 이어지는 대각선입니다. 두 대각선을 합치면 어떤 도형이 될지 생각해보세요.
+    (정답: X자 모양)</p>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevPage()">← 이전</button>
+    <button class="next-btn" onclick="nextPage()">다음 →</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 9: 마무리 ===== -->
+<div class="page" id="pg9">
+  <div class="section-tag">정리 · Wrap-up</div>
+  <h2 class="sec-title">3회차 핵심 정리</h2>
+
+  <div class="card">
+    <h3 class="sub-title" style="margin-top:0;">오늘 배운 것</h3>
+    <p><strong>① 픽셀과 행렬</strong> — 이미지는 픽셀들의 모음이며, 각 픽셀의 색상 정보를 행렬로 표현한다.</p>
+    <p><strong>② 흑백 이미지</strong> — 단순 흑백은 0과 1로, 다양한 명도의 흑백은 0~255의 정수로 표현한다.</p>
+    <p><strong>③ 컬러 이미지(RGB)</strong> — R, G, B 세 가지 색상 정보를 각각 0~255의 행렬 3개로 분리하여 표현한다.</p>
+    <p><strong>④ 전치행렬</strong> — 행과 열을 바꿔 이미지의 구도를 변경한다.</p>
+    <p><strong>⑤ 행렬의 덧셈·뺄셈</strong> — 두 이미지를 합성하거나 차이를 구한다.</p>
+    <p><strong>⑥ 행렬의 실수배</strong> — 1보다 작은 수를 곱하면 어두워지고, 1보다 큰 수를 곱하면 밝아진다.</p>
+  </div>
+
+  <div class="callout cyan">
+    <div class="callout-label">다음 회차 예고</div>
+    <p>4회차에서는 행렬로 표현된 이미지를 <strong>분류</strong>하는 방법(해밍 거리, MNIST)과,
+    데이터를 이용한 <strong>확률 기반 예측</strong>을 배웁니다.</p>
+  </div>
+
+  <h3 class="sub-title">종합 확인 문제</h3>
+  <div class="quiz" id="q9">
+    <div class="quiz-q"><span class="qnum">Q</span>이미지를 밝게 만들고 싶을 때 행렬에 곱해야 할 실수의 범위로 옳은 것은?</div>
+    <div class="opt-list">
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q9',false,'fb9','','이 범위는 이미지를 어둡게 만듭니다.')">0보다 크고 1보다 작은 수</button>
+      <button class="opt-btn" data-correct="true" onclick="selectOption(this,'q9',true,'fb9','정답입니다! 1보다 큰 실수를 곱하면 명도값이 커져 이미지가 밝아집니다.','')">1보다 큰 수</button>
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q9',false,'fb9','','음수를 곱하면 명도값이 음수가 되어 정상적인 이미지가 되지 않습니다.')">음수</button>
+    </div>
+    <div class="feedback" id="fb9"></div>
+  </div>
+
+  <div class="card" style="text-align:center;background:linear-gradient(135deg,var(--cyan-soft),var(--paper));">
+    <p style="color:var(--navy-900);font-size:17px;font-weight:800;margin-bottom:6px;">🎉 3회차 학습 완료!</p>
+    <p style="font-size:13.5px;">상단 진도바가 100%가 되었는지 확인하고, 다음 시간에 만나요.</p>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevPage()">← 이전</button>
+    <button class="next-btn" disabled>학습 완료 ✓</button>
+  </div>
+
+  <div class="endnote">인공지능 수학 · 3회차 · 강은주 외, 「인공지능 수학」 교과서 기반 자료</div>
+</div>
+
+</div>
+
+<script>
+/* ============ PAGE DEFINITIONS ============ */
+var PAGES = [
+  {id:"pg0", label:"인트로"},
+  {id:"pg1", label:"픽셀과 행렬"},
+  {id:"pg2", label:"흑백 이미지"},
+  {id:"pg3", label:"명도와 행렬"},
+  {id:"pg4", label:"컬러(RGB)"},
+  {id:"pg5", label:"전치행렬"},
+  {id:"pg6", label:"행렬의 합성"},
+  {id:"pg7", label:"밝기 조절"},
+  {id:"pg8", label:"종합 실습"},
+  {id:"pg9", label:"마무리"}
+];
+
+var currentPage = 0;
+var visited = {};
+
+function buildPageNav(){
+  var nav = document.getElementById("pagenav");
+  PAGES.forEach(function(p, i){
+    var btn = document.createElement("button");
+    btn.className = "pg-btn";
+    btn.id = "navbtn-"+i;
+    btn.textContent = (i+1)+". "+p.label;
+    btn.onclick = function(){ goPage(i); };
+    nav.appendChild(btn);
+  });
+}
+
+function goPage(n){
+  if(n < 0 || n >= PAGES.length) return;
+  document.querySelectorAll(".page").forEach(function(el){ el.classList.remove("active"); });
+  var target = document.getElementById(PAGES[n].id);
+  if(target) target.classList.add("active");
+  document.querySelectorAll(".pg-btn").forEach(function(el){ el.classList.remove("active"); });
+  var navbtn = document.getElementById("navbtn-"+n);
+  if(navbtn) navbtn.classList.add("active");
+  visited[n] = true;
+  currentPage = n;
+  updateProgress();
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+function updateProgress(){
+  var visitedCount = Object.keys(visited).length;
+  var pct = Math.round((visitedCount / PAGES.length) * 100);
+  document.getElementById("progress-bar").style.width = pct + "%";
+  document.getElementById("progress-label").textContent = pct + "%";
+  PAGES.forEach(function(p, i){
+    var navbtn = document.getElementById("navbtn-"+i);
+    if(navbtn && visited[i]) navbtn.classList.add("done");
+  });
+}
+
+function nextPage(){ goPage(currentPage+1); }
+function prevPage(){ goPage(currentPage-1); }
+
+function switchTab(groupId, idx){
+  var group = document.getElementById(groupId);
+  if(!group) return;
+  var btns = group.querySelectorAll(".tab-btn");
+  var panels = group.querySelectorAll(".tabpanel");
+  btns.forEach(function(b, i){ b.classList.toggle("active", i===idx); });
+  panels.forEach(function(p, i){ p.classList.toggle("active", i===idx); });
+}
+
+function toggleHint(id){
+  var el = document.getElementById(id);
+  if(el) el.classList.toggle("show");
+}
+
+function selectOption(btnEl, groupId, isCorrect, feedbackId, correctMsg, wrongMsg){
+  var group = document.getElementById(groupId);
+  var btns = group.querySelectorAll(".opt-btn");
+  btns.forEach(function(b){ b.classList.remove("correct","wrong"); b.disabled = true; });
+  btnEl.classList.add(isCorrect ? "correct" : "wrong");
+  if(!isCorrect){
+    btns.forEach(function(b){
+      if(b.dataset.correct === "true") b.classList.add("correct");
+    });
+  }
+  var fb = document.getElementById(feedbackId);
+  if(fb){
+    fb.textContent = isCorrect ? correctMsg : wrongMsg;
+    fb.className = "feedback show " + (isCorrect ? "correct" : "wrong");
+  }
+}
+
+function checkFill(inputIds, answers, feedbackId, correctMsg, wrongMsg){
+  var allCorrect = true;
+  inputIds.forEach(function(id, i){
+    var input = document.getElementById(id);
+    var val = (input.value || "").trim().replace(/\s/g,"");
+    var ans = answers[i].replace(/\s/g,"");
+    if(val !== ans){ allCorrect = false; input.style.borderColor = "var(--bad)"; }
+    else { input.style.borderColor = "var(--good)"; }
+  });
+  var fb = document.getElementById(feedbackId);
+  fb.textContent = allCorrect ? correctMsg : wrongMsg;
+  fb.className = "feedback show " + (allCorrect ? "correct" : "wrong");
+}
+
+function updateGrayDemo(val){
+  var v = parseInt(val);
+  document.getElementById("grayval").textContent = v;
+  document.getElementById("graybox").style.background = "rgb("+v+","+v+","+v+")";
+  document.getElementById("graybox").style.borderColor = (v > 200) ? "#888" : "var(--navy-900)";
+}
+
+function updateBrightDemo(val){
+  var k = parseFloat(val);
+  document.getElementById("brightval").textContent = k.toFixed(1);
+  var base = 120;
+  var v = Math.min(255, Math.max(0, Math.round(base * k)));
+  document.getElementById("brightbox").style.background = "rgb("+v+","+v+","+v+")";
+}
+
+buildPageNav();
+goPage(0);
+</script>
+
+
+</body>
+</html>

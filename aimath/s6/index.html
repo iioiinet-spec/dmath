@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6회차 | 경사하강법과 인공지능 수학 종합탐구</title>
+<style>
+:root{
+  --bg:#fbf9f4;
+  --paper:#ffffff;
+  --paper-soft:#f4f1e8;
+  --line:#dcd5c2;
+  --line-soft:#e8e2d2;
+  --navy-900:#1a2332;
+  --blue:#1c5fd6;
+  --blue-soft:#e8f0fd;
+  --blue-deep:#0f3d8c;
+  --cyan:#0f9488;
+  --cyan-soft:#e3f6f3;
+  --amber:#b3650a;
+  --amber-soft:#fdf0dd;
+  --pink:#c23a6b;
+  --text:#1f2430;
+  --text-dim:#3d4452;
+  --text-faint:#7a8195;
+  --white:#ffffff;
+  --good:#0f8a5f;
+  --good-soft:#e5f6ee;
+  --bad:#c4314b;
+  --bad-soft:#fceaee;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+  line-height:1.85;
+  font-size:16px;
+  -webkit-font-smoothing:antialiased;
+}
+body{padding-bottom:80px;}
+
+/* ===== Top nav ===== */
+#topnav{
+  position:sticky;top:0;z-index:100;
+  background:rgba(251,249,244,0.95);
+  backdrop-filter:blur(10px);
+  border-bottom:2px solid var(--line);
+  padding:14px 20px;
+}
+.nav-inner{
+  max-width:980px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:16px;
+}
+.nav-title{
+  font-size:15px;font-weight:800;color:var(--blue-deep);
+  letter-spacing:0.3px;
+}
+.nav-title .num{
+  display:inline-block;background:var(--blue);color:var(--white);
+  font-size:12.5px;font-weight:800;border-radius:6px;
+  padding:3px 9px;margin-right:8px;
+}
+.progress-wrap{
+  flex:1;max-width:320px;height:8px;background:var(--paper-soft);
+  border:1px solid var(--line);border-radius:6px;overflow:hidden;
+}
+#progress-bar{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,var(--blue),var(--cyan));
+  transition:width .3s ease;
+}
+.progress-label{font-size:13px;font-weight:700;color:var(--text-faint);min-width:48px;text-align:right;}
+
+/* ===== Page nav buttons ===== */
+#pagenav{
+  max-width:980px;margin:14px auto 0;padding:0 20px;
+  display:flex;gap:6px;flex-wrap:wrap;
+}
+.pg-btn{
+  border:1.5px solid var(--line);background:var(--paper);
+  color:var(--text-dim);font-size:12.5px;font-weight:700;
+  border-radius:20px;padding:7px 13px;cursor:pointer;
+  transition:all .2s;white-space:nowrap;
+}
+.pg-btn:hover{border-color:var(--blue);color:var(--blue-deep);}
+.pg-btn.active{background:var(--blue);color:var(--white);border-color:var(--blue);}
+.pg-btn.done{color:var(--cyan);border-color:var(--cyan);}
+.pg-btn.done::after{content:" ✓";}
+
+/* ===== Main container ===== */
+#main{max-width:980px;margin:0 auto;padding:28px 20px 0;}
+.page{display:none;animation:fadeIn .35s ease;}
+.page.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+.hero{
+  background:linear-gradient(135deg,var(--blue-soft),var(--paper));
+  border:1.5px solid var(--line);border-radius:18px;
+  padding:40px 32px;margin-bottom:24px;
+  position:relative;overflow:hidden;
+}
+.hero::before{
+  content:"";position:absolute;top:-60px;right:-60px;
+  width:240px;height:240px;border-radius:50%;
+  background:radial-gradient(circle,rgba(28,95,214,0.10),transparent 70%);
+}
+.hero-eyebrow{
+  font-size:13.5px;font-weight:800;color:var(--cyan);
+  letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;
+}
+.hero h1{font-size:30px;font-weight:800;color:var(--navy-900);margin-bottom:14px;letter-spacing:-0.3px;}
+.hero p{font-size:16px;color:var(--text-dim);max-width:640px;}
+
+.section-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:13.5px;font-weight:800;color:var(--blue-deep);
+  background:var(--blue-soft);border:1.5px solid #b8d0f5;
+  border-radius:8px;padding:7px 15px;margin-bottom:18px;
+}
+
+h2.sec-title{font-size:23px;font-weight:800;color:var(--navy-900);margin:0 0 16px;letter-spacing:-0.2px;}
+h3.sub-title{font-size:18px;font-weight:800;color:var(--blue-deep);margin:28px 0 12px;}
+
+.card{
+  background:var(--paper);border:1.5px solid var(--line);
+  border-radius:14px;padding:24px;margin-bottom:18px;
+  box-shadow:0 1px 3px rgba(0,0,0,0.04);
+}
+.card p{color:var(--text-dim);font-size:16px;margin-bottom:10px;}
+.card p:last-child{margin-bottom:0;}
+.card strong{color:var(--navy-900);}
+
+.callout{
+  border-left:4px solid var(--blue);background:var(--blue-soft);
+  border-radius:0 10px 10px 0;padding:16px 20px;margin:16px 0;
+}
+.callout.amber{border-left-color:var(--amber);background:var(--amber-soft);}
+.callout.cyan{border-left-color:var(--cyan);background:var(--cyan-soft);}
+.callout-label{font-size:12.5px;font-weight:800;letter-spacing:1px;margin-bottom:6px;color:var(--blue-deep);}
+.callout.amber .callout-label{color:var(--amber);}
+.callout.cyan .callout-label{color:var(--cyan);}
+.callout p{color:var(--text-dim);font-size:15px;}
+
+.def-box{
+  background:var(--paper-soft);border:1.5px solid #d4cdb5;
+  border-radius:12px;padding:18px 22px;margin:16px 0;
+}
+.def-box .term{color:var(--cyan);font-weight:800;font-size:16px;margin-bottom:6px;}
+.def-box .formula{
+  font-family:'Cambria Math','Times New Roman',serif;
+  font-size:17px;color:var(--navy-900);background:var(--paper);
+  border-radius:8px;padding:12px 16px;margin-top:10px;text-align:center;
+  border:1.5px solid var(--line);
+}
+
+.diagram-row{display:flex;gap:16px;flex-wrap:wrap;margin:18px 0;}
+.diagram-box{
+  flex:1;min-width:200px;background:var(--paper);
+  border:1.5px solid var(--line);border-radius:12px;
+  padding:18px;text-align:center;
+  box-shadow:0 1px 3px rgba(0,0,0,0.04);
+}
+.diagram-box .icon{font-size:32px;margin-bottom:8px;}
+.diagram-box .label{font-weight:800;color:var(--navy-900);font-size:15px;margin-bottom:6px;}
+.diagram-box .desc{font-size:13px;color:var(--text-faint);}
+
+table.data-table{
+  width:100%;border-collapse:collapse;margin:16px 0;
+  font-size:14.5px;
+}
+table.data-table th{
+  background:var(--blue-deep);color:var(--white);
+  padding:11px 12px;font-weight:700;text-align:center;
+  border:1px solid var(--blue-deep);
+}
+table.data-table td{
+  padding:11px 12px;text-align:center;color:var(--text-dim);
+  border:1px solid var(--line);background:var(--paper);
+}
+
+/* vector / set visualization */
+.vec-display{
+  display:flex;align-items:center;justify-content:center;gap:4px;
+  font-family:'Cambria Math',serif;font-size:18px;color:var(--navy-900);
+  background:var(--paper-soft);border:1.5px solid var(--line);
+  border-radius:10px;padding:16px;margin:14px 0;flex-wrap:wrap;
+}
+.vec-comp{
+  display:inline-flex;flex-direction:column;align-items:center;
+  margin:0 6px;
+}
+.vec-comp .val{
+  background:var(--blue-soft);border:1px solid #b8d0f5;border-radius:6px;padding:4px 10px;
+  color:var(--blue-deep);font-weight:800;
+}
+.vec-comp .lbl{font-size:10.5px;color:var(--text-faint);margin-top:4px;}
+
+/* Tabs */
+.tabgroup{margin:18px 0;}
+.tabs{display:flex;gap:8px;border-bottom:2px solid var(--line);margin-bottom:18px;flex-wrap:wrap;}
+.tab-btn{
+  background:none;border:none;color:var(--text-faint);
+  font-size:14.5px;font-weight:700;padding:10px 16px;cursor:pointer;
+  border-bottom:3px solid transparent;transition:all .2s;
+}
+.tab-btn:hover{color:var(--text);}
+.tab-btn.active{color:var(--blue-deep);border-bottom-color:var(--blue);}
+.tabpanel{display:none;}
+.tabpanel.active{display:block;animation:fadeIn .3s ease;}
+
+/* Quiz / check */
+.quiz{
+  background:var(--paper);border:1.5px solid var(--line);
+  border-radius:14px;padding:22px;margin:18px 0;
+  box-shadow:0 1px 3px rgba(0,0,0,0.04);
+}
+.quiz-q{font-weight:700;color:var(--navy-900);font-size:16px;margin-bottom:14px;}
+.quiz-q .qnum{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:25px;height:25px;background:var(--blue);color:var(--white);
+  border-radius:50%;font-size:13px;font-weight:800;margin-right:8px;
+}
+.opt-list{display:flex;flex-direction:column;gap:8px;}
+.opt-btn{
+  text-align:left;background:var(--paper-soft);border:1.5px solid var(--line);
+  color:var(--text-dim);padding:13px 16px;border-radius:10px;
+  cursor:pointer;font-size:15px;transition:all .2s;
+}
+.opt-btn:hover{border-color:var(--blue);background:var(--blue-soft);}
+.opt-btn.correct{border-color:var(--good);background:var(--good-soft);color:var(--good);font-weight:700;}
+.opt-btn.wrong{border-color:var(--bad);background:var(--bad-soft);color:var(--bad);font-weight:700;}
+.feedback{margin-top:12px;font-size:14.5px;padding:11px 15px;border-radius:8px;display:none;font-weight:600;}
+.feedback.show{display:block;}
+.feedback.correct{background:var(--good-soft);color:var(--good);border:1px solid #b8e6d0;}
+.feedback.wrong{background:var(--bad-soft);color:var(--bad);border:1px solid #f3c0ca;}
+
+.fill-quiz input[type=text]{
+  background:var(--paper);border:1.5px solid var(--line);
+  color:var(--text);padding:10px 14px;border-radius:8px;
+  font-size:15px;width:160px;margin:0 6px;
+}
+.fill-quiz input[type=text]:focus{outline:none;border-color:var(--blue);}
+.check-btn{
+  background:var(--blue);color:var(--white);border:none;
+  padding:11px 24px;border-radius:8px;font-weight:700;font-size:14.5px;
+  cursor:pointer;margin-top:10px;transition:all .2s;
+}
+.check-btn:hover{background:var(--blue-deep);}
+
+/* Hint toggle */
+.hint-toggle{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--amber-soft);border:1.5px solid #e8c896;
+  color:var(--amber);font-size:14px;font-weight:700;
+  padding:9px 17px;border-radius:8px;cursor:pointer;margin-top:8px;
+  transition:all .2s;
+}
+.hint-toggle:hover{background:#fae6c4;}
+.hint-content{
+  display:none;margin-top:10px;padding:14px 18px;
+  background:var(--amber-soft);border-left:4px solid var(--amber);
+  border-radius:0 10px 10px 0;font-size:15px;color:var(--text-dim);
+}
+.hint-content.show{display:block;animation:fadeIn .3s ease;}
+
+/* Nav buttons bottom */
+.nav-buttons{
+  display:flex;justify-content:space-between;margin-top:32px;gap:12px;
+}
+.nav-buttons button{
+  background:var(--paper);border:1.5px solid var(--line);
+  color:var(--text);padding:13px 26px;border-radius:10px;
+  font-weight:700;font-size:15px;cursor:pointer;transition:all .2s;
+}
+.nav-buttons button:hover{border-color:var(--blue);color:var(--blue-deep);}
+.nav-buttons button:disabled{opacity:.35;cursor:not-allowed;}
+.nav-buttons .next-btn{background:var(--blue);border-color:var(--blue);color:var(--white);}
+.nav-buttons .next-btn:hover{background:var(--blue-deep);}
+
+/* responsive */
+@media(max-width:640px){
+  .hero{padding:28px 20px;}
+  .hero h1{font-size:24px;}
+  .diagram-row{flex-direction:column;}
+}
+
+.weight-diagram{
+  display:flex;align-items:center;justify-content:center;gap:18px;
+  background:var(--paper-soft);border:1.5px solid var(--line);
+  border-radius:12px;padding:24px;margin:16px 0;flex-wrap:wrap;
+}
+.w-input{display:flex;flex-direction:column;gap:10px;}
+.w-row{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--text-dim);font-weight:600;}
+.w-row .x{color:var(--cyan);font-weight:800;}
+.w-row .w{color:var(--amber);font-weight:800;}
+.arrow-big{font-size:24px;color:var(--text-faint);}
+.threshold-box{
+  background:var(--paper);border:1.5px solid var(--blue);
+  border-radius:10px;padding:14px 18px;text-align:center;font-size:14px;
+}
+
+.minicard-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:16px 0;}
+@media(max-width:640px){.minicard-grid{grid-template-columns:1fr;}}
+.minicard{
+  background:var(--paper);border:1.5px solid var(--line);
+  border-radius:12px;padding:18px;
+  box-shadow:0 1px 3px rgba(0,0,0,0.04);
+}
+.minicard .mc-title{font-weight:800;color:var(--navy-900);font-size:15px;margin-bottom:8px;}
+.minicard .mc-desc{font-size:13.5px;color:var(--text-faint);line-height:1.7;}
+
+.endnote{
+  text-align:center;color:var(--text-faint);font-size:13px;
+  margin-top:40px;padding-top:20px;border-top:1.5px solid var(--line);
+}
+
+/* ===== Flowchart ===== */
+.flow-wrap{display:flex;flex-direction:column;align-items:center;gap:4px;margin:18px 0;}
+.flow-node{
+  background:var(--paper);border:1.5px solid var(--blue);
+  border-radius:10px;padding:10px 20px;font-size:13.5px;font-weight:700;
+  color:var(--navy-900);text-align:center;min-width:180px;
+}
+.flow-node.start-end{border-radius:50px;background:var(--blue-soft);}
+.flow-node.decision{
+  border-radius:0;transform:rotate(0deg);background:var(--amber-soft);border-color:var(--amber);
+  position:relative;padding:14px 24px;
+}
+.flow-arrow-v{font-size:18px;color:var(--text-faint);line-height:1;}
+.flow-branch{display:flex;align-items:center;gap:30px;font-size:12px;color:var(--text-faint);}
+
+/* ===== Learning rate comparison ===== */
+.lr-compare{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0;}
+@media(max-width:640px){.lr-compare{grid-template-columns:1fr;}}
+.lr-card{
+  background:var(--paper);border:1.5px solid var(--line);
+  border-radius:12px;padding:14px;text-align:center;
+}
+.lr-card .lr-title{font-weight:800;font-size:13.5px;margin-bottom:8px;}
+.lr-card.bad .lr-title{color:var(--bad);}
+.lr-card.slow .lr-title{color:var(--amber);}
+.lr-card.good .lr-title{color:var(--good);}
+.lr-card svg{width:100%;max-width:120px;}
+
+/* ===== Roadmap timeline ===== */
+.roadmap{display:flex;flex-direction:column;gap:10px;margin:16px 0;}
+.roadmap-item{
+  display:flex;align-items:flex-start;gap:14px;
+  background:var(--paper);border:1.5px solid var(--line);
+  border-radius:10px;padding:12px 16px;
+}
+.roadmap-num{
+  flex-shrink:0;width:32px;height:32px;border-radius:50%;
+  background:var(--blue);color:#fff;font-weight:800;font-size:13px;
+  display:flex;align-items:center;justify-content:center;
+}
+.roadmap-text{font-size:13.5px;color:var(--text-dim);}
+.roadmap-text strong{color:var(--navy-900);}
+</style>
+</head>
+<body>
+
+<div id="topnav">
+  <div class="nav-inner">
+    <div class="nav-title"><span class="num">6회차</span>경사하강법과 종합탐구</div>
+    <div class="progress-wrap"><div id="progress-bar"></div></div>
+    <div class="progress-label" id="progress-label">0%</div>
+  </div>
+</div>
+
+<div id="pagenav"></div>
+
+<div id="main">
+
+<!-- ===== PAGE 0: 인트로 ===== -->
+<div class="page" id="pg0">
+  <div class="hero">
+    <div class="hero-eyebrow">SESSION 06 · 3시간 · FINAL</div>
+    <h1>경사하강법과<br>인공지능 수학 종합탐구</h1>
+    <p>지난 시간 도함수로 E'(a)=0인 지점을 구하면 손실함수의 최솟값을 찾을 수 있다는 걸 배웠습니다.
+    그런데 복잡한 인공지능 모델에서는 방정식을 푸는 대신, <strong>조금씩 내려가며</strong> 최솟값을
+    찾아가는 방법을 사용합니다. 이것이 바로 <strong>경사하강법</strong>이며, 오늘은 이 과정을 직접
+    실습하고 6회차 전체 여정을 마무리합니다.</p>
+  </div>
+
+  <div class="card">
+    <h2 class="sec-title" style="font-size:18px;margin-bottom:14px;">📋 오늘의 학습 목표</h2>
+    <p>① 경사하강법의 원리(미분계수와 학습률)를 이해하고 직접 계산할 수 있다.</p>
+    <p>② 학습률의 크기에 따라 학습 결과가 어떻게 달라지는지 비교할 수 있다.</p>
+    <p>③ 경사하강법의 알고리즘을 순서도로 표현할 수 있다.</p>
+    <p>④ 인공지능을 활용한 합리적 의사결정 사례를 이해하고, 배운 내용을 종합한 미니프로젝트를 수행한다.</p>
+  </div>
+
+  <div class="minicard-grid">
+    <div class="minicard">
+      <div class="mc-title">🧭 Ⅳ-5 경사하강법</div>
+      <div class="mc-desc">학습률 · 알고리즘 순서도 · 최적화 실습</div>
+    </div>
+    <div class="minicard">
+      <div class="mc-title">🧭 Ⅴ 종합탐구</div>
+      <div class="mc-desc">합리적 의사결정 · 미니프로젝트</div>
+    </div>
+    <div class="minicard">
+      <div class="mc-title">⏱ 시간 배분</div>
+      <div class="mc-desc">경사하강법 70분 · 의사결정 30분<br>미니프로젝트 60분 · 정리 20분</div>
+    </div>
+  </div>
+
+  <div class="callout cyan">
+    <div class="callout-label">지난 시간 복습</div>
+    <p>이차함수 손실함수 E(a)=2a²-8a+9의 도함수 E'(a)=4a-8을 구하고, E'(a)=0인 a=2에서
+    최솟값을 찾았습니다. 오늘은 이 과정을 <strong>방정식을 풀지 않고도</strong> 컴퓨터가 스스로
+    찾아가게 만드는 방법을 배웁니다.</p>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevPage()" disabled>← 이전</button>
+    <button class="next-btn" onclick="nextPage()">학습 시작하기 →</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 1: 경사하강법 원리 ===== -->
+<div class="page" id="pg1">
+  <div class="section-tag">Ⅳ-5 · 경사하강법 (1)</div>
+  <h2 class="sec-title">경사하강법은 무엇인가요?</h2>
+
+  <div class="card">
+    <p>경사하강법은 손실함수의 최솟값을 찾아 <strong>산을 내려가는 과정</strong>이라고 생각할 수 있습니다.
+    산 정상에서 눈을 가린 채 가장 빠르게 내려가려면, 지금 서 있는 곳에서 가장 가파른 방향(경사)으로
+    한 걸음씩 내려가면 됩니다.</p>
+  </div>
+
+  <div class="def-box">
+    <div class="term">경사하강법의 핵심 아이디어</div>
+    <p style="color:var(--text-dim);font-size:15px;">현재 a의 값에서 미분계수 E'(a)를 구합니다. 미분계수는 그 지점에서의
+    <strong>기울기(경사)</strong>를 의미하므로, a의 값을 미분계수가 줄어드는 방향으로 조금씩 이동시키면
+    손실함수의 최솟값에 점점 가까워집니다.</p>
+    <div class="formula">새로운 a = 현재 a - γ × E'(a)</div>
+    <p style="color:var(--text-dim);font-size:13.5px;margin-top:8px;">(γ는 학습률, 그리스 문자 감마)</p>
+  </div>
+
+  <div class="callout cyan">
+    <div class="callout-label">왜 빼는 걸까요?</div>
+    <p>미분계수(기울기) E'(a)가 <strong>양수</strong>라면 그 지점은 최솟값보다 오른쪽에 있으므로
+    a를 <strong>줄여야</strong> 합니다(빼기). 반대로 E'(a)가 <strong>음수</strong>라면 a를 <strong>늘려야</strong>
+    하는데, 음수를 빼면 자동으로 늘어납니다. 즉 "-γE'(a)"는 항상 최솟값 방향으로 이동시켜 줍니다.</p>
+  </div>
+
+  <div class="quiz" id="q1">
+    <div class="quiz-q"><span class="qnum">Q</span>경사하강법에서 미분계수 E'(a)가 의미하는 것은 무엇인가요?</div>
+    <div class="opt-list">
+      <button class="opt-btn" data-correct="true" onclick="selectOption(this,'q1',true,'fb1','정답입니다! 미분계수는 그 지점의 접선의 기울기(경사)로, 어느 방향으로 이동해야 할지 알려줍니다.','')">현재 지점에서의 기울기(경사), 즉 이동 방향을 결정한다</button>
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q1',false,'fb1','','이동 거리는 학습률이 결정합니다.')">한 번에 이동할 거리를 결정한다</button>
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q1',false,'fb1','','미분계수는 손실함수의 값이 아니라 그 변화율(기울기)입니다.')">손실함수의 최종 값을 의미한다</button>
+    </div>
+    <div class="feedback" id="fb1"></div>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevPage()">← 이전</button>
+    <button class="next-btn" onclick="nextPage()">다음 →</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 2: 학습률 ===== -->
+<div class="page" id="pg2">
+  <div class="section-tag">Ⅳ-5 · 경사하강법 (2)</div>
+  <h2 class="sec-title">학습률은 왜 중요한가요?</h2>
+
+  <div class="card">
+    <p>미분계수가 내려가야 하는 <strong>방향</strong>을 결정한다면, 학습률은 한 번에 얼마만큼의
+    <strong>보폭</strong>으로 이동할지를 결정합니다. 학습률은 사람이 직접 여러 번 시행해 보며
+    적절한 값을 찾아야 합니다.</p>
+  </div>
+
+  <h3 class="sub-title">손실함수 E(a)=2a²-8a+9, 초깃값 a=4에서 학습률에 따른 변화</h3>
+
+  <div class="lr-compare">
+    <div class="lr-card bad">
+      <div class="lr-title">γ=0.6 (너무 큼)</div>
+      <svg viewBox="0 0 120 100">
+        <polyline points="20,80 40,20 60,90 80,15 100,95" fill="none" stroke="#c4314b" stroke-width="2"/>
+        <circle cx="20" cy="80" r="3" fill="#c4314b"/><circle cx="40" cy="20" r="3" fill="#c4314b"/>
+        <circle cx="60" cy="90" r="3" fill="#c4314b"/><circle cx="80" cy="15" r="3" fill="#c4314b"/>
+      </svg>
+      <p style="font-size:11.5px;color:var(--text-faint);">값이 계속 증가하며 최솟값에서 멀어진다. 최적화 실패!</p>
+    </div>
+    <div class="lr-card slow">
+      <div class="lr-title">γ=0.01 (너무 작음)</div>
+      <svg viewBox="0 0 120 100">
+        <polyline points="20,15 35,18 50,21 65,24 80,27 95,30" fill="none" stroke="#b3650a" stroke-width="2"/>
+        <circle cx="20" cy="15" r="3" fill="#b3650a"/><circle cx="50" cy="21" r="3" fill="#b3650a"/><circle cx="95" cy="30" r="3" fill="#b3650a"/>
+      </svg>
+      <p style="font-size:11.5px;color:var(--text-faint);">최솟값으로 향하지만 너무 느려서 비효율적이다.</p>
+    </div>
+    <div class="lr-card good">
+      <div class="lr-title">γ=0.1 (적절함)</div>
+      <svg viewBox="0 0 120 100">
+        <polyline points="20,15 40,45 58,62 72,72 85,78 95,81" fill="none" stroke="#0f8a5f" stroke-width="2"/>
+        <circle cx="20" cy="15" r="3" fill="#0f8a5f"/><circle cx="58" cy="62" r="3" fill="#0f8a5f"/><circle cx="95" cy="81" r="3" fill="#0f8a5f"/>
+      </svg>
+      <p style="font-size:11.5px;color:var(--text-faint);">적절한 속도로 최솟값에 잘 접근한다.</p>
+    </div>
+  </div>
+
+  <div class="callout amber">
+    <div class="callout-label">핵심 정리</div>
+    <p>학습률이 너무 크면 값이 진동하며 최솟값에서 멀어지고, 너무 작으면 학습 시간이 너무 오래 걸립니다.
+    학습률을 적절하게 조절하는 일은 실제 인공지능 학습에서 매우 중요합니다.</p>
+  </div>
+
+  <div class="quiz" id="q2">
+    <div class="quiz-q"><span class="qnum">Q</span>학습률을 너무 크게 설정했을 때 발생할 수 있는 문제는 무엇인가요?</div>
+    <div class="opt-list">
+      <button class="opt-btn" data-correct="true" onclick="selectOption(this,'q2',true,'fb2','정답입니다! 보폭이 너무 크면 최솟값을 지나쳐 버리고, 오히려 손실함수의 값이 증가할 수 있습니다.','')">최솟값을 지나쳐 버려 오히려 손실함수의 값이 증가할 수 있다</button>
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q2',false,'fb2','','이는 학습률이 너무 작을 때의 문제입니다.')">학습 속도가 너무 느려진다</button>
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q2',false,'fb2','','학습률은 손실함수의 모양 자체를 바꾸지 않습니다.')">손실함수 자체의 모양이 바뀐다</button>
+    </div>
+    <div class="feedback" id="fb2"></div>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevPage()">← 이전</button>
+    <button class="next-btn" onclick="nextPage()">다음 →</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 3: 경사하강법 알고리즘 ===== -->
+<div class="page" id="pg3">
+  <div class="section-tag">Ⅳ-5 · 경사하강법 (3)</div>
+  <h2 class="sec-title">경사하강법을 순서도로 나타내기</h2>
+
+  <div class="card">
+    <p>경사하강법의 알고리즘을 문장으로 표현하면 다음과 같습니다.</p>
+    <p style="font-size:14px;">① a의 값에 대한 미분계수 E'(a)를 구한다.<br>
+    ② a의 값을 -γE'(a)만큼 변화시켜 새로운 a를 정한다.<br>
+    ③ E'(a)의 값이 0에 충분히 가까워질 때까지 위 과정을 반복한다.</p>
+  </div>
+
+  <h3 class="sub-title">순서도로 표현하기</h3>
+  <div class="flow-wrap">
+    <div class="flow-node start-end">시작</div>
+    <div class="flow-arrow-v">↓</div>
+    <div class="flow-node">초깃값 a를 정한다</div>
+    <div class="flow-arrow-v">↓</div>
+    <div class="flow-node">미분계수 E'(a)를 구한다</div>
+    <div class="flow-arrow-v">↓</div>
+    <div class="flow-node decision">E'(a)의 값이 0에<br>충분히 가까운가?</div>
+    <div class="flow-branch">
+      <span>예 ↓</span>
+      <span>아니요 → a-γE'(a)를 새로운 a로 정한다 → (다시 미분계수 구하기로)</span>
+    </div>
+    <div class="flow-node">a의 값을 이용하여<br>추세선 f(x)=ax를 구한다</div>
+    <div class="flow-arrow-v">↓</div>
+    <div class="flow-node start-end">끝</div>
+  </div>
+
+  <div class="callout cyan">
+    <div class="callout-label">반복(Iteration)이 핵심</div>
+    <p>경사하강법은 한 번에 답을 구하지 않고, "미분계수 구하기 → a 값 갱신하기"를 <strong>여러 번 반복</strong>하며
+    점진적으로 최솟값에 다가갑니다. 이것이 컴퓨터가 자동으로(사람이 일일이 방정식을 풀지 않아도) 학습할 수 있는 이유입니다.</p>
+  </div>
+
+  <div class="quiz" id="q3">
+    <div class="quiz-q"><span class="qnum">Q</span>경사하강법 알고리즘에서 반복을 멈추는 조건은 무엇인가요?</div>
+    <div class="opt-list">
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q3',false,'fb3','','a의 값 자체가 0이 되는 것이 목표가 아닙니다.')">a의 값이 0이 될 때</button>
+      <button class="opt-btn" data-correct="true" onclick="selectOption(this,'q3',true,'fb3','정답입니다! 미분계수(기울기)가 0에 충분히 가까워지면 그 지점이 최솟값에 매우 가깝다는 뜻이므로 반복을 멈춥니다.','')">미분계수 E'(a)의 값이 0에 충분히 가까워질 때</button>
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q3',false,'fb3','','학습률은 처음에 정해두는 값으로, 반복 중에 0이 되는 것이 멈춤 조건은 아닙니다.')">학습률이 0이 될 때</button>
+    </div>
+    <div class="feedback" id="fb3"></div>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevPage()">← 이전</button>
+    <button class="next-btn" onclick="nextPage()">다음 →</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 4: 경사하강법 실습 ===== -->
+<div class="page" id="pg4">
+  <div class="section-tag">Ⅳ-5 · 경사하강법 (4)</div>
+  <h2 class="sec-title">직접 계산으로 경사하강법 따라가기</h2>
+
+  <div class="card">
+    <p>손실함수 E(a)=2a²-8a+9, 초깃값 a=4, 학습률 γ=0.1로 경사하강법을 2단계까지 직접 계산해 봅시다.
+    먼저 도함수는 E'(a)=4a-8 입니다.</p>
+  </div>
+
+  <table class="data-table">
+    <tr><th>단계</th><th>a</th><th>E'(a)=4a-8</th><th>새로운 a = a-0.1×E'(a)</th></tr>
+    <tr><td>0 (초기)</td><td>4</td><td>4×4-8=8</td><td>4-0.1×8=3.2</td></tr>
+    <tr><td>1</td><td>3.2</td><td>4×3.2-8=4.8</td><td>3.2-0.1×4.8=2.72</td></tr>
+    <tr><td>2</td><td>2.72</td><td>4×2.72-8=2.88</td><td>2.72-0.1×2.88=2.432</td></tr>
+  </table>
+
+  <div class="callout cyan">
+    <div class="callout-label">관찰하기</div>
+    <p>a의 값이 4 → 3.2 → 2.72 → 2.432로 점점 작아지면서 <strong>2(최솟값의 위치)에 가까워지고 있습니다</strong>.
+    E'(a)의 값도 8 → 4.8 → 2.88로 점점 0에 가까워지고 있습니다. 이 과정을 충분히 반복하면 a는 2에,
+    E(a)는 최솟값 1에 도달합니다.</p>
+  </div>
+
+  <div class="quiz fill-quiz" id="q4">
+    <div class="quiz-q"><span class="qnum">Q</span>위 표의 3단계(a=2.432)에서 E'(a)와 다음 a의 값을 구하시오. (학습률 γ=0.1)</div>
+    <div style="margin:10px 0;color:var(--text-dim);font-size:15px;">
+      E'(a) = <input type="text" id="q4-a" placeholder="값"> &nbsp;&nbsp; 새로운 a = <input type="text" id="q4-b" placeholder="값">
+    </div>
+    <button class="check-btn" onclick="checkFill(['q4-a','q4-b'],['1.728','2.2592'],'fb4','정답입니다! E\'(2.432)=4\u00d72.432-8=1.728, \uc0c8\ub86c\uc6b4 a=2.432-0.1\u00d71.728=2.2592 \uc785\ub2c8\ub2e4.','다시 계산해보세요. E\'(a)=4a-8에 a=2.432를 대입한 후, a-0.1\u00d7E\'(a)를 계산하세요.')">정답 확인</button>
+    <div class="feedback" id="fb4"></div>
+    <button class="hint-toggle" onclick="toggleHint('hint4')">💡 힌트 보기</button>
+    <div class="hint-content" id="hint4">E'(2.432) = 4×2.432-8 을 먼저 계산하고, 그 값을 이용해 2.432-0.1×E'(a)를 계산하세요.</div>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevPage()">← 이전</button>
+    <button class="next-btn" onclick="nextPage()">다음 →</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 5: 합리적 의사결정 ===== -->
+<div class="page" id="pg5">
+  <div class="section-tag">Ⅴ-1 · 인공지능과 수학 탐구</div>
+  <h2 class="sec-title">데이터를 이용한 합리적 의사결정</h2>
+
+  <div class="card">
+    <p>우리는 일상 속에서 다양한 의사 결정을 합니다. 최근에는 합리적인 의사 결정을 위해 데이터를
+    활용하는 사례가 점점 많아지고 있습니다.</p>
+  </div>
+
+  <div class="tabgroup" id="tab-decision">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('tab-decision',0)">사례 1: 신제품 개발</button>
+      <button class="tab-btn" onclick="switchTab('tab-decision',1)">사례 2: 내비게이션</button>
+      <button class="tab-btn" onclick="switchTab('tab-decision',2)">사례 3: 법안 통과 예측</button>
+    </div>
+
+    <div class="tabpanel active">
+      <div class="def-box">
+        <div class="term">과자 회사의 신제품 개발</div>
+        <p style="color:var(--text-dim);font-size:14.5px;">한 과자 업체는 인터넷 식품 사이트와 SNS에서 1000만여 개의 소비자 반응을 인공지능으로
+        분석해 소비 트렌드를 파악했습니다. 그 결과 상큼한 맛과 건강에 대한 선호도가 높다는 것을 발견하여
+        깔라만시·요거트 맛 신제품을 출시했고, 모든 물량이 소진되는 성과를 거두었습니다.</p>
+      </div>
+    </div>
+
+    <div class="tabpanel">
+      <div class="def-box">
+        <div class="term">차량 내비게이션의 경로 추천</div>
+        <p style="color:var(--text-dim);font-size:14.5px;">GPS로 수집된 위치·속도 데이터를 바탕으로, 인공지능은 신호 대기 횟수와 도로별
+        주행 속도를 예측하여 최적의 경로를 찾습니다. 시간대별·요일별 교통 패턴도 분석하여 미래의
+        운행 정보까지 예측합니다.</p>
+      </div>
+    </div>
+
+    <div class="tabpanel">
+      <div class="def-box">
+        <div class="term">법안 통과 여부 예측</div>
+        <p style="color:var(--text-dim);font-size:14.5px;">미국의 한 스타트업은 연방·주 정부의 정책, 규제, 판례 등 기존 법안을 분석하고
+        새로운 결정 사항을 실시간으로 수집하여, 어떤 법안이 통과될지를 예측합니다. 이는 기업과
+        로펌의 의사결정에 중요한 정보로 활용됩니다.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout amber">
+    <div class="callout-label">공통점 생각해보기</div>
+    <p>세 사례 모두 <strong>① 데이터 수집 → ② 분석 → ③ 의사결정 → ④ 결과 확인</strong>의 흐름을
+    따릅니다. 결국 오늘까지 배운 벡터, 행렬, 유사도, 손실함수, 경사하강법 모두 이 흐름의
+    "분석" 단계를 수학적으로 뒷받침하는 도구였습니다.</p>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevPage()">← 이전</button>
+    <button class="next-btn" onclick="nextPage()">다음 →</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 6: 미니프로젝트 ① ===== -->
+<div class="page" id="pg6">
+  <div class="section-tag">Ⅴ-2 · 인공지능 수학 탐구 활동</div>
+  <h2 class="sec-title">미니프로젝트: 나만의 추세선 찾기 (1)</h2>
+
+  <div class="callout cyan">
+    <div class="callout-label">프로젝트 목표</div>
+    <p>관심 있는 주제의 데이터를 직접 수집하고, 산점도 → 손실함수 → 경사하강법까지 오늘 배운
+    전 과정을 적용하여 최적화된 추세선을 구해봅니다.</p>
+  </div>
+
+  <h3 class="sub-title">STEP 1 · 문제 정의 & 데이터 수집</h3>
+  <div class="card">
+    <p style="font-size:14.5px;">예시 주제: 자신의 학급 학생들의 <strong>하루 스마트폰 사용 시간(x, 시간)</strong>과
+    <strong>수면 시간(y, 시간)</strong> 사이의 관계를 알아보고 싶다고 합시다.</p>
+  </div>
+
+  <table class="data-table">
+    <tr><th>학생</th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th></tr>
+    <tr><td>스마트폰 사용(시간)</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td></tr>
+    <tr><td>수면 시간(시간)</td><td>8</td><td>7.5</td><td>7</td><td>6</td><td>5.5</td></tr>
+  </table>
+
+  <div class="quiz" id="q6">
+    <div class="quiz-q"><span class="qnum">Q</span>위 데이터에서 스마트폰 사용 시간과 수면 시간 사이의 관계는 어떤 상관관계로 보이나요?</div>
+    <div class="opt-list">
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q6',false,'fb6','','사용 시간이 늘어날 때 수면 시간이 줄어들고 있습니다.')">양의 상관관계</button>
+      <button class="opt-btn" data-correct="true" onclick="selectOption(this,'q6',true,'fb6','정답입니다! 스마트폰 사용 시간이 증가할수록 수면 시간이 감소하므로 음의 상관관계입니다.','')">음의 상관관계</button>
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q6',false,'fb6','','뚜렷한 감소 경향이 보입니다.')">상관관계 없음</button>
+    </div>
+    <div class="feedback" id="fb6"></div>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevPage()">← 이전</button>
+    <button class="next-btn" onclick="nextPage()">다음 →</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 7: 미니프로젝트 ② ===== -->
+<div class="page" id="pg7">
+  <div class="section-tag">Ⅴ-2 · 인공지능 수학 탐구 활동</div>
+  <h2 class="sec-title">미니프로젝트: 나만의 추세선 찾기 (2)</h2>
+
+  <div class="card">
+    <p>이제 배운 내용을 모두 활용해 최적화 과정을 정리해 봅시다. (음의 상관관계이므로 추세선을
+    f(x)=-ax+b 형태로 생각할 수 있지만, 여기서는 단순화하여 원점을 지나는 형태로 연습합니다)</p>
+  </div>
+
+  <div class="step-flow">
+    <div class="step-box">① 산점도<br>그리기</div>
+    <span class="step-arrow">→</span>
+    <div class="step-box">② 추세선<br>f(x)=ax 가정</div>
+    <span class="step-arrow">→</span>
+    <div class="step-box">③ 손실함수<br>E(a) 구하기</div>
+    <span class="step-arrow">→</span>
+    <div class="step-box">④ 경사하강법<br>최적 a 찾기</div>
+  </div>
+
+  <div class="callout amber">
+    <div class="callout-label">🖊 스스로 해보기 (탐구활동지)</div>
+    <p>① 자신이 관심 있는 주제를 선정하여 관련된 데이터 5개 이상을 표로 정리해 보시오.<br>
+    ② 수집한 데이터의 산점도를 그리고, 상관관계를 설명해 보시오.<br>
+    ③ 추세선 f(x)=ax를 가정하고 손실함수 E(a)를 구해 보시오.<br>
+    ④ 학습률을 0.01~0.1 사이로 설정하고 경사하강법을 5단계 이상 직접 계산하여 최적화된
+    추세선의 기울기 a를 구해 보시오.<br>
+    ⑤ 구한 추세선을 이용하여 새로운 값을 예측하고, 그 결과가 타당한지 평가해 보시오.</p>
+  </div>
+
+  <div class="callout cyan">
+    <div class="callout-label">평가 기준 예시</div>
+    <p>① 데이터 수집의 적절성 ② 산점도와 상관관계 해석의 정확성 ③ 손실함수와 경사하강법 계산
+    과정의 논리성 ④ 예측 결과에 대한 비판적 해석(추세선이 항상 정확하지 않을 수 있음을 이해했는가)</p>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevPage()">← 이전</button>
+    <button class="next-btn" onclick="nextPage()">다음 →</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 8: 전체 여정 리뷰 ===== -->
+<div class="page" id="pg8">
+  <div class="section-tag">전체 과정 리뷰</div>
+  <h2 class="sec-title">6회차 전체 여정 되돌아보기</h2>
+
+  <div class="card">
+    <p>1회차부터 오늘까지, 우리는 인공지능이 데이터를 이해하고 학습하는 전체 과정을 수학적으로
+    따라왔습니다. 전체 흐름을 다시 정리해 봅시다.</p>
+  </div>
+
+  <div class="roadmap">
+    <div class="roadmap-item">
+      <div class="roadmap-num">1</div>
+      <div class="roadmap-text"><strong>AI의 개념과 텍스트의 표현</strong> — 지도/비지도/강화학습, 퍼셉트론, 집합과 벡터로 텍스트를 0/1로 표현했다.</div>
+    </div>
+    <div class="roadmap-item">
+      <div class="roadmap-num">2</div>
+      <div class="roadmap-text"><strong>텍스트의 정보추출과 분석</strong> — 빈도수 벡터, TF-IDF로 중요한 단어를 찾고, 자카드·유클리드·코사인 유사도로 텍스트의 유사성을 측정했다.</div>
+    </div>
+    <div class="roadmap-item">
+      <div class="roadmap-num">3</div>
+      <div class="roadmap-text"><strong>이미지의 표현과 변환</strong> — 픽셀을 행렬로 표현하고, 전치행렬·덧셈·실수배로 이미지를 변형했다.</div>
+    </div>
+    <div class="roadmap-item">
+      <div class="roadmap-num">4</div>
+      <div class="roadmap-text"><strong>이미지 분류와 확률 예측</strong> — 해밍 거리로 이미지를 분류하고, 상대도수와 추세선으로 미래를 예측했다.</div>
+    </div>
+    <div class="roadmap-item">
+      <div class="roadmap-num">5</div>
+      <div class="roadmap-text"><strong>손실함수와 미분</strong> — 오차를 손실함수로 표현하고, 미분(극한·미분계수·도함수)으로 최솟값을 구하는 원리를 배웠다.</div>
+    </div>
+    <div class="roadmap-item">
+      <div class="roadmap-num">6</div>
+      <div class="roadmap-text"><strong>경사하강법과 종합탐구</strong> — 미분계수와 학습률로 손실함수의 최솟값을 반복적으로 찾아가는 과정을 직접 계산하고, 데이터 기반 의사결정 사례를 탐구했다.</div>
+    </div>
+  </div>
+
+  <div class="callout cyan">
+    <div class="callout-label">한 문장으로 정리하면</div>
+    <p>인공지능은 "데이터를 수학적으로 표현(벡터·행렬) → 유사성/패턴을 분석(유사도·분류) →
+    오차를 함수로 측정(손실함수) → 미분으로 그 오차를 최소화(경사하강법)"하는 과정을 통해 학습합니다.
+    오늘 우리가 배운 모든 수학 개념이 바로 이 과정 속에 살아 있습니다.</p>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevPage()">← 이전</button>
+    <button class="next-btn" onclick="nextPage()">다음 →</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 9: 마무리 ===== -->
+<div class="page" id="pg9">
+  <div class="section-tag">정리 · Wrap-up</div>
+  <h2 class="sec-title">6회차 핵심 정리</h2>
+
+  <div class="card">
+    <h3 class="sub-title" style="margin-top:0;">오늘 배운 것</h3>
+    <p><strong>① 경사하강법</strong> — 미분계수(방향)와 학습률(보폭)을 이용해 손실함수의 최솟값을 반복적으로 찾아가는 방법.</p>
+    <p><strong>② 학습률</strong> — 너무 크면 발산, 너무 작으면 비효율적. 적절한 값을 시행착오로 찾아야 한다.</p>
+    <p><strong>③ 경사하강법 알고리즘</strong> — 초깃값 설정 → 미분계수 계산 → a 갱신 → 반복 → 종료(E'(a)≈0).</p>
+    <p><strong>④ 합리적 의사결정</strong> — 신제품 개발, 내비게이션, 법안 예측 등 실생활에서 데이터 기반 의사결정이 활용된다.</p>
+    <p><strong>⑤ 종합탐구</strong> — 산점도부터 경사하강법까지, 배운 전 과정을 직접 데이터에 적용해보았다.</p>
+  </div>
+
+  <div class="callout cyan">
+    <div class="callout-label">6회차 과정을 마치며</div>
+    <p>인공지능과 빅데이터에서 시작해, 텍스트와 이미지를 수학적으로 표현하고, 확률로 예측하고,
+    손실함수와 미분, 경사하강법으로 최적화하는 전체 여정을 완주했습니다. 이제 여러분은 인공지능이
+    "왜" 그렇게 동작하는지, 그 수학적 원리를 이해하는 사람이 되었습니다.</p>
+  </div>
+
+  <h3 class="sub-title">종합 확인 문제</h3>
+  <div class="quiz" id="q9">
+    <div class="quiz-q"><span class="qnum">Q</span>경사하강법에서 학습률과 미분계수의 역할을 가장 정확하게 짝지은 것은?</div>
+    <div class="opt-list">
+      <button class="opt-btn" data-correct="true" onclick="selectOption(this,'q9',true,'fb9','정답입니다! 학습률은 이동 거리(보폭), 미분계수는 이동 방향(경사)을 결정합니다.','')">학습률 = 이동 거리(보폭) / 미분계수 = 이동 방향(경사)</button>
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q9',false,'fb9','','역할이 반대로 설명되었습니다.')">학습률 = 이동 방향(경사) / 미분계수 = 이동 거리(보폭)</button>
+      <button class="opt-btn" data-correct="false" onclick="selectOption(this,'q9',false,'fb9','','두 값은 서로 다른 역할을 합니다.')">학습률과 미분계수는 같은 역할을 한다</button>
+    </div>
+    <div class="feedback" id="fb9"></div>
+  </div>
+
+  <div class="card" style="text-align:center;background:linear-gradient(135deg,var(--cyan-soft),var(--paper));">
+    <p style="color:var(--navy-900);font-size:18px;font-weight:800;margin-bottom:6px;">🎉🎓 인공지능 수학 6회차 전 과정 완주!</p>
+    <p style="font-size:13.5px;">수고하셨습니다. 상단 진도바가 100%가 되었는지 확인해보세요.</p>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="prevPage()">← 이전</button>
+    <button class="next-btn" disabled>전체 과정 완료 ✓</button>
+  </div>
+
+  <div class="endnote">인공지능 수학 · 6회차(최종) · 강은주 외, 「인공지능 수학」 교과서 기반 자료</div>
+</div>
+
+</div>
+
+<script>
+/* ============ PAGE DEFINITIONS ============ */
+var PAGES = [
+  {id:"pg0", label:"인트로"},
+  {id:"pg1", label:"경사하강법 원리"},
+  {id:"pg2", label:"학습률"},
+  {id:"pg3", label:"경사하강법 알고리즘"},
+  {id:"pg4", label:"경사하강법 실습"},
+  {id:"pg5", label:"합리적 의사결정"},
+  {id:"pg6", label:"미니프로젝트 ①"},
+  {id:"pg7", label:"미니프로젝트 ②"},
+  {id:"pg8", label:"전체 여정 리뷰"},
+  {id:"pg9", label:"마무리"}
+];
+
+var currentPage = 0;
+var visited = {};
+
+function buildPageNav(){
+  var nav = document.getElementById("pagenav");
+  PAGES.forEach(function(p, i){
+    var btn = document.createElement("button");
+    btn.className = "pg-btn";
+    btn.id = "navbtn-"+i;
+    btn.textContent = (i+1)+". "+p.label;
+    btn.onclick = function(){ goPage(i); };
+    nav.appendChild(btn);
+  });
+}
+
+function goPage(n){
+  if(n < 0 || n >= PAGES.length) return;
+  document.querySelectorAll(".page").forEach(function(el){ el.classList.remove("active"); });
+  var target = document.getElementById(PAGES[n].id);
+  if(target) target.classList.add("active");
+  document.querySelectorAll(".pg-btn").forEach(function(el){ el.classList.remove("active"); });
+  var navbtn = document.getElementById("navbtn-"+n);
+  if(navbtn) navbtn.classList.add("active");
+  visited[n] = true;
+  currentPage = n;
+  updateProgress();
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+function updateProgress(){
+  var visitedCount = Object.keys(visited).length;
+  var pct = Math.round((visitedCount / PAGES.length) * 100);
+  document.getElementById("progress-bar").style.width = pct + "%";
+  document.getElementById("progress-label").textContent = pct + "%";
+  PAGES.forEach(function(p, i){
+    var navbtn = document.getElementById("navbtn-"+i);
+    if(navbtn && visited[i]) navbtn.classList.add("done");
+  });
+}
+
+function nextPage(){ goPage(currentPage+1); }
+function prevPage(){ goPage(currentPage-1); }
+
+function switchTab(groupId, idx){
+  var group = document.getElementById(groupId);
+  if(!group) return;
+  var btns = group.querySelectorAll(".tab-btn");
+  var panels = group.querySelectorAll(".tabpanel");
+  btns.forEach(function(b, i){ b.classList.toggle("active", i===idx); });
+  panels.forEach(function(p, i){ p.classList.toggle("active", i===idx); });
+}
+
+function toggleHint(id){
+  var el = document.getElementById(id);
+  if(el) el.classList.toggle("show");
+}
+
+function selectOption(btnEl, groupId, isCorrect, feedbackId, correctMsg, wrongMsg){
+  var group = document.getElementById(groupId);
+  var btns = group.querySelectorAll(".opt-btn");
+  btns.forEach(function(b){ b.classList.remove("correct","wrong"); b.disabled = true; });
+  btnEl.classList.add(isCorrect ? "correct" : "wrong");
+  if(!isCorrect){
+    btns.forEach(function(b){
+      if(b.dataset.correct === "true") b.classList.add("correct");
+    });
+  }
+  var fb = document.getElementById(feedbackId);
+  if(fb){
+    fb.textContent = isCorrect ? correctMsg : wrongMsg;
+    fb.className = "feedback show " + (isCorrect ? "correct" : "wrong");
+  }
+}
+
+function checkFill(inputIds, answers, feedbackId, correctMsg, wrongMsg){
+  var allCorrect = true;
+  inputIds.forEach(function(id, i){
+    var input = document.getElementById(id);
+    var val = (input.value || "").trim().replace(/\s/g,"");
+    var ans = answers[i].replace(/\s/g,"");
+    if(val !== ans){ allCorrect = false; input.style.borderColor = "var(--bad)"; }
+    else { input.style.borderColor = "var(--good)"; }
+  });
+  var fb = document.getElementById(feedbackId);
+  fb.textContent = allCorrect ? correctMsg : wrongMsg;
+  fb.className = "feedback show " + (allCorrect ? "correct" : "wrong");
+}
+
+buildPageNav();
+goPage(0);
+</script>
+
+</body>
+</html>
