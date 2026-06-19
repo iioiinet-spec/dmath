@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>비트마스킹 마스터 — KOI/정올 대비</title>
+<style>
+  :root{
+    --bg-main: #0d1117;
+    --bg-side: #11161d;
+    --bg-card: #161b22;
+    --bg-card-hover: #1c232c;
+    --border: #2a3340;
+    --border-soft: #1f2730;
+    --accent: #58a6ff;
+    --accent2: #f0883e;
+    --accent3: #3fb950;
+    --accent4: #d2a8ff;
+    --accent5: #f85149;
+    --text-main: #e6edf3;
+    --text-sub: #8b949e;
+    --text-dim: #5c6773;
+    --mono: 'JetBrains Mono', 'D2Coding', 'Consolas', monospace;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{
+    background:var(--bg-main);
+    color:var(--text-main);
+    font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+    font-size:17px;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+    scroll-behavior:smooth;
+  }
+  code, .mono, .formula, .code-block, .quiz-code{
+    font-family:var(--mono);
+  }
+  a{color:var(--accent); text-decoration:none;}
+
+  /* ===== Layout ===== */
+  .app{
+    display:flex;
+    min-height:100vh;
+  }
+  .sidebar{
+    width:268px;
+    flex-shrink:0;
+    background:var(--bg-side);
+    border-right:1px solid var(--border-soft);
+    height:100vh;
+    position:sticky;
+    top:0;
+    overflow-y:auto;
+    padding:22px 0 40px;
+  }
+  .sidebar::-webkit-scrollbar{width:8px;}
+  .sidebar::-webkit-scrollbar-thumb{background:#2a3340; border-radius:4px;}
+
+  .brand{
+    padding:0 20px 18px;
+    border-bottom:1px solid var(--border-soft);
+    margin-bottom:14px;
+  }
+  .brand-title{
+    font-size:16px;
+    font-weight:800;
+    color:var(--text-main);
+    letter-spacing:-0.3px;
+  }
+  .brand-sub{
+    font-size:12px;
+    color:var(--text-dim);
+    margin-top:4px;
+    font-family:var(--mono);
+  }
+
+  .nav-group{margin-bottom:8px;}
+  .nav-group-title{
+    font-size:11px;
+    font-weight:700;
+    color:var(--text-dim);
+    text-transform:uppercase;
+    letter-spacing:0.8px;
+    padding:10px 20px 6px;
+  }
+  .nav-item{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:8px 20px;
+    font-size:13.5px;
+    color:var(--text-sub);
+    cursor:pointer;
+    border-left:3px solid transparent;
+    transition:all .12s ease;
+    user-select:none;
+  }
+  .nav-item:hover{
+    background:rgba(88,166,255,0.06);
+    color:var(--text-main);
+  }
+  .nav-item.active{
+    background:rgba(88,166,255,0.1);
+    border-left-color:var(--accent);
+    color:var(--accent);
+    font-weight:600;
+  }
+  .nav-num{
+    width:22px;
+    height:22px;
+    border-radius:5px;
+    background:var(--bg-card);
+    border:1px solid var(--border);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:10.5px;
+    font-family:var(--mono);
+    color:var(--text-dim);
+    flex-shrink:0;
+  }
+  .nav-item.active .nav-num{
+    background:var(--accent);
+    border-color:var(--accent);
+    color:#0d1117;
+  }
+  .nav-item.done .nav-num{
+    background:var(--accent3);
+    border-color:var(--accent3);
+    color:#0d1117;
+  }
+  .nav-item.done .nav-num::after{content:'✓';}
+  .nav-item.done .nav-num{font-size:0;}
+  .nav-item.done .nav-num::before{content:'✓'; font-size:12px;}
+
+  /* ===== Main ===== */
+  .main{
+    flex:1;
+    min-width:0;
+    padding:38px 48px 100px;
+    max-width:980px;
+  }
+  .page{display:none;}
+  .page.active{display:block; animation:fadeIn .25s ease;}
+  @keyframes fadeIn{
+    from{opacity:0; transform:translateY(6px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+
+  .page-eyebrow{
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:var(--accent);
+    font-weight:700;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    margin-bottom:8px;
+  }
+  .page-title{
+    font-size:28px;
+    font-weight:800;
+    letter-spacing:-0.5px;
+    margin-bottom:10px;
+  }
+  .page-desc{
+    color:var(--text-sub);
+    font-size:15px;
+    margin-bottom:30px;
+    max-width:680px;
+  }
+
+  /* ===== Intro / Home ===== */
+  .hero{
+    background:linear-gradient(135deg, #161b22 0%, #0d1117 100%);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:40px;
+    margin-bottom:32px;
+  }
+  .hero-badge{
+    display:inline-block;
+    font-family:var(--mono);
+    font-size:11.5px;
+    color:var(--accent2);
+    background:rgba(240,136,62,0.12);
+    border:1px solid rgba(240,136,62,0.3);
+    padding:4px 10px;
+    border-radius:20px;
+    margin-bottom:16px;
+    font-weight:700;
+  }
+  .hero h1{
+    font-size:34px;
+    font-weight:800;
+    letter-spacing:-0.8px;
+    margin-bottom:14px;
+    line-height:1.3;
+  }
+  .hero p{color:var(--text-sub); font-size:15.5px; max-width:560px;}
+
+  .stat-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:14px;
+    margin:28px 0;
+  }
+  .stat-card{
+    background:var(--bg-card);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:20px;
+    text-align:center;
+  }
+  .stat-num{font-size:30px; font-weight:800; font-family:var(--mono);}
+  .stat-card.formula .stat-num{color:var(--accent4);}
+  .stat-card.basic .stat-num{color:var(--accent);}
+  .stat-card.advanced .stat-num{color:var(--accent5);}
+  .stat-label{font-size:12.5px; color:var(--text-sub); margin-top:6px;}
+
+  .section-card{
+    background:var(--bg-card);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:28px 30px;
+    margin-bottom:20px;
+  }
+  .section-card h3{
+    font-size:18px;
+    margin-bottom:14px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .section-card ul{padding-left:20px; color:var(--text-sub); font-size:14.5px;}
+  .section-card li{margin-bottom:6px;}
+
+  .quick-table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:14px;
+    font-size:14px;
+  }
+  .quick-table th, .quick-table td{
+    border:1px solid var(--border);
+    padding:9px 14px;
+    text-align:left;
+  }
+  .quick-table th{
+    background:#1a212b;
+    color:var(--accent);
+    font-family:var(--mono);
+    font-size:12.5px;
+  }
+  .quick-table td{font-family:var(--mono); color:var(--text-main);}
+  .quick-table td.desc{font-family:inherit; color:var(--text-sub);}
+
+  /* ===== Progress bar ===== */
+  .progress-wrap{
+    position:sticky;
+    top:0;
+    z-index:50;
+    background:rgba(13,17,23,0.92);
+    backdrop-filter:blur(8px);
+    padding:14px 48px;
+    border-bottom:1px solid var(--border-soft);
+    display:flex;
+    align-items:center;
+    gap:16px;
+    margin:-38px -48px 30px;
+  }
+  .progress-track{
+    flex:1;
+    height:6px;
+    background:var(--bg-card);
+    border-radius:4px;
+    overflow:hidden;
+    border:1px solid var(--border);
+  }
+  .progress-fill{
+    height:100%;
+    background:linear-gradient(90deg, var(--accent), var(--accent3));
+    border-radius:4px;
+    transition:width .35s ease;
+    width:0%;
+  }
+  .progress-text{
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:var(--text-sub);
+    white-space:nowrap;
+  }
+
+  /* ===== Formula cards (flip) ===== */
+  .formula-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:16px;
+  }
+  .flip-card{
+    background:transparent;
+    height:172px;
+    perspective:1200px;
+    cursor:pointer;
+  }
+  .flip-inner{
+    position:relative;
+    width:100%;
+    height:100%;
+    transition:transform .5s cubic-bezier(.4,.2,.2,1);
+    transform-style:preserve-3d;
+  }
+  .flip-card.flipped .flip-inner{transform:rotateY(180deg);}
+  .flip-face{
+    position:absolute;
+    inset:0;
+    border-radius:14px;
+    padding:20px 22px;
+    backface-visibility:hidden;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    border:1px solid var(--border);
+  }
+  .flip-front{
+    background:var(--bg-card);
+  }
+  .flip-front .f-num{
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--text-dim);
+    margin-bottom:8px;
+  }
+  .flip-front .f-q{
+    font-size:15px;
+    font-weight:600;
+    color:var(--text-main);
+    line-height:1.5;
+  }
+  .flip-front .f-hint{
+    margin-top:auto;
+    font-size:11.5px;
+    color:var(--accent);
+    font-family:var(--mono);
+  }
+  .flip-back{
+    background:linear-gradient(135deg, #1a2433, #161b22);
+    transform:rotateY(180deg);
+    border-color:var(--accent);
+  }
+  .flip-back .f-formula{
+    font-family:var(--mono);
+    font-size:19px;
+    font-weight:700;
+    color:var(--accent3);
+    margin-bottom:8px;
+  }
+  .flip-back .f-explain{
+    font-size:12.5px;
+    color:var(--text-sub);
+    line-height:1.55;
+  }
+
+  /* ===== Quiz blocks ===== */
+  .quiz-block{
+    background:var(--bg-card);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:26px 28px;
+    margin-bottom:20px;
+  }
+  .quiz-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:14px;
+  }
+  .quiz-tag{
+    font-family:var(--mono);
+    font-size:11.5px;
+    font-weight:700;
+    padding:3px 10px;
+    border-radius:6px;
+  }
+  .quiz-tag.basic{background:rgba(88,166,255,0.12); color:var(--accent); border:1px solid rgba(88,166,255,0.3);}
+  .quiz-tag.advanced{background:rgba(248,81,73,0.12); color:var(--accent5); border:1px solid rgba(248,81,73,0.3);}
+  .quiz-diff{font-family:var(--mono); font-size:12px; color:var(--text-dim);}
+  .quiz-q{
+    font-size:15.5px;
+    margin-bottom:14px;
+    color:var(--text-main);
+  }
+  .quiz-code{
+    background:#0a0d12;
+    border:1px solid var(--border-soft);
+    border-radius:8px;
+    padding:14px 16px;
+    font-size:13.5px;
+    color:#c9d1d9;
+    margin-bottom:16px;
+    overflow-x:auto;
+    white-space:pre;
+    line-height:1.6;
+  }
+  .quiz-code .kw{color:#ff7b72;}
+  .quiz-code .ty{color:#79c0ff;}
+  .quiz-code .cm{color:#8b949e; font-style:italic;}
+  .quiz-code .nm{color:#d2a8ff;}
+
+  .opt-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-bottom:14px;
+  }
+  .opt-btn{
+    background:var(--bg-side);
+    border:1px solid var(--border);
+    border-radius:9px;
+    padding:12px 14px;
+    font-size:14px;
+    color:var(--text-main);
+    cursor:pointer;
+    text-align:left;
+    font-family:var(--mono);
+    transition:all .12s ease;
+  }
+  .opt-btn:hover{border-color:var(--accent); background:rgba(88,166,255,0.06);}
+  .opt-btn.correct{
+    background:rgba(63,185,80,0.14);
+    border-color:var(--accent3);
+    color:var(--accent3);
+    font-weight:700;
+  }
+  .opt-btn.wrong{
+    background:rgba(248,81,73,0.14);
+    border-color:var(--accent5);
+    color:var(--accent5);
+  }
+  .opt-btn.disabled{pointer-events:none; opacity:0.55;}
+  .opt-btn.disabled.correct, .opt-btn.disabled.wrong{opacity:1;}
+
+  .input-row{
+    display:flex;
+    gap:10px;
+    margin-bottom:14px;
+  }
+  .text-input{
+    flex:1;
+    background:var(--bg-side);
+    border:1px solid var(--border);
+    border-radius:9px;
+    padding:11px 14px;
+    color:var(--text-main);
+    font-family:var(--mono);
+    font-size:14.5px;
+  }
+  .text-input:focus{outline:none; border-color:var(--accent);}
+  .check-btn{
+    background:var(--accent);
+    color:#0d1117;
+    border:none;
+    border-radius:9px;
+    padding:11px 22px;
+    font-weight:700;
+    font-size:14px;
+    cursor:pointer;
+    font-family:inherit;
+    transition:all .12s ease;
+    white-space:nowrap;
+  }
+  .check-btn:hover{background:#79b8ff;}
+
+  .feedback{
+    display:none;
+    border-radius:9px;
+    padding:12px 16px;
+    font-size:13.5px;
+    margin-bottom:6px;
+    line-height:1.55;
+  }
+  .feedback.show{display:block; animation:fadeIn .2s ease;}
+  .feedback.ok{
+    background:rgba(63,185,80,0.1);
+    border:1px solid rgba(63,185,80,0.35);
+    color:#7ee2a8;
+  }
+  .feedback.no{
+    background:rgba(248,81,73,0.1);
+    border:1px solid rgba(248,81,73,0.35);
+    color:#ff9890;
+  }
+  .feedback .fb-title{font-weight:700; margin-bottom:4px; font-family:var(--mono); font-size:12.5px;}
+
+  .hint-toggle{
+    font-size:12.5px;
+    color:var(--accent2);
+    cursor:pointer;
+    font-family:var(--mono);
+    display:inline-block;
+    margin-bottom:8px;
+    user-select:none;
+  }
+  .hint-toggle:hover{text-decoration:underline;}
+  .hint-box{
+    display:none;
+    background:rgba(240,136,62,0.08);
+    border:1px solid rgba(240,136,62,0.3);
+    border-radius:8px;
+    padding:10px 14px;
+    font-size:13px;
+    color:#f0b97e;
+    margin-bottom:14px;
+  }
+  .hint-box.show{display:block;}
+
+  /* ===== Bit visualizer ===== */
+  .bitviz{
+    display:flex;
+    gap:6px;
+    margin:14px 0;
+    flex-wrap:wrap;
+  }
+  .bitviz .bit{
+    width:34px;
+    height:34px;
+    border-radius:7px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:var(--mono);
+    font-weight:700;
+    font-size:14px;
+    background:var(--bg-side);
+    border:1px solid var(--border);
+    color:var(--text-dim);
+  }
+  .bitviz .bit.on{
+    background:rgba(63,185,80,0.18);
+    border-color:var(--accent3);
+    color:var(--accent3);
+  }
+
+  /* ===== Nav buttons bottom ===== */
+  .page-nav{
+    display:flex;
+    justify-content:space-between;
+    margin-top:36px;
+    padding-top:24px;
+    border-top:1px solid var(--border-soft);
+  }
+  .nav-btn{
+    background:var(--bg-card);
+    border:1px solid var(--border);
+    color:var(--text-main);
+    padding:11px 20px;
+    border-radius:9px;
+    font-size:13.5px;
+    cursor:pointer;
+    font-family:inherit;
+    font-weight:600;
+    transition:all .12s ease;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .nav-btn:hover{border-color:var(--accent); color:var(--accent);}
+  .nav-btn:disabled{opacity:0.3; cursor:default; pointer-events:none;}
+  .nav-btn.primary{
+    background:var(--accent);
+    color:#0d1117;
+    border-color:var(--accent);
+  }
+  .nav-btn.primary:hover{background:#79b8ff; color:#0d1117;}
+
+  .score-pill{
+    font-family:var(--mono);
+    font-size:12px;
+    background:var(--bg-side);
+    border:1px solid var(--border);
+    padding:6px 12px;
+    border-radius:20px;
+    color:var(--text-sub);
+  }
+
+  @media (max-width: 860px){
+    .sidebar{position:fixed; left:-280px; z-index:100; transition:left .25s ease; box-shadow:8px 0 30px rgba(0,0,0,0.5);}
+    .sidebar.open{left:0;}
+    .main{padding:24px 18px 80px; max-width:100%;}
+    .progress-wrap{padding:12px 18px; margin:-24px -18px 24px;}
+    .formula-grid{grid-template-columns:1fr;}
+    .opt-grid{grid-template-columns:1fr;}
+    .stat-grid{grid-template-columns:1fr;}
+    .menu-toggle{display:flex !important;}
+  }
+  .menu-toggle{
+    display:none;
+    position:fixed;
+    top:14px;
+    left:14px;
+    z-index:110;
+    width:40px;
+    height:40px;
+    background:var(--bg-card);
+    border:1px solid var(--border);
+    border-radius:9px;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    color:var(--text-main);
+    font-size:18px;
+  }
+</style>
+</head>
+<body>
+<div class="menu-toggle" id="menuToggle">☰</div>
+<div class="app">
+
+  <!-- ============ SIDEBAR ============ -->
+  <div class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-title">🔢 비트마스킹 마스터</div>
+      <div class="brand-sub">KOI · 정올 대비</div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-title">시작하기</div>
+      <div class="nav-item" data-page="0"><span class="nav-num">0</span> 개요 &amp; 학습 가이드</div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-title">공식 암기 카드 (10)</div>
+      <div class="nav-item" data-page="1"><span class="nav-num">1</span> 카드 01–10</div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-title">기본 문제 (10)</div>
+      <div class="nav-item" data-page="2"><span class="nav-num">2</span> 기본 01–05</div>
+      <div class="nav-item" data-page="3"><span class="nav-num">3</span> 기본 06–10</div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-title">심화 문제 (10)</div>
+      <div class="nav-item" data-page="4"><span class="nav-num">4</span> 심화 01–05</div>
+      <div class="nav-item" data-page="5"><span class="nav-num">5</span> 심화 06–10</div>
+    </div>
+  </div>
+
+  <!-- ============ MAIN ============ -->
+  <div class="main">
+    <div class="progress-wrap">
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-text" id="progressText">0 / 30 완료</div>
+      <div class="score-pill" id="scorePill">점수 0</div>
+    </div>
+
+    <!-- ============ PAGE 0: 개요 ============ -->
+    <div class="page active" data-page="0">
+      <div class="hero">
+        <div class="hero-badge">BIT MANIPULATION</div>
+        <h1>비트마스킹, 완벽하게 정복하기</h1>
+        <p>2진수 비트 연산의 핵심 공식을 외우고, 기본기를 다진 뒤, KOI·정올 스타일의 비트마스크 DP 문제까지 단계적으로 학습합니다.</p>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card formula">
+          <div class="stat-num">10</div>
+          <div class="stat-label">공식 암기 카드</div>
+        </div>
+        <div class="stat-card basic">
+          <div class="stat-num">10</div>
+          <div class="stat-label">기본 문제</div>
+        </div>
+        <div class="stat-card advanced">
+          <div class="stat-num">10</div>
+          <div class="stat-label">심화 문제</div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <h3>📌 비트 연산 핵심 공식 요약표</h3>
+        <table class="quick-table">
+          <tr><th>연산</th><th>식</th><th>설명</th></tr>
+          <tr><td>i번째 비트 ON</td><td>S | (1&lt;&lt;i)</td><td class="desc">i번째 비트를 1로 켠다</td></tr>
+          <tr><td>i번째 비트 OFF</td><td>S &amp; ~(1&lt;&lt;i)</td><td class="desc">i번째 비트를 0으로 끈다</td></tr>
+          <tr><td>i번째 비트 확인</td><td>(S &gt;&gt; i) &amp; 1</td><td class="desc">i번째 비트가 1인지 검사</td></tr>
+          <tr><td>i번째 비트 토글</td><td>S ^ (1&lt;&lt;i)</td><td class="desc">1↔0 반전</td></tr>
+          <tr><td>최하위 1비트 추출</td><td>S &amp; (-S)</td><td class="desc">가장 낮은 자리의 1만 남김</td></tr>
+          <tr><td>최하위 1비트 제거</td><td>S &amp; (S-1)</td><td class="desc">가장 낮은 자리 1을 0으로</td></tr>
+          <tr><td>전체 켜기 (n비트)</td><td>(1&lt;&lt;n) - 1</td><td class="desc">0번~(n-1)번 비트 모두 1</td></tr>
+          <tr><td>1의 개수 (popcount)</td><td>__builtin_popcount(S)</td><td class="desc">C++ 내장 함수</td></tr>
+        </table>
+      </div>
+
+      <div class="section-card">
+        <h3>🎯 학습 순서 추천</h3>
+        <ul>
+          <li><strong>1단계 — 공식 암기 카드:</strong> 카드를 클릭해 뒤집으며 공식을 암기합니다.</li>
+          <li><strong>2단계 — 기본 문제:</strong> 비트 ON/OFF/토글, popcount, 부분집합 등 핵심 패턴을 객관식·단답형으로 연습합니다.</li>
+          <li><strong>3단계 — 심화 문제:</strong> 비트마스크 DP(TSP), 상태 압축, 부분집합 순회 등 대회 기출 스타일 문제를 풉니다.</li>
+        </ul>
+      </div>
+
+      <div class="page-nav">
+        <button class="nav-btn" disabled>◀ 이전</button>
+        <button class="nav-btn primary" onclick="goPage(1)">공식 카드 시작하기 ▶</button>
+      </div>
+    </div>
+
+    <!-- ============ PAGE 1: 공식 암기 카드 ============ -->
+    <div class="page" data-page="1">
+      <div class="page-eyebrow">FORMULA CARDS · 01–10</div>
+      <div class="page-title">공식 암기 카드</div>
+      <div class="page-desc">카드를 클릭하면 뒤집혀 공식과 설명이 나옵니다. 10장을 모두 한 번씩 뒤집으면 완료로 체크됩니다.</div>
+
+      <div class="formula-grid" id="formulaGrid"></div>
+
+      <div class="page-nav">
+        <button class="nav-btn" onclick="goPage(0)">◀ 이전</button>
+        <button class="nav-btn primary" onclick="goPage(2)">기본 문제로 ▶</button>
+      </div>
+    </div>
+
+    <!-- ============ PAGE 2: 기본 문제 01-05 ============ -->
+    <div class="page" data-page="2">
+      <div class="page-eyebrow">BASIC PROBLEMS · 01–05</div>
+      <div class="page-title">기본 문제 (1/2)</div>
+      <div class="page-desc">비트 ON/OFF/토글, 비트 확인, popcount 등 기초 연산을 연습합니다.</div>
+
+      <div id="basicGrid1"></div>
+
+      <div class="page-nav">
+        <button class="nav-btn" onclick="goPage(1)">◀ 이전</button>
+        <button class="nav-btn primary" onclick="goPage(3)">기본 06-10 ▶</button>
+      </div>
+    </div>
+
+    <!-- ============ PAGE 3: 기본 문제 06-10 ============ -->
+    <div class="page" data-page="3">
+      <div class="page-eyebrow">BASIC PROBLEMS · 06–10</div>
+      <div class="page-title">기본 문제 (2/2)</div>
+      <div class="page-desc">부분집합 비트마스크 표현, 최하위 비트 연산 등을 연습합니다.</div>
+
+      <div id="basicGrid2"></div>
+
+      <div class="page-nav">
+        <button class="nav-btn" onclick="goPage(2)">◀ 이전</button>
+        <button class="nav-btn primary" onclick="goPage(4)">심화 문제로 ▶</button>
+      </div>
+    </div>
+
+    <!-- ============ PAGE 4: 심화 문제 01-05 ============ -->
+    <div class="page" data-page="4">
+      <div class="page-eyebrow">ADVANCED PROBLEMS · 01–05</div>
+      <div class="page-title">심화 문제 (1/2)</div>
+      <div class="page-desc">비트마스크 DP, 상태 압축, 부분집합 순회 등 대회 기출 스타일 문제입니다.</div>
+
+      <div id="advGrid1"></div>
+
+      <div class="page-nav">
+        <button class="nav-btn" onclick="goPage(3)">◀ 이전</button>
+        <button class="nav-btn primary" onclick="goPage(5)">심화 06-10 ▶</button>
+      </div>
+    </div>
+
+    <!-- ============ PAGE 5: 심화 문제 06-10 ============ -->
+    <div class="page" data-page="5">
+      <div class="page-eyebrow">ADVANCED PROBLEMS · 06–10</div>
+      <div class="page-title">심화 문제 (2/2)</div>
+      <div class="page-desc">TSP, 최소 스패닝 변형, 비트마스크 최적화 문제로 마무리합니다.</div>
+
+      <div id="advGrid2"></div>
+
+      <div class="page-nav">
+        <button class="nav-btn" onclick="goPage(4)">◀ 이전</button>
+        <button class="nav-btn primary" onclick="goPage(0)">🏠 처음으로</button>
+      </div>
+    </div>
+
+
+  </div>
+</div>
+<script>
+/* =========================================================
+   비트마스킹 학습 — 데이터 & 로직
+   ========================================================= */
+
+// ---------- 진행도 관리 ----------
+const totalItems = 30; // 10 formula + 10 basic + 10 advanced
+let completed = new Set();   // ids like 'f1','b1',...'a1'
+let correctCount = 0;
+let attemptedSet = new Set();
+
+function updateProgress(){
+  const pct = Math.round((completed.size / totalItems) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent = `${completed.size} / ${totalItems} 완료`;
+  document.getElementById('scorePill').textContent = `점수 ${correctCount}`;
+  updateSidebarDone();
+}
+
+function markDone(id){
+  completed.add(id);
+  updateProgress();
+}
+
+function updateSidebarDone(){
+  // page 1 (formula) done when all 10 f-cards flipped at least once
+  const fDone = [...Array(10)].every((_,i)=>completed.has('f'+(i+1)));
+  const b1Done = [...Array(5)].every((_,i)=>completed.has('b'+(i+1)));
+  const b2Done = [...Array(5)].every((_,i)=>completed.has('b'+(i+6)));
+  const a1Done = [...Array(5)].every((_,i)=>completed.has('a'+(i+1)));
+  const a2Done = [...Array(5)].every((_,i)=>completed.has('a'+(i+6)));
+  setNavDone(1, fDone);
+  setNavDone(2, b1Done);
+  setNavDone(3, b2Done);
+  setNavDone(4, a1Done);
+  setNavDone(5, a2Done);
+}
+function setNavDone(pageIdx, isDone){
+  const item = document.querySelector(`.nav-item[data-page="${pageIdx}"]`);
+  if(!item) return;
+  if(isDone) item.classList.add('done');
+  else item.classList.remove('done');
+}
+
+// ---------- 페이지 네비게이션 ----------
+function goPage(idx){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelector(`.page[data-page="${idx}"]`).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const navItem = document.querySelector(`.nav-item[data-page="${idx}"]`);
+  if(navItem) navItem.classList.add('active');
+  window.scrollTo({top:0, behavior:'instant'});
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+document.querySelectorAll('.nav-item').forEach(item=>{
+  item.addEventListener('click', ()=> goPage(item.dataset.page));
+});
+
+document.getElementById('menuToggle').addEventListener('click', ()=>{
+  document.getElementById('sidebar').classList.toggle('open');
+});
+
+// =========================================================
+// 1. 공식 암기 카드 데이터 (10개)
+// =========================================================
+const formulaCards = [
+  {
+    q: "정수 S의 i번째 비트를 1로 켜려면?",
+    formula: "S | (1 << i)",
+    explain: "OR 연산은 해당 비트를 무조건 1로 만듭니다. 이미 1이어도 영향 없음."
+  },
+  {
+    q: "정수 S의 i번째 비트를 0으로 끄려면?",
+    formula: "S & ~(1 << i)",
+    explain: "(1<<i)를 NOT으로 반전시키면 i번째만 0, 나머지는 모두 1. AND 연산으로 해당 비트만 끔."
+  },
+  {
+    q: "정수 S의 i번째 비트가 켜져 있는지 확인하려면?",
+    formula: "(S >> i) & 1",
+    explain: "i번째 비트를 0번 자리로 이동시킨 뒤 마지막 비트만 추출. 결과가 1이면 ON."
+  },
+  {
+    q: "정수 S의 i번째 비트를 토글(반전)하려면?",
+    formula: "S ^ (1 << i)",
+    explain: "XOR은 같으면 0, 다르면 1. 1과 XOR하면 0↔1이 뒤집힘."
+  },
+  {
+    q: "S에서 최하위(가장 낮은 자리) 1비트만 추출하려면?",
+    formula: "S & (-S)",
+    explain: "2의 보수 표현에서 -S는 S의 모든 비트를 반전 후 +1. AND 시 최하위 1비트만 남음."
+  },
+  {
+    q: "S에서 최하위 1비트를 제거(0으로)하려면?",
+    formula: "S & (S - 1)",
+    explain: "S-1은 최하위 1비트를 0으로, 그 아래 비트들을 모두 1로 바꿈. AND하면 최하위 1이 사라짐."
+  },
+  {
+    q: "n개의 비트를 모두 1로 켠 정수(전체 집합)를 만들려면?",
+    formula: "(1 << n) - 1",
+    explain: "1을 n칸 왼쪽으로 민 뒤 1을 빼면 0~(n-1)번 비트가 모두 1이 됨. 예: n=4 → 0b1111"
+  },
+  {
+    q: "정수 S에 포함된 1의 개수(popcount)를 구하는 C++ 내장 함수는?",
+    formula: "__builtin_popcount(S)",
+    explain: "GCC 내장 함수로 O(1)에 가깝게 1비트 개수를 셈. long long은 __builtin_popcountll 사용."
+  },
+  {
+    q: "S가 2의 거듭제곱(비트가 1개뿐)인지 판별하려면?",
+    formula: "S & (S - 1) == 0",
+    explain: "최하위 1비트를 제거했을 때 0이 되면, 원래 1비트가 하나뿐이었다는 뜻. (S>0 조건 필요)"
+  },
+  {
+    q: "전체 비트마스크 S의 부분집합을 모두 순회하는 코드 패턴은?",
+    formula: "for(int sub=S; sub; sub=(sub-1)&S)",
+    explain: "S 자신부터 시작해 (sub-1)&S로 다음 부분집합 생성. 0이 되기 직전까지 모든 부분집합을 O(3^n)에 순회."
+  }
+];
+
+function renderFormulaCards(){
+  const grid = document.getElementById('formulaGrid');
+  grid.innerHTML = formulaCards.map((c,i)=>`
+    <div class="flip-card" id="fcard${i+1}" onclick="flipCard(${i+1})">
+      <div class="flip-inner">
+        <div class="flip-face flip-front">
+          <div class="f-num">CARD ${String(i+1).padStart(2,'0')} / 10</div>
+          <div class="f-q">${c.q}</div>
+          <div class="f-hint">클릭해서 공식 보기 →</div>
+        </div>
+        <div class="flip-face flip-back">
+          <div class="f-formula">${c.formula}</div>
+          <div class="f-explain">${c.explain}</div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function flipCard(i){
+  const card = document.getElementById('fcard'+i);
+  card.classList.toggle('flipped');
+  markDone('f'+i);
+}
+</script>
+<script>
+// =========================================================
+// 2. 기본 문제 데이터 (10개) — 객관식(mc) / 단답형(fill)
+// =========================================================
+const basicProblems = [
+  // ---- B1 ----
+  {
+    id:'b1', tag:'기본 01', diff:'★☆☆☆☆',
+    q:'정수 <code>S = 0b1010</code> (10진수 10)일 때, 2번째 비트(0-indexed)를 켜는 식 <code>S | (1 &lt;&lt; 2)</code>의 결과는?',
+    type:'mc',
+    options:['0b1110 (14)','0b1010 (10)','0b1011 (11)','0b0010 (2)'],
+    answer:0,
+    explain:'1&lt;&lt;2 = 0b0100. S(0b1010) | 0b0100 = 0b1110 = 14입니다. 이미 켜진 비트는 그대로 유지되고 2번째 비트만 새로 켜집니다.'
+  },
+  // ---- B2 ----
+  {
+    id:'b2', tag:'기본 02', diff:'★☆☆☆☆',
+    q:'정수 <code>S = 0b1101</code> (13)에서 1번째 비트(0-indexed)를 끄는 식 <code>S &amp; ~(1 &lt;&lt; 1)</code>의 결과는?',
+    type:'mc',
+    options:['0b1101 (13)','0b1100 (12)','0b1111 (15)','0b0001 (1)'],
+    answer:1,
+    explain:'~(1&lt;&lt;1) = ~0b0010 = ...11111101. S(0b1101) &amp; 0b...1101 → 1번째 비트만 0이 되어 0b1100 = 12.'
+  },
+  // ---- B3 ----
+  {
+    id:'b3', tag:'기본 03', diff:'★☆☆☆☆',
+    q:'<code>(13 &gt;&gt; 2) &amp; 1</code> 의 값은? (13 = 0b1101)',
+    type:'mc',
+    options:['0','1','2','3'],
+    answer:1,
+    explain:'13을 오른쪽으로 2칸 시프트하면 0b11(=3). 3 &amp; 1 = 1. 즉 13의 2번째 비트(0-indexed)는 켜져 있습니다.'
+  },
+  // ---- B4 ----
+  {
+    id:'b4', tag:'기본 04', diff:'★★☆☆☆',
+    q:'정수 <code>S = 9</code> (0b1001)의 0번째 비트를 토글(<code>S ^ (1&lt;&lt;0)</code>)하면 결과는 10진수로?',
+    type:'fill',
+    answer:'8',
+    explain:'9 = 0b1001. 0번째 비트와 XOR하면 0b1000 = 8. 즉 켜져 있던 비트가 꺼집니다.'
+  },
+  // ---- B5 ----
+  {
+    id:'b5', tag:'기본 05', diff:'★★☆☆☆',
+    q:'<code>__builtin_popcount(45)</code> 의 결과(1의 개수)는? (45 = 0b101101)',
+    type:'fill',
+    answer:'4',
+    explain:'45 = 0b101101 → 1이 4개(1,1,1,1 위치). popcount(45) = 4.'
+  },
+  // ---- B6 ----
+  {
+    id:'b6', tag:'기본 06', diff:'★★☆☆☆',
+    q:'n=5일 때 전체 집합을 나타내는 비트마스크 <code>(1&lt;&lt;n)-1</code>의 10진수 값은?',
+    type:'mc',
+    options:['16','31','32','15'],
+    answer:1,
+    explain:'(1&lt;&lt;5)-1 = 32-1 = 31 = 0b11111. 0번부터 4번 비트까지 5개가 모두 켜집니다.'
+  },
+  // ---- B7 ----
+  {
+    id:'b7', tag:'기본 07', diff:'★★☆☆☆',
+    q:'<code>S = 12</code> (0b1100)일 때 <code>S &amp; (-S)</code>의 값은? (최하위 1비트 추출)',
+    type:'mc',
+    options:['4','8','12','1'],
+    answer:0,
+    explain:'12 = 0b1100. 최하위(가장 낮은 자리)의 1비트는 2번째 자리(값 4)에 있습니다. S&amp;(-S) = 4.'
+  },
+  // ---- B8 ----
+  {
+    id:'b8', tag:'기본 08', diff:'★★★☆☆',
+    q:'<code>S = 0b10110</code> (22)에 대해 <code>S &amp; (S-1)</code>을 적용하면(최하위 1비트 제거), 결과는 10진수로?',
+    type:'fill',
+    answer:'20',
+    explain:'22 = 0b10110, S-1 = 0b10101. AND하면 0b10100 = 20. 최하위 1비트(값 2)가 제거되었습니다.'
+  },
+  // ---- B9 ----
+  {
+    id:'b9', tag:'기본 09', diff:'★★★☆☆',
+    q:'학생 4명 중 1번, 3번 학생(0-indexed)이 선택된 부분집합을 비트마스크로 나타내면?',
+    type:'mc',
+    options:['0b0110 (6)','0b1010 (10)','0b0101 (5)','0b1100 (12)'],
+    answer:1,
+    explain:'1번 비트(값2)와 3번 비트(값8)가 켜져야 하므로 2+8=10 = 0b1010.'
+  },
+  // ---- B10 ----
+  {
+    id:'b10', tag:'기본 10', diff:'★★★☆☆',
+    q:'<code>S = 0</code>인지 확인해서 비트마스크 DP의 종료 조건으로 쓰는 가장 일반적인 비교 연산자는 무엇인가요? (정올/KOI에서 "모든 원소를 다 골랐다"의 의미로 자주 쓰임)',
+    type:'fill',
+    answer:'==',
+    explain:'<code>visited == (1&lt;&lt;n)-1</code> 처럼 전체 비트가 다 켜졌는지 비교할 때 <code>==</code> 연산자를 사용합니다. 모든 원소를 방문했다는 종료 조건으로 가장 흔히 쓰입니다.'
+  },
+];
+
+function renderQuizBlock(p, containerId){
+  const isMC = p.type === 'mc';
+  const tagClass = p.tag.startsWith('기본') ? 'basic' : 'advanced';
+  let bodyHtml = '';
+  if(isMC){
+    bodyHtml = `
+      <div class="opt-grid" id="opts-${p.id}">
+        ${p.options.map((o,i)=>`<button class="opt-btn" onclick="checkMC('${p.id}',${i})">${String.fromCharCode(65+i)}. ${o}</button>`).join('')}
+      </div>`;
+  } else {
+    bodyHtml = `
+      <div class="input-row">
+        <input type="text" class="text-input" id="input-${p.id}" placeholder="답을 입력하세요" onkeydown="if(event.key==='Enter') checkFill('${p.id}')">
+        <button class="check-btn" onclick="checkFill('${p.id}')">제출</button>
+      </div>`;
+  }
+  return `
+    <div class="quiz-block" id="block-${p.id}">
+      <div class="quiz-head">
+        <span class="quiz-tag ${tagClass}">${p.tag}</span>
+        <span class="quiz-diff">${p.diff}</span>
+      </div>
+      <div class="quiz-q">${p.q}</div>
+      ${p.code ? `<div class="quiz-code">${p.code}</div>` : ''}
+      ${bodyHtml}
+      <div class="feedback" id="fb-${p.id}"></div>
+    </div>
+  `;
+}
+
+function renderBasicProblems(){
+  const g1 = document.getElementById('basicGrid1');
+  const g2 = document.getElementById('basicGrid2');
+  g1.innerHTML = basicProblems.slice(0,5).map(p=>renderQuizBlock(p)).join('');
+  g2.innerHTML = basicProblems.slice(5,10).map(p=>renderQuizBlock(p)).join('');
+}
+
+function checkMC(id, idx){
+  const p = [...basicProblems, ...advancedProblems].find(x=>x.id===id);
+  const opts = document.querySelectorAll(`#opts-${id} .opt-btn`);
+  opts.forEach(b=>b.classList.add('disabled'));
+  const fb = document.getElementById('fb-'+id);
+  const already = attemptedSet.has(id);
+
+  if(idx === p.answer){
+    opts[idx].classList.add('correct');
+    fb.className = 'feedback show ok';
+    fb.innerHTML = `<div class="fb-title">✅ 정답입니다</div>${p.explain}`;
+    if(!already) correctCount++;
+  } else {
+    opts[idx].classList.add('wrong');
+    opts[p.answer].classList.add('correct');
+    fb.className = 'feedback show no';
+    fb.innerHTML = `<div class="fb-title">❌ 오답입니다</div>${p.explain}`;
+  }
+  attemptedSet.add(id);
+  markDone(id);
+}
+
+function checkFill(id){
+  const p = [...basicProblems, ...advancedProblems].find(x=>x.id===id);
+  const input = document.getElementById('input-'+id);
+  const val = input.value.trim().toLowerCase().replace(/\s+/g,'');
+  const correctVal = String(p.answer).toLowerCase().replace(/\s+/g,'');
+  const fb = document.getElementById('fb-'+id);
+  const already = attemptedSet.has(id);
+
+  if(val === correctVal){
+    fb.className = 'feedback show ok';
+    fb.innerHTML = `<div class="fb-title">✅ 정답입니다</div>${p.explain}`;
+    input.style.borderColor = 'var(--accent3)';
+    if(!already) correctCount++;
+  } else {
+    fb.className = 'feedback show no';
+    fb.innerHTML = `<div class="fb-title">❌ 오답입니다 (정답: ${p.answer})</div>${p.explain}`;
+    input.style.borderColor = 'var(--accent5)';
+  }
+  attemptedSet.add(id);
+  markDone(id);
+}
+</script>
+<script>
+// =========================================================
+// 3. 심화 문제 데이터 (10개)
+// =========================================================
+const advancedProblems = [
+  // ---- A1 ----
+  {
+    id:'a1', tag:'심화 01', diff:'★★★☆☆',
+    q:'다음은 비트마스크 DP의 전형적인 상태 정의입니다. <code>dp[S][v]</code>가 의미하는 바로 가장 알맞은 것은? (외판원 순회, TSP 기준)',
+    type:'mc',
+    options:[
+      '집합 S에 포함된 도시들만 방문하고 현재 v에 있을 때의 최소 비용',
+      'S번째 도시에서 v번 경로로 가는 거리',
+      'v개의 도시 중 S개를 고르는 경우의 수',
+      '도시 v를 S번 방문했을 때의 비용'
+    ],
+    answer:0,
+    explain:'TSP DP에서 dp[S][v]는 "비트마스크 S로 표현된 방문 도시 집합을 모두 방문했고, 현재 v번 도시에 있을 때의 최소 비용"을 의미합니다.'
+  },
+  // ---- A2 ----
+  {
+    id:'a2', tag:'심화 02', diff:'★★★☆☆',
+    q:'n=4(도시 0~3)인 TSP 문제에서 모든 도시를 방문한 상태를 나타내는 비트마스크 값은?',
+    type:'fill',
+    answer:'15',
+    explain:'4개의 비트가 모두 켜진 상태는 (1&lt;&lt;4)-1 = 15 = 0b1111.'
+  },
+  // ---- A3 ----
+  {
+    id:'a3', tag:'심화 03', diff:'★★★★☆',
+    code:`<span class="kw">for</span>(<span class="ty">int</span> i = <span class="nm">0</span>; i &lt; n; i++){
+    <span class="kw">if</span>(!((S &gt;&gt; i) &amp; <span class="nm">1</span>)) <span class="kw">continue</span>;
+    <span class="ty">int</span> prev = S ^ (<span class="nm">1</span> &lt;&lt; i);
+    <span class="cm">// dp[S][v] 갱신에 사용</span>
+}`,
+    q:'위 코드에서 <code>S ^ (1 &lt;&lt; i)</code>가 하는 역할로 가장 알맞은 것은?',
+    type:'mc',
+    options:[
+      'S에서 i번째 도시를 방문 집합에서 제외(이전 상태로 복원)한다',
+      'S에 i번째 도시를 추가한다',
+      'i번째 비트를 확인만 한다',
+      'S 전체를 0으로 초기화한다'
+    ],
+    answer:0,
+    explain:'이미 켜져 있는 i번째 비트를 XOR하면 꺼지므로, "i를 방문하기 직전" 상태(prev)를 복원하는 전형적인 TSP DP 패턴입니다.'
+  },
+  // ---- A4 ----
+  {
+    id:'a4', tag:'심화 04', diff:'★★★★☆',
+    q:'<code>S</code>의 모든 부분집합을 순회하는 다음 코드의 시간복잡도는? (n = 전체 원소 개수)<br><div class="quiz-code">for(int sub=S; sub; sub=(sub-1)&S){ ... }</div>',
+    type:'mc',
+    options:['O(2^n)','O(n^2)','O(3^n)','O(n log n)'],
+    answer:2,
+    explain:'모든 비트마스크 S(2^n개)에 대해 부분집합 순회를 합산하면 총 시간복잡도는 O(3^n)이 됩니다. 각 원소가 "S에 없음 / S에 있고 sub에 없음 / S에 있고 sub에도 있음" 3가지 경우 중 하나이기 때문입니다.'
+  },
+  // ---- A5 ----
+  {
+    id:'a5', tag:'심화 05', diff:'★★★★☆',
+    q:'n=15인 TSP 비트마스크 DP를 풀 때, dp 배열의 크기 <code>dp[1&lt;&lt;n][n]</code>의 총 칸 수는 대략 얼마인가? (2^15 = 32768 기준)',
+    type:'fill',
+    answer:'491520',
+    explain:'2^15 × 15 = 32768 × 15 = 491,520칸. 이처럼 비트마스크 DP는 상태 공간이 2^n에 비례해 커지므로 보통 n ≤ 20 정도에서 사용됩니다.'
+  },
+  // ---- A6 ----
+  {
+    id:'a6', tag:'심화 06', diff:'★★★★☆',
+    code:`<span class="ty">int</span> dp[<span class="nm">1</span>&lt;&lt;N][N];
+<span class="kw">for</span>(<span class="ty">int</span> S = <span class="nm">1</span>; S &lt; (<span class="nm">1</span>&lt;&lt;N); S++){
+  <span class="kw">for</span>(<span class="ty">int</span> v = <span class="nm">0</span>; v &lt; N; v++){
+    <span class="kw">if</span>(!((S&gt;&gt;v)&amp;<span class="nm">1</span>)) <span class="kw">continue</span>;
+    <span class="ty">int</span> prev = S ^ (<span class="nm">1</span>&lt;&lt;v);
+    <span class="kw">if</span>(prev == <span class="nm">0</span>) { dp[S][v] = cost[start][v]; <span class="kw">continue</span>; }
+    <span class="kw">for</span>(<span class="ty">int</span> u = <span class="nm">0</span>; u &lt; N; u++){
+      <span class="kw">if</span>(!((prev&gt;&gt;u)&amp;<span class="nm">1</span>)) <span class="kw">continue</span>;
+      dp[S][v] = min(dp[S][v], dp[prev][u] + cost[u][v]);
+    }
+  }
+}`,
+    q:'위 TSP DP 코드에서 <code>dp[prev][u] + cost[u][v]</code> 식이 의미하는 것은?',
+    type:'mc',
+    options:[
+      'u까지 방문한 최소 비용에 u→v 이동 비용을 더해 v까지 온 경우의 비용 후보',
+      'u와 v 사이의 최단 거리만 계산',
+      'prev 집합의 크기를 세는 것',
+      'v를 거치지 않고 u로 가는 비용'
+    ],
+    answer:0,
+    explain:'prev(=S에서 v를 뺀 집합)를 방문하고 u에 있던 상태에서 u→v로 이동하는 비용을 더해, "S를 방문하고 v에 도착"하는 경우의 후보값을 만드는 전형적인 점화식입니다.'
+  },
+  // ---- A7 ----
+  {
+    id:'a7', tag:'심화 07', diff:'★★★★★',
+    q:'N개의 일을 N명에게 할당하는 "작업 배정" 문제에서 비트마스크 DP로 풀 때, <code>dp[i][S]</code>의 의미로 가장 알맞은 것은? (i번째 사람까지 고려, S=배정된 작업 집합)',
+    type:'mc',
+    options:[
+      'i번째 사람까지 작업을 배정했고, S에 해당하는 작업들이 이미 배정되었을 때의 최소 비용',
+      'i번째 작업의 비용',
+      'S에 포함된 사람 수',
+      'i번째 사람이 할 수 있는 작업의 개수'
+    ],
+    answer:0,
+    explain:'할당 문제(Assignment Problem)의 전형적인 상태 정의입니다. 사람을 한 명씩 순서대로 고려하며, 이미 배정된 작업 집합 S를 비트마스크로 들고 다닙니다.'
+  },
+  // ---- A8 ----
+  {
+    id:'a8', tag:'심화 08', diff:'★★★★★',
+    q:'<code>S</code>의 여집합(전체 N개 중 S에 없는 원소들)을 구하는 식으로 알맞은 것은? (전체 비트마스크는 FULL = (1&lt;&lt;N)-1)',
+    type:'mc',
+    options:['FULL ^ S','FULL | S','S - FULL','S &lt;&lt; FULL'],
+    answer:0,
+    explain:'FULL ^ S (동일하게 FULL &amp; (~S))를 사용합니다. N비트 범위 안에서는 XOR과 AND-NOT이 같은 결과를 줍니다. FULL의 비트는 모두 1이므로, S와 XOR하면 S에 있던 비트는 꺼지고 없던 비트는 켜져 정확히 여집합이 됩니다.'
+  },
+  // ---- A9 ----
+  {
+    id:'a9', tag:'심화 09', diff:'★★★★★',
+    q:'N=18인 문제에서 비트마스크 DP(시간복잡도 O(2^N · N) 또는 O(2^N · N^2))를 적용하는 것이 합리적인 이유로 가장 알맞은 것은?',
+    type:'mc',
+    options:[
+      '2^18 ≈ 26만으로, N^2이나 N을 곱해도 1초 내 처리가 충분히 가능한 범위이기 때문에',
+      'N=18이면 항상 O(N!)보다 비트마스크가 빠르다고 보장되기 때문에',
+      'N이 짝수일 때만 비트마스크 DP가 동작하기 때문에',
+      '비트마스크는 N 크기와 무관하게 항상 가장 빠르기 때문에'
+    ],
+    answer:0,
+    explain:'2^18 = 262,144. 여기에 N(18)이나 N^2(324)을 곱해도 수천만 단위로 1초 내 충분히 처리 가능합니다. 일반적으로 N≤20 정도까지 비트마스크 DP가 실전적입니다.'
+  },
+  // ---- A10 ----
+  {
+    id:'a10', tag:'심화 10', diff:'★★★★★',
+    code:`<span class="ty">int</span> cnt[<span class="nm">1</span>&lt;&lt;N];
+<span class="kw">for</span>(<span class="ty">int</span> S = <span class="nm">0</span>; S &lt; (<span class="nm">1</span>&lt;&lt;N); S++)
+    cnt[S] = __builtin_popcount(S);
+sort(states, states+M, [&amp;](<span class="ty">int</span> a, <span class="ty">int</span> b){
+    <span class="kw">return</span> cnt[a] &lt; cnt[b];
+});`,
+    q:'위 코드처럼 상태들을 <code>popcount</code> 기준으로 정렬해서 비트마스크 DP를 처리하는 가장 큰 이유는?',
+    type:'mc',
+    options:[
+      '원소 개수가 적은 집합부터 처리해야 더 큰 집합을 만들 때 이미 계산된 작은 집합의 값을 참조할 수 있기 때문',
+      '정렬하면 시간복잡도가 O(1)로 줄어들기 때문',
+      '비트마스크는 항상 정렬된 순서로만 의미가 있기 때문',
+      '메모리 사용량을 줄이기 위해서'
+    ],
+    answer:0,
+    explain:'비트마스크 DP는 "작은 부분집합 → 큰 집합" 순서로 점화식이 의존하는 경우가 많습니다(원소를 하나씩 추가하며 전이). popcount(1의 개수) 순으로 처리하면 항상 의존하는 작은 집합이 먼저 계산되어 있음을 보장할 수 있습니다.'
+  },
+];
+
+function renderAdvancedProblems(){
+  const g1 = document.getElementById('advGrid1');
+  const g2 = document.getElementById('advGrid2');
+  g1.innerHTML = advancedProblems.slice(0,5).map(p=>renderQuizBlock(p)).join('');
+  g2.innerHTML = advancedProblems.slice(5,10).map(p=>renderQuizBlock(p)).join('');
+}
+
+// =========================================================
+// 초기화
+// =========================================================
+renderFormulaCards();
+renderBasicProblems();
+renderAdvancedProblems();
+updateProgress();
+</script>
+</body>
+</html>
