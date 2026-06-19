@@ -16,9 +16,10 @@ all   :   이산수학 전체 리뷰
 
 ppt  이산수학_1장_수의표현과연산
 http://iioiinet-spec.github.io/dmath/free1/ppt
-a0  :  모듈러 산술
-a1  :  모듈러 산술 10문제
-bit :  비트마스
+a0   :  모듈러 산술
+a1   :  모듈러 산술 10문제
+bit  :  비트마스킹
+bit2 : 비트마스킹 30문제
 
 01 이산수학_1장_문제
 http://iioiinet-spec.github.io/dmath/free1/01
