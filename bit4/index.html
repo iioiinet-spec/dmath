@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>비트마스킹 완전정복 — 세영코딩연구소</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2333;
+    --border: #30363d;
+    --green: #39d353;
+    --green-dim: #196127;
+    --cyan: #58a6ff;
+    --amber: #e3b341;
+    --red: #f85149;
+    --purple: #bc8cff;
+    --text: #e6edf3;
+    --text-dim: #8b949e;
+    --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+    --font-body: 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: linear-gradient(135deg, #0d1117 0%, #1a2332 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 2rem 2rem 1.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 80% at 50% -20%, rgba(57,211,83,.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .header-label {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--green);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: .5rem;
+  }
+  header h1 {
+    font-size: 2.4rem;
+    font-weight: 700;
+    letter-spacing: -1px;
+    line-height: 1.2;
+  }
+  header h1 span { color: var(--green); }
+  header p {
+    color: var(--text-dim);
+    margin-top: .5rem;
+    font-size: 15px;
+  }
+
+  /* ── NAV ── */
+  nav {
+    display: flex;
+    gap: 6px;
+    padding: 1rem 1.5rem;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+    position: sticky; top: 0; z-index: 100;
+  }
+  nav button {
+    font-family: var(--font-body);
+    font-size: 14px;
+    padding: .4rem 1rem;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all .2s;
+  }
+  nav button:hover { color: var(--text); border-color: var(--cyan); }
+  nav button.active { background: var(--green-dim); border-color: var(--green); color: var(--green); font-weight: 600; }
+
+  /* ── SECTIONS ── */
+  .section { display: none; padding: 2rem 1.5rem; max-width: 900px; margin: 0 auto; }
+  .section.active { display: block; }
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--cyan);
+    margin-bottom: 1.5rem;
+    padding-bottom: .6rem;
+    border-bottom: 1px solid var(--border);
+  }
+  h3 { font-size: 1.1rem; font-weight: 600; margin: 1.5rem 0 .8rem; color: var(--amber); }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .card.green { border-left: 4px solid var(--green); }
+  .card.cyan  { border-left: 4px solid var(--cyan); }
+  .card.amber { border-left: 4px solid var(--amber); }
+  .card.red   { border-left: 4px solid var(--red); }
+  .card.purple{ border-left: 4px solid var(--purple); }
+
+  /* ── BIT DISPLAY ── */
+  .bit-row {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    margin: .8rem 0;
+  }
+  .bit-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+  .bit-idx {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-dim);
+  }
+  .bit-box {
+    width: 38px; height: 38px;
+    border-radius: 6px;
+    border: 2px solid var(--border);
+    background: var(--surface2);
+    font-family: var(--font-mono);
+    font-size: 16px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: all .15s;
+    color: var(--text-dim);
+    user-select: none;
+  }
+  .bit-box.on {
+    background: var(--green-dim);
+    border-color: var(--green);
+    color: var(--green);
+    box-shadow: 0 0 8px rgba(57,211,83,.3);
+  }
+  .bit-box.hi {
+    background: rgba(88,166,255,.15);
+    border-color: var(--cyan);
+    color: var(--cyan);
+    animation: pulse .5s ease;
+  }
+  @keyframes pulse {
+    0%,100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+  }
+
+  /* ── CODE ── */
+  pre, code {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  pre {
+    background: #010409;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.2rem 1.4rem;
+    overflow-x: auto;
+    margin: .8rem 0;
+  }
+  .kw  { color: var(--red); }
+  .num { color: var(--purple); }
+  .op  { color: var(--cyan); }
+  .cmt { color: var(--text-dim); font-style: italic; }
+  .fn  { color: var(--amber); }
+  .str { color: var(--green); }
+
+  /* ── FORMULA BADGE ── */
+  .formula {
+    display: inline-block;
+    background: #010409;
+    border: 1px solid var(--cyan);
+    border-radius: 6px;
+    padding: .3rem .8rem;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--cyan);
+    margin: .3rem 0;
+  }
+
+  /* ── CONTROLS ── */
+  .ctrl-row {
+    display: flex;
+    gap: .8rem;
+    align-items: center;
+    flex-wrap: wrap;
+    margin: 1rem 0;
+  }
+  input[type=number], input[type=range] {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 15px;
+    padding: .4rem .8rem;
+  }
+  input[type=number] { width: 90px; }
+  input[type=range] { width: 160px; accent-color: var(--green); }
+  button.btn {
+    background: var(--green-dim);
+    border: 1px solid var(--green);
+    color: var(--green);
+    font-family: var(--font-body);
+    font-size: 14px;
+    padding: .45rem 1.1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all .15s;
+    font-weight: 600;
+  }
+  button.btn:hover { background: var(--green); color: #000; }
+  button.btn.secondary {
+    background: transparent;
+    border-color: var(--cyan);
+    color: var(--cyan);
+  }
+  button.btn.secondary:hover { background: var(--cyan); color: #000; }
+  button.btn.danger {
+    background: transparent;
+    border-color: var(--red);
+    color: var(--red);
+  }
+
+  /* ── RESULT TAG ── */
+  .result-box {
+    background: #010409;
+    border: 1px solid var(--green);
+    border-radius: 8px;
+    padding: 1rem 1.4rem;
+    font-family: var(--font-mono);
+    font-size: 15px;
+    color: var(--green);
+    margin-top: .8rem;
+  }
+  .result-box .label { color: var(--text-dim); font-size: 12px; margin-bottom: 2px; }
+
+  /* ── TABLE ── */
+  table { width: 100%; border-collapse: collapse; margin: .8rem 0; font-size: 14px; }
+  th {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: .5rem .8rem;
+    text-align: center;
+    font-family: var(--font-mono);
+    color: var(--cyan);
+    font-size: 13px;
+  }
+  td {
+    border: 1px solid var(--border);
+    padding: .45rem .8rem;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 13px;
+  }
+  tr:hover td { background: var(--surface2); }
+  .td-green { color: var(--green); }
+  .td-amber { color: var(--amber); }
+  .td-red   { color: var(--red); }
+  .td-cyan  { color: var(--cyan); }
+
+  /* ── SUBSET VISUALIZER ── */
+  .subset-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 1rem;
+  }
+  .subset-chip {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text-dim);
+    transition: all .2s;
+  }
+  .subset-chip.active {
+    background: rgba(57,211,83,.12);
+    border-color: var(--green);
+    color: var(--green);
+  }
+  .subset-chip.current {
+    background: rgba(227,179,65,.2);
+    border-color: var(--amber);
+    color: var(--amber);
+    font-weight: 700;
+  }
+
+  /* ── APPLY GRID (visited) ── */
+  .grid-canvas {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: .8rem;
+  }
+  .grid-row { display: flex; }
+  .grid-cell {
+    width: 40px; height: 40px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    border: 1px solid #1c2333;
+    transition: background .3s;
+    color: var(--text-dim);
+  }
+  .grid-cell.wall { background: #161b22; color: var(--border); }
+  .grid-cell.visited { background: rgba(57,211,83,.25); color: var(--green); }
+  .grid-cell.current { background: rgba(88,166,255,.35); color: var(--cyan); font-weight: 700; }
+  .grid-cell.start { background: rgba(227,179,65,.3); color: var(--amber); }
+
+  /* ── TSP table ── */
+  .tsp-badge {
+    display: inline-block;
+    background: rgba(188,140,255,.12);
+    border: 1px solid var(--purple);
+    color: var(--purple);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    border-radius: 4px;
+    padding: 1px 6px;
+  }
+
+  /* ── PROGRESS ── */
+  .progress-bar-wrap {
+    background: var(--surface2);
+    border-radius: 20px;
+    height: 8px;
+    overflow: hidden;
+    margin: .5rem 0;
+  }
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green), var(--cyan));
+    border-radius: 20px;
+    transition: width .4s;
+  }
+
+  /* ── INFO PILL ── */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: .25rem .9rem;
+    font-size: 13px;
+    font-family: var(--font-mono);
+    margin: 2px;
+  }
+  .pill .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+  }
+  .pill .dot.green { background: var(--green); }
+  .pill .dot.amber { background: var(--amber); }
+  .pill .dot.red   { background: var(--red); }
+  .pill .dot.cyan  { background: var(--cyan); }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* responsive */
+  @media (max-width: 600px) {
+    header h1 { font-size: 1.6rem; }
+    .bit-box { width: 30px; height: 30px; font-size: 13px; }
+    nav button { font-size: 12px; padding: .3rem .7rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-label">세영코딩연구소 · 중등 정보올림피아드</div>
+  <h1>비트마스킹 <span>완전정복</span></h1>
+  <p>클릭하고 실험하며 배우는 비트 연산의 모든 것</p>
+</header>
+
+<nav id="nav">
+  <button class="active" onclick="goPage(0)">① 비트 기초</button>
+  <button onclick="goPage(1)">② 핵심 공식</button>
+  <button onclick="goPage(2)">③ 집합 연산</button>
+  <button onclick="goPage(3)">④ 부분집합 열거</button>
+  <button onclick="goPage(4)">⑤ 방문 체크</button>
+  <button onclick="goPage(5)">⑥ 응용 문제</button>
+</nav>
+
+<!-- ═══════════════════════════════════════════ PAGE 0: 기초 ═══ -->
+<section class="section active" id="s0">
+  <h2>비트(Bit)란 무엇인가?</h2>
+
+  <div class="card green">
+    <strong>컴퓨터는 모든 것을 0과 1로 저장합니다.</strong><br>
+    <span style="color:var(--text-dim)">정수 하나를 32개의 칸(비트)으로 표현 → int = 32비트</span>
+  </div>
+
+  <h3>🔢 10진수 → 2진수 변환기</h3>
+  <div class="card cyan">
+    <div class="ctrl-row">
+      <label>숫자 입력:</label>
+      <input type="number" id="dec0" value="13" min="0" max="255" oninput="updateBasic()">
+      <span style="color:var(--text-dim);font-size:13px">( 0 ~ 255 )</span>
+    </div>
+    <div id="bits0" class="bit-row"></div>
+    <div id="res0" class="result-box"></div>
+  </div>
+
+  <h3>👆 비트 직접 클릭해보기</h3>
+  <div class="card amber">
+    <p style="color:var(--text-dim);font-size:14px;margin-bottom:.8rem">아래 비트를 클릭하면 0↔1이 바뀌고 10진수 값이 변합니다.</p>
+    <div id="bits1" class="bit-row"></div>
+    <div id="res1" class="result-box"></div>
+  </div>
+
+  <h3>📊 자릿값(가중치)</h3>
+  <div class="card">
+    <table>
+      <tr>
+        <th>비트 번호 (i)</th>
+        <td>7</td><td>6</td><td>5</td><td>4</td><td>3</td><td>2</td><td>1</td><td>0</td>
+      </tr>
+      <tr>
+        <th>가중치 (2<sup>i</sup>)</th>
+        <td class="td-amber">128</td><td class="td-amber">64</td><td class="td-amber">32</td>
+        <td class="td-amber">16</td><td class="td-amber">8</td><td class="td-amber">4</td>
+        <td class="td-amber">2</td><td class="td-amber">1</td>
+      </tr>
+      <tr>
+        <th>예시: 13</th>
+        <td>0</td><td>0</td><td>0</td><td>0</td>
+        <td class="td-green">1</td><td class="td-green">1</td>
+        <td>0</td><td class="td-green">1</td>
+      </tr>
+    </table>
+    <p style="font-size:14px;margin-top:.6rem;color:var(--text-dim)">
+      13 = 8 + 4 + 1 = 2³ + 2² + 2⁰
+    </p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ PAGE 1: 공식 ═══ -->
+<section class="section" id="s1">
+  <h2>핵심 비트 연산 공식</h2>
+
+  <div class="ctrl-row">
+    <label>숫자 A:</label>
+    <input type="number" id="numA" value="12" min="0" max="255" oninput="updateOps()">
+    <label>숫자 B:</label>
+    <input type="number" id="numB" value="10" min="0" max="255" oninput="updateOps()">
+    <label>비트 k:</label>
+    <input type="number" id="numK" value="2" min="0" max="7" oninput="updateOps()">
+  </div>
+
+  <!-- AND -->
+  <div class="card green">
+    <h3 style="margin-top:0;color:var(--green)">AND ( &amp; ) — 둘 다 1이어야 1</h3>
+    <div class="formula">A &amp; B</div>
+    <div id="op_and" class="result-box" style="margin-top:.6rem"></div>
+    <pre><code><span class="kw">int</span> a = <span class="num">12</span>, b = <span class="num">10</span>;
+<span class="kw">int</span> c = a <span class="op">&amp;</span> b; <span class="cmt">// 8</span></code></pre>
+    <p style="font-size:14px;color:var(--text-dim)">💡 특정 비트가 켜져 있는지 확인하는 데 사용</p>
+  </div>
+
+  <!-- OR -->
+  <div class="card cyan">
+    <h3 style="margin-top:0;color:var(--cyan)">OR ( | ) — 하나라도 1이면 1</h3>
+    <div class="formula">A | B</div>
+    <div id="op_or" class="result-box" style="border-color:var(--cyan);color:var(--cyan);margin-top:.6rem"></div>
+    <pre><code><span class="kw">int</span> c = a <span class="op">|</span> b; <span class="cmt">// 14</span></code></pre>
+    <p style="font-size:14px;color:var(--text-dim)">💡 특정 비트를 켜는(Set) 데 사용</p>
+  </div>
+
+  <!-- XOR -->
+  <div class="card amber">
+    <h3 style="margin-top:0;color:var(--amber)">XOR ( ^ ) — 다르면 1, 같으면 0</h3>
+    <div class="formula">A ^ B</div>
+    <div id="op_xor" class="result-box" style="border-color:var(--amber);color:var(--amber);margin-top:.6rem"></div>
+    <pre><code><span class="kw">int</span> c = a <span class="op">^</span> b; <span class="cmt">// 6</span></code></pre>
+    <p style="font-size:14px;color:var(--text-dim)">💡 비트 토글(켜↔끄기)에 사용</p>
+  </div>
+
+  <!-- NOT -->
+  <div class="card red">
+    <h3 style="margin-top:0;color:var(--red)">NOT ( ~ ) — 0과 1을 뒤집기</h3>
+    <div class="formula">~A</div>
+    <div id="op_not" class="result-box" style="border-color:var(--red);color:var(--red);margin-top:.6rem"></div>
+    <pre><code><span class="kw">int</span> c = <span class="op">~</span>a; <span class="cmt">// C에서 -13 (부호비트 주의)</span></code></pre>
+  </div>
+
+  <!-- SHIFT -->
+  <div class="card purple">
+    <h3 style="margin-top:0;color:var(--purple)">SHIFT ( &lt;&lt; / &gt;&gt; ) — 비트 이동</h3>
+    <div style="display:flex;gap:1rem;flex-wrap:wrap">
+      <div>
+        <div class="formula">A &lt;&lt; k</div>
+        <div id="op_shl" class="result-box" style="border-color:var(--purple);color:var(--purple);margin-top:.4rem"></div>
+      </div>
+      <div>
+        <div class="formula">A &gt;&gt; k</div>
+        <div id="op_shr" class="result-box" style="border-color:var(--purple);color:var(--purple);margin-top:.4rem"></div>
+      </div>
+    </div>
+    <pre><code><span class="cmt">// 왼쪽 시프트 = × 2^k</span>
+<span class="kw">int</span> c = a <span class="op">&lt;&lt;</span> k;
+<span class="cmt">// 오른쪽 시프트 = ÷ 2^k</span>
+<span class="kw">int</span> d = a <span class="op">&gt;&gt;</span> k;</code></pre>
+  </div>
+
+  <h3>🔬 단일 비트 조작 공식 (k번째 비트)</h3>
+  <div class="card">
+    <table>
+      <tr><th>목적</th><th>공식</th><th>결과</th></tr>
+      <tr>
+        <td>k번 비트 <span class="td-green">켜기</span> (Set)</td>
+        <td><code>A | (1 &lt;&lt; k)</code></td>
+        <td id="bit_set" class="td-green"></td>
+      </tr>
+      <tr>
+        <td>k번 비트 <span class="td-red">끄기</span> (Clear)</td>
+        <td><code>A &amp; ~(1 &lt;&lt; k)</code></td>
+        <td id="bit_clr" class="td-red"></td>
+      </tr>
+      <tr>
+        <td>k번 비트 <span class="td-amber">반전</span> (Toggle)</td>
+        <td><code>A ^ (1 &lt;&lt; k)</code></td>
+        <td id="bit_tog" class="td-amber"></td>
+      </tr>
+      <tr>
+        <td>k번 비트 <span class="td-cyan">확인</span> (Check)</td>
+        <td><code>(A &gt;&gt; k) &amp; 1</code></td>
+        <td id="bit_chk" class="td-cyan"></td>
+      </tr>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ PAGE 2: 집합 ═══ -->
+<section class="section" id="s2">
+  <h2>비트마스크로 집합(Set) 표현하기</h2>
+
+  <div class="card green">
+    <p><strong>핵심 아이디어:</strong> 원소 5개짜리 집합 {A,B,C,D,E} → 5비트로 표현</p>
+    <div class="bit-row" style="margin-top:.6rem">
+      <div class="bit-cell"><div class="bit-idx">비트4</div><div class="bit-box on">1</div><div class="bit-idx" style="color:var(--amber)">E</div></div>
+      <div class="bit-cell"><div class="bit-idx">비트3</div><div class="bit-box on">1</div><div class="bit-idx" style="color:var(--amber)">D</div></div>
+      <div class="bit-cell"><div class="bit-idx">비트2</div><div class="bit-box">0</div><div class="bit-idx" style="color:var(--amber)">C</div></div>
+      <div class="bit-cell"><div class="bit-idx">비트1</div><div class="bit-box on">1</div><div class="bit-idx" style="color:var(--amber)">B</div></div>
+      <div class="bit-cell"><div class="bit-idx">비트0</div><div class="bit-box">0</div><div class="bit-idx" style="color:var(--amber)">A</div></div>
+    </div>
+    <div class="result-box" style="margin-top:.6rem">11010₂ = 26 → 집합 {B, D, E}</div>
+  </div>
+
+  <h3>🧪 집합 연산 실험</h3>
+  <p style="color:var(--text-dim);font-size:14px;margin-bottom:1rem">원소를 클릭해서 두 집합을 구성하세요 (원소: A B C D E)</p>
+
+  <div style="display:flex;gap:1.5rem;flex-wrap:wrap">
+    <div>
+      <div style="color:var(--cyan);font-size:14px;margin-bottom:.5rem">집합 S1</div>
+      <div id="set1_bits" class="bit-row"></div>
+      <div id="set1_label" style="font-family:var(--font-mono);font-size:13px;color:var(--cyan);margin-top:.3rem"></div>
+    </div>
+    <div>
+      <div style="color:var(--amber);font-size:14px;margin-bottom:.5rem">집합 S2</div>
+      <div id="set2_bits" class="bit-row"></div>
+      <div id="set2_label" style="font-family:var(--font-mono);font-size:13px;color:var(--amber);margin-top:.3rem"></div>
+    </div>
+  </div>
+
+  <div id="set_results" class="card" style="margin-top:1.2rem"></div>
+
+  <h3>💻 코드로 보기</h3>
+  <pre><code><span class="cmt">// 원소 i가 집합 S에 있는지 확인</span>
+<span class="kw">if</span> (S <span class="op">&amp;</span> (<span class="num">1</span> <span class="op">&lt;&lt;</span> i)) { <span class="cmt">/* 있음 */</span> }
+
+<span class="cmt">// 원소 i를 집합에 추가</span>
+S <span class="op">|=</span> (<span class="num">1</span> <span class="op">&lt;&lt;</span> i);
+
+<span class="cmt">// 원소 i를 집합에서 제거</span>
+S <span class="op">&amp;=</span> <span class="op">~</span>(<span class="num">1</span> <span class="op">&lt;&lt;</span> i);
+
+<span class="cmt">// 두 집합의 합집합 (Union)</span>
+<span class="kw">int</span> U = S1 <span class="op">|</span> S2;
+
+<span class="cmt">// 두 집합의 교집합 (Intersection)</span>
+<span class="kw">int</span> I = S1 <span class="op">&amp;</span> S2;
+
+<span class="cmt">// S1에서 S2 빼기 (차집합)</span>
+<span class="kw">int</span> D = S1 <span class="op">&amp; ~</span>S2;</code></pre>
+</section>
+
+<!-- ═══════════════════════════════════════════ PAGE 3: 부분집합 ═══ -->
+<section class="section" id="s3">
+  <h2>부분집합 열거 (Subset Enumeration)</h2>
+
+  <div class="card amber">
+    <strong>핵심 트릭: S의 모든 부분집합을 순서대로 방문</strong>
+    <pre style="margin-top:.6rem"><code><span class="kw">for</span> (<span class="kw">int</span> sub = S; sub <span class="op">&gt;</span> <span class="num">0</span>; sub = (sub <span class="op">-</span> <span class="num">1</span>) <span class="op">&amp;</span> S) {
+    <span class="cmt">// sub는 S의 부분집합</span>
+    process(sub);
+}
+<span class="cmt">// 공집합(0)도 포함하려면:</span>
+<span class="kw">for</span> (<span class="kw">int</span> sub = S; ; sub = (sub <span class="op">-</span> <span class="num">1</span>) <span class="op">&amp;</span> S) {
+    process(sub);
+    <span class="kw">if</span> (sub <span class="op">==</span> <span class="num">0</span>) <span class="kw">break</span>;
+}</code></pre>
+    <p style="font-size:14px;color:var(--text-dim);margin-top:.5rem">
+      원소 n개인 집합의 부분집합 수: <strong style="color:var(--amber)">2ⁿ</strong>개
+    </p>
+  </div>
+
+  <h3>🎬 시각화 — 집합 S를 선택하세요</h3>
+  <div class="ctrl-row">
+    <label>집합 S (비트마스크):</label>
+    <input type="number" id="subS" value="7" min="1" max="31" oninput="renderSubsets()">
+    <button class="btn" onclick="animateSubsets()">▶ 순서대로 보기</button>
+    <button class="btn secondary" onclick="resetSubsets()">초기화</button>
+  </div>
+
+  <div id="sub_info" class="result-box" style="margin-bottom:.8rem"></div>
+  <div id="subset_grid" class="subset-grid"></div>
+
+  <h3>📐 왜 (sub-1) &amp; S 인가?</h3>
+  <div class="card">
+    <p style="font-size:14px;color:var(--text-dim)">
+      예) S = 0111 (={A,B,C}), sub = 0110 (={B,C})<br>
+      <br>
+      sub - 1 = 0101 → &amp; S = 0101 (={A,C}) ← 다음 부분집합<br>
+      <br>
+      <strong style="color:var(--cyan)">sub-1은 sub의 가장 낮은 비트를 끄고 그 아래를 모두 1로 채웁니다.<br>
+      &amp; S는 S에 없는 비트를 제거합니다. → S 안에서만 순회!</strong>
+    </p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ PAGE 4: 방문 체크 ═══ -->
+<section class="section" id="s4">
+  <h2>비트마스크로 방문 체크</h2>
+
+  <div class="card cyan">
+    <strong>배열 visited[] 대신 정수 하나로 방문 여부 관리!</strong>
+    <pre style="margin-top:.6rem"><code><span class="cmt">// 기존 방법 (배열)</span>
+<span class="kw">bool</span> visited[N] = {<span class="num">false</span>};
+visited[i] = <span class="num">true</span>;
+
+<span class="cmt">// 비트마스크 방법 (정수 하나)</span>
+<span class="kw">int</span> visited = <span class="num">0</span>;
+visited <span class="op">|=</span> (<span class="num">1</span> <span class="op">&lt;&lt;</span> i);  <span class="cmt">// i번 방문</span>
+<span class="kw">if</span> (visited <span class="op">&amp;</span> (<span class="num">1</span> <span class="op">&lt;&lt;</span> i)) { <span class="cmt">/* 방문함 */</span> }</code></pre>
+  </div>
+
+  <h3>🗺️ 미로 탐색 시뮬레이터</h3>
+  <p style="font-size:14px;color:var(--text-dim);margin-bottom:.8rem">
+    격자 크기 5×5 = 25칸, 각 칸을 비트 번호로 표현합니다.<br>
+    BFS로 탐색하면서 visited 비트마스크가 어떻게 바뀌는지 확인하세요.
+  </p>
+
+  <div class="ctrl-row">
+    <button class="btn" id="bfsBtn" onclick="startBFS()">▶ BFS 시작</button>
+    <button class="btn secondary" onclick="resetBFS()">초기화</button>
+    <span style="font-size:13px;color:var(--text-dim)">시작: (0,0) 목표: 벽 피하며 전체 방문</span>
+  </div>
+
+  <div style="display:flex;gap:1.5rem;flex-wrap:wrap;align-items:flex-start">
+    <div>
+      <div id="grid_canvas" class="grid-canvas"></div>
+    </div>
+    <div style="flex:1;min-width:200px">
+      <div id="bfs_visited" class="result-box" style="font-size:13px;line-height:2"></div>
+    </div>
+  </div>
+
+  <h3>💻 방문 체크 공식 정리</h3>
+  <table>
+    <tr><th>동작</th><th>코드</th></tr>
+    <tr><td>i번 방문 표시</td><td><code class="td-green">visited |= (1 &lt;&lt; i);</code></td></tr>
+    <tr><td>i번 방문 취소 (백트래킹)</td><td><code class="td-red">visited &amp;= ~(1 &lt;&lt; i);</code></td></tr>
+    <tr><td>i번 방문 여부 확인</td><td><code class="td-cyan">if (visited &amp; (1 &lt;&lt; i))</code></td></tr>
+    <tr><td>모두 방문했는지 확인</td><td><code class="td-amber">if (visited == (1&lt;&lt;N)-1)</code></td></tr>
+    <tr><td>방문 노드 수 세기</td><td><code>__builtin_popcount(visited)</code></td></tr>
+  </table>
+</section>
+
+<!-- ═══════════════════════════════════════════ PAGE 5: 응용 ═══ -->
+<section class="section" id="s5">
+  <h2>실전 응용 — KOI 단골 패턴</h2>
+
+  <!-- 5-1: N-Queen bits -->
+  <div class="card green">
+    <h3 style="margin-top:0;color:var(--green)">① 비트마스크 DP — 외판원 문제 (TSP)</h3>
+    <p style="font-size:14px;color:var(--text-dim);margin-bottom:.8rem">
+      N개 도시를 모두 방문하는 최단 경로.<br>
+      <strong style="color:var(--text)">dp[visited][city]</strong> — visited: 방문한 도시 집합 (비트마스크), city: 현재 도시
+    </p>
+    <pre><code><span class="cmt">// 도시 수 N, 거리 dist[i][j]</span>
+<span class="kw">int</span> dp[<span class="num">1</span><span class="op">&lt;&lt;</span>N][N]; <span class="cmt">// 2^N × N 테이블</span>
+
+<span class="kw">for</span> (<span class="kw">int</span> visited = <span class="num">0</span>; visited <span class="op">&lt;</span> (<span class="num">1</span><span class="op">&lt;&lt;</span>N); visited++) {
+  <span class="kw">for</span> (<span class="kw">int</span> cur = <span class="num">0</span>; cur <span class="op">&lt;</span> N; cur++) {
+    <span class="kw">if</span> (<span class="op">!</span>(visited <span class="op">&amp;</span> (<span class="num">1</span><span class="op">&lt;&lt;</span>cur))) <span class="kw">continue</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> next = <span class="num">0</span>; next <span class="op">&lt;</span> N; next++) {
+      <span class="kw">if</span> (visited <span class="op">&amp;</span> (<span class="num">1</span><span class="op">&lt;&lt;</span>next)) <span class="kw">continue</span>; <span class="cmt">// 이미 방문</span>
+      <span class="kw">int</span> nv = visited <span class="op">|</span> (<span class="num">1</span><span class="op">&lt;&lt;</span>next);
+      dp[nv][next] = <span class="fn">min</span>(dp[nv][next],
+                         dp[visited][cur] <span class="op">+</span> dist[cur][next]);
+    }
+  }
+}</code></pre>
+
+    <h3>🎮 TSP 시뮬레이터 (4개 도시)</h3>
+    <div id="tsp_area"></div>
+    <button class="btn" onclick="runTSP()" style="margin-top:.8rem">▶ 모든 경로 계산</button>
+  </div>
+
+  <!-- 5-2: 부분합 -->
+  <div class="card cyan">
+    <h3 style="margin-top:0;color:var(--cyan)">② 비트마스크로 부분집합 합 구하기</h3>
+    <p style="font-size:14px;color:var(--text-dim);margin-bottom:.8rem">
+      배열에서 합이 목표값인 부분집합 찾기
+    </p>
+    <div class="ctrl-row">
+      <label>배열 (공백 구분):</label>
+      <input type="text" id="arr_input" value="3 1 4 2 5"
+        style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--font-mono);font-size:14px;padding:.4rem .7rem;width:160px">
+      <label>목표 합:</label>
+      <input type="number" id="target_sum" value="7" min="1"
+        style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--font-mono);font-size:14px;padding:.4rem .7rem;width:70px">
+      <button class="btn" onclick="findSubsetSum()">탐색</button>
+    </div>
+    <div id="subset_sum_result" style="margin-top:.8rem"></div>
+    <pre style="margin-top:.8rem"><code><span class="kw">int</span> arr[] = {<span class="num">3</span>, <span class="num">1</span>, <span class="num">4</span>, <span class="num">2</span>, <span class="num">5</span>};
+<span class="kw">int</span> n = <span class="num">5</span>, target = <span class="num">7</span>;
+<span class="kw">for</span> (<span class="kw">int</span> mask = <span class="num">0</span>; mask <span class="op">&lt;</span> (<span class="num">1</span><span class="op">&lt;&lt;</span>n); mask++) {
+    <span class="kw">int</span> sum = <span class="num">0</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">0</span>; i <span class="op">&lt;</span> n; i++)
+        <span class="kw">if</span> (mask <span class="op">&amp;</span> (<span class="num">1</span><span class="op">&lt;&lt;</span>i)) sum <span class="op">+=</span> arr[i];
+    <span class="kw">if</span> (sum <span class="op">==</span> target) <span class="fn">print</span>(mask);
+}</code></pre>
+  </div>
+
+  <!-- 5-3: popcount -->
+  <div class="card amber">
+    <h3 style="margin-top:0;color:var(--amber)">③ popcount — 켜진 비트 수 세기</h3>
+    <div class="ctrl-row">
+      <label>숫자:</label>
+      <input type="number" id="pop_n" value="13" min="0" max="255" oninput="calcPopcount()">
+    </div>
+    <div id="pop_bits" class="bit-row" style="margin:.6rem 0"></div>
+    <div id="pop_result" class="result-box"></div>
+    <pre style="margin-top:.8rem"><code><span class="cmt">// C++ 내장 함수 (가장 빠름)</span>
+<span class="kw">int</span> cnt = __builtin_popcount(n);
+
+<span class="cmt">// 직접 구현 (Brian Kernighan 알고리즘)</span>
+<span class="kw">int</span> <span class="fn">countBits</span>(<span class="kw">int</span> n) {
+    <span class="kw">int</span> cnt = <span class="num">0</span>;
+    <span class="kw">while</span> (n) { n <span class="op">&amp;=</span> (n <span class="op">-</span> <span class="num">1</span>); cnt<span class="op">++</span>; }
+    <span class="kw">return</span> cnt;
+}
+<span class="cmt">// n &= (n-1) 은 가장 낮은 1비트를 끔!</span></code></pre>
+  </div>
+
+  <!-- 5-4: LSB -->
+  <div class="card purple">
+    <h3 style="margin-top:0;color:var(--purple)">④ 최하위 비트 (LSB) 추출</h3>
+    <div class="ctrl-row">
+      <label>숫자:</label>
+      <input type="number" id="lsb_n" value="12" min="1" max="255" oninput="calcLSB()">
+    </div>
+    <div id="lsb_bits" class="bit-row" style="margin:.6rem 0"></div>
+    <div id="lsb_result" class="result-box" style="border-color:var(--purple);color:var(--purple)"></div>
+    <pre style="margin-top:.8rem"><code><span class="cmt">// 가장 낮은 1비트 하나만 남기기</span>
+<span class="kw">int</span> lsb = n <span class="op">&amp;</span> (<span class="op">-</span>n);   <span class="cmt">// 또는 n & ~(n-1)</span>
+
+<span class="cmt">// 예) n = 12 = 1100₂</span>
+<span class="cmt">//     -n = ...0100₂ (2의 보수)</span>
+<span class="cmt">// n & (-n) = 0100₂ = 4 ✓</span>
+
+<span class="cmt">// 펜윅 트리(BIT)에서 핵심 연산!</span></code></pre>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0;color:var(--text)">📋 KOI 비트마스킹 공식 한눈에 보기</h3>
+    <table>
+      <tr><th>공식</th><th>의미</th><th>사용처</th></tr>
+      <tr><td><code>(1 &lt;&lt; i)</code></td><td>i번 원소만 있는 집합</td><td class="td-green">집합 초기화</td></tr>
+      <tr><td><code>S | (1&lt;&lt;i)</code></td><td>i번 원소 추가</td><td class="td-cyan">집합 삽입</td></tr>
+      <tr><td><code>S &amp; ~(1&lt;&lt;i)</code></td><td>i번 원소 제거</td><td class="td-red">집합 삭제</td></tr>
+      <tr><td><code>S &amp; (1&lt;&lt;i)</code></td><td>i번 포함 여부</td><td class="td-amber">소속 확인</td></tr>
+      <tr><td><code>(1&lt;&lt;N)-1</code></td><td>N개 원소 전체 집합</td><td class="td-green">초기화</td></tr>
+      <tr><td><code>sub=(sub-1)&amp;S</code></td><td>다음 부분집합</td><td class="td-cyan">부분집합 열거</td></tr>
+      <tr><td><code>n &amp; (-n)</code></td><td>최하위 1비트</td><td class="td-purple">BIT/펜윅트리</td></tr>
+      <tr><td><code>n &amp; (n-1)</code></td><td>최하위 1비트 제거</td><td class="td-amber">popcount</td></tr>
+      <tr><td><code>__builtin_popcount</code></td><td>1비트 개수</td><td class="td-green">집합 크기</td></tr>
+    </table>
+  </div>
+</section>
+
+<script>
+// ══════════════════════════════════════
+//  NAVIGATION
+// ══════════════════════════════════════
+const navBtns = document.querySelectorAll('nav button');
+const sections = document.querySelectorAll('.section');
+
+function goPage(n) {
+  navBtns.forEach((b,i) => b.classList.toggle('active', i===n));
+  sections.forEach((s,i) => s.classList.toggle('active', i===n));
+  if (n===0) { updateBasic(); initClickBits(); }
+  if (n===1) updateOps();
+  if (n===2) initSetBits();
+  if (n===3) { renderSubsets(); }
+  if (n===4) { initBFS(); }
+  if (n===5) { initTSP(); calcPopcount(); calcLSB(); }
+}
+
+// ══════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════
+function toBin(n, bits=8) {
+  return n.toString(2).padStart(bits,'0');
+}
+function toDecFromBits(arr) { // arr[0]=MSB
+  return arr.reduce((acc,v,i)=>acc+(v<<(arr.length-1-i)),0);
+}
+function makeBitRow(container, val, bits=8, opts={}) {
+  container.innerHTML='';
+  for (let i=bits-1; i>=0; i--) {
+    const cell = document.createElement('div'); cell.className='bit-cell';
+    const idx = document.createElement('div'); idx.className='bit-idx'; idx.textContent=i;
+    const box = document.createElement('div');
+    box.className='bit-box' + ((val>>i)&1?' on':'');
+    box.textContent=(val>>i)&1;
+    if (opts.labels) {
+      const lbl = document.createElement('div');
+      lbl.className='bit-idx'; lbl.style.color='var(--amber)';
+      lbl.textContent=opts.labels[bits-1-i]||'';
+      cell.append(idx,box,lbl);
+    } else {
+      cell.append(idx,box);
+    }
+    if (opts.click) {
+      box.style.cursor='pointer';
+      box.onclick = () => opts.click(i, box, container);
+    }
+    if (opts.highlight && opts.highlight.includes(i)) {
+      box.classList.add('hi');
+    }
+    container.appendChild(cell);
+  }
+}
+
+// ══════════════════════════════════════
+//  PAGE 0: BASIC
+// ══════════════════════════════════════
+function updateBasic() {
+  const v = parseInt(document.getElementById('dec0').value)||0;
+  const c = document.getElementById('bits0');
+  makeBitRow(c, v, 8);
+  document.getElementById('res0').innerHTML =
+    `<div class="label">결과</div>${v} (10진수) = ${toBin(v,8)} (2진수)`;
+}
+
+let clickVal = 0;
+function initClickBits() {
+  clickVal = 0;
+  renderClickBits();
+}
+function renderClickBits() {
+  const c = document.getElementById('bits1');
+  makeBitRow(c, clickVal, 8, {
+    click: (i) => {
+      clickVal ^= (1<<i);
+      renderClickBits();
+    }
+  });
+  document.getElementById('res1').innerHTML =
+    `<div class="label">현재 값</div>${clickVal} (10진수) = ${toBin(clickVal,8)} (2진수) = 0x${clickVal.toString(16).toUpperCase().padStart(2,'0')} (16진수)`;
+}
+
+// ══════════════════════════════════════
+//  PAGE 1: OPS
+// ══════════════════════════════════════
+function updateOps() {
+  const A = parseInt(document.getElementById('numA').value)||0;
+  const B = parseInt(document.getElementById('numB').value)||0;
+  const k = parseInt(document.getElementById('numK').value)||0;
+
+  function opBox(el, val, color, extra='') {
+    const e = document.getElementById(el);
+    if (!e) return;
+    e.style.borderColor = color; e.style.color = color;
+    e.innerHTML = `<div class="label">${extra}</div>
+      ${val} (10진수) = ${toBin(val&0xFF,8)} (2진수)`;
+  }
+
+  // bit rows
+  const mkRow = (id,val,hi=[]) => {
+    const el = document.getElementById(id);
+    if (el) makeBitRow(el, val, 8, {highlight: hi});
+  };
+
+  opBox('op_and', A&B, 'var(--green)', `A=${A}, B=${B}, A&B =`);
+  opBox('op_or',  A|B, 'var(--cyan)',  `A=${A}, B=${B}, A|B =`);
+  opBox('op_xor', A^B, 'var(--amber)', `A=${A}, B=${B}, A^B =`);
+  const notA = (~A) & 0xFF;
+  opBox('op_not', notA, 'var(--red)', `~${A} (하위 8비트) =`);
+  opBox('op_shl', (A<<k)&0xFF, 'var(--purple)', `${A} << ${k} =`);
+  opBox('op_shr', A>>k, 'var(--purple)', `${A} >> ${k} =`);
+
+  const setV = A|(1<<k), clrV = A&(~(1<<k)), togV = A^(1<<k), chkV = (A>>k)&1;
+  document.getElementById('bit_set').textContent = `${setV} (${toBin(setV&0xFF,8)})`;
+  document.getElementById('bit_clr').textContent = `${clrV&0xFF} (${toBin(clrV&0xFF,8)})`;
+  document.getElementById('bit_tog').textContent = `${togV&0xFF} (${toBin(togV&0xFF,8)})`;
+  document.getElementById('bit_chk').textContent = chkV ? `1 (켜짐)` : `0 (꺼짐)`;
+}
+
+// ══════════════════════════════════════
+//  PAGE 2: SET
+// ══════════════════════════════════════
+let s1=0b01010, s2=0b11000;
+const labels=['A','B','C','D','E'];
+
+function initSetBits() {
+  renderSetBits();
+}
+function renderSetBits() {
+  const mk = (id, val, color) => {
+    const c = document.getElementById(id);
+    c.innerHTML='';
+    for (let i=4; i>=0; i--) {
+      const cell=document.createElement('div'); cell.className='bit-cell';
+      const idx=document.createElement('div'); idx.className='bit-idx'; idx.textContent=i;
+      const box=document.createElement('div');
+      box.className='bit-box'+((val>>i)&1?' on':'');
+      box.textContent=(val>>i)&1;
+      box.style.cursor='pointer';
+      const lbl=document.createElement('div');
+      lbl.className='bit-idx'; lbl.style.color='var(--amber)';
+      lbl.textContent=labels[i];
+      box.onclick=()=>{
+        if (id==='set1_bits') s1^=(1<<i); else s2^=(1<<i);
+        renderSetBits();
+      };
+      cell.append(idx,box,lbl); c.appendChild(cell);
+    }
+    document.getElementById(id.replace('bits','label')).textContent =
+      `= ${val} → {${labels.filter((_,j)=>(val>>j)&1).join(', ')||'∅'}}`;
+  };
+  mk('set1_bits',s1,'var(--cyan)');
+  mk('set2_bits',s2,'var(--amber)');
+
+  const uni=s1|s2, inter=s1&s2, diff1=s1&~s2, diff2=s2&~s1;
+  const fmt=(v)=>'{'+labels.filter((_,j)=>(v>>j)&1).join(', ')+'}'||'∅';
+  document.getElementById('set_results').innerHTML = `
+    <table>
+      <tr><th>연산</th><th>공식</th><th>결과 집합</th><th>비트값</th></tr>
+      <tr><td>합집합 S1∪S2</td><td><code>S1 | S2</code></td><td class="td-green">${fmt(uni)}</td><td>${uni}</td></tr>
+      <tr><td>교집합 S1∩S2</td><td><code>S1 &amp; S2</code></td><td class="td-cyan">${fmt(inter)}</td><td>${inter}</td></tr>
+      <tr><td>차집합 S1\\S2</td><td><code>S1 &amp; ~S2</code></td><td class="td-red">${fmt(diff1)}</td><td>${diff1&0x1F}</td></tr>
+      <tr><td>차집합 S2\\S1</td><td><code>S2 &amp; ~S1</code></td><td class="td-amber">${fmt(diff2)}</td><td>${diff2&0x1F}</td></tr>
+    </table>`;
+}
+
+// ══════════════════════════════════════
+//  PAGE 3: SUBSETS
+// ══════════════════════════════════════
+let subAnimTimer=null, subList=[], subIdx=0;
+
+function renderSubsets() {
+  clearInterval(subAnimTimer);
+  const S = parseInt(document.getElementById('subS').value)||0;
+  subList=[];
+  for (let sub=S; sub>0; sub=(sub-1)&S) subList.push(sub);
+  subList.push(0);
+
+  const cnt = subList.length;
+  const n = S.toString(2).replace(/0/g,'').length; // approximate
+  document.getElementById('sub_info').innerHTML =
+    `S = ${S} = ${toBin(S,5)} → 부분집합 ${cnt}개 (2^${Math.round(Math.log2(cnt))}개)`;
+
+  const grid=document.getElementById('subset_grid');
+  grid.innerHTML='';
+  subList.forEach((sub,i)=>{
+    const chip=document.createElement('div');
+    chip.className='subset-chip';
+    chip.id=`chip_${i}`;
+    chip.textContent=sub===0?'∅':'{'+labels.filter((_,j)=>(sub>>j)&1).join(',')+'} ('+sub+')';
+    grid.appendChild(chip);
+  });
+}
+
+function animateSubsets() {
+  clearInterval(subAnimTimer);
+  const chips=[...document.querySelectorAll('.subset-chip')];
+  chips.forEach(c=>c.className='subset-chip');
+  let i=0;
+  subAnimTimer=setInterval(()=>{
+    if (i>0) chips[i-1].className='subset-chip active';
+    if (i<chips.length) {
+      chips[i].className='subset-chip current';
+      chips[i].scrollIntoView({block:'nearest',behavior:'smooth'});
+    } else { clearInterval(subAnimTimer); return; }
+    i++;
+  },300);
+}
+
+function resetSubsets() {
+  clearInterval(subAnimTimer);
+  document.querySelectorAll('.subset-chip').forEach(c=>c.className='subset-chip');
+}
+
+// ══════════════════════════════════════
+//  PAGE 4: BFS VISITED
+// ══════════════════════════════════════
+const ROWS=5, COLS=5;
+const WALLS=new Set([6,7,11,16,17,22]);
+let bfsQueue=[], bfsVisited=0, bfsTimer=null, bfsRunning=false;
+const FULL=(1<<(ROWS*COLS))-1;
+
+function cellId(r,c){return r*COLS+c;}
+
+function initBFS(){
+  clearInterval(bfsTimer);
+  bfsRunning=false;
+  bfsVisited=0; bfsQueue=[];
+  document.getElementById('bfsBtn').textContent='▶ BFS 시작';
+  renderBFSGrid(0, -1);
+  updateBFSInfo();
+}
+
+function renderBFSGrid(visited, current) {
+  const g=document.getElementById('grid_canvas');
+  g.innerHTML='';
+  for (let r=0; r<ROWS; r++) {
+    const row=document.createElement('div'); row.className='grid-row';
+    for (let c=0; c<COLS; c++) {
+      const id=cellId(r,c);
+      const cell=document.createElement('div'); cell.className='grid-cell';
+      if (WALLS.has(id)) { cell.className+=' wall'; cell.textContent='▓'; }
+      else if (id===current) { cell.className+=' current'; cell.textContent=id; }
+      else if (id===0) { cell.className+=' start'; cell.textContent='S'; }
+      else if ((visited>>id)&1) { cell.className+=' visited'; cell.textContent=id; }
+      else { cell.textContent=id; }
+      row.appendChild(cell);
+    }
+    g.appendChild(row);
+  }
+}
+
+function updateBFSInfo() {
+  const cnt=bfsVisited.toString(2).replace(/0/g,'').length;
+  document.getElementById('bfs_visited').innerHTML =
+    `<div class="label">visited (2진수)</div>${toBin(bfsVisited,25).match(/.{1,5}/g).join(' ')}<br><br>` +
+    `<div class="label">방문한 칸 수</div>${cnt} / ${ROWS*COLS - WALLS.size}`;
+}
+
+function startBFS() {
+  if (bfsRunning) return;
+  bfsRunning=true;
+  document.getElementById('bfsBtn').textContent='⏳ 탐색 중...';
+  bfsQueue=[0]; bfsVisited=1<<0;
+  const dx=[-1,0,1,0], dy=[0,1,0,-1];
+
+  bfsTimer=setInterval(()=>{
+    if (!bfsQueue.length) {
+      clearInterval(bfsTimer);
+      bfsRunning=false;
+      document.getElementById('bfsBtn').textContent='✓ 완료';
+      return;
+    }
+    const cur=bfsQueue.shift();
+    const r=Math.floor(cur/COLS), c=cur%COLS;
+    renderBFSGrid(bfsVisited, cur);
+    for (let d=0; d<4; d++) {
+      const nr=r+dx[d], nc=c+dy[d];
+      if (nr<0||nr>=ROWS||nc<0||nc>=COLS) continue;
+      const nid=cellId(nr,nc);
+      if (WALLS.has(nid)) continue;
+      if ((bfsVisited>>nid)&1) continue;
+      bfsVisited|=(1<<nid);
+      bfsQueue.push(nid);
+    }
+    updateBFSInfo();
+  }, 200);
+}
+
+function resetBFS(){
+  clearInterval(bfsTimer);
+  bfsRunning=false;
+  initBFS();
+}
+
+// ══════════════════════════════════════
+//  PAGE 5: TSP
+// ══════════════════════════════════════
+const CITIES=4;
+const cityNames=['서울','부산','대구','광주'];
+const dist=[
+  [0,  400, 300, 350],
+  [400,  0, 150, 280],
+  [300,150,   0, 200],
+  [350,280, 200,   0]
+];
+
+let dp5=[], par5=[];
+
+function initTSP(){
+  const div=document.getElementById('tsp_area');
+  div.innerHTML=`
+    <p style="font-size:13px;color:var(--text-dim);margin-bottom:.5rem">
+      도시 4개: 서울(0) → 부산(1) → 대구(2) → 광주(3)<br>
+      ▶ 버튼을 눌러 dp 테이블을 채우고 최적 경로를 찾으세요.
+    </p>
+    <table id="tsp_dist_table" style="margin-bottom:1rem">
+      <tr><th></th>${cityNames.map(n=>`<th>${n}</th>`).join('')}</tr>
+      ${dist.map((row,i)=>`<tr><th>${cityNames[i]}</th>${row.map(v=>`<td>${v===0?'-':v}</td>`).join('')}</tr>`).join('')}
+    </table>
+    <div id="tsp_result"></div>`;
+}
+
+function runTSP(){
+  const INF=1e9;
+  dp5=Array.from({length:1<<CITIES},()=>Array(CITIES).fill(INF));
+  par5=Array.from({length:1<<CITIES},()=>Array(CITIES).fill(-1));
+  dp5[1][0]=0; // 서울 출발
+  let steps=[];
+  for (let vis=1;vis<(1<<CITIES);vis++) {
+    for (let cur=0;cur<CITIES;cur++) {
+      if (!(vis&(1<<cur))) continue;
+      if (dp5[vis][cur]===INF) continue;
+      for (let nxt=0;nxt<CITIES;nxt++) {
+        if (vis&(1<<nxt)) continue;
+        const nv=vis|(1<<nxt);
+        const nc=dp5[vis][cur]+dist[cur][nxt];
+        if (nc<dp5[nv][nxt]) {
+          dp5[nv][nxt]=nc;
+          par5[nv][nxt]=cur;
+          steps.push({vis,cur,nxt,nv,nc});
+        }
+      }
+    }
+  }
+  const full=(1<<CITIES)-1;
+  let best=INF, bestEnd=-1;
+  for (let c=0;c<CITIES;c++) {
+    const total=dp5[full][c]+dist[c][0];
+    if (total<best){best=total;bestEnd=c;}
+  }
+  // trace path
+  let path=[], cur=bestEnd, vis=full;
+  while (cur!==-1) { path.push(cur); const prev=par5[vis][cur]; vis^=(1<<cur); cur=prev; }
+  path.reverse(); path.push(0);
+
+  const res=document.getElementById('tsp_result');
+  res.innerHTML=`
+    <div class="result-box" style="margin-bottom:.8rem">
+      <div class="label">최단 경로</div>
+      ${path.map(c=>cityNames[c]).join(' → ')}<br>
+      <span style="color:var(--amber)">총 거리: ${best}km</span>
+    </div>
+    <div class="result-box" style="border-color:var(--purple);color:var(--purple)">
+      <div class="label">dp 테이블 (방문집합 = 전체, 각 도시 마지막 방문 최소 비용)</div>
+      ${cityNames.map((n,i)=>`${n}: dp[1111][${i}] = ${dp5[full][i]===1e9?'∞':dp5[full][i]}km`).join('<br>')}
+    </div>`;
+}
+
+// ══════════════════════════════════════
+//  PAGE 5: SUBSET SUM
+// ══════════════════════════════════════
+function findSubsetSum(){
+  const raw=document.getElementById('arr_input').value.trim().split(/\s+/).map(Number);
+  const target=parseInt(document.getElementById('target_sum').value)||0;
+  const n=raw.length;
+  const found=[];
+  for (let mask=0;mask<(1<<n);mask++){
+    let sum=0;
+    const elems=[];
+    for (let i=0;i<n;i++) if ((mask>>i)&1){sum+=raw[i];elems.push(raw[i]);}
+    if (sum===target) found.push({mask,elems,sum});
+  }
+  const div=document.getElementById('subset_sum_result');
+  if (!found.length){
+    div.innerHTML=`<div class="result-box" style="border-color:var(--red);color:var(--red)">합이 ${target}인 부분집합 없음</div>`;
+    return;
+  }
+  div.innerHTML=`<div class="result-box">
+    <div class="label">합이 ${target}인 부분집합 ${found.length}개</div>
+    ${found.map(f=>`<span class="tsp-badge">{${f.elems.join(',')}}</span> mask=${f.mask} (${toBin(f.mask,n)})`).join('<br>')}
+  </div>`;
+}
+
+// ══════════════════════════════════════
+//  PAGE 5: POPCOUNT
+// ══════════════════════════════════════
+function calcPopcount(){
+  const n=parseInt(document.getElementById('pop_n').value)||0;
+  makeBitRow(document.getElementById('pop_bits'),n,8,{
+    highlight:[...Array(8).keys()].filter(i=>(n>>i)&1)
+  });
+  const cnt=n.toString(2).replace(/[^1]/g,'').length;
+  document.getElementById('pop_result').innerHTML=
+    `<div class="label">__builtin_popcount(${n})</div>켜진 비트 수 = <strong style="color:var(--green)">${cnt}</strong>`;
+}
+
+// ══════════════════════════════════════
+//  PAGE 5: LSB
+// ══════════════════════════════════════
+function calcLSB(){
+  const n=parseInt(document.getElementById('lsb_n').value)||1;
+  const lsb=n&(-n);
+  const lsbIdx=lsb>0?Math.log2(lsb):-1;
+  makeBitRow(document.getElementById('lsb_bits'),n,8,{
+    highlight: lsbIdx>=0?[lsbIdx]:[]
+  });
+  document.getElementById('lsb_result').innerHTML=
+    `<div class="label">${n} &amp; (-${n}) = LSB</div>` +
+    `${lsb} = ${toBin(lsb,8)} → <strong>비트 ${lsbIdx}번</strong> (2^${lsbIdx})`;
+}
+
+// ══════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════
+updateBasic();
+initClickBits();
+</script>
+</body>
+</html>

@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>비트마스킹 코딩 예제 5선 — 정답 &amp; 해설</title>
+<style>
+  :root{
+    --bg-main: #fdfaf3;
+    --bg-side: #ffffff;
+    --bg-card: #ffffff;
+    --bg-card-soft: #fffdf7;
+    --border: #e8dfc8;
+    --border-strong: #d8c9a0;
+    --accent: #1f6f50;       /* 짙은 그린 - 메인 포인트 */
+    --accent-soft: #e6f4ec;
+    --accent2: #b8521e;      /* 짙은 오렌지 - 보조 포인트 */
+    --accent2-soft: #fdebde;
+    --accent3: #1f6f50;
+    --accent-red: #b3261e;
+    --accent-red-soft: #fbe9e7;
+    --accent-blue: #1a4f8b;
+    --accent-blue-soft: #e8f0fa;
+    --text-main: #2b2620;
+    --text-sub: #6b6152;
+    --text-dim: #7a6f5c;
+    --code-bg: #2b2a26;
+    --code-text: #f3ecd9;
+    --mono: 'JetBrains Mono','D2Coding','Consolas',monospace;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{
+    background:var(--bg-main);
+    color:var(--text-main);
+    font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+    font-size:19px;
+    line-height:1.75;
+    -webkit-font-smoothing:antialiased;
+    scroll-behavior:smooth;
+  }
+  code, .mono, .code-block{font-family:var(--mono);}
+  a{color:var(--accent);}
+
+  /* ===== Layout ===== */
+  .app{display:flex; min-height:100vh;}
+  .sidebar{
+    width:300px;
+    flex-shrink:0;
+    background:var(--bg-side);
+    border-right:2px solid var(--border);
+    height:100vh;
+    position:sticky;
+    top:0;
+    overflow-y:auto;
+    padding:24px 0 50px;
+  }
+  .sidebar::-webkit-scrollbar{width:9px;}
+  .sidebar::-webkit-scrollbar-thumb{background:var(--border-strong); border-radius:5px;}
+
+  .brand{
+    padding:0 22px 20px;
+    border-bottom:2px solid var(--border);
+    margin-bottom:16px;
+  }
+  .brand-title{
+    font-size:19px;
+    font-weight:800;
+    color:var(--text-main);
+    letter-spacing:-0.2px;
+  }
+  .brand-sub{
+    font-size:14px;
+    color:var(--text-dim);
+    margin-top:5px;
+    font-family:var(--mono);
+  }
+
+  .nav-group-title{
+    font-size:13px;
+    font-weight:800;
+    color:var(--text-dim);
+    text-transform:uppercase;
+    letter-spacing:0.6px;
+    padding:14px 22px 8px;
+  }
+  .nav-item{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:13px 22px;
+    font-size:16.5px;
+    font-weight:600;
+    color:var(--text-sub);
+    cursor:pointer;
+    border-left:4px solid transparent;
+    transition:all .12s ease;
+    user-select:none;
+  }
+  .nav-item:hover{ background:var(--accent-soft); color:var(--text-main); }
+  .nav-item.active{
+    background:var(--accent-soft);
+    border-left-color:var(--accent);
+    color:var(--accent);
+    font-weight:800;
+  }
+  .nav-num{
+    width:30px;
+    height:30px;
+    border-radius:8px;
+    background:var(--bg-main);
+    border:2px solid var(--border-strong);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:14px;
+    font-weight:800;
+    font-family:var(--mono);
+    color:var(--text-dim);
+    flex-shrink:0;
+  }
+  .nav-item.active .nav-num{ background:var(--accent); border-color:var(--accent); color:#fff; }
+  .nav-item.done .nav-num{ background:var(--accent2); border-color:var(--accent2); color:#fff; font-size:0;}
+  .nav-item.done .nav-num::before{content:'✓'; font-size:16px;}
+
+  /* ===== Main ===== */
+  .main{ flex:1; min-width:0; padding:44px 56px 110px; max-width:1040px; }
+  .page{display:none;}
+  .page.active{display:block; animation:fadeIn .25s ease;}
+  @keyframes fadeIn{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+
+  .page-eyebrow{
+    font-family:var(--mono);
+    font-size:15px;
+    color:var(--accent2);
+    font-weight:800;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    margin-bottom:10px;
+  }
+  .page-title{ font-size:34px; font-weight:800; letter-spacing:-0.5px; margin-bottom:14px; }
+  .page-desc{ color:var(--text-sub); font-size:18px; margin-bottom:34px; max-width:760px; }
+
+  /* ===== Hero ===== */
+  .hero{
+    background:linear-gradient(135deg, #fff7e6 0%, #fdfaf3 100%);
+    border:2px solid var(--border);
+    border-radius:20px;
+    padding:46px 44px;
+    margin-bottom:36px;
+  }
+  .hero-badge{
+    display:inline-block;
+    font-family:var(--mono);
+    font-size:14px;
+    color:#fff;
+    background:var(--accent2);
+    padding:6px 14px;
+    border-radius:24px;
+    margin-bottom:18px;
+    font-weight:800;
+  }
+  .hero h1{ font-size:38px; font-weight:800; letter-spacing:-0.7px; margin-bottom:16px; line-height:1.35; }
+  .hero p{ color:var(--text-sub); font-size:18px; max-width:620px; }
+
+  .stat-grid{ display:grid; grid-template-columns:repeat(5,1fr); gap:14px; margin:30px 0; }
+  .stat-card{
+    background:var(--bg-card);
+    border:2px solid var(--border);
+    border-radius:14px;
+    padding:18px 10px;
+    text-align:center;
+  }
+  .stat-num{ font-size:24px; font-weight:800; font-family:var(--mono); color:var(--accent); }
+  .stat-label{ font-size:13px; color:var(--text-sub); margin-top:6px; font-weight:600;}
+
+  .ex-card-list{ display:flex; flex-direction:column; gap:16px; }
+  .ex-link-card{
+    background:var(--bg-card);
+    border:2px solid var(--border);
+    border-radius:16px;
+    padding:24px 28px;
+    display:flex;
+    align-items:center;
+    gap:20px;
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .ex-link-card:hover{ border-color:var(--accent); transform:translateX(4px); box-shadow:0 4px 14px rgba(31,111,80,0.12); }
+  .ex-link-num{
+    width:54px; height:54px; flex-shrink:0;
+    border-radius:14px;
+    background:var(--accent-soft);
+    color:var(--accent);
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--mono); font-weight:800; font-size:22px;
+  }
+  .ex-link-title{ font-size:19px; font-weight:800; margin-bottom:4px; }
+  .ex-link-desc{ font-size:15px; color:var(--text-sub); }
+  .ex-link-diff{ margin-left:auto; font-family:var(--mono); font-size:15px; color:var(--accent2); white-space:nowrap; font-weight:700;}
+
+  .section-card{
+    background:var(--bg-card);
+    border:2px solid var(--border);
+    border-radius:16px;
+    padding:32px 34px;
+    margin-bottom:22px;
+  }
+  .section-card h3{ font-size:21px; margin-bottom:16px; display:flex; align-items:center; gap:10px; }
+  .section-card ul{ padding-left:24px; color:var(--text-sub); font-size:16.5px; }
+  .section-card li{ margin-bottom:8px; }
+
+  /* ===== Progress bar ===== */
+  .progress-wrap{
+    position:sticky; top:0; z-index:50;
+    background:rgba(253,250,243,0.94);
+    backdrop-filter:blur(8px);
+    padding:16px 56px;
+    border-bottom:2px solid var(--border);
+    display:flex; align-items:center; gap:18px;
+    margin:-44px -56px 34px;
+  }
+  .progress-track{
+    flex:1; height:10px; background:var(--bg-card); border-radius:6px; overflow:hidden; border:2px solid var(--border);
+  }
+  .progress-fill{
+    height:100%; background:linear-gradient(90deg, var(--accent), #2f9e6f);
+    border-radius:6px; transition:width .35s ease; width:0%;
+  }
+  .progress-text{ font-family:var(--mono); font-size:15px; color:var(--text-sub); white-space:nowrap; font-weight:700;}
+
+  /* ===== Problem layout ===== */
+  .problem-card{
+    background:var(--bg-card);
+    border:2px solid var(--border);
+    border-radius:18px;
+    padding:34px 36px;
+    margin-bottom:24px;
+  }
+  .problem-card h3{
+    font-size:21px; font-weight:800; margin-bottom:16px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .problem-card h3 .tag-pill{
+    font-family:var(--mono); font-size:13px; font-weight:800;
+    background:var(--accent-soft); color:var(--accent);
+    padding:4px 12px; border-radius:20px;
+  }
+  .problem-statement{ font-size:18px; color:var(--text-main); margin-bottom:18px; }
+  .problem-statement b{ color:var(--accent2); }
+  .io-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:8px;}
+  .io-box{
+    background:var(--bg-card-soft);
+    border:2px dashed var(--border-strong);
+    border-radius:12px;
+    padding:16px 18px;
+  }
+  .io-box .io-label{
+    font-family:var(--mono); font-size:13px; font-weight:800; color:var(--accent2);
+    text-transform:uppercase; margin-bottom:8px;
+  }
+  .io-box pre{ font-family:var(--mono); font-size:15.5px; white-space:pre-wrap; color:var(--text-main); }
+
+  .constraints{
+    font-size:15px; color:var(--text-sub); margin-top:14px;
+    background:var(--accent-blue-soft); border-radius:10px; padding:12px 16px;
+  }
+
+  /* ===== Tabs (정답코드/해설) ===== */
+  .tab-bar{ display:flex; gap:10px; margin:26px 0 16px; flex-wrap:wrap;}
+  .tab-btn{
+    background:var(--bg-card-soft);
+    border:2px solid var(--border);
+    color:var(--text-sub);
+    padding:12px 22px;
+    border-radius:12px;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+    font-family:inherit;
+    transition:all .12s ease;
+  }
+  .tab-btn:hover{ border-color:var(--accent); color:var(--accent); }
+  .tab-btn.active{ background:var(--accent); border-color:var(--accent); color:#fff; }
+  .tab-panel{ display:none; }
+  .tab-panel.active{ display:block; animation:fadeIn .2s ease; }
+
+  /* try-it-yourself reveal button */
+  .reveal-wrap{ text-align:center; padding:30px 20px; }
+  .reveal-btn{
+    background:var(--accent2);
+    color:#fff;
+    border:none;
+    padding:16px 32px;
+    border-radius:14px;
+    font-size:17px;
+    font-weight:800;
+    cursor:pointer;
+    font-family:inherit;
+    box-shadow:0 4px 0 #8a3d14;
+    transition:all .1s ease;
+  }
+  .reveal-btn:hover{ filter:brightness(1.05); }
+  .reveal-btn:active{ transform:translateY(3px); box-shadow:0 1px 0 #8a3d14; }
+  .reveal-sub{ font-size:14.5px; color:var(--text-dim); margin-top:12px; }
+
+  /* code block */
+  .code-block{
+    background:var(--code-bg);
+    color:var(--code-text);
+    border-radius:14px;
+    padding:24px 26px;
+    font-size:15.5px;
+    line-height:1.85;
+    overflow-x:auto;
+    white-space:pre;
+    margin-bottom:18px;
+    border:2px solid #44423a;
+  }
+  .code-block .kw{ color:#ff9e7a; }
+  .code-block .ty{ color:#8ecbff; }
+  .code-block .cm{ color:#9c9686; font-style:italic; }
+  .code-block .nm{ color:#e3b8ff; }
+  .code-block .fn{ color:#ffe28a; }
+  .code-block .str{ color:#b8e6a0; }
+
+  .copy-btn{
+    float:right;
+    background:var(--bg-card);
+    border:2px solid var(--border-strong);
+    color:var(--text-sub);
+    padding:7px 14px;
+    border-radius:9px;
+    font-size:13.5px;
+    font-weight:700;
+    cursor:pointer;
+    font-family:inherit;
+    margin-bottom:10px;
+  }
+  .copy-btn:hover{ border-color:var(--accent); color:var(--accent); }
+
+  /* explanation */
+  .explain-step{
+    display:flex; gap:18px;
+    margin-bottom:22px;
+    padding-bottom:22px;
+    border-bottom:2px dashed var(--border);
+  }
+  .explain-step:last-child{ border-bottom:none; margin-bottom:0; padding-bottom:0; }
+  .explain-num{
+    width:38px; height:38px; flex-shrink:0;
+    border-radius:10px;
+    background:var(--accent-blue-soft);
+    color:var(--accent-blue);
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--mono); font-weight:800; font-size:17px;
+  }
+  .explain-body h4{ font-size:18px; margin-bottom:8px; color:var(--text-main); }
+  .explain-body p{ font-size:16.5px; color:var(--text-sub); margin-bottom:8px; }
+  .explain-body .mini-code{
+    display:inline-block;
+    background:var(--accent-soft);
+    color:var(--accent);
+    font-family:var(--mono);
+    font-size:15px;
+    padding:3px 9px;
+    border-radius:7px;
+    font-weight:700;
+  }
+
+  .complexity-box{
+    display:flex; gap:14px; flex-wrap:wrap;
+    background:var(--accent2-soft);
+    border:2px solid #f0cba4;
+    border-radius:14px;
+    padding:18px 22px;
+    margin-top:20px;
+  }
+  .complexity-item{ font-size:15.5px; }
+  .complexity-item b{ color:var(--accent2); font-family:var(--mono); font-size:17px; }
+
+  .pitfall-box{
+    background:var(--accent-red-soft);
+    border:2px solid #f0c4c0;
+    border-radius:14px;
+    padding:18px 22px;
+    margin-top:18px;
+    font-size:16px;
+    color:#7a241d;
+  }
+  .pitfall-box b{ color:var(--accent-red); }
+
+  /* run simulation */
+  .sim-box{
+    background:var(--bg-card-soft);
+    border:2px solid var(--border);
+    border-radius:14px;
+    padding:22px 24px;
+    margin-top:20px;
+  }
+  .sim-controls{ display:flex; gap:12px; align-items:center; margin-bottom:16px; flex-wrap:wrap;}
+  .sim-btn{
+    background:var(--accent);
+    color:#fff;
+    border:none;
+    padding:10px 20px;
+    border-radius:10px;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+    font-family:inherit;
+  }
+  .sim-btn:hover{ filter:brightness(1.08); }
+  .sim-btn.secondary{ background:var(--bg-card); color:var(--text-sub); border:2px solid var(--border-strong); }
+  .sim-status{ font-family:var(--mono); font-size:14.5px; color:var(--text-sub); }
+  .sim-output{
+    font-family:var(--mono);
+    font-size:15px;
+    background:var(--code-bg);
+    color:var(--code-text);
+    border-radius:10px;
+    padding:16px 18px;
+    min-height:60px;
+    white-space:pre-wrap;
+    line-height:1.7;
+  }
+
+  .bitviz{ display:flex; gap:7px; margin:14px 0; flex-wrap:wrap; }
+  .bitviz .bit{
+    width:40px; height:40px; border-radius:9px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--mono); font-weight:800; font-size:16px;
+    background:var(--bg-card-soft); border:2px solid var(--border);
+    color:var(--text-dim);
+  }
+  .bitviz .bit.on{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent); }
+
+  /* ===== Nav buttons bottom ===== */
+  .page-nav{
+    display:flex; justify-content:space-between; margin-top:42px; padding-top:28px;
+    border-top:2px solid var(--border);
+  }
+  .nav-btn{
+    background:var(--bg-card);
+    border:2px solid var(--border-strong);
+    color:var(--text-main);
+    padding:14px 26px;
+    border-radius:12px;
+    font-size:16px;
+    cursor:pointer;
+    font-family:inherit;
+    font-weight:700;
+    transition:all .12s ease;
+    display:flex; align-items:center; gap:8px;
+  }
+  .nav-btn:hover{ border-color:var(--accent); color:var(--accent); }
+  .nav-btn:disabled{ opacity:0.3; cursor:default; pointer-events:none; }
+  .nav-btn.primary{ background:var(--accent); color:#fff; border-color:var(--accent); }
+  .nav-btn.primary:hover{ filter:brightness(1.08); }
+
+  @media (max-width: 900px){
+    .sidebar{ position:fixed; left:-310px; z-index:100; transition:left .25s ease; box-shadow:8px 0 30px rgba(0,0,0,0.18);}
+    .sidebar.open{ left:0; }
+    .main{ padding:28px 20px 90px; max-width:100%; }
+    .progress-wrap{ padding:14px 20px; margin:-28px -20px 26px; }
+    .stat-grid{ grid-template-columns:repeat(2,1fr); }
+    .io-grid{ grid-template-columns:1fr; }
+    .menu-toggle{ display:flex !important; }
+    .hero h1{ font-size:28px; }
+    .page-title{ font-size:26px; }
+  }
+  .menu-toggle{
+    display:none; position:fixed; top:16px; left:16px; z-index:110;
+    width:46px; height:46px;
+    background:var(--bg-card); border:2px solid var(--border-strong); border-radius:12px;
+    align-items:center; justify-content:center; cursor:pointer; color:var(--text-main); font-size:20px;
+  }
+</style>
+</head>
+<body>
+<div class="menu-toggle" id="menuToggle">☰</div>
+<div class="app">
+
+  <!-- ============ SIDEBAR ============ -->
+  <div class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-title">🔢 비트마스킹 코딩 예제</div>
+      <div class="brand-sub">정답 코드 &amp; 해설 5선</div>
+    </div>
+
+    <div class="nav-group-title">시작하기</div>
+    <div class="nav-item" data-page="0"><span class="nav-num">0</span> 개요</div>
+
+    <div class="nav-group-title">코딩 예제</div>
+    <div class="nav-item" data-page="1"><span class="nav-num">1</span> 부분집합 전체 출력</div>
+    <div class="nav-item" data-page="2"><span class="nav-num">2</span> 집합 연산 (합·교·차집합)</div>
+    <div class="nav-item" data-page="3"><span class="nav-num">3</span> 외판원 순회 (TSP DP)</div>
+    <div class="nav-item" data-page="4"><span class="nav-num">4</span> 전구 스위치 최소 횟수</div>
+    <div class="nav-item" data-page="5"><span class="nav-num">5</span> N-Queen 비트마스크</div>
+  </div>
+
+  <!-- ============ MAIN ============ -->
+  <div class="main">
+    <div class="progress-wrap">
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-text" id="progressText">0 / 5 완료</div>
+    </div>
+
+    <!-- ============ PAGE 0: 개요 ============ -->
+    <div class="page active" data-page="0">
+      <div class="hero">
+        <div class="hero-badge">CODE EXAMPLES</div>
+        <h1>비트마스킹 코딩 예제 5선</h1>
+        <p>기초 부분집합 생성부터 외판원 순회(TSP) DP, N-Queen 백트래킹까지. 각 예제는 문제 설명 → 정답 코드 → 단계별 해설 순서로 구성되어 있습니다. 정답은 버튼을 눌러야 펼쳐집니다.</p>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-num">5</div><div class="stat-label">코딩 예제</div></div>
+        <div class="stat-card"><div class="stat-num">C</div><div class="stat-label">코드 언어</div></div>
+        <div class="stat-card"><div class="stat-num">★~★★★★★</div><div class="stat-label">난이도 범위</div></div>
+        <div class="stat-card"><div class="stat-num">단계별</div><div class="stat-label">해설 방식</div></div>
+        <div class="stat-card"><div class="stat-num">KOI</div><div class="stat-label">정올 대비</div></div>
+      </div>
+
+      <div class="section-card">
+        <h3>📚 예제 목록</h3>
+        <div class="ex-card-list">
+          <div class="ex-link-card" onclick="goPage(1)">
+            <div class="ex-link-num">1</div>
+            <div>
+              <div class="ex-link-title">부분집합 전체 출력</div>
+              <div class="ex-link-desc">비트마스크로 N개 원소의 모든 부분집합을 빠짐없이 출력하기</div>
+            </div>
+            <div class="ex-link-diff">★☆☆☆☆</div>
+          </div>
+          <div class="ex-link-card" onclick="goPage(2)">
+            <div class="ex-link-num">2</div>
+            <div>
+              <div class="ex-link-title">집합 연산 (합집합·교집합·차집합)</div>
+              <div class="ex-link-desc">AND·OR·XOR로 두 집합 사이의 연산을 O(1)에 처리하기</div>
+            </div>
+            <div class="ex-link-diff">★★☆☆☆</div>
+          </div>
+          <div class="ex-link-card" onclick="goPage(3)">
+            <div class="ex-link-num">3</div>
+            <div>
+              <div class="ex-link-title">외판원 순회 (TSP, 비트마스크 DP)</div>
+              <div class="ex-link-desc">모든 도시를 한 번씩 방문하는 최소 비용 경로 — dp[S][v] 패턴</div>
+            </div>
+            <div class="ex-link-diff">★★★★☆</div>
+          </div>
+          <div class="ex-link-card" onclick="goPage(4)">
+            <div class="ex-link-num">4</div>
+            <div>
+              <div class="ex-link-title">전구 스위치 최소 횟수 (BFS + 비트마스크)</div>
+              <div class="ex-link-desc">전구 상태를 비트마스크로, 모든 스위치 조합을 BFS로 탐색하기</div>
+            </div>
+            <div class="ex-link-diff">★★★★☆</div>
+          </div>
+          <div class="ex-link-card" onclick="goPage(5)">
+            <div class="ex-link-num">5</div>
+            <div>
+              <div class="ex-link-title">N-Queen 비트마스크 백트래킹</div>
+              <div class="ex-link-desc">열·대각선 점유 상태를 비트마스크 3개로 관리해 고속 탐색하기</div>
+            </div>
+            <div class="ex-link-diff">★★★★★</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-nav">
+        <button class="nav-btn" disabled>◀ 이전</button>
+        <button class="nav-btn primary" onclick="goPage(1)">예제 1 시작하기 ▶</button>
+      </div>
+    </div>
+
+    <!-- ============ PAGE 1: 부분집합 전체 출력 ============ -->
+    <div class="page" data-page="1">
+      <div class="page-eyebrow">EXAMPLE 1 · ★☆☆☆☆</div>
+      <div class="page-title">부분집합 전체 출력</div>
+      <div class="page-desc">N개의 원소가 있을 때, 가능한 모든 부분집합(공집합 포함)을 빠짐없이 출력하는 가장 기본적인 비트마스크 패턴입니다.</div>
+
+      <div class="problem-card">
+        <h3><span class="tag-pill">문제</span> 부분집합 전체 출력</h3>
+        <div class="problem-statement">
+          정수 N과 N개의 원소가 담긴 배열 <code>arr</code>가 주어진다. <b>arr의 모든 부분집합</b>(공집합 포함, 원소 순서 유지)을 한 줄에 하나씩 출력하라. 공집합은 <code>{ }</code>로 출력한다.
+        </div>
+        <div class="io-grid">
+          <div class="io-box">
+            <div class="io-label">입력 예시</div>
+            <pre>N = 3
+arr = [1, 2, 3]</pre>
+          </div>
+          <div class="io-box">
+            <div class="io-label">출력 예시</div>
+            <pre>{ }
+{ 1 }
+{ 2 }
+{ 1 2 }
+{ 3 }
+{ 1 3 }
+{ 2 3 }
+{ 1 2 3 }</pre>
+          </div>
+        </div>
+        <div class="constraints">📌 제약조건: 1 ≤ N ≤ 20 (2^20 = 약 100만 개 부분집합까지 가능)</div>
+      </div>
+
+      <div class="reveal-wrap" id="reveal-wrap-1">
+        <button class="reveal-btn" onclick="revealAnswer(1)">🔓 정답 코드 &amp; 해설 보기</button>
+        <div class="reveal-sub">먼저 직접 풀어본 뒤 확인해보세요!</div>
+      </div>
+
+      <div id="answer-area-1" style="display:none;"></div>
+
+      <div class="page-nav">
+        <button class="nav-btn" onclick="goPage(0)">◀ 이전</button>
+        <button class="nav-btn primary" onclick="goPage(2)">예제 2 ▶</button>
+      </div>
+    </div>
+
+    <!-- ============ PAGE 2: 집합 연산 ============ -->
+    <div class="page" data-page="2">
+      <div class="page-eyebrow">EXAMPLE 2 · ★★☆☆☆</div>
+      <div class="page-title">집합 연산 (합집합·교집합·차집합)</div>
+      <div class="page-desc">두 집합을 비트마스크로 표현하면 합집합·교집합·차집합·대칭차집합을 모두 O(1)에 계산할 수 있습니다.</div>
+
+      <div class="problem-card">
+        <h3><span class="tag-pill">문제</span> 두 집합의 연산 결과 출력</h3>
+        <div class="problem-statement">
+          1번부터 N번까지의 원소 중 일부로 이루어진 두 집합 A, B가 비트마스크 정수로 주어진다(i번째 비트가 1이면 원소 i+1이 집합에 포함). <b>합집합, 교집합, A에서 B를 뺀 차집합, 대칭차집합</b>을 각각 원소 목록으로 출력하라.
+        </div>
+        <div class="io-grid">
+          <div class="io-box">
+            <div class="io-label">입력 예시</div>
+            <pre>N = 5
+A = 0b01011  (원소 1,2,4)
+B = 0b01110  (원소 2,3,4)</pre>
+          </div>
+          <div class="io-box">
+            <div class="io-label">출력 예시</div>
+            <pre>합집합:    1 2 3 4
+교집합:    2 4
+차집합(A-B): 1
+대칭차집합: 1 3</pre>
+          </div>
+        </div>
+        <div class="constraints">📌 제약조건: 1 ≤ N ≤ 30 (int 범위 내에서 충분)</div>
+      </div>
+
+      <div class="reveal-wrap" id="reveal-wrap-2">
+        <button class="reveal-btn" onclick="revealAnswer(2)">🔓 정답 코드 &amp; 해설 보기</button>
+        <div class="reveal-sub">먼저 직접 풀어본 뒤 확인해보세요!</div>
+      </div>
+
+      <div id="answer-area-2" style="display:none;"></div>
+
+      <div class="page-nav">
+        <button class="nav-btn" onclick="goPage(1)">◀ 이전</button>
+        <button class="nav-btn primary" onclick="goPage(3)">예제 3 ▶</button>
+      </div>
+    </div>
+
+    <!-- ============ PAGE 3: TSP ============ -->
+    <div class="page" data-page="3">
+      <div class="page-eyebrow">EXAMPLE 3 · ★★★★☆</div>
+      <div class="page-title">외판원 순회 (TSP, 비트마스크 DP)</div>
+      <div class="page-desc">N개의 도시를 모두 한 번씩 방문하고 출발점으로 돌아오는 최소 비용 경로를 구하는 대표적인 비트마스크 DP 문제입니다.</div>
+
+      <div class="problem-card">
+        <h3><span class="tag-pill">문제</span> 외판원 순회 (TSP)</h3>
+        <div class="problem-statement">
+          N개의 도시와 도시 간 이동 비용이 담긴 N×N 비용 행렬 <code>cost[i][j]</code>가 주어진다(이동 불가능하면 0으로 표시). <b>0번 도시에서 출발해 모든 도시를 정확히 한 번씩 방문한 뒤 다시 0번 도시로 돌아오는 최소 비용</b>을 구하라.
+        </div>
+        <div class="io-grid">
+          <div class="io-box">
+            <div class="io-label">입력 예시</div>
+            <pre>N = 4
+cost = 
+[0,10,15,20]
+[5, 0, 9,10]
+[6,13, 0,12]
+[8, 8, 9, 0]</pre>
+          </div>
+          <div class="io-box">
+            <div class="io-label">출력 예시</div>
+            <pre>35
+(0→1→3→2→0
+ = 10+10+9+6 = 35)</pre>
+          </div>
+        </div>
+        <div class="constraints">📌 제약조건: 2 ≤ N ≤ 16 (2^16 × 16 ≈ 100만, 1초 내 처리 가능)</div>
+      </div>
+
+      <div class="reveal-wrap" id="reveal-wrap-3">
+        <button class="reveal-btn" onclick="revealAnswer(3)">🔓 정답 코드 &amp; 해설 보기</button>
+        <div class="reveal-sub">먼저 직접 풀어본 뒤 확인해보세요!</div>
+      </div>
+
+      <div id="answer-area-3" style="display:none;"></div>
+
+      <div class="page-nav">
+        <button class="nav-btn" onclick="goPage(2)">◀ 이전</button>
+        <button class="nav-btn primary" onclick="goPage(4)">예제 4 ▶</button>
+      </div>
+    </div>
+
+    <!-- ============ PAGE 4: 전구 스위치 ============ -->
+    <div class="page" data-page="4">
+      <div class="page-eyebrow">EXAMPLE 4 · ★★★★☆</div>
+      <div class="page-title">전구 스위치 최소 횟수 (BFS + 비트마스크)</div>
+      <div class="page-desc">N개의 전구가 일렬로 있고, 각 스위치를 누르면 특정 전구들이 토글됩니다. 모든 전구를 켜는 최소 스위치 조작 횟수를 비트마스크 BFS로 구합니다.</div>
+
+      <div class="problem-card">
+        <h3><span class="tag-pill">문제</span> 전구 모두 켜기</h3>
+        <div class="problem-statement">
+          N개의 전구가 있고(0=꺼짐, 1=켜짐), 초기 상태가 비트마스크로 주어진다. M개의 스위치가 있고, 각 스위치 i를 누르면 정해진 전구 집합(비트마스크 <code>sw[i]</code>)이 토글(XOR)된다. <b>모든 전구를 켜는 데 필요한 최소 스위치 조작 횟수</b>를 구하라. 불가능하면 -1을 출력한다.
+        </div>
+        <div class="io-grid">
+          <div class="io-box">
+            <div class="io-label">입력 예시</div>
+            <pre>N = 4 (전구 4개)
+초기상태 = 0b0000
+M = 3 (스위치 3개)
+sw[0] = 0b0011 (전구 0,1 토글)
+sw[1] = 0b0110 (전구 1,2 토글)
+sw[2] = 0b1100 (전구 2,3 토글)</pre>
+          </div>
+          <div class="io-box">
+            <div class="io-label">출력 예시</div>
+            <pre>2
+(sw[0]+sw[2] 누르면
+ 0b0011 XOR 0b1100
+ = 0b1111 → 모두 켜짐)</pre>
+          </div>
+        </div>
+        <div class="constraints">📌 제약조건: 1 ≤ N ≤ 18, 1 ≤ M ≤ 18 (상태공간 2^N을 BFS로 탐색)</div>
+      </div>
+
+      <div class="reveal-wrap" id="reveal-wrap-4">
+        <button class="reveal-btn" onclick="revealAnswer(4)">🔓 정답 코드 &amp; 해설 보기</button>
+        <div class="reveal-sub">먼저 직접 풀어본 뒤 확인해보세요!</div>
+      </div>
+
+      <div id="answer-area-4" style="display:none;"></div>
+
+      <div class="page-nav">
+        <button class="nav-btn" onclick="goPage(3)">◀ 이전</button>
+        <button class="nav-btn primary" onclick="goPage(5)">예제 5 ▶</button>
+      </div>
+    </div>
+
+    <!-- ============ PAGE 5: N-Queen ============ -->
+    <div class="page" data-page="5">
+      <div class="page-eyebrow">EXAMPLE 5 · ★★★★★</div>
+      <div class="page-title">N-Queen 비트마스크 백트래킹</div>
+      <div class="page-desc">N×N 체스판에 퀸 N개를 서로 공격하지 않게 배치하는 경우의 수를 구합니다. 열과 두 대각선의 점유 상태를 비트마스크 3개로 관리하면 매우 빠르게 풀 수 있습니다.</div>
+
+      <div class="problem-card">
+        <h3><span class="tag-pill">문제</span> N-Queen 경우의 수</h3>
+        <div class="problem-statement">
+          정수 N이 주어질 때, N×N 체스판에 퀸 N개를 서로 공격하지 못하도록 배치하는 <b>방법의 총 개수</b>를 구하라. (한 행에 정확히 하나씩 배치한다고 가정)
+        </div>
+        <div class="io-grid">
+          <div class="io-box">
+            <div class="io-label">입력 예시</div>
+            <pre>N = 8</pre>
+          </div>
+          <div class="io-box">
+            <div class="io-label">출력 예시</div>
+            <pre>92</pre>
+          </div>
+        </div>
+        <div class="constraints">📌 제약조건: 1 ≤ N ≤ 15 (비트마스크 가지치기 없이는 N=8도 매우 느려질 수 있음)</div>
+      </div>
+
+      <div class="reveal-wrap" id="reveal-wrap-5">
+        <button class="reveal-btn" onclick="revealAnswer(5)">🔓 정답 코드 &amp; 해설 보기</button>
+        <div class="reveal-sub">먼저 직접 풀어본 뒤 확인해보세요!</div>
+      </div>
+
+      <div id="answer-area-5" style="display:none;"></div>
+
+      <div class="page-nav">
+        <button class="nav-btn" onclick="goPage(4)">◀ 이전</button>
+        <button class="nav-btn primary" onclick="goPage(0)">🏠 처음으로</button>
+      </div>
+    </div>
+
+
+  </div>
+</div>
+<script>
+/* =========================================================
+   비트마스킹 코딩 예제 — 네비게이션 & 진행도
+   ========================================================= */
+const totalExamples = 5;
+let completedExamples = new Set();
+
+function updateProgress(){
+  const pct = Math.round((completedExamples.size / totalExamples) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent = `${completedExamples.size} / ${totalExamples} 완료`;
+  updateSidebarDone();
+}
+function updateSidebarDone(){
+  completedExamples.forEach(idx=>{
+    const item = document.querySelector(`.nav-item[data-page="${idx}"]`);
+    if(item) item.classList.add('done');
+  });
+}
+
+function goPage(idx){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelector(`.page[data-page="${idx}"]`).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const navItem = document.querySelector(`.nav-item[data-page="${idx}"]`);
+  if(navItem) navItem.classList.add('active');
+  window.scrollTo({top:0, behavior:'instant'});
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+document.querySelectorAll('.nav-item').forEach(item=>{
+  item.addEventListener('click', ()=> goPage(item.dataset.page));
+});
+document.getElementById('menuToggle').addEventListener('click', ()=>{
+  document.getElementById('sidebar').classList.toggle('open');
+});
+
+function revealAnswer(idx){
+  document.getElementById('reveal-wrap-'+idx).style.display = 'none';
+  const area = document.getElementById('answer-area-'+idx);
+  area.style.display = 'block';
+  area.innerHTML = renderAnswerArea(idx);
+  setTab(idx, 'code');
+  completedExamples.add(String(idx));
+  updateProgress();
+  area.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function setTab(idx, tab){
+  document.querySelectorAll(`#answer-area-${idx} .tab-btn`).forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll(`#answer-area-${idx} .tab-panel`).forEach(p=>p.classList.remove('active'));
+  document.getElementById(`tabbtn-${idx}-${tab}`).classList.add('active');
+  document.getElementById(`tabpanel-${idx}-${tab}`).classList.add('active');
+}
+
+function copyCode(idx){
+  const codeEl = document.getElementById('code-text-'+idx);
+  const text = codeEl.textContent;
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(text).then(()=>{
+      const btn = document.getElementById('copybtn-'+idx);
+      const orig = btn.textContent;
+      btn.textContent = '✅ 복사됨!';
+      setTimeout(()=>{ btn.textContent = orig; }, 1500);
+    }).catch(()=>{ fallbackCopy(text, idx); });
+  } else {
+    fallbackCopy(text, idx);
+  }
+}
+function fallbackCopy(text, idx){
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  document.body.appendChild(ta);
+  ta.select();
+  try{ document.execCommand('copy'); }catch(e){}
+  document.body.removeChild(ta);
+  const btn = document.getElementById('copybtn-'+idx);
+  btn.textContent = '✅ 복사됨!';
+  setTimeout(()=>{ btn.textContent = '📋 코드 복사'; }, 1500);
+}
+</script>
+<script>
+/* =========================================================
+   예제별 데이터 + 렌더링 함수
+   ========================================================= */
+
+function tabBarHtml(idx){
+  return `
+    <div class="tab-bar">
+      <button class="tab-btn" id="tabbtn-${idx}-code" onclick="setTab(${idx},'code')">💻 정답 코드</button>
+      <button class="tab-btn" id="tabbtn-${idx}-explain" onclick="setTab(${idx},'explain')">📖 단계별 해설</button>
+      <button class="tab-btn" id="tabbtn-${idx}-pitfall" onclick="setTab(${idx},'pitfall')">⚠️ 주의할 점</button>
+    </div>
+  `;
+}
+
+function complexityBox(time, space, note){
+  return `
+    <div class="complexity-box">
+      <div class="complexity-item">⏱ 시간복잡도: <b>${time}</b></div>
+      <div class="complexity-item">💾 공간복잡도: <b>${space}</b></div>
+      ${note ? `<div class="complexity-item">${note}</div>` : ''}
+    </div>
+  `;
+}
+
+/* ============ 예제 1: 부분집합 전체 출력 ============ */
+const ex1_code = `#include &lt;stdio.h&gt;
+
+int main(void){
+    int n;
+    int arr[20];
+
+    scanf(&quot;%d&quot;, &amp;n);
+    for(int i = 0; i &lt; n; i++){
+        scanf(&quot;%d&quot;, &amp;arr[i]);
+    }
+
+    /* 2^n 개의 모든 비트마스크를 순회 */
+    for(int bit = 0; bit &lt; (1 &lt;&lt; n); bit++){
+        printf(&quot;{ &quot;);
+        for(int i = 0; i &lt; n; i++){
+            /* bit의 i번째 비트가 1이면 arr[i]를 부분집합에 포함 */
+            if((bit &gt;&gt; i) &amp; 1){
+                printf(&quot;%d &quot;, arr[i]);
+            }
+        }
+        printf(&quot;}\n&quot;);
+    }
+    return 0;
+}`;
+
+const ex1_explain = `
+  <div class="explain-step">
+    <div class="explain-num">1</div>
+    <div class="explain-body">
+      <h4>핵심 아이디어 — 정수 하나가 부분집합 하나를 나타낸다</h4>
+      <p>원소가 N개이면 부분집합은 정확히 <span class="mini-code">2^N개</span> 존재합니다. 각 부분집합을 N자리 이진수로 표현하면, i번째 비트가 1일 때 "i번째 원소를 포함한다"는 뜻이 됩니다.</p>
+      <p>예를 들어 N=3일 때 비트마스크 <span class="mini-code">0b101</span>은 0번·2번 원소를 포함하고 1번 원소는 포함하지 않는 부분집합을 의미합니다.</p>
+    </div>
+  </div>
+  <div class="explain-step">
+    <div class="explain-num">2</div>
+    <div class="explain-body">
+      <h4>바깥 반복문 — 모든 비트마스크 순회</h4>
+      <p><span class="mini-code">for(int bit = 0; bit < (1<<n); bit++)</span> 는 0(공집합)부터 2^n - 1(전체집합)까지 가능한 모든 정수를 하나씩 순회합니다. 이 정수 하나하나가 부분집합 하나에 정확히 대응됩니다.</p>
+    </div>
+  </div>
+  <div class="explain-step">
+    <div class="explain-num">3</div>
+    <div class="explain-body">
+      <h4>안쪽 반복문 — 비트 하나씩 확인</h4>
+      <p><span class="mini-code">(bit >> i) & 1</span> 은 bit의 i번째 비트만 떼어내 확인하는 공식입니다. 이 값이 1이면 현재 부분집합(bit)에 i번째 원소가 포함되어 있다는 뜻이므로 출력합니다.</p>
+      <p>N번 비트를 모두 검사하므로 안쪽 반복문은 O(N)이 걸립니다.</p>
+    </div>
+  </div>
+  <div class="explain-step">
+    <div class="explain-num">4</div>
+    <div class="explain-body">
+      <h4>전체 정리</h4>
+      <p>2^N개의 부분집합 각각에 대해 N번씩 비트를 확인하므로, 전체 시간복잡도는 O(N · 2^N)입니다. N이 20만 되어도 약 2천만 번 연산이라 1초 안에 충분히 처리됩니다.</p>
+    </div>
+  </div>
+  ${complexityBox('O(N · 2^N)', 'O(N)', '')}
+`;
+
+const ex1_pitfall = `
+  <div class="pitfall-box">
+    <p>⚠️ <b>비트 시프트 우선순위 주의</b> — <span class="mono">(bit >> i) & 1</span> 처럼 반드시 괄호로 묶어야 합니다. <span class="mono">bit >> i & 1</span>은 컴파일은 되지만 연산자 우선순위 때문에 의도와 다르게 동작할 수 있어 항상 괄호를 쓰는 습관을 들이세요.</p>
+  </div>
+  <div class="pitfall-box">
+    <p>⚠️ <b>N이 클 때 int 오버플로</b> — N이 31 이상이면 <span class="mono">1 << n</span>이 int 범위를 넘어갑니다. N ≤ 20 정도까지가 안전하며, 더 큰 범위가 필요하면 <span class="mono">1LL << n</span>처럼 long long을 사용하세요.</p>
+  </div>
+  <div class="pitfall-box">
+    <p>⚠️ <b>공집합도 빠뜨리지 말 것</b> — bit=0일 때가 바로 공집합입니다. 반복문을 <span class="mono">bit=1</span>부터 시작하면 공집합이 누락되니 주의하세요.</p>
+  </div>
+`;
+</script>
+<script>
+/* ============ 예제 2: 집합 연산 ============ */
+const ex2_code = `#include &lt;stdio.h&gt;
+
+void printSet(int mask, int n){
+    for(int i = 0; i &lt; n; i++){
+        if((mask &gt;&gt; i) &amp; 1){
+            printf(&quot;%d &quot;, i + 1);
+        }
+    }
+    printf(&quot;\n&quot;);
+}
+
+int main(void){
+    int n, A, B;
+    scanf(&quot;%d %d %d&quot;, &amp;n, &amp;A, &amp;B);
+
+    int unionSet   = A | B;    /* 합집합: OR */
+    int interSet   = A &amp; B;    /* 교집합: AND */
+    int diffSet    = A &amp; (~B); /* 차집합 A-B: A AND (B의 보수) */
+    int symDiffSet = A ^ B;    /* 대칭차집합: XOR */
+
+    printf(&quot;합집합:    &quot;); printSet(unionSet, n);
+    printf(&quot;교집합:    &quot;); printSet(interSet, n);
+    printf(&quot;차집합(A-B): &quot;); printSet(diffSet, n);
+    printf(&quot;대칭차집합: &quot;); printSet(symDiffSet, n);
+
+    return 0;
+}`;
+
+const ex2_explain = `
+  <div class="explain-step">
+    <div class="explain-num">1</div>
+    <div class="explain-body">
+      <h4>합집합 — OR ( | )</h4>
+      <p>두 집합 중 <b>하나라도</b> 원소를 포함하면 결과에도 포함됩니다. OR 연산은 두 비트 중 하나라도 1이면 1이 되므로 그대로 합집합의 정의와 일치합니다.</p>
+      <p>예: A=0b01011, B=0b01110 → A|B = 0b01111 (원소 1,2,3,4)</p>
+    </div>
+  </div>
+  <div class="explain-step">
+    <div class="explain-num">2</div>
+    <div class="explain-body">
+      <h4>교집합 — AND ( &amp; )</h4>
+      <p>두 집합에 <b>모두</b> 포함된 원소만 결과에 남습니다. AND 연산은 두 비트가 모두 1일 때만 1이 되므로 교집합과 정확히 대응됩니다.</p>
+      <p>예: A=0b01011, B=0b01110 → A&amp;B = 0b01010 (원소 2,4)</p>
+    </div>
+  </div>
+  <div class="explain-step">
+    <div class="explain-num">3</div>
+    <div class="explain-body">
+      <h4>차집합 — A AND (NOT B)</h4>
+      <p>"A에는 있지만 B에는 없는" 원소를 구하려면, 먼저 <span class="mini-code">~B</span>로 B의 모든 비트를 반전시켜 "B에 없는 자리"를 1로 만든 뒤, A와 AND 연산을 합니다.</p>
+      <p>예: A=0b01011, B=0b01110 → ~B(하위5비트만)=0b10001 → A&amp;(~B) = 0b00001 (원소 1)</p>
+    </div>
+  </div>
+  <div class="explain-step">
+    <div class="explain-num">4</div>
+    <div class="explain-body">
+      <h4>대칭차집합 — XOR ( ^ )</h4>
+      <p>"둘 중 정확히 하나에만 포함된" 원소(합집합에서 교집합을 뺀 것)를 구할 때 사용합니다. XOR은 두 비트가 다를 때만 1이 되므로 정확히 이 정의와 일치합니다.</p>
+      <p>예: A=0b01011, B=0b01110 → A^B = 0b00101 (원소 1,3)</p>
+    </div>
+  </div>
+  ${complexityBox('O(N) (출력 포함)', 'O(1)', '연산 자체는 O(1), 출력 시 N개 비트 확인이 필요해 O(N)')}
+`;
+
+const ex2_pitfall = `
+  <div class="pitfall-box">
+    <p>⚠️ <b>NOT(~) 연산의 함정</b> — <span class="mono">~B</span>는 int의 모든 32비트를 반전시킵니다. N=5인데 B가 5비트만 쓴다면, 6번째 비트 이상도 모두 1이 되어버립니다. 차집합 결과를 출력할 때는 항상 <span class="mono">0 ≤ i < n</span> 범위 안에서만 비트를 확인해야 의도치 않은 상위 비트가 섞이지 않습니다.</p>
+  </div>
+  <div class="pitfall-box">
+    <p>⚠️ <b>차집합은 순서가 중요</b> — A-B와 B-A는 다른 결과입니다. <span class="mono">A & (~B)</span>는 A-B, <span class="mono">B & (~A)</span>는 B-A이니 문제에서 묻는 방향을 정확히 확인하세요.</p>
+  </div>
+  <div class="pitfall-box">
+    <p>⚠️ <b>대칭차집합과 합집합 헷갈리지 않기</b> — 대칭차집합(XOR)은 "둘 중 하나에만" 있는 원소이고, 합집합(OR)은 "둘 중 하나라도" 있으면 포함이라 교집합 원소까지 포함합니다. 둘을 혼동하는 실수가 흔합니다.</p>
+  </div>
+`;
+</script>
+<script>
+/* ============ 예제 3: TSP 비트마스크 DP ============ */
+const ex3_code = `#include &lt;stdio.h&gt;
+
+#define MAX_N 16
+#define MAX_STATE (1 &lt;&lt; MAX_N)
+#define INF 1000000000
+
+int n;
+int cost[MAX_N][MAX_N];
+int dp[MAX_STATE][MAX_N];
+
+int min_int(int a, int b){
+    return a &lt; b ? a : b;
+}
+
+int main(void){
+    scanf(&quot;%d&quot;, &amp;n);
+    for(int i = 0; i &lt; n; i++){
+        for(int j = 0; j &lt; n; j++){
+            scanf(&quot;%d&quot;, &amp;cost[i][j]);
+        }
+    }
+
+    int FULL = (1 &lt;&lt; n) - 1;
+
+    for(int S = 0; S &lt;= FULL; S++){
+        for(int v = 0; v &lt; n; v++){
+            dp[S][v] = INF;
+        }
+    }
+
+    dp[1][0] = 0; /* 0번 도시만 방문, 현재 0번 도시, 비용 0 */
+
+    for(int S = 1; S &lt;= FULL; S++){
+        for(int v = 0; v &lt; n; v++){
+            if(dp[S][v] == INF) continue;       /* 도달 불가능한 상태 */
+            if(!((S &gt;&gt; v) &amp; 1)) continue;       /* v가 S에 없으면 모순 */
+
+            for(int u = 0; u &lt; n; u++){
+                if((S &gt;&gt; u) &amp; 1) continue;      /* 이미 방문한 도시 */
+                if(cost[v][u] == 0) continue;   /* 이동 불가능 */
+
+                int nextS = S | (1 &lt;&lt; u);       /* u를 방문 집합에 추가 */
+                int newCost = dp[S][v] + cost[v][u];
+                dp[nextS][u] = min_int(dp[nextS][u], newCost);
+            }
+        }
+    }
+
+    int answer = INF;
+    for(int v = 1; v &lt; n; v++){
+        if(dp[FULL][v] != INF &amp;&amp; cost[v][0] != 0){
+            answer = min_int(answer, dp[FULL][v] + cost[v][0]);
+        }
+    }
+
+    printf(&quot;%d\n&quot;, answer);
+    return 0;
+}`;
+
+const ex3_explain = `
+  <div class="explain-step">
+    <div class="explain-num">1</div>
+    <div class="explain-body">
+      <h4>상태 정의 — dp[S][v]</h4>
+      <p><span class="mini-code">dp[S][v]</span> = "비트마스크 S에 해당하는 도시들을 모두 방문했고, 현재 v번 도시에 있을 때의 최소 비용"으로 정의합니다.</p>
+      <p>예를 들어 dp[0b1011][1]은 "0번, 1번, 3번 도시를 방문했고 현재 1번 도시에 있는 상태의 최소 비용"을 의미합니다.</p>
+    </div>
+  </div>
+  <div class="explain-step">
+    <div class="explain-num">2</div>
+    <div class="explain-body">
+      <h4>초기 상태</h4>
+      <p><span class="mini-code">dp[1][0] = 0</span> 으로 시작합니다. 비트마스크 1(=0b0001)은 "0번 도시만 방문했다"는 뜻이고, 출발 비용은 0이기 때문입니다. 나머지 모든 상태는 INF(도달 불가)로 초기화합니다.</p>
+    </div>
+  </div>
+  <div class="explain-step">
+    <div class="explain-num">3</div>
+    <div class="explain-body">
+      <h4>전이 — "현재 상태에서 다음 도시로 한 발 더"</h4>
+      <p>이미 v에 있는 상태(dp[S][v])에서, 아직 방문하지 않은 도시 u로 이동할 수 있다면, "S에 u를 추가한 새로운 상태"의 비용을 갱신합니다.</p>
+      <p><span class="mini-code">nextS = S | (1 << u)</span> 로 u를 방문 집합에 추가하고, <span class="mini-code">dp[nextS][u] = min(dp[nextS][u], dp[S][v] + cost[v][u])</span> 로 더 적은 비용이면 갱신합니다.</p>
+      <p>이렇게 "작은 집합 → 더 큰 집합" 순서로 자연스럽게 전이되므로, S를 1부터 FULL까지 순서대로 순회하면 항상 의존하는 이전 상태가 먼저 계산되어 있습니다.</p>
+    </div>
+  </div>
+  <div class="explain-step">
+    <div class="explain-num">4</div>
+    <div class="explain-body">
+      <h4>정답 추출 — 모든 도시 방문 후 원점 복귀</h4>
+      <p>모든 도시를 방문한 상태는 <span class="mini-code">FULL = (1<<n)-1</span> 입니다. dp[FULL][v]는 "모든 도시를 방문하고 v에서 끝난 최소 비용"이므로, 여기에 v→0 복귀 비용을 더한 값 중 최솟값이 정답입니다.</p>
+    </div>
+  </div>
+  ${complexityBox('O(2^N · N²)', 'O(2^N · N)', '상태 수(2^N×N) × 전이당 비교(N)')}
+`;
+
+const ex3_pitfall = `
+  <div class="pitfall-box">
+    <p>⚠️ <b>S에 v가 없는데 dp[S][v]를 쓰는 모순 상태</b> — 코드에서 <span class="mono">if(!((S>>v)&1)) continue;</span>로 거르는 이유입니다. dp 배열은 도달 불가능한 모순 상태도 INF로 채워져 있을 수 있으니 반드시 "v가 S에 실제로 포함되어 있는지" 같이 확인해야 안전합니다.</p>
+  </div>
+  <div class="pitfall-box">
+    <p>⚠️ <b>메모리 크기 주의</b> — <span class="mono">dp[1<<16][16]</span>은 int 기준 약 4MB×16 = 64MB 가까이 됩니다. N이 더 커지면(N=20 이상) 메모리 제한을 초과할 수 있으니 N의 최댓값을 꼭 확인하세요.</p>
+  </div>
+  <div class="pitfall-box">
+    <p>⚠️ <b>S=0 처리하지 않기</b> — S=0(아무 도시도 방문하지 않음)은 출발지 정의상 의미가 없는 상태이므로 반복문을 S=1부터 시작합니다. 0번 도시는 항상 출발점에 포함되어 있다고 가정하기 때문입니다.</p>
+  </div>
+`;
+</script>
+<script>
+/* ============ 예제 4: 전구 스위치 BFS ============ */
+const ex4_code = `#include &lt;stdio.h&gt;
+
+#define MAX_N 18
+#define MAX_STATE (1 &lt;&lt; MAX_N)
+#define MAX_M 18
+
+int sw[MAX_M];
+int dist[MAX_STATE];
+int queueArr[MAX_STATE];
+
+int main(void){
+    int n, start;
+    scanf(&quot;%d %d&quot;, &amp;n, &amp;start);  /* n: 전구 개수, start: 초기 상태 */
+
+    int m;
+    scanf(&quot;%d&quot;, &amp;m);
+    for(int i = 0; i &lt; m; i++){
+        scanf(&quot;%d&quot;, &amp;sw[i]);
+    }
+
+    int target = (1 &lt;&lt; n) - 1;   /* 모든 전구가 켜진 상태 */
+    int stateCount = 1 &lt;&lt; n;
+
+    for(int i = 0; i &lt; stateCount; i++){
+        dist[i] = -1;
+    }
+
+    int front = 0, rear = 0;
+    dist[start] = 0;
+    queueArr[rear++] = start;
+
+    while(front &lt; rear){
+        int cur = queueArr[front++];
+        if(cur == target) break;
+
+        for(int i = 0; i &lt; m; i++){
+            int next = cur ^ sw[i]; /* 스위치 i를 누르면 해당 전구들 토글 */
+            if(dist[next] == -1){
+                dist[next] = dist[cur] + 1;
+                queueArr[rear++] = next;
+            }
+        }
+    }
+
+    printf(&quot;%d\n&quot;, dist[target]); /* 도달 불가능하면 -1 */
+    return 0;
+}`;
+
+const ex4_explain = `
+  <div class="explain-step">
+    <div class="explain-num">1</div>
+    <div class="explain-body">
+      <h4>상태를 정점으로, 스위치를 간선으로</h4>
+      <p>전구의 각 상태(0~2^N-1)를 그래프의 정점이라고 생각하면, "스위치 i를 누른다"는 행동은 한 상태에서 다른 상태로 가는 간선이 됩니다. 모든 간선의 가중치가 1(스위치 한 번 = 한 단계)이므로 <b>BFS로 최단 거리(=최소 횟수)</b>를 구할 수 있습니다.</p>
+    </div>
+  </div>
+  <div class="explain-step">
+    <div class="explain-num">2</div>
+    <div class="explain-body">
+      <h4>토글 = XOR</h4>
+      <p>스위치 i를 누르면 정해진 전구들이 켜짐↔꺼짐 반전됩니다. 이것이 바로 XOR의 정의입니다: <span class="mini-code">next = cur ^ sw[i]</span>. sw[i]에서 1인 자리는 cur의 해당 비트를 뒤집고, 0인 자리는 그대로 둡니다.</p>
+    </div>
+  </div>
+  <div class="explain-step">
+    <div class="explain-num">3</div>
+    <div class="explain-body">
+      <h4>BFS로 모든 상태 탐색</h4>
+      <p>시작 상태(start)에서 출발해, 가능한 모든 스위치 조작을 한 단계씩 시도하며 아직 방문하지 않은 상태(dist == -1)만 큐에 새로 추가합니다. BFS의 특성상 처음 어떤 상태에 도달했을 때의 거리가 항상 최단 거리입니다.</p>
+    </div>
+  </div>
+  <div class="explain-step">
+    <div class="explain-num">4</div>
+    <div class="explain-body">
+      <h4>목표 상태와 정답</h4>
+      <p>"모든 전구가 켜진 상태"는 N개의 비트가 모두 1인 <span class="mini-code">target = (1<<n)-1</span>입니다. dist[target]이 바로 정답이며, 끝내 도달하지 못하면 초기화 값인 -1이 그대로 출력됩니다.</p>
+    </div>
+  </div>
+  ${complexityBox('O(2^N · M)', 'O(2^N)', '상태 수(2^N) × 상태마다 시도하는 스위치 수(M)')}
+`;
+
+const ex4_pitfall = `
+  <div class="pitfall-box">
+    <p>⚠️ <b>DFS가 아닌 BFS를 써야 하는 이유</b> — "최소 횟수"를 구하는 문제이므로 반드시 BFS를 사용해야 합니다. DFS로 풀면 도달은 하지만 최단 경로를 보장하지 않습니다.</p>
+  </div>
+  <div class="pitfall-box">
+    <p>⚠️ <b>같은 스위치를 두 번 누르면 원상복구</b> — XOR의 성질상 같은 스위치를 두 번 누르면 토글이 취소되어 의미가 없습니다. BFS에서 이미 방문한 상태(dist != -1)는 다시 큐에 넣지 않으므로 이런 비효율적인 경로는 자동으로 걸러집니다.</p>
+  </div>
+  <div class="pitfall-box">
+    <p>⚠️ <b>2^N 크기의 배열 메모리</b> — N이 18~20 정도까지는 dist 배열이 수십만~백만 칸이라 문제없지만, N이 더 커지면 메모리 제한을 초과할 수 있습니다. 문제의 제약조건에서 N의 최댓값을 꼭 확인하세요.</p>
+  </div>
+`;
+</script>
+<script>
+/* ============ 예제 5: N-Queen 비트마스크 백트래킹 ============ */
+const ex5_code = `#include &lt;stdio.h&gt;
+
+int n;
+int countAnswer = 0;
+
+/* col: 세로줄 점유, diag1: ↘ 대각선 점유, diag2: ↙ 대각선 점유 */
+void backtrack(int row, int col, int diag1, int diag2){
+    if(row == n){
+        countAnswer++;
+        return;
+    }
+
+    int all = (1 &lt;&lt; n) - 1;                  /* n개의 열만 1로 만든 마스크 */
+    int possible = all &amp; ~(col | diag1 | diag2); /* 현재 행에서 놓을 수 있는 위치 */
+
+    while(possible){
+        int pos = possible &amp; -possible;      /* 가장 오른쪽 1비트 하나 선택 */
+        possible -= pos;                    /* 선택한 위치 제거 */
+
+        backtrack(row + 1,
+                  col | pos,
+                  (diag1 | pos) &lt;&lt; 1,
+                  (diag2 | pos) &gt;&gt; 1);
+    }
+}
+
+int main(void){
+    scanf(&quot;%d&quot;, &amp;n);
+    backtrack(0, 0, 0, 0);
+    printf(&quot;%d\n&quot;, countAnswer);
+    return 0;
+}`;
+
+const ex5_explain = `
+  <div class="explain-step">
+    <div class="explain-num">1</div>
+    <div class="explain-body">
+      <h4>비트마스크 3개로 "공격받는 자리" 표현</h4>
+      <p>퀸은 같은 열, 같은 대각선(↘ 방향), 같은 대각선(↙ 방향)에 다른 퀸이 있으면 공격받습니다. 이를 각각 <span class="mini-code">col</span>(세로줄), <span class="mini-code">diag1</span>(↘ 대각선), <span class="mini-code">diag2</span>(↙ 대각선) 세 개의 비트마스크로 표현합니다. 각 비트마스크에서 1인 자리가 "이미 점유되어 못 놓는 칸"입니다.</p>
+    </div>
+  </div>
+  <div class="explain-step">
+    <div class="explain-num">2</div>
+    <div class="explain-body">
+      <h4>대각선이 한 칸씩 이동하는 이유</h4>
+      <p>한 행 내려갈 때마다 ↘ 대각선은 오른쪽으로 한 칸, ↙ 대각선은 왼쪽으로 한 칸 이동한 것과 같은 효과를 냅니다. 그래서 다음 행으로 넘어갈 때 <span class="mini-code">diag1을 왼쪽 시프트(&lt;&lt;1)</span>, <span class="mini-code">diag2를 오른쪽 시프트(&gt;&gt;1)</span> 해서 대각선의 점유 위치를 한 칸씩 옮겨줍니다.</p>
+    </div>
+  </div>
+  <div class="explain-step">
+    <div class="explain-num">3</div>
+    <div class="explain-body">
+      <h4>available — 이번 행에서 놓을 수 있는 자리만 추출</h4>
+      <p><span class="mini-code">blocked = col | diag1 | diag2</span> 로 "어느 한 이유로든 막힌 자리"를 모두 모읍니다. 그 후 <span class="mini-code">((1<<n)-1) & ~blocked</span> 로 전체 보드 범위 안에서 막히지 않은 자리만 1로 남깁니다.</p>
+    </div>
+  </div>
+  <div class="explain-step">
+    <div class="explain-num">4</div>
+    <div class="explain-body">
+      <h4>available & (-available) — 한 자리씩 꺼내 시도</h4>
+      <p>이전 학습에서 배운 "최하위 1비트 추출" 공식을 그대로 활용합니다. available에서 놓을 수 있는 자리 하나(p)를 꺼내 그 자리에 퀸을 놓아보고 재귀 호출한 뒤, <span class="mini-code">available -= p</span>로 그 자리를 제거하고 다음 후보를 시도합니다. 이 과정이 바로 "한 행에 가능한 모든 위치를 하나씩 시도"하는 백트래킹입니다.</p>
+    </div>
+  </div>
+  ${complexityBox('대략 O(N!) (가지치기로 실제론 훨씬 빠름)', 'O(N) (재귀 깊이)', '비트 연산 가지치기 덕분에 배열 기반 구현보다 수배 빠름')}
+`;
+
+const ex5_pitfall = `
+  <div class="pitfall-box">
+    <p>⚠️ <b>diag1/diag2 시프트 방향을 거꾸로 하면 안 됨</b> — diag1은 왼쪽 시프트(&lt;&lt;), diag2는 오른쪽 시프트(&gt;&gt;)입니다. 방향을 바꾸면 두 대각선의 의미가 뒤바뀌어 잘못된 결과(또는 우연히 대칭이라 맞아 보이는 결과)가 나올 수 있으니 주의하세요.</p>
+  </div>
+  <div class="pitfall-box">
+    <p>⚠️ <b>available에서 (1&lt;&lt;n)-1로 범위 제한하는 이유</b> — diag1/diag2를 시프트하다 보면 N비트 범위를 벗어난 비트가 켜질 수 있습니다. 그대로 두면 존재하지 않는 칸을 "사용 가능"으로 착각할 수 있으므로, 반드시 전체 보드 범위와 AND 연산해 잘라내야 합니다.</p>
+  </div>
+  <div class="pitfall-box">
+    <p>⚠️ <b>N=1과 N=2,3의 특수 케이스</b> — N=1은 정답이 1, N=2와 N=3은 정답이 0입니다(퀸을 서로 안 부딪히게 놓을 방법이 없음). 코드 자체는 이런 경우도 자동으로 올바르게 처리하지만, 테스트할 때 결과가 0이 나온다고 코드가 잘못됐다고 오해하지 않도록 주의하세요.</p>
+  </div>
+`;
+</script>
+<script>
+/* =========================================================
+   정답 영역 렌더링
+   ========================================================= */
+const exData = {
+  1: { code: ex1_code, explain: ex1_explain, pitfall: ex1_pitfall },
+  2: { code: ex2_code, explain: ex2_explain, pitfall: ex2_pitfall },
+  3: { code: ex3_code, explain: ex3_explain, pitfall: ex3_pitfall },
+  4: { code: ex4_code, explain: ex4_explain, pitfall: ex4_pitfall },
+  5: { code: ex5_code, explain: ex5_explain, pitfall: ex5_pitfall },
+};
+
+function renderAnswerArea(idx){
+  const d = exData[idx];
+  return `
+    ${tabBarHtml(idx)}
+    <div class="tab-panel" id="tabpanel-${idx}-code">
+      <button class="copy-btn" id="copybtn-${idx}" onclick="copyCode(${idx})">📋 코드 복사</button>
+      <div style="clear:both;"></div>
+      <div class="code-block"><span id="code-text-${idx}">${d.code}</span></div>
+    </div>
+    <div class="tab-panel" id="tabpanel-${idx}-explain">
+      <div class="problem-card" style="padding:30px 32px;">
+        ${d.explain}
+      </div>
+    </div>
+    <div class="tab-panel" id="tabpanel-${idx}-pitfall">
+      <div class="problem-card" style="padding:30px 32px;">
+        <h3 style="margin-bottom:18px;">⚠️ 자주 하는 실수 &amp; 주의사항</h3>
+        ${d.pitfall}
+      </div>
+    </div>
+  `;
+}
+
+// 초기화
+updateProgress();
+</script>
+</body>
+</html>
