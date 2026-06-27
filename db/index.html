@@ -1,0 +1,2004 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>이산수학 1장 — 수의 표현과 연산 | 세영코딩연구소</title>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Rajdhani:wght@400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg0:#05070f;
+  --bg1:#090d1a;
+  --bg2:#0e1426;
+  --bg3:#131c33;
+  --bg4:#192340;
+  --border:#1e2d4a;
+  --border2:#253560;
+
+  --lime:#b5f03d;
+  --lime2:#d4ff6a;
+  --mag:#f03dcc;
+  --mag2:#ff6ee0;
+  --sky:#3df0d4;
+  --sky2:#6efff0;
+  --amber:#f0b03d;
+  --amber2:#ffd06e;
+  --red:#f03d5f;
+  --violet:#9b6eff;
+
+  --text:#ddeeff;
+  --text2:#6a87b0;
+  --text3:#2d4060;
+
+  --mono:'Fira Code',monospace;
+  --display:'Rajdhani',sans-serif;
+  --sans:'Noto Sans KR',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg0);
+  color:var(--text);
+  font-family:var(--sans);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* scanline overlay */
+body::after{
+  content:'';
+  position:fixed;inset:0;z-index:0;
+  background:repeating-linear-gradient(
+    0deg,
+    transparent,transparent 2px,
+    rgba(0,0,0,.08) 2px,rgba(0,0,0,.08) 4px
+  );
+  pointer-events:none;
+}
+/* dot grid */
+body::before{
+  content:'';
+  position:fixed;inset:0;z-index:0;
+  background-image:radial-gradient(rgba(181,240,61,.06) 1px,transparent 1px);
+  background-size:32px 32px;
+  pointer-events:none;
+}
+
+/* ── HEADER ── */
+header{
+  position:sticky;top:0;z-index:300;
+  background:rgba(5,7,15,.95);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+}
+.hdr{
+  max-width:1140px;margin:0 auto;
+  padding:0 22px;height:52px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.logo{
+  font-family:var(--display);font-size:17px;font-weight:700;
+  color:var(--lime);letter-spacing:.06em;
+  text-shadow:0 0 20px rgba(181,240,61,.4);
+}
+.logo em{color:var(--text3);font-style:normal;font-weight:400;font-size:13px}
+.chapter-tag{
+  font-family:var(--mono);font-size:10px;font-weight:500;
+  color:var(--sky);letter-spacing:.2em;text-transform:uppercase;
+  border:1px solid rgba(61,240,212,.25);
+  padding:4px 12px;border-radius:20px;
+  box-shadow:0 0 12px rgba(61,240,212,.1);
+}
+
+/* ── TABS ── */
+.tab-nav{
+  background:var(--bg1);
+  border-bottom:1px solid var(--border);
+  overflow-x:auto;scrollbar-width:none;
+}
+.tab-nav::-webkit-scrollbar{display:none}
+.tab-ul{
+  max-width:1140px;margin:0 auto;
+  padding:0 18px;display:flex;list-style:none;
+}
+.tb{
+  background:none;border:none;cursor:pointer;
+  padding:12px 16px;
+  font-family:var(--sans);font-size:12.5px;font-weight:600;
+  color:var(--text3);white-space:nowrap;
+  border-bottom:2px solid transparent;
+  transition:all .2s;
+  display:flex;align-items:center;gap:6px;
+}
+.tb:hover{color:var(--text2)}
+.tb.on{color:var(--lime);border-bottom-color:var(--lime);text-shadow:0 0 10px rgba(181,240,61,.4)}
+
+/* ── MAIN ── */
+main{max-width:1140px;margin:0 auto;padding:28px 22px 88px;position:relative;z-index:1}
+.panel{display:none;animation:rise .3s ease}
+.panel.on{display:block}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── SECTION HEAD ── */
+.sh{margin-bottom:24px}
+.st{
+  font-family:var(--display);font-size:30px;font-weight:700;
+  letter-spacing:.02em;color:var(--text);margin-bottom:4px;
+  line-height:1.1;
+}
+.st .hl{color:var(--lime);text-shadow:0 0 20px rgba(181,240,61,.35)}
+.ss{font-family:var(--mono);font-size:11px;color:var(--text3);letter-spacing:.12em}
+
+/* ── CARD ── */
+.card{
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:12px;padding:22px 24px;
+  margin-bottom:18px;
+}
+.card-hd{
+  font-family:var(--mono);font-size:12px;font-weight:600;
+  color:var(--sky);margin-bottom:14px;
+  display:flex;align-items:center;gap:8px;
+  letter-spacing:.04em;
+}
+.card-hd .sub{
+  font-size:10px;color:var(--text3);font-weight:400;
+  background:var(--bg3);padding:2px 8px;border-radius:10px;
+  margin-left:4px;letter-spacing:.06em;
+}
+
+/* ── INFOBOX ── */
+.ib{
+  padding:14px 18px;border-radius:0 10px 10px 0;
+  font-size:13px;line-height:1.85;color:var(--text);
+  margin-bottom:16px;
+}
+.ib-lime{background:rgba(181,240,61,.05);border-left:3px solid var(--lime)}
+.ib-mag {background:rgba(240,61,204,.05);border-left:3px solid var(--mag)}
+.ib-sky {background:rgba(61,240,212,.05);border-left:3px solid var(--sky)}
+.ib-red {background:rgba(240,61,95,.05); border-left:3px solid var(--red)}
+.ib strong{color:var(--lime2)}
+.ib .ib-sky strong{color:var(--sky2)}
+.ib code{
+  font-family:var(--mono);font-size:11.5px;
+  background:var(--bg3);padding:1px 6px;border-radius:4px;
+  color:var(--amber2);
+}
+
+/* ── GRID ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+@media(max-width:700px){.g2,.g3{grid-template-columns:1fr}}
+
+/* ── CODE ── */
+.cb{
+  background:var(--bg0);border:1px solid var(--border);
+  border-radius:8px;padding:16px 18px;
+  font-family:var(--mono);font-size:12px;line-height:1.9;
+  overflow-x:auto;margin:10px 0;
+}
+.kw{color:#7dd3fc}.fn{color:var(--amber2)}.cm{color:#334d66}
+.st2{color:#86efac}.nm{color:#f9a8d4}.tp{color:#a5b4fc}
+.op{color:var(--lime2)}
+
+/* ── TABLE ── */
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{
+  background:var(--bg3);color:var(--text3);
+  font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);
+}
+.tbl td{
+  padding:10px 14px;border-bottom:1px solid var(--border);
+  font-size:13px;
+}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(255,255,255,.012)}
+
+/* ── CONTROLS ── */
+.ctrl{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px}
+.fi{
+  background:var(--bg3);border:1px solid var(--border2);
+  border-radius:7px;color:var(--text);
+  font-family:var(--mono);font-size:13px;
+  padding:9px 12px;outline:none;
+  transition:border-color .2s;
+}
+.fi:focus{border-color:var(--lime);box-shadow:0 0 0 2px rgba(181,240,61,.1)}
+.fi::placeholder{color:var(--text3)}
+select.fi option{background:var(--bg2)}
+
+.btn{
+  background:var(--bg3);border:1px solid var(--border2);
+  border-radius:7px;cursor:pointer;
+  color:var(--text2);font-family:var(--sans);font-size:13px;font-weight:700;
+  padding:9px 16px;transition:all .18s;white-space:nowrap;
+}
+.btn:hover{border-color:var(--lime);color:var(--lime);background:rgba(181,240,61,.06);box-shadow:0 0 8px rgba(181,240,61,.15)}
+.btn-lime{background:rgba(181,240,61,.1);border-color:var(--lime);color:var(--lime)}
+.btn-sky {background:rgba(61,240,212,.08);border-color:var(--sky);color:var(--sky)}
+.btn-mag {background:rgba(240,61,204,.08);border-color:var(--mag);color:var(--mag)}
+.btn-red {background:rgba(240,61,95,.08); border-color:var(--red);color:var(--red)}
+.btn:disabled{opacity:.28;cursor:not-allowed;pointer-events:none}
+
+/* ── LOG ── */
+.logbox{
+  background:var(--bg0);border:1px solid var(--border);
+  border-radius:8px;padding:10px 14px;
+  height:84px;overflow-y:auto;
+  font-family:var(--mono);font-size:11.5px;
+  scrollbar-width:thin;scrollbar-color:var(--bg3) transparent;
+}
+.lg{color:var(--text3);margin-bottom:3px}
+.lg-ok{color:var(--lime2)}
+.lg-err{color:var(--red)}
+.lg-info{color:var(--sky)}
+.lg-step{color:var(--amber2)}
+
+/* ── RESULT BOX ── */
+.rbox{
+  background:var(--bg0);border:1px solid var(--border);
+  border-radius:10px;padding:18px 22px;margin:12px 0;
+}
+.rb-lbl{font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}
+.rb-val{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--lime2);text-shadow:0 0 16px rgba(181,240,61,.3)}
+.rb-eq{font-family:var(--mono);font-size:13px;color:var(--text2);line-height:2;margin-top:4px}
+.rb-eq .hl{color:var(--amber2);font-weight:600}
+.rb-eq .res{color:var(--lime2);font-size:17px;font-weight:700}
+
+/* ── BIT DISPLAY ── */
+.bit-row{
+  display:flex;gap:3px;flex-wrap:nowrap;
+  overflow-x:auto;padding:6px 0;
+  scrollbar-width:thin;
+}
+.bit-cell{
+  display:flex;flex-direction:column;align-items:center;flex-shrink:0;
+}
+.bit-pos{font-family:var(--mono);font-size:9px;color:var(--text3);margin-bottom:3px}
+.bit-box{
+  width:38px;height:38px;
+  border:1px solid var(--border2);border-radius:5px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:16px;font-weight:700;
+  transition:all .25s;cursor:default;
+}
+.bit-box.b1{
+  background:rgba(181,240,61,.12);border-color:var(--lime);
+  color:var(--lime2);box-shadow:0 0 8px rgba(181,240,61,.2);
+}
+.bit-box.b0{background:var(--bg3);color:var(--text3)}
+.bit-box.carry{background:rgba(240,176,61,.15);border-color:var(--amber);color:var(--amber2)}
+.bit-box.over{background:rgba(240,61,95,.15);border-color:var(--red);color:var(--red)}
+.bit-box.sign{background:rgba(240,61,204,.12);border-color:var(--mag);color:var(--mag2)}
+.bit-box.exp-bit{background:rgba(155,110,255,.12);border-color:var(--violet);color:var(--violet)}
+.bit-box.mant-bit{background:rgba(61,240,212,.08);border-color:var(--sky);color:var(--sky2)}
+.bit-box.clickable{cursor:pointer}
+.bit-box.clickable:hover{border-color:var(--lime2);transform:scale(1.08)}
+.bit-label{font-family:var(--mono);font-size:9px;color:var(--text3);margin-top:4px}
+.bit-sep{width:10px;flex-shrink:0}
+
+/* ── BASE SYSTEM CARDS ── */
+.sys-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+@media(max-width:700px){.sys-grid{grid-template-columns:1fr 1fr}}
+.sys-card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:10px;padding:16px 14px;
+  text-align:center;cursor:pointer;
+  transition:all .2s;
+}
+.sys-card:hover,.sys-card.on{
+  border-color:var(--lime);
+  background:rgba(181,240,61,.05);
+  transform:translateY(-2px);
+  box-shadow:0 4px 16px rgba(181,240,61,.08);
+}
+.sc-base{
+  font-family:var(--display);font-size:32px;font-weight:700;
+  color:var(--lime);text-shadow:0 0 20px rgba(181,240,61,.3);
+  line-height:1;margin-bottom:6px;
+}
+.sc-name{font-size:12px;font-weight:700;color:var(--text2);margin-bottom:4px}
+.sc-digits{font-family:var(--mono);font-size:10px;color:var(--text3)}
+
+/* ── CONVERSION ARROWS ── */
+.conv-flow{
+  display:flex;align-items:center;justify-content:center;
+  gap:0;flex-wrap:wrap;margin:16px 0;
+}
+.conv-node{
+  background:var(--bg3);border:1px solid var(--border2);
+  border-radius:8px;padding:10px 16px;
+  font-family:var(--mono);font-size:13px;font-weight:600;
+  color:var(--amber2);min-width:90px;text-align:center;
+}
+.conv-arrow{
+  font-size:20px;color:var(--lime);padding:0 8px;
+  text-shadow:0 0 8px rgba(181,240,61,.4);
+}
+
+/* ── PILL ── */
+.pill{
+  display:inline-block;font-family:var(--mono);font-size:10px;font-weight:600;
+  padding:3px 9px;border-radius:20px;margin:2px;
+}
+.pl-lime{background:rgba(181,240,61,.12);color:var(--lime);border:1px solid rgba(181,240,61,.25)}
+.pl-sky {background:rgba(61,240,212,.1); color:var(--sky); border:1px solid rgba(61,240,212,.25)}
+.pl-mag {background:rgba(240,61,204,.1); color:var(--mag); border:1px solid rgba(240,61,204,.25)}
+.pl-red {background:rgba(240,61,95,.1);  color:var(--red); border:1px solid rgba(240,61,95,.25)}
+.pl-amb {background:rgba(240,176,61,.1); color:var(--amber);border:1px solid rgba(240,176,61,.25)}
+.pl-vio {background:rgba(155,110,255,.1);color:var(--violet);border:1px solid rgba(155,110,255,.25)}
+
+/* ── ADDITION VIS ── */
+.add-row{
+  display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:nowrap;
+  overflow-x:auto;
+}
+.add-lbl{
+  font-family:var(--mono);font-size:13px;font-weight:600;
+  color:var(--text2);width:20px;flex-shrink:0;text-align:right;
+}
+.carry-row{
+  display:flex;gap:3px;padding:6px 0;
+  overflow-x:auto;
+}
+.carry-cell{
+  width:38px;height:20px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:11px;color:var(--amber2);font-weight:600;
+}
+
+/* ── COMPLEMENT ── */
+.comp-step{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:8px;padding:14px 16px;margin-bottom:8px;
+  font-family:var(--mono);font-size:13px;
+  transition:all .2s;
+}
+.comp-step.active{border-color:var(--lime);background:rgba(181,240,61,.04)}
+.cs-lbl{font-size:10px;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.cs-val{color:var(--lime2);font-size:15px;font-weight:600}
+
+/* ── IEEE 754 ── */
+.ieee-band{
+  display:flex;border-radius:8px;overflow:hidden;
+  border:1px solid var(--border);margin:12px 0;
+}
+.ieee-seg{
+  display:flex;flex-direction:column;align-items:center;
+  padding:10px 0;
+}
+.ieee-seg-lbl{
+  font-family:var(--mono);font-size:9px;letter-spacing:.08em;
+  text-transform:uppercase;padding:0 8px;margin-bottom:6px;
+}
+.ieee-seg-bits{
+  display:flex;gap:2px;padding:0 6px;
+}
+.ieee-bit{
+  width:22px;height:22px;border-radius:3px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:11px;font-weight:700;
+}
+.ieee-sign{background:rgba(240,61,204,.2);color:var(--mag2);flex:0 0 22px}
+.ieee-exp-seg{background:rgba(155,110,255,.12);flex:0 0 8;gap:0}
+.ieee-mant-seg{background:rgba(61,240,212,.06)}
+.ieee-bit-e{background:rgba(155,110,255,.18);color:var(--violet)}
+.ieee-bit-m{background:rgba(61,240,212,.1);color:var(--sky2)}
+.ieee-bit-s{background:rgba(240,61,204,.2);color:var(--mag2)}
+
+/* ── BITWISE ── */
+.bw-row{display:flex;align-items:center;gap:0;overflow-x:auto;padding:4px 0}
+.bw-lbl{
+  font-family:var(--mono);font-size:12px;font-weight:600;
+  width:55px;flex-shrink:0;color:var(--text2);
+  text-align:right;padding-right:12px;
+}
+.bw-op-box{
+  background:var(--bg3);border:1px solid var(--border2);border-radius:8px;
+  padding:12px 18px;margin:6px 0;cursor:pointer;
+  transition:all .18s;display:flex;align-items:center;justify-content:space-between;
+  gap:10px;
+}
+.bw-op-box:hover,.bw-op-box.on{
+  border-color:var(--sky);background:rgba(61,240,212,.04);
+}
+.bw-op-name{font-family:var(--display);font-size:15px;font-weight:700;color:var(--sky2)}
+.bw-op-sym{font-family:var(--mono);font-size:20px;color:var(--amber2)}
+.bw-op-desc{font-size:12px;color:var(--text2)}
+
+/* ── OVERFLOW VIS ── */
+.overflow-meter{
+  background:var(--bg3);border:1px solid var(--border2);
+  border-radius:10px;padding:14px 18px;margin:12px 0;
+  display:flex;align-items:center;gap:16px;
+}
+.om-label{font-family:var(--mono);font-size:11px;color:var(--text3);white-space:nowrap}
+.om-track{flex:1;height:8px;background:var(--bg4);border-radius:4px;overflow:hidden}
+.om-fill{height:100%;border-radius:4px;transition:width .4s,background .3s}
+.om-val{font-family:var(--mono);font-size:14px;font-weight:700;width:80px;text-align:right}
+
+/* ── QUIZ ── */
+.qcard{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:12px;padding:22px 24px;margin-bottom:16px;
+}
+.qq{font-size:14.5px;font-weight:600;margin-bottom:16px;color:var(--text);line-height:1.65}
+.qno{font-family:var(--mono);color:var(--lime);margin-right:8px;font-size:13px}
+.qopts{display:flex;flex-direction:column;gap:8px}
+.qopt{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:7px;padding:11px 16px;cursor:pointer;
+  transition:all .18s;font-size:13px;color:var(--text2);
+  display:flex;align-items:center;gap:10px;
+}
+.qopt:hover{border-color:var(--lime);color:var(--text);background:rgba(181,240,61,.04)}
+.qopt.right{border-color:var(--lime);background:rgba(181,240,61,.08);color:var(--lime2)}
+.qopt.wrong{border-color:var(--red);background:rgba(240,61,95,.07);color:var(--red)}
+.qopt.dis{cursor:not-allowed}
+.qmk{font-family:var(--mono);font-size:11px;color:var(--text3);width:20px;flex-shrink:0}
+.qfb{margin-top:12px;padding:10px 14px;border-radius:7px;font-size:13px;line-height:1.7;display:none}
+.qfb.show{display:block}
+.qfb.ok{background:rgba(181,240,61,.05);color:var(--lime2);border:1px solid rgba(181,240,61,.2)}
+.qfb.ng{background:rgba(240,61,95,.05);color:var(--red);border:1px solid rgba(240,61,95,.2)}
+.sbar{
+  background:var(--bg2);border:1px solid var(--border);border-radius:12px;
+  padding:16px 22px;display:flex;align-items:center;gap:16px;margin-bottom:22px;
+}
+.sv{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--lime);text-shadow:0 0 12px rgba(181,240,61,.3)}
+.sl{font-family:var(--mono);font-size:11px;color:var(--text3)}
+.strk{flex:1;height:6px;background:var(--bg4);border-radius:3px;overflow:hidden}
+.sfil{height:100%;background:linear-gradient(90deg,var(--lime),var(--sky));border-radius:3px;width:0;transition:width .5s}
+
+/* glow on numbers */
+@keyframes numGlow{
+  0%,100%{text-shadow:0 0 8px rgba(181,240,61,.3)}
+  50%{text-shadow:0 0 20px rgba(181,240,61,.7),0 0 40px rgba(181,240,61,.3)}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hdr">
+    <div class="logo">세영코딩연구소 <em>/ ph.D kim</em></div>
+    <div class="chapter-tag">Discrete Math · Ch 01</div>
+  </div>
+</header>
+
+<nav class="tab-nav">
+  <ul class="tab-ul" id="tabUL">
+    <li><button class="tb on" data-t="systems">🔢 수 체계</button></li>
+    <li><button class="tb" data-t="convert">🔄 진법 변환</button></li>
+    <li><button class="tb" data-t="addition">➕ 2진 덧셈</button></li>
+    <li><button class="tb" data-t="complement">🔁 보수 표현</button></li>
+    <li><button class="tb" data-t="ieee">🌊 부동소수점</button></li>
+    <li><button class="tb" data-t="bitwise">⚡ 비트 연산</button></li>
+    <li><button class="tb" data-t="overflow">💥 오버플로우</button></li>
+    <li><button class="tb" data-t="quiz">🧩 퀴즈</button></li>
+  </ul>
+</nav>
+
+<main>
+
+<!-- ══════ 수 체계 ══════ -->
+<section class="panel on" id="tab-systems">
+  <div class="sh">
+    <div class="st">수 체계 <span class="hl">Number Systems</span></div>
+    <div class="ss">// 컴퓨터는 2진수(Binary)로 모든 정보를 처리한다</div>
+  </div>
+
+  <div class="ib ib-lime">
+    컴퓨터 내부는 전기 신호의 <strong>ON(1)과 OFF(0)</strong> 두 상태만 구분합니다.
+    따라서 모든 데이터는 <strong>2진수(Binary)</strong>로 저장·처리됩니다.
+    하지만 사람이 읽기 쉽도록 <strong>10진수, 16진수, 8진수</strong>도 자주 사용합니다.
+  </div>
+
+  <div class="sys-grid" id="sysGrid"></div>
+
+  <div class="card">
+    <div class="card-hd">📊 각 진법의 자릿값(Positional Value)</div>
+    <div id="posValVis"></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="card-hd">🔤 진법 표기법</div>
+      <table class="tbl" id="notationTable"></table>
+    </div>
+    <div class="card">
+      <div class="card-hd">📋 자주 쓰는 2진수 ↔ 16진수 대응</div>
+      <div id="hexBinTable"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ 진법 변환 ══════ -->
+<section class="panel" id="tab-convert">
+  <div class="sh">
+    <div class="st">진법 <span class="hl">변환기</span></div>
+    <div class="ss">// Base Conversion — 어떤 진법이든 실시간 변환</div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd">🔄 실시간 진법 변환기 <span class="sub">값을 입력하면 즉시 변환</span></div>
+    <div class="ctrl">
+      <input class="fi" id="cvInput" type="text" placeholder="변환할 숫자" style="width:160px">
+      <select class="fi" id="cvFrom" style="width:130px">
+        <option value="2">2진수 (BIN)</option>
+        <option value="8">8진수 (OCT)</option>
+        <option value="10" selected>10진수 (DEC)</option>
+        <option value="16">16진수 (HEX)</option>
+      </select>
+      <span style="color:var(--text3);font-family:var(--mono)">→</span>
+      <button class="btn btn-lime" id="cvBtn">▶ 전체 변환</button>
+    </div>
+    <div id="cvResult"></div>
+    <div id="cvProcess"></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="card-hd">📐 10진수 → 2진수 (나눗셈법)</div>
+      <div class="ib ib-sky" style="font-size:12px">
+        10진수를 <strong>2로 반복해서 나누어</strong> 나머지를 거꾸로 읽으면 2진수가 됩니다.
+      </div>
+      <div class="ctrl">
+        <input class="fi" id="d2bInput" type="number" placeholder="10진수" style="width:110px" value="45">
+        <button class="btn btn-sky" id="d2bBtn">▶ 변환 과정</button>
+      </div>
+      <div id="d2bVis"></div>
+    </div>
+    <div class="card">
+      <div class="card-hd">📐 2진수 → 10진수 (자릿값법)</div>
+      <div class="ib ib-mag" style="font-size:12px">
+        각 자리에 <strong>2의 거듭제곱 가중치</strong>를 곱하여 합산합니다.
+      </div>
+      <div class="ctrl">
+        <input class="fi" id="b2dInput" type="text" placeholder="2진수" style="width:130px" value="101101">
+        <button class="btn btn-mag" id="b2dBtn">▶ 변환 과정</button>
+      </div>
+      <div id="b2dVis"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd">⚡ 2진수 ↔ 16진수 (4비트 묶음법)</div>
+    <div class="ib ib-lime" style="font-size:12px">
+      2진수 <strong>4비트 = 16진수 1자리</strong>. 4비트씩 묶어서 16진수로 변환하면 됩니다.
+    </div>
+    <div class="ctrl">
+      <input class="fi" id="b2hInput" type="text" placeholder="2진수 (4의 배수 비트)" style="width:200px" value="10111100">
+      <button class="btn btn-lime" id="b2hBtn">2→16진수</button>
+      <input class="fi" id="h2bInput" type="text" placeholder="16진수" style="width:120px" value="BC">
+      <button class="btn btn-sky" id="h2bBtn">16→2진수</button>
+    </div>
+    <div id="hexBinVis"></div>
+  </div>
+</section>
+
+<!-- ══════ 2진 덧셈 ══════ -->
+<section class="panel" id="tab-addition">
+  <div class="sh">
+    <div class="st">2진수 <span class="hl">덧셈</span></div>
+    <div class="ss">// Binary Addition — 올림수(Carry) 시각화</div>
+  </div>
+
+  <div class="ib ib-lime">
+    2진수 덧셈 규칙: <code>0+0=0</code>, <code>0+1=1</code>, <code>1+0=1</code>,
+    <code>1+1=10(올림)</code>, <code>1+1+1=11(올림)</code>.
+    올림수(<strong>Carry</strong>)가 발생하면 윗자리로 1을 올려보냅니다.
+  </div>
+
+  <div class="card">
+    <div class="card-hd">🎮 단계별 덧셈 시뮬레이터</div>
+    <div class="ctrl">
+      <input class="fi" id="addA" type="text" placeholder="2진수 A" style="width:140px" value="1011">
+      <span style="color:var(--lime);font-family:var(--mono);font-size:18px">+</span>
+      <input class="fi" id="addB" type="text" placeholder="2진수 B" style="width:140px" value="0110">
+      <button class="btn btn-lime" id="addRunBtn">▶ 단계 실행</button>
+      <button class="btn" id="addResetBtn">↺ 초기화</button>
+      <span class="fi" style="background:var(--bg2);color:var(--text3);width:auto;padding:9px 14px;font-size:12px" id="addStepLbl"></span>
+    </div>
+    <div id="addVis" style="margin:16px 0"></div>
+    <div class="logbox" id="addLog"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd">📋 2진수 덧셈 진리표</div>
+    <div class="g2">
+      <div>
+        <div style="font-family:var(--mono);font-size:11px;color:var(--text3);margin-bottom:8px;letter-spacing:.06em">반가산기 (Half Adder)</div>
+        <table class="tbl" id="halfAdderTable"></table>
+      </div>
+      <div>
+        <div style="font-family:var(--mono);font-size:11px;color:var(--text3);margin-bottom:8px;letter-spacing:.06em">전가산기 (Full Adder)</div>
+        <table class="tbl" id="fullAdderTable"></table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ 보수 표현 ══════ -->
+<section class="panel" id="tab-complement">
+  <div class="sh">
+    <div class="st">보수 <span class="hl">음수 표현</span></div>
+    <div class="ss">// Complement — 컴퓨터에서 음수를 표현하는 방법</div>
+  </div>
+
+  <div class="ib ib-mag">
+    컴퓨터는 뺄셈을 <strong>덧셈으로 처리</strong>하기 위해 보수(Complement)를 사용합니다.
+    3가지 방법: <strong>부호-크기(Sign-Magnitude)</strong>,
+    <strong>1의 보수(1's Complement)</strong>,
+    <strong>2의 보수(2's Complement)</strong>.
+  </div>
+
+  <div class="card">
+    <div class="card-hd">🔁 세 가지 음수 표현 비교기</div>
+    <div class="ctrl">
+      <label style="font-size:12px;color:var(--text2)">양수값</label>
+      <input class="fi" id="compInput" type="number" placeholder="양수" value="13" style="width:100px" min="0" max="127">
+      <label style="font-size:12px;color:var(--text2)">비트 수</label>
+      <select class="fi" id="compBits" style="width:80px">
+        <option value="8" selected>8비트</option>
+        <option value="4">4비트</option>
+      </select>
+      <button class="btn btn-mag" id="compRunBtn">▶ 변환</button>
+    </div>
+    <div id="compResult"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd">🔢 2의 보수 덧셈으로 뺄셈하기</div>
+    <div class="ib ib-sky" style="font-size:12px">
+      <strong>A - B = A + (-B)</strong> → B의 2의 보수를 구한 뒤 A와 덧셈합니다.
+      최상위 올림수(Carry out)는 버립니다.
+    </div>
+    <div class="ctrl">
+      <input class="fi" id="subA" type="number" placeholder="A" value="15" style="width:80px">
+      <span style="color:var(--red);font-family:var(--mono);font-size:18px">-</span>
+      <input class="fi" id="subB" type="number" placeholder="B" value="6" style="width:80px">
+      <button class="btn btn-sky" id="subRunBtn">▶ 2의 보수로 계산</button>
+    </div>
+    <div id="subVis"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd">📋 표현 범위 비교</div>
+    <table class="tbl" id="rangeTable"></table>
+  </div>
+</section>
+
+<!-- ══════ IEEE 754 ══════ -->
+<section class="panel" id="tab-ieee">
+  <div class="sh">
+    <div class="st">부동소수점 <span class="hl">IEEE 754</span></div>
+    <div class="ss">// Floating Point — 실수를 컴퓨터에서 표현하는 방법</div>
+  </div>
+
+  <div class="ib ib-lime">
+    실수는 <strong>±1.mantissa × 2^(exponent)</strong> 형태의 <strong>정규화</strong>를 통해 저장됩니다.
+    32비트 단정도: <span class="pill pl-mag">부호 1비트</span>
+    <span class="pill pl-vio">지수 8비트</span>
+    <span class="pill pl-sky">가수 23비트</span>.
+    지수는 <strong>바이어스(Bias=127)</strong>를 더해 저장합니다.
+  </div>
+
+  <div class="card">
+    <div class="card-hd">🌊 IEEE 754 단정도(32비트) 변환기</div>
+    <div class="ctrl">
+      <input class="fi" id="fpInput" type="number" placeholder="10진수 실수" value="5.75" step="any" style="width:160px">
+      <button class="btn btn-lime" id="fpBtn">▶ 변환</button>
+      <button class="btn" id="fpDemoBtn">📌 예시</button>
+    </div>
+    <div id="fpVis"></div>
+    <div id="fpBreakdown"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd">📋 IEEE 754 구조 정리</div>
+    <table class="tbl" id="ieeeTable"></table>
+  </div>
+
+  <div class="card">
+    <div class="card-hd">⚠️ 특수 값 표현</div>
+    <table class="tbl" id="specialTable"></table>
+  </div>
+</section>
+
+<!-- ══════ 비트 연산 ══════ -->
+<section class="panel" id="tab-bitwise">
+  <div class="sh">
+    <div class="st">비트 <span class="hl">연산</span></div>
+    <div class="ss">// Bitwise Operations — 비트 단위로 수행하는 논리 연산</div>
+  </div>
+
+  <div class="ib ib-sky">
+    비트 연산은 <strong>각 비트 위치별로 독립적으로</strong> 수행됩니다.
+    마스킹(Masking), 설정(Set), 초기화(Clear), 토글(Toggle) 등 시스템 프로그래밍에서 핵심적으로 사용됩니다.
+  </div>
+
+  <div class="card">
+    <div class="card-hd">🎮 비트 연산 인터랙티브 계산기</div>
+    <div class="ctrl">
+      <input class="fi" id="bwA" type="text" placeholder="A (2진수 8비트)" value="11001010" style="width:170px" maxlength="8">
+      <select class="fi" id="bwOp" style="width:110px">
+        <option value="and">AND (&amp;)</option>
+        <option value="or">OR (|)</option>
+        <option value="xor">XOR (^)</option>
+        <option value="not">NOT (~A)</option>
+        <option value="shl">왼쪽 시프트</option>
+        <option value="shr">오른쪽 시프트</option>
+      </select>
+      <input class="fi" id="bwB" type="text" placeholder="B (2진수 8비트)" value="10110101" style="width:170px" maxlength="8">
+      <button class="btn btn-sky" id="bwBtn">▶ 연산</button>
+    </div>
+    <div id="bwVis"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd">📋 비트 연산 진리표</div>
+    <div class="g3" id="bwTruthTables"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd">💡 비트 연산 활용 기법</div>
+    <div id="bwApps"></div>
+  </div>
+</section>
+
+<!-- ══════ 오버플로우 ══════ -->
+<section class="panel" id="tab-overflow">
+  <div class="sh">
+    <div class="st">오버플로우 <span class="hl">Overflow</span></div>
+    <div class="ss">// 표현 범위를 초과할 때 발생하는 오류</div>
+  </div>
+
+  <div class="ib ib-red">
+    <strong>오버플로우</strong>는 연산 결과가 해당 자료형의 <strong>표현 가능한 범위를 벗어날 때</strong> 발생합니다.
+    부호 있는 8비트 정수의 범위는 <code>-128 ~ +127</code>이며, 127+1 = -128이 되어버립니다!
+    <strong>부호 비트의 변화</strong>로 오버플로우를 감지합니다.
+  </div>
+
+  <div class="card">
+    <div class="card-hd">🎮 오버플로우 체험기</div>
+    <div class="ctrl">
+      <label style="font-size:12px;color:var(--text2)">부호있는 8비트 정수</label>
+      <input class="fi" id="ovA" type="number" value="120" style="width:90px">
+      <span style="color:var(--lime);font-family:var(--mono)">+</span>
+      <input class="fi" id="ovB" type="number" value="15" style="width:90px">
+      <button class="btn btn-red" id="ovBtn">▶ 덧셈 실행</button>
+    </div>
+    <div id="ovVis"></div>
+    <div id="ovMeter"></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="card-hd">🔍 오버플로우 감지 규칙</div>
+      <table class="tbl" id="ovDetectTable"></table>
+    </div>
+    <div class="card">
+      <div class="card-hd">📊 부호별 8비트 정수 범위</div>
+      <div id="ovRangeVis"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd">📋 C코드 — 오버플로우 감지</div>
+    <div class="cb" id="ovCode"></div>
+  </div>
+</section>
+
+<!-- ══════ 퀴즈 ══════ -->
+<section class="panel" id="tab-quiz">
+  <div class="sh">
+    <div class="st">개념 확인 <span class="hl">퀴즈</span></div>
+    <div class="ss">// 이산수학 1장 수의 표현과 연산 — 12문항</div>
+  </div>
+  <div class="sbar">
+    <div class="sl">점수</div>
+    <div class="sv" id="qsv">0 / 12</div>
+    <div class="strk"><div class="sfil" id="qsfil"></div></div>
+    <button class="btn" id="qResetBtn">🔄 다시 풀기</button>
+  </div>
+  <div id="quizWrap"></div>
+</section>
+
+</main>
+
+<script>
+// ═══════════════════════════════════════════
+//   QUIZ DATA
+// ═══════════════════════════════════════════
+var QUIZ = [
+  {
+    q:"10진수 42를 2진수로 변환하면?",
+    opts:["0b101000","0b101010","0b100110","0b110000"],
+    ans:1,
+    exp:"42 ÷ 2 반복: 42=21×2+0, 21=10×2+1, 10=5×2+0, 5=2×2+1, 2=1×2+0, 1=0×2+1 → 거꾸로 읽으면 101010"
+  },
+  {
+    q:"2진수 1101 1010을 16진수로 변환하면?",
+    opts:["0xDA","0xBA","0xCA","0xDB"],
+    ans:0,
+    exp:"4비트씩 묶기: 1101=D, 1010=A → 0xDA. 2진수 4비트가 16진수 1자리에 정확히 대응합니다."
+  },
+  {
+    q:"부호 있는 8비트에서 -6의 2의 보수 표현은?",
+    opts:["11111001","11111010","10000110","01111010"],
+    ans:1,
+    exp:"+6 = 0000 0110 → 1의 보수: 1111 1001 → 2의 보수(+1): 1111 1010 = 0xFA = -6"
+  },
+  {
+    q:"8비트 부호 있는 정수의 표현 범위는?",
+    opts:["-128 ~ +127","-127 ~ +127","-128 ~ +128","0 ~ 255"],
+    ans:0,
+    exp:"2의 보수 8비트: 최소값 1000 0000 = -128, 최대값 0111 1111 = +127. 0이 하나여서 -128 ~ +127"
+  },
+  {
+    q:"16진수 0xFF를 10진수로 변환하면?",
+    opts:["255","256","254","128"],
+    ans:0,
+    exp:"0xFF = F×16 + F = 15×16 + 15 = 240 + 15 = 255"
+  },
+  {
+    q:"IEEE 754 32비트에서 지수 바이어스(Bias) 값은?",
+    opts:["128","127","256","63"],
+    ans:1,
+    exp:"32비트(단정도)의 지수부는 8비트이므로 Bias = 2^(8-1) - 1 = 127. 실제지수 = 저장값 - 127"
+  },
+  {
+    q:"10110 AND 01100의 결과는? (2진수)",
+    opts:["00100","11110","01110","10100"],
+    ans:0,
+    exp:"AND는 두 비트 모두 1일 때만 1: 1·0=0, 0·1=0, 1·1=1, 1·0=0, 0·0=0 → 00100"
+  },
+  {
+    q:"1010 XOR 1100의 결과는? (2진수)",
+    opts:["1000","0110","1110","0010"],
+    ans:1,
+    exp:"XOR은 두 비트가 다를 때 1: 1^1=0, 0^1=1, 1^0=1, 0^0=0 → 0110"
+  },
+  {
+    q:"왼쪽 시프트(<<) 1회는 무엇에 해당하나요?",
+    opts:["2로 나누기","2를 곱하기","2를 더하기","제곱"],
+    ans:1,
+    exp:"n << 1 = n × 2. 예: 0001(1) → 0010(2). 시프트 연산은 곱셈/나눗셈보다 매우 빠릅니다."
+  },
+  {
+    q:"부호 있는 8비트에서 127 + 1 을 계산하면 오버플로우 결과는?",
+    opts:["-128","128","-127","0"],
+    ans:0,
+    exp:"0111 1111 + 1 = 1000 0000 = -128(2의 보수). 양수+양수=음수 → 오버플로우 발생!"
+  },
+  {
+    q:"10진수 0.625를 2진수 소수로 변환하면?",
+    opts:["0.101","0.011","0.110","0.111"],
+    ans:0,
+    exp:"0.625×2=1.25→1, 0.25×2=0.5→0, 0.5×2=1.0→1 → 0.101₂ (= 1/2 + 1/8 = 0.625)"
+  },
+  {
+    q:"n & (n-1)의 결과가 0이면 n은?",
+    opts:["소수","짝수","2의 거듭제곱","홀수"],
+    ans:2,
+    exp:"n = 2^k일 때 n = 100...0, n-1 = 011...1 → AND 결과 0. 예: 8(1000) & 7(0111) = 0"
+  }
+];
+
+// ═══════════════════════════════════════════
+//   TABS
+// ═══════════════════════════════════════════
+document.getElementById('tabUL').addEventListener('click', function(e) {
+  var btn = e.target.closest('.tb');
+  if (!btn) return;
+  document.querySelectorAll('.tb').forEach(function(b){ b.classList.remove('on'); });
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('on'); });
+  btn.classList.add('on');
+  var id = 'tab-' + btn.dataset.t;
+  document.getElementById(id).classList.add('on');
+});
+
+// ═══════════════════════════════════════════
+//   HELPERS
+// ═══════════════════════════════════════════
+function el(tag, cls, text) {
+  var e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text !== undefined) e.textContent = text;
+  return e;
+}
+function setHTML(id, html) {
+  var e = document.getElementById(id);
+  if (e) e.innerHTML = html;
+}
+function addLog(id, msg, cls) {
+  var box = document.getElementById(id);
+  if (!box) return;
+  var d = el('div', 'lg ' + (cls||''), '> ' + msg);
+  box.appendChild(d);
+  box.scrollTop = box.scrollHeight;
+}
+function clrLog(id) {
+  var b = document.getElementById(id);
+  if (b) b.innerHTML = '';
+}
+function padBin(n, bits) {
+  var s = (n >>> 0).toString(2);
+  while (s.length < bits) s = '0' + s;
+  return s.slice(-bits);
+}
+function makeBitRow(binStr, colorFn) {
+  var row = el('div','bit-row');
+  for (var i = 0; i < binStr.length; i++) {
+    var cell = el('div','bit-cell');
+    var pos = el('div','bit-pos', binStr.length - 1 - i);
+    var box = el('div','bit-box ' + (colorFn ? colorFn(i, binStr[i], binStr.length) : (binStr[i]==='1'?'b1':'b0')));
+    box.textContent = binStr[i];
+    cell.appendChild(pos);
+    cell.appendChild(box);
+    row.appendChild(cell);
+    if (i < binStr.length - 1) {
+      var sep = el('div','bit-sep');
+      row.appendChild(sep);
+    }
+  }
+  return row;
+}
+
+// ═══════════════════════════════════════════
+//   TAB 1: 수 체계
+// ═══════════════════════════════════════════
+function buildSystems() {
+  var systems = [
+    { base:2,  name:'2진수 (Binary)',  digits:'0, 1', color:'var(--lime)', prefix:'0b' },
+    { base:8,  name:'8진수 (Octal)',   digits:'0~7',  color:'var(--sky)',  prefix:'0o' },
+    { base:10, name:'10진수 (Decimal)',digits:'0~9',  color:'var(--amber)',prefix:'' },
+    { base:16, name:'16진수 (Hex)',    digits:'0~9,A~F',color:'var(--mag)',prefix:'0x' },
+  ];
+  var grid = document.getElementById('sysGrid');
+  systems.forEach(function(s) {
+    var card = el('div','sys-card');
+    var base = el('div','sc-base', s.base);
+    base.style.color = s.color;
+    base.style.textShadow = '0 0 20px ' + s.color.replace('var(','').replace(')','') + '40';
+    var name = el('div','sc-name', s.name);
+    var digits = el('div','sc-digits', '사용 숫자: ' + s.digits);
+    card.appendChild(base); card.appendChild(name); card.appendChild(digits);
+    grid.appendChild(card);
+  });
+
+  // Positional value vis
+  var vis = document.getElementById('posValVis');
+  // Show 10진수 1234 positional
+  var nums = [
+    { n:1234, base:10, label:'1234₁₀', example: [1,2,3,4] },
+    { n:13, base:2, label:'1101₂',  example: [1,1,0,1] },
+  ];
+  nums.forEach(function(num) {
+    var wrap = el('div');
+    wrap.style.marginBottom = '18px';
+    var lbl = el('div');
+    lbl.style.cssText = 'font-family:var(--mono);font-size:12px;color:var(--text3);margin-bottom:10px;letter-spacing:.06em';
+    lbl.textContent = num.label + ' 의 자릿값 분해';
+    wrap.appendChild(lbl);
+    var row = el('div');
+    row.style.cssText = 'display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap';
+    var digits = num.example;
+    var n = digits.length;
+    digits.forEach(function(d, i) {
+      var pow = n - 1 - i;
+      var val = d * Math.pow(num.base, pow);
+      var cell = el('div');
+      cell.style.cssText = 'background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:12px 16px;text-align:center;min-width:80px';
+      var digit = el('div');
+      digit.style.cssText = 'font-family:var(--mono);font-size:22px;font-weight:700;color:var(--lime2);margin-bottom:4px';
+      digit.textContent = d;
+      var formula = el('div');
+      formula.style.cssText = 'font-family:var(--mono);font-size:10px;color:var(--text3)';
+      formula.textContent = d + ' × ' + num.base + '^' + pow;
+      var result = el('div');
+      result.style.cssText = 'font-family:var(--mono);font-size:12px;color:var(--amber2);margin-top:4px';
+      result.textContent = '= ' + val;
+      cell.appendChild(digit); cell.appendChild(formula); cell.appendChild(result);
+      row.appendChild(cell);
+      if (i < n - 1) {
+        var plus = el('div');
+        plus.style.cssText = 'font-family:var(--mono);font-size:20px;color:var(--text3);padding-top:16px';
+        plus.textContent = '+';
+        row.appendChild(plus);
+      }
+    });
+    var total = el('div');
+    total.style.cssText = 'font-family:var(--mono);font-size:20px;color:var(--text3);padding-top:16px';
+    total.textContent = '= ';
+    row.appendChild(total);
+    var sum = el('div');
+    sum.style.cssText = 'background:rgba(181,240,61,.08);border:1px solid rgba(181,240,61,.3);border-radius:8px;padding:12px 16px;text-align:center;min-width:80px';
+    var sv = el('div');
+    sv.style.cssText = 'font-family:var(--mono);font-size:22px;font-weight:700;color:var(--lime2)';
+    sv.textContent = num.n;
+    sum.appendChild(sv);
+    row.appendChild(sum);
+    wrap.appendChild(row);
+    vis.appendChild(wrap);
+  });
+
+  // Notation table
+  var tbl = document.getElementById('notationTable');
+  var thead = el('thead');
+  thead.innerHTML = '<tr><th>값</th><th>2진수</th><th>8진수</th><th>10진수</th><th>16진수</th></tr>';
+  var tbody = el('tbody');
+  var vals = [1,5,10,15,16,32,100,255];
+  vals.forEach(function(v) {
+    var tr = el('tr');
+    [
+      {v: v.toString(), c: 'color:var(--text2)'},
+      {v: '0b'+v.toString(2), c: 'color:var(--lime2);font-family:var(--mono)'},
+      {v: '0o'+v.toString(8), c: 'color:var(--sky);font-family:var(--mono)'},
+      {v: v.toString(),       c: 'color:var(--amber2);font-family:var(--mono)'},
+      {v: '0x'+v.toString(16).toUpperCase(), c: 'color:var(--mag2);font-family:var(--mono)'},
+    ].forEach(function(d) {
+      var td = el('td', null, d.v);
+      td.style.cssText = d.c + ';font-size:13px';
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+  tbl.appendChild(thead); tbl.appendChild(tbody);
+
+  // Hex-Bin quick table
+  var hbt = document.getElementById('hexBinTable');
+  var grid2 = el('div');
+  grid2.style.cssText = 'display:grid;grid-template-columns:repeat(4,1fr);gap:6px';
+  var hexVals = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
+  hexVals.forEach(function(v) {
+    var cell = el('div');
+    cell.style.cssText = 'background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:6px 8px;display:flex;justify-content:space-between;align-items:center;gap:6px';
+    var hex = el('span', null, v.toString(16).toUpperCase());
+    hex.style.cssText = 'font-family:var(--mono);font-weight:700;color:var(--mag2);font-size:13px';
+    var bin = el('span', null, padBin(v,4));
+    bin.style.cssText = 'font-family:var(--mono);font-size:11px;color:var(--lime2)';
+    cell.appendChild(hex); cell.appendChild(bin);
+    grid2.appendChild(cell);
+  });
+  hbt.appendChild(grid2);
+}
+
+// ═══════════════════════════════════════════
+//   TAB 2: 진법 변환
+// ═══════════════════════════════════════════
+function buildConvert() {
+  // live converter
+  document.getElementById('cvBtn').addEventListener('click', doConvert);
+  document.getElementById('cvInput').addEventListener('input', doConvert);
+
+  function doConvert() {
+    var raw = document.getElementById('cvInput').value.trim();
+    var from = parseInt(document.getElementById('cvFrom').value);
+    if (!raw) { document.getElementById('cvResult').innerHTML = ''; return; }
+    var dec = parseInt(raw, from);
+    if (isNaN(dec)) { document.getElementById('cvResult').innerHTML = '<div style="color:var(--red);font-family:var(--mono);font-size:12px">유효하지 않은 입력</div>'; return; }
+    var res = document.getElementById('cvResult');
+    res.innerHTML = '';
+    var grid = el('div');
+    grid.style.cssText = 'display:flex;gap:10px;flex-wrap:wrap;margin-top:12px';
+    var bases = [{b:2,label:'2진수 (BIN)',col:'var(--lime2)',fn:function(n){return n.toString(2)}},
+                 {b:8,label:'8진수 (OCT)',col:'var(--sky)', fn:function(n){return n.toString(8)}},
+                 {b:10,label:'10진수 (DEC)',col:'var(--amber2)',fn:function(n){return n.toString()}},
+                 {b:16,label:'16진수 (HEX)',col:'var(--mag2)',fn:function(n){return n.toString(16).toUpperCase()}}];
+    bases.forEach(function(info) {
+      var card = el('div');
+      card.style.cssText = 'background:var(--bg3);border:1px solid '+(info.b===from?'rgba(181,240,61,.4)':'var(--border)')+';border-radius:10px;padding:14px 18px;min-width:150px;flex:1';
+      var lbl = el('div',null,info.label);
+      lbl.style.cssText = 'font-family:var(--mono);font-size:10px;color:var(--text3);margin-bottom:6px;letter-spacing:.08em';
+      var val = el('div',null,info.fn(dec));
+      val.style.cssText = 'font-family:var(--mono);font-size:20px;font-weight:700;color:'+info.col+';text-shadow:0 0 10px '+info.col+'40';
+      card.appendChild(lbl); card.appendChild(val);
+      grid.appendChild(card);
+    });
+    res.appendChild(grid);
+  }
+
+  // D2B
+  document.getElementById('d2bBtn').addEventListener('click', function() {
+    var n = parseInt(document.getElementById('d2bInput').value);
+    if (isNaN(n) || n < 0) return;
+    var vis = document.getElementById('d2bVis');
+    vis.innerHTML = '';
+    var steps = [];
+    var tmp = n;
+    while (tmp > 0) {
+      steps.push({q: Math.floor(tmp/2), r: tmp%2, n: tmp});
+      tmp = Math.floor(tmp/2);
+    }
+    if (!steps.length) { steps.push({q:0,r:0,n:0}); }
+    var tbl = el('div');
+    tbl.style.cssText = 'font-family:var(--mono);font-size:12px';
+    steps.forEach(function(s, i) {
+      var row = el('div');
+      row.style.cssText = 'display:flex;align-items:center;gap:12px;padding:5px 0;border-bottom:1px solid var(--border)';
+      var div = el('div',null, s.n + ' ÷ 2 = ' + s.q + ' … ');
+      div.style.color = 'var(--text2)';
+      var rem = el('div',null, s.r.toString());
+      rem.style.cssText = 'color:var(--lime2);font-weight:700;font-size:15px;width:20px;text-align:center';
+      var arr = el('div',null, i===0?'← LSB (오른쪽 첫 자리)':'');
+      arr.style.cssText = 'color:var(--text3);font-size:10px';
+      row.appendChild(div); row.appendChild(rem); row.appendChild(arr);
+      tbl.appendChild(row);
+    });
+    vis.appendChild(tbl);
+    var result = steps.map(function(s){return s.r}).reverse().join('');
+    var res = el('div');
+    res.style.cssText = 'margin-top:12px;padding:12px 16px;background:rgba(181,240,61,.06);border:1px solid rgba(181,240,61,.2);border-radius:8px;font-family:var(--mono);font-size:14px';
+    res.innerHTML = '결과: ' + n + '₁₀ = <span style="color:var(--lime2);font-size:18px;font-weight:700">' + result + '₂</span>';
+    vis.appendChild(res);
+  });
+
+  // B2D
+  document.getElementById('b2dBtn').addEventListener('click', function() {
+    var bin = document.getElementById('b2dInput').value.trim();
+    if (!/^[01]+$/.test(bin)) return;
+    var vis = document.getElementById('b2dVis');
+    vis.innerHTML = '';
+    var sum = 0;
+    var parts = [];
+    for (var i = 0; i < bin.length; i++) {
+      var pow = bin.length - 1 - i;
+      var val = parseInt(bin[i]) * Math.pow(2, pow);
+      sum += val;
+      parts.push({bit: bin[i], pow: pow, val: val});
+    }
+    var row = el('div');
+    row.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;margin-bottom:12px';
+    parts.forEach(function(p, i) {
+      var cell = el('div');
+      cell.style.cssText = 'text-align:center';
+      var bit = el('div');
+      bit.style.cssText = 'font-family:var(--mono);font-size:20px;font-weight:700;color:'+(p.bit==='1'?'var(--lime2)':'var(--text3)');
+      bit.textContent = p.bit;
+      var pw = el('div');
+      pw.style.cssText = 'font-family:var(--mono);font-size:9px;color:var(--text3)';
+      pw.textContent = '×2^' + p.pow;
+      var vl = el('div');
+      vl.style.cssText = 'font-family:var(--mono);font-size:11px;color:'+(p.bit==='1'?'var(--amber2)':'var(--text3)');
+      vl.textContent = '=' + p.val;
+      cell.appendChild(bit); cell.appendChild(pw); cell.appendChild(vl);
+      row.appendChild(cell);
+      if (i < parts.length - 1) {
+        var plus = el('div',null,'+');
+        plus.style.cssText = 'color:var(--text3);font-family:var(--mono);padding-bottom:6px';
+        row.appendChild(plus);
+      }
+    });
+    vis.appendChild(row);
+    var res = el('div');
+    res.style.cssText = 'padding:12px 16px;background:rgba(181,240,61,.06);border:1px solid rgba(181,240,61,.2);border-radius:8px;font-family:var(--mono);font-size:14px';
+    res.innerHTML = '결과: ' + bin + '₂ = <span style="color:var(--lime2);font-size:18px;font-weight:700">' + sum + '₁₀</span>';
+    vis.appendChild(res);
+  });
+
+  // B2H / H2B
+  document.getElementById('b2hBtn').addEventListener('click', function() {
+    var bin = document.getElementById('b2hInput').value.trim().replace(/\s/g,'');
+    if (!/^[01]+$/.test(bin)) return;
+    while (bin.length % 4 !== 0) bin = '0' + bin;
+    var vis = document.getElementById('hexBinVis');
+    vis.innerHTML = '';
+    var row = el('div');
+    row.style.cssText = 'display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:12px 0';
+    var hexStr = '';
+    for (var i = 0; i < bin.length; i += 4) {
+      var chunk = bin.slice(i, i+4);
+      var h = parseInt(chunk, 2).toString(16).toUpperCase();
+      hexStr += h;
+      var cell = el('div');
+      cell.style.cssText = 'background:var(--bg3);border:1px solid rgba(181,240,61,.3);border-radius:8px;padding:10px 14px;text-align:center';
+      var top = el('div',null,chunk);
+      top.style.cssText = 'font-family:var(--mono);font-size:14px;color:var(--lime2);letter-spacing:2px';
+      var bot = el('div',null,h);
+      bot.style.cssText = 'font-family:var(--mono);font-size:20px;font-weight:700;color:var(--mag2);margin-top:6px';
+      cell.appendChild(top); cell.appendChild(bot);
+      row.appendChild(cell);
+      if (i + 4 < bin.length) {
+        var arr = el('div',null,'→');
+        arr.style.cssText = 'color:var(--text3);font-family:var(--mono)';
+        row.appendChild(arr);
+      }
+    }
+    vis.appendChild(row);
+    var res = el('div');
+    res.style.cssText = 'padding:10px 16px;background:rgba(240,61,204,.06);border:1px solid rgba(240,61,204,.2);border-radius:8px;font-family:var(--mono);font-size:14px;margin-top:8px';
+    res.innerHTML = bin + '₂ = <span style="color:var(--mag2);font-weight:700">0x' + hexStr + '</span>';
+    vis.appendChild(res);
+  });
+
+  document.getElementById('h2bBtn').addEventListener('click', function() {
+    var hex = document.getElementById('h2bInput').value.trim().replace(/^0x/i,'');
+    if (!/^[0-9a-fA-F]+$/.test(hex)) return;
+    var vis = document.getElementById('hexBinVis');
+    vis.innerHTML = '';
+    var row = el('div');
+    row.style.cssText = 'display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:12px 0';
+    var binStr = '';
+    for (var i = 0; i < hex.length; i++) {
+      var v = parseInt(hex[i], 16);
+      var b = padBin(v, 4);
+      binStr += b;
+      var cell = el('div');
+      cell.style.cssText = 'background:var(--bg3);border:1px solid rgba(240,61,204,.3);border-radius:8px;padding:10px 14px;text-align:center';
+      var top = el('div', null, hex[i].toUpperCase());
+      top.style.cssText = 'font-family:var(--mono);font-size:20px;font-weight:700;color:var(--mag2)';
+      var bot = el('div', null, b);
+      bot.style.cssText = 'font-family:var(--mono);font-size:14px;color:var(--lime2);margin-top:6px;letter-spacing:2px';
+      cell.appendChild(top); cell.appendChild(bot);
+      row.appendChild(cell);
+    }
+    vis.appendChild(row);
+    var res = el('div');
+    res.style.cssText = 'padding:10px 16px;background:rgba(181,240,61,.06);border:1px solid rgba(181,240,61,.2);border-radius:8px;font-family:var(--mono);font-size:14px;margin-top:8px';
+    res.innerHTML = '0x' + hex.toUpperCase() + ' = <span style="color:var(--lime2);font-weight:700">' + binStr + '₂</span>';
+    vis.appendChild(res);
+  });
+}
+
+// ═══════════════════════════════════════════
+//   TAB 3: 2진 덧셈
+// ═══════════════════════════════════════════
+var addSteps = [], addCurStep = -1;
+
+function buildAddition() {
+  buildAdderTables();
+  initAddSim();
+}
+
+function buildAdderTables() {
+  // Half adder
+  var ha = document.getElementById('halfAdderTable');
+  ha.innerHTML = '<thead><tr><th>A</th><th>B</th><th>Sum</th><th>Carry</th></tr></thead>';
+  var tb = el('tbody');
+  [[0,0],[0,1],[1,0],[1,1]].forEach(function(r) {
+    var s = r[0]^r[1], c = r[0]&r[1];
+    var tr = el('tr');
+    [r[0],r[1],s,c].forEach(function(v,i){
+      var td = el('td',null,v.toString());
+      td.style.cssText = 'font-family:var(--mono);' + (v===1&&i>=2?'color:var(--lime2)':'color:var(--text2)');
+      tr.appendChild(td);
+    });
+    tb.appendChild(tr);
+  });
+  ha.appendChild(tb);
+
+  // Full adder
+  var fa = document.getElementById('fullAdderTable');
+  fa.innerHTML = '<thead><tr><th>A</th><th>B</th><th>Cin</th><th>Sum</th><th>Cout</th></tr></thead>';
+  var tb2 = el('tbody');
+  [[0,0,0],[0,0,1],[0,1,0],[0,1,1],[1,0,0],[1,0,1],[1,1,0],[1,1,1]].forEach(function(r) {
+    var tot = r[0]+r[1]+r[2];
+    var s = tot%2, c = Math.floor(tot/2);
+    var tr = el('tr');
+    [r[0],r[1],r[2],s,c].forEach(function(v,i){
+      var td = el('td',null,v.toString());
+      td.style.cssText = 'font-family:var(--mono);' + (v===1&&i>=3?'color:var(--lime2)':'color:var(--text2)');
+      tr.appendChild(td);
+    });
+    tb2.appendChild(tr);
+  });
+  fa.appendChild(tb2);
+}
+
+function initAddSim() {
+  addSteps = []; addCurStep = -1;
+  renderAddVis(null, null, null, null);
+  clrLog('addLog');
+  addLog('addLog','A = '+document.getElementById('addA').value+', B = '+document.getElementById('addB').value+'  로 시작하세요','info');
+
+  document.getElementById('addResetBtn').addEventListener('click', function(){
+    addSteps = []; addCurStep = -1;
+    document.getElementById('addRunBtn').textContent = '▶ 단계 실행';
+    document.getElementById('addStepLbl').textContent = '';
+    renderAddVis(null,null,null,null);
+    clrLog('addLog');
+  });
+
+  document.getElementById('addRunBtn').addEventListener('click', function(){
+    if (addSteps.length === 0) {
+      // build steps
+      var aStr = document.getElementById('addA').value.trim();
+      var bStr = document.getElementById('addB').value.trim();
+      if (!/^[01]+$/.test(aStr) || !/^[01]+$/.test(bStr)) {
+        addLog('addLog','2진수만 입력 가능합니다','lg-err'); return;
+      }
+      var len = Math.max(aStr.length, bStr.length) + 1;
+      while (aStr.length < len) aStr = '0'+aStr;
+      while (bStr.length < len) bStr = '0'+bStr;
+      var carries = new Array(len+1).fill(0);
+      var sums = new Array(len).fill(0);
+      var a = aStr, b = bStr;
+      // build step list: process from right
+      var steps2 = [];
+      for (var i = len-1; i >= 0; i--) {
+        var ai = parseInt(a[i]), bi = parseInt(b[i]), ci = carries[i+1]||0;
+        var tot = ai + bi + ci;
+        sums[i] = tot % 2;
+        carries[i] = Math.floor(tot/2);
+        steps2.push({
+          col: i, a: a, b: b,
+          carries: carries.slice(), sums: sums.slice(),
+          desc: '열 '+i+': A='+ai+'+B='+bi+'+C_in='+ci+' = '+tot+' → 합='+sums[i]+', 올림='+carries[i]
+        });
+      }
+      addSteps = steps2; addCurStep = 0;
+      document.getElementById('addRunBtn').textContent = '▶ 다음 단계';
+      addLog('addLog','덧셈 시작: A='+a.slice(1)+' + B='+b.slice(1),'lg-info');
+    } else if (addCurStep < addSteps.length) {
+      addCurStep++;
+    }
+    var cur = addSteps[Math.min(addCurStep, addSteps.length-1)];
+    document.getElementById('addStepLbl').textContent = 'Step ' + (addCurStep) + '/' + addSteps.length;
+    renderAddVis(cur.a, cur.b, cur.carries, cur.sums);
+    addLog('addLog', cur.desc, 'lg-step');
+    if (addCurStep >= addSteps.length) {
+      var finalSum = cur.sums.join('').replace(/^0+/,'') || '0';
+      addLog('addLog','✅ 결과: ' + finalSum + '₂ = ' + parseInt(finalSum,2) + '₁₀','lg-ok');
+      document.getElementById('addRunBtn').textContent = '완료 (↺ 초기화)';
+    }
+  });
+}
+
+function renderAddVis(a, b, carries, sums) {
+  var vis = document.getElementById('addVis');
+  vis.innerHTML = '';
+  if (!a) {
+    var hint = el('div',null,'← 위에서 A, B를 입력하고 단계 실행을 누르세요');
+    hint.style.cssText = 'font-family:var(--mono);font-size:12px;color:var(--text3);padding:12px';
+    vis.appendChild(hint);
+    return;
+  }
+  // carries row
+  var crow = el('div','carry-row');
+  var clbl = el('div','bw-lbl','C:');
+  crow.appendChild(clbl);
+  for (var i = 0; i < carries.length-1; i++) {
+    var cc = el('div','carry-cell');
+    cc.textContent = carries[i] ? carries[i] : '';
+    if (carries[i]) cc.style.color = 'var(--amber2)';
+    crow.appendChild(cc);
+  }
+  vis.appendChild(crow);
+  // A row
+  renderBinRow(vis, 'A:', a, 'b1');
+  // B row
+  var sep2 = el('div');
+  sep2.style.cssText = 'display:flex;align-items:center;gap:8px';
+  var sl = el('div','bw-lbl','+');
+  sl.style.color = 'var(--lime)';
+  var sline = el('div');
+  sline.style.cssText = 'flex:1;height:1px;background:var(--border2)';
+  sep2.appendChild(sl); sep2.appendChild(sline);
+  vis.appendChild(sep2);
+  renderBinRow(vis, 'B:', b, 'b0');
+  // separator line
+  var sep = el('div');
+  sep.style.cssText = 'border-top:2px solid var(--lime);margin:6px 0;opacity:.4';
+  vis.appendChild(sep);
+  // sum row
+  renderBinRow(vis, 'S:', sums.join(''), 'b1', true);
+}
+
+function renderBinRow(parent, label, binStr, defCls, isSum) {
+  var row = el('div','add-row');
+  var lbl = el('div','add-lbl',label);
+  if (isSum) lbl.style.color = 'var(--lime)';
+  row.appendChild(lbl);
+  var wrap = el('div','bit-row');
+  for (var i = 0; i < binStr.length; i++) {
+    var bc = el('div','bit-cell');
+    var box = el('div','bit-box ' + (binStr[i]==='1' ? (isSum?'b1':defCls) : 'b0'));
+    box.textContent = binStr[i];
+    bc.appendChild(box);
+    wrap.appendChild(bc);
+    if (i < binStr.length-1) wrap.appendChild(el('div','bit-sep'));
+  }
+  row.appendChild(wrap);
+  parent.appendChild(row);
+}
+
+// ═══════════════════════════════════════════
+//   TAB 4: 보수 표현
+// ═══════════════════════════════════════════
+function buildComplement() {
+  document.getElementById('compRunBtn').addEventListener('click', doComp);
+  document.getElementById('subRunBtn').addEventListener('click', doSub);
+
+  // Range table
+  var rt = document.getElementById('rangeTable');
+  rt.innerHTML = '<thead><tr><th>방식</th><th>4비트</th><th>8비트</th><th>특이사항</th></tr></thead>';
+  var tb = el('tbody');
+  [
+    ['부호-크기(Sign-Magnitude)','-7~+7','-127~+127','+0과 -0이 따로 존재'],
+    ["1의 보수(1's Complement)",'-7~+7','-127~+127','0이 두 개 (00000000, 11111111)'],
+    ["2의 보수(2's Complement)",'-8~+7','-128~+127','0이 하나. 현재 거의 모든 컴퓨터 사용'],
+    ['부호 없음(Unsigned)','0~15','0~255','음수 표현 불가'],
+  ].forEach(function(r) {
+    var tr = el('tr');
+    r.forEach(function(v,i) {
+      var td = el('td',null,v);
+      if (i===0) td.style.color='var(--text2)';
+      if (i===1||i===2) { td.style.fontFamily='var(--mono)'; td.style.color='var(--lime2)'; }
+      if (i===3) { td.style.fontSize='12px'; td.style.color='var(--text3)'; }
+      tr.appendChild(td);
+    });
+    tb.appendChild(tr);
+  });
+  rt.appendChild(tb);
+}
+
+function doComp() {
+  var n = parseInt(document.getElementById('compInput').value);
+  var bits = parseInt(document.getElementById('compBits').value);
+  if (isNaN(n) || n < 0 || n >= Math.pow(2, bits-1)) return;
+  var vis = document.getElementById('compResult');
+  vis.innerHTML = '';
+
+  var posBin = padBin(n, bits);
+  // Sign-Magnitude
+  var smBin = '1' + posBin.slice(1);
+  // 1's complement
+  var oneComp = posBin.split('').map(function(b){return b==='0'?'1':'0';}).join('');
+  // 2's complement
+  var twoComp = (parseInt(oneComp,2)+1).toString(2);
+  while(twoComp.length < bits) twoComp = '0' + twoComp;
+  twoComp = twoComp.slice(-bits);
+
+  var methods = [
+    { name:'부호-크기 (Sign-Magnitude)', bin: '1'+posBin.slice(1), colorFn: function(i){ return i===0?'sign':(posBin.slice(1)[i-1]==='1'?'b1':'b0'); }, desc:'+'+n+' = '+posBin+'  →  부호비트만 1로 변경' },
+    { name:"1의 보수 (1's Complement)",  bin: oneComp, colorFn: function(i,b){ return i===0?'sign':(b==='1'?'b1':'b0'); }, desc:'+'+n+' = '+posBin+'  →  모든 비트 반전' },
+    { name:"2의 보수 (2's Complement)",  bin: twoComp, colorFn: function(i,b){ return i===0?'sign':(b==='1'?'b1':'b0'); }, desc:"1의 보수 "+oneComp+" + 1 = "+twoComp },
+  ];
+
+  // Original
+  var orig = el('div','comp-step active');
+  var ol = el('div','cs-lbl', '+'+n+' (양수, '+bits+'비트)');
+  var ov = el('div','cs-val');
+  var or = makeBitRow(posBin, function(i,b){ return i===0?'sign':(b==='1'?'b1':'b0'); });
+  ov.appendChild(or);
+  orig.appendChild(ol); orig.appendChild(ov);
+  vis.appendChild(orig);
+
+  methods.forEach(function(m) {
+    var step = el('div','comp-step');
+    var lbl = el('div','cs-lbl', '-'+n+' 표현: ' + m.name);
+    var val = el('div','cs-val');
+    var desc = el('div');
+    desc.style.cssText = 'font-family:var(--mono);font-size:10px;color:var(--text3);margin-bottom:8px';
+    desc.textContent = m.desc;
+    var brow = makeBitRow(m.bin, function(i,b,len){ return m.colorFn(i,b,len); });
+    val.appendChild(desc); val.appendChild(brow);
+    step.appendChild(lbl); step.appendChild(val);
+    vis.appendChild(step);
+  });
+}
+
+function doSub() {
+  var a = parseInt(document.getElementById('subA').value);
+  var b = parseInt(document.getElementById('subB').value);
+  if (isNaN(a)||isNaN(b)) return;
+  var vis = document.getElementById('subVis');
+  vis.innerHTML = '';
+
+  var bits = 8;
+  var aB = padBin(a < 0 ? (Math.pow(2,bits)+a) : a, bits);
+  var bB = padBin(b < 0 ? (Math.pow(2,bits)+b) : b, bits);
+  // 2's complement of b
+  var bInv = bB.split('').map(function(x){return x==='0'?'1':'0';}).join('');
+  var bNeg = padBin((parseInt(bInv,2)+1) & 0xFF, bits);
+  var sum = (parseInt(aB,2) + parseInt(bNeg,2));
+  var carry = sum > 255 ? 1 : 0;
+  var result = padBin(sum & 0xFF, bits);
+  var dec = sum & 0xFF;
+  if (dec >= 128) dec -= 256;
+
+  var steps = [
+    { lbl: 'A = +'+a, bin: aB, note:'' },
+    { lbl: 'B = +'+b, bin: bB, note:'' },
+    { lbl: "B의 1의 보수", bin: bInv, note: '← 모든 비트 반전' },
+    { lbl: "B의 2의 보수 = -"+b, bin: bNeg, note: '← +1' },
+    { lbl: 'A + (-B)', bin: result, note: (carry?'올림수 1 버림':'') },
+  ];
+
+  steps.forEach(function(s, i) {
+    var row = el('div');
+    row.style.cssText = 'display:flex;align-items:center;gap:14px;margin-bottom:8px;flex-wrap:wrap';
+    var lbl = el('div');
+    lbl.style.cssText = 'font-family:var(--mono);font-size:11px;color:var(--text3);width:130px;flex-shrink:0;text-align:right';
+    lbl.textContent = s.lbl;
+    var brow = makeBitRow(s.bin, function(j,b){ return j===0?'sign':(b==='1'?'b1':'b0'); });
+    var note = el('div');
+    note.style.cssText = 'font-family:var(--mono);font-size:10px;color:var(--amber2)';
+    note.textContent = s.note;
+    if (i===3) {
+      var sep = el('div');
+      sep.style.cssText = 'font-family:var(--mono);font-size:20px;color:var(--lime);width:130px;text-align:right';
+      sep.textContent = '─'.repeat(10);
+      vis.appendChild(sep);
+    }
+    row.appendChild(lbl); row.appendChild(brow); row.appendChild(note);
+    vis.appendChild(row);
+  });
+
+  var res = el('div');
+  res.style.cssText = 'padding:14px 18px;background:rgba(181,240,61,.06);border:1px solid rgba(181,240,61,.25);border-radius:10px;font-family:var(--mono);font-size:14px;margin-top:12px';
+  res.innerHTML = a + ' - ' + b + ' = ' + a + ' + (-' + b + ') = <span style="color:var(--lime2);font-weight:700;font-size:18px">' + dec + '</span>';
+  vis.appendChild(res);
+}
+
+// ═══════════════════════════════════════════
+//   TAB 5: IEEE 754
+// ═══════════════════════════════════════════
+function buildIEEE() {
+  document.getElementById('fpBtn').addEventListener('click', doFP);
+  document.getElementById('fpDemoBtn').addEventListener('click', function(){
+    document.getElementById('fpInput').value = '5.75';
+    doFP();
+  });
+
+  var t = document.getElementById('ieeeTable');
+  t.innerHTML = '<thead><tr><th>형식</th><th>총 비트</th><th>부호</th><th>지수부</th><th>가수부</th><th>바이어스</th></tr></thead>';
+  var tb = el('tbody');
+  [
+    ['단정도 (float)', '32', '1', '8', '23', '127'],
+    ['배정도 (double)', '64', '1', '11', '52', '1023'],
+  ].forEach(function(r) {
+    var tr = el('tr');
+    r.forEach(function(v,i) {
+      var td = el('td',null,v);
+      td.style.fontFamily = i>0 ? 'var(--mono)' : '';
+      if (i===1) td.style.color = 'var(--amber2)';
+      if (i===3) td.style.color = 'var(--violet)';
+      if (i===4) td.style.color = 'var(--sky)';
+      tr.appendChild(td);
+    });
+    tb.appendChild(tr);
+  });
+  t.appendChild(tb);
+
+  var st = document.getElementById('specialTable');
+  st.innerHTML = '<thead><tr><th>이름</th><th>부호</th><th>지수</th><th>가수</th><th>의미</th></tr></thead>';
+  var stb = el('tbody');
+  [
+    ['+0',   '0','0000 0000','000...0','양의 0'],
+    ['-0',   '1','0000 0000','000...0','음의 0 (= +0)'],
+    ['+∞',   '0','1111 1111','000...0','양의 무한대'],
+    ['-∞',   '1','1111 1111','000...0','음의 무한대'],
+    ['NaN',  '×','1111 1111','≠0',    'Not a Number'],
+  ].forEach(function(r) {
+    var tr = el('tr');
+    r.forEach(function(v,i) {
+      var td = el('td',null,v);
+      td.style.fontFamily = i>0&&i<4 ? 'var(--mono)' : '';
+      if (i===0) td.style.color = 'var(--amber2)';
+      if (i===4) { td.style.fontSize='12px'; td.style.color='var(--text3)'; }
+      tr.appendChild(td);
+    });
+    stb.appendChild(tr);
+  });
+  st.appendChild(stb);
+}
+
+function doFP() {
+  var num = parseFloat(document.getElementById('fpInput').value);
+  if (isNaN(num)) return;
+  var vis = document.getElementById('fpVis');
+  var brk = document.getElementById('fpBreakdown');
+  vis.innerHTML = ''; brk.innerHTML = '';
+
+  var sign = num < 0 ? 1 : 0;
+  var absNum = Math.abs(num);
+
+  // Get 32-bit float binary
+  var buf = new ArrayBuffer(4);
+  var fView = new Float32Array(buf);
+  var iView = new Uint32Array(buf);
+  fView[0] = num;
+  var bits32 = padBin(iView[0], 32);
+
+  var signBit = bits32[0];
+  var expBits = bits32.slice(1, 9);
+  var mantBits = bits32.slice(9);
+
+  var expVal = parseInt(expBits, 2);
+  var actualExp = expVal - 127;
+  var mantVal = parseInt(mantBits, 2);
+
+  // Visual band
+  var band = el('div','ieee-band');
+
+  // Sign segment
+  var sSeg = el('div','ieee-seg');
+  sSeg.style.cssText = 'background:rgba(240,61,204,.06);min-width:40px;flex:0 0 40px';
+  var sLbl = el('div','ieee-seg-lbl','부호');
+  sLbl.style.color = 'var(--mag2)';
+  var sBits = el('div','ieee-seg-bits');
+  var sb = el('div','ieee-bit ieee-bit-s', signBit);
+  sb.style.cssText = 'width:30px;height:30px;border-radius:4px;background:rgba(240,61,204,.2);color:var(--mag2);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:13px;font-weight:700';
+  sBits.appendChild(sb);
+  sSeg.appendChild(sLbl); sSeg.appendChild(sBits);
+  band.appendChild(sSeg);
+
+  // Exp segment
+  var eSeg = el('div','ieee-seg');
+  eSeg.style.cssText = 'background:rgba(155,110,255,.06);flex:0 0 200px';
+  var eLbl = el('div','ieee-seg-lbl','지수 (8비트, Bias=127)');
+  eLbl.style.color = 'var(--violet)';
+  var eBits = el('div','ieee-seg-bits');
+  for (var i = 0; i < 8; i++) {
+    var eb = el('div','ieee-bit');
+    eb.style.cssText = 'width:20px;height:28px;border-radius:3px;background:rgba(155,110,255,.15);color:var(--violet);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;font-weight:700;margin:0 1px';
+    eb.textContent = expBits[i];
+    eBits.appendChild(eb);
+  }
+  eSeg.appendChild(eLbl); eSeg.appendChild(eBits);
+  band.appendChild(eSeg);
+
+  // Mantissa segment
+  var mSeg = el('div','ieee-seg');
+  mSeg.style.cssText = 'background:rgba(61,240,212,.04);flex:1';
+  var mLbl = el('div','ieee-seg-lbl','가수 (23비트)');
+  mLbl.style.color = 'var(--sky)';
+  var mBits = el('div','ieee-seg-bits');
+  mBits.style.flexWrap = 'wrap';
+  for (var i = 0; i < 23; i++) {
+    var mb = el('div','ieee-bit');
+    mb.style.cssText = 'width:18px;height:24px;border-radius:3px;background:'+(mantBits[i]==='1'?'rgba(61,240,212,.15)':'var(--bg3)')+';color:'+(mantBits[i]==='1'?'var(--sky2)':'var(--text3)')+';display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:700;margin:1px';
+    mb.textContent = mantBits[i];
+    mBits.appendChild(mb);
+  }
+  mSeg.appendChild(mLbl); mSeg.appendChild(mBits);
+  band.appendChild(mSeg);
+
+  vis.appendChild(band);
+
+  // Breakdown
+  var steps = [
+    '① 부호(S): ' + signBit + (signBit==='0' ? ' → 양수(+)' : ' → 음수(-)'),
+    '② 지수부: ' + expBits + '₂ = ' + expVal + '₁₀  →  실제 지수 = ' + expVal + ' - 127 = ' + actualExp,
+    '③ 가수부: 1.' + mantBits + '  (숨겨진 1 포함)',
+    '④ 값 = ' + (signBit==='1'?'-':'') + '1.' + mantBits.slice(0,8) + '... × 2^' + actualExp + ' ≈ ' + num,
+  ];
+  var brkWrap = el('div');
+  brkWrap.style.cssText = 'margin-top:14px;';
+  steps.forEach(function(s) {
+    var d = el('div');
+    d.style.cssText = 'font-family:var(--mono);font-size:12px;color:var(--text2);padding:6px 0;border-bottom:1px solid var(--border);line-height:1.6';
+    d.textContent = s;
+    brkWrap.appendChild(d);
+  });
+  brk.appendChild(brkWrap);
+}
+
+// ═══════════════════════════════════════════
+//   TAB 6: 비트 연산
+// ═══════════════════════════════════════════
+function buildBitwise() {
+  document.getElementById('bwBtn').addEventListener('click', doBW);
+
+  // truth tables
+  var tblWrap = document.getElementById('bwTruthTables');
+  var ops = [
+    { name:'AND (&)', fn: function(a,b){return a&b}, t:'두 비트 모두 1이어야 1' },
+    { name:'OR (|)',  fn: function(a,b){return a|b}, t:'하나라도 1이면 1' },
+    { name:'XOR (^)', fn: function(a,b){return a^b}, t:'두 비트가 다르면 1' },
+  ];
+  ops.forEach(function(op) {
+    var card = el('div','card');
+    card.style.padding = '14px';
+    var hd = el('div','card-hd',op.name);
+    var desc = el('div');
+    desc.style.cssText = 'font-size:11px;color:var(--text3);margin-bottom:10px;font-family:var(--mono)';
+    desc.textContent = op.t;
+    var tbl = el('table','tbl');
+    tbl.innerHTML = '<thead><tr><th>A</th><th>B</th><th>결과</th></tr></thead>';
+    var tb = el('tbody');
+    [[0,0],[0,1],[1,0],[1,1]].forEach(function(r) {
+      var res = op.fn(r[0],r[1]);
+      var tr = el('tr');
+      [r[0],r[1],res].forEach(function(v,i) {
+        var td = el('td',null,v.toString());
+        td.style.cssText = 'font-family:var(--mono);' + (i===2&&v===1?'color:var(--lime2);font-weight:700':'color:var(--text2)');
+        tr.appendChild(td);
+      });
+      tb.appendChild(tr);
+    });
+    tbl.appendChild(tb);
+    card.appendChild(hd); card.appendChild(desc); card.appendChild(tbl);
+    tblWrap.appendChild(card);
+  });
+
+  // Applications
+  var apps = document.getElementById('bwApps');
+  var appData = [
+    { title:'특정 비트 확인 (& 마스크)', code:'if (n & (1 << k)) → k번째 비트가 1인지 확인\n예: 1011 & 0010(=1<<1) = 0010 → 1번째 비트 = 1', col:'var(--lime)' },
+    { title:'특정 비트 설정 (| 마스크)', code:'n | (1 << k) → k번째 비트를 1로 설정\n예: 1000 | 0010 = 1010', col:'var(--sky)' },
+    { title:'특정 비트 초기화 (& ~마스크)',code:'n & ~(1 << k) → k번째 비트를 0으로\n예: 1011 & ~0010 = 1011 & 1101 = 1001', col:'var(--amber)' },
+    { title:'빠른 2의 배수 확인', code:'n & (n-1) == 0 → n이 2의 거듭제곱인지 확인\n예: 8=1000, 7=0111 → AND=0 ✓', col:'var(--mag)' },
+    { title:'왼쪽 시프트 = ×2', code:'n << k = n × 2^k (빠른 곱셈)\n예: 5 << 2 = 5 × 4 = 20', col:'var(--violet)' },
+    { title:'오른쪽 시프트 = ÷2', code:'n >> k = n ÷ 2^k (빠른 나눗셈)\n예: 20 >> 2 = 20 ÷ 4 = 5', col:'var(--amber)' },
+  ];
+  var g = el('div');
+  g.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:12px';
+  appData.forEach(function(a) {
+    var card = el('div');
+    card.style.cssText = 'background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:14px 16px';
+    var title = el('div');
+    title.style.cssText = 'font-size:13px;font-weight:700;margin-bottom:8px;color:'+a.col;
+    title.textContent = a.title;
+    var code = el('div');
+    code.style.cssText = 'font-family:var(--mono);font-size:11px;color:var(--text2);white-space:pre-line;line-height:1.7';
+    code.textContent = a.code;
+    card.appendChild(title); card.appendChild(code);
+    g.appendChild(card);
+  });
+  apps.appendChild(g);
+}
+
+function doBW() {
+  var aStr = document.getElementById('bwA').value.trim();
+  var op   = document.getElementById('bwOp').value;
+  var bStr = document.getElementById('bwB').value.trim();
+  if (!/^[01]{1,8}$/.test(aStr)) return;
+  while (aStr.length < 8) aStr = '0' + aStr;
+  while (bStr.length < 8) bStr = '0' + bStr;
+  var aVal = parseInt(aStr, 2);
+  var bVal = parseInt(bStr, 2);
+  var rVal, resStr, opSym;
+  switch(op) {
+    case 'and': rVal = aVal & bVal; opSym = '& (AND)'; break;
+    case 'or':  rVal = aVal | bVal; opSym = '| (OR)';  break;
+    case 'xor': rVal = aVal ^ bVal; opSym = '^ (XOR)'; break;
+    case 'not': rVal = (~aVal) & 0xFF; opSym = '~ (NOT)'; bStr = ''; break;
+    case 'shl': rVal = (aVal << 1) & 0xFF; opSym = '<< 1'; bStr = ''; break;
+    case 'shr': rVal = (aVal >> 1) & 0x7F; opSym = '>> 1'; bStr = ''; break;
+    default: rVal = 0; opSym = '?';
+  }
+  resStr = padBin(rVal, 8);
+
+  var vis = document.getElementById('bwVis');
+  vis.innerHTML = '';
+
+  var rows = [
+    { label:'A =', bits: aStr },
+    bStr ? { label:'B =', bits: bStr } : null,
+    { label: opSym, bits: null },
+    { label:'결과 =', bits: resStr, result: true },
+  ].filter(Boolean);
+
+  rows.forEach(function(r) {
+    if (!r.bits) {
+      // op line
+      var sep = el('div');
+      sep.style.cssText = 'display:flex;align-items:center;gap:8px;margin:4px 0';
+      var slbl = el('div','bw-lbl', r.label);
+      slbl.style.color = 'var(--lime)';
+      var line = el('div');
+      line.style.cssText = 'flex:1;height:1px;background:linear-gradient(90deg,var(--lime),transparent)';
+      sep.appendChild(slbl); sep.appendChild(line);
+      vis.appendChild(sep);
+      return;
+    }
+    var row = el('div','bw-row');
+    var lbl = el('div','bw-lbl', r.label);
+    if (r.result) { lbl.style.color = 'var(--lime)'; }
+    row.appendChild(lbl);
+    for (var i = 0; i < r.bits.length; i++) {
+      var bc = el('div','bit-cell');
+      var cls = r.result
+        ? (r.bits[i]==='1'?'b1':'b0')
+        : (r.bits[i]==='1'?'b1':'b0');
+      var box = el('div','bit-box '+cls);
+      box.textContent = r.bits[i];
+      bc.appendChild(box);
+      row.appendChild(bc);
+      if (i < r.bits.length-1) row.appendChild(el('div','bit-sep'));
+    }
+    // decimal
+    var dec = el('div');
+    dec.style.cssText = 'font-family:var(--mono);font-size:12px;color:var(--text3);padding-left:12px;white-space:nowrap';
+    var v = parseInt(r.bits,2);
+    dec.textContent = '= ' + v + '₁₀';
+    if (r.result) dec.style.color = 'var(--lime2)';
+    row.appendChild(dec);
+    vis.appendChild(row);
+  });
+}
+
+// ═══════════════════════════════════════════
+//   TAB 7: 오버플로우
+// ═══════════════════════════════════════════
+function buildOverflow() {
+  document.getElementById('ovBtn').addEventListener('click', doOverflow);
+
+  // Detect table
+  var dt = document.getElementById('ovDetectTable');
+  dt.innerHTML = '<thead><tr><th>A 부호</th><th>B 부호</th><th>결과 부호</th><th>오버플로우</th></tr></thead>';
+  var dtb = el('tbody');
+  [
+    ['양(+)','양(+)','양(+)','없음 ✅'],
+    ['양(+)','양(+)','음(-)', '발생 ⚠️'],
+    ['음(-)', '음(-)','음(-)', '없음 ✅'],
+    ['음(-)', '음(-)','양(+)','발생 ⚠️'],
+    ['양(+)','음(-)', '아무거나','없음 (항상) ✅'],
+  ].forEach(function(r) {
+    var tr = el('tr');
+    r.forEach(function(v,i) {
+      var td = el('td',null,v);
+      if (i===3) td.style.color = v.includes('발생') ? 'var(--red)' : 'var(--lime2)';
+      tr.appendChild(td);
+    });
+    dtb.appendChild(tr);
+  });
+  dt.appendChild(dtb);
+
+  // Range vis
+  var rv = document.getElementById('ovRangeVis');
+  var ranges = [
+    { label:'부호 있는 8비트', min:-128, max:127, color:'var(--lime)' },
+    { label:'부호 없는 8비트', min:0, max:255, color:'var(--sky)' },
+  ];
+  ranges.forEach(function(r) {
+    var row = el('div');
+    row.style.cssText = 'margin-bottom:14px';
+    var lbl = el('div');
+    lbl.style.cssText = 'font-family:var(--mono);font-size:11px;color:var(--text3);margin-bottom:6px';
+    lbl.textContent = r.label + ': ' + r.min + ' ~ ' + r.max;
+    var bar = el('div');
+    bar.style.cssText = 'height:28px;background:var(--bg3);border:1px solid var(--border2);border-radius:6px;overflow:hidden;position:relative';
+    var fill = el('div');
+    fill.style.cssText = 'position:absolute;height:100%;background:'+r.color+';opacity:.3;transition:width .5s;width:100%';
+    var center = el('div');
+    center.style.cssText = 'position:absolute;left:50%;top:0;bottom:0;width:1px;background:'+r.color+';opacity:.5';
+    bar.appendChild(fill); if (r.min<0) bar.appendChild(center);
+    row.appendChild(lbl); row.appendChild(bar);
+    rv.appendChild(row);
+  });
+
+  // C code
+  setHTML('ovCode',
+    '<span class="cm">// 오버플로우 감지 (부호 있는 덧셈)</span>\n' +
+    '<span class="kw">#include</span> <span class="st2">&lt;stdbool.h&gt;</span>\n\n' +
+    '<span class="kw">bool</span> <span class="fn">checkOverflow</span>(<span class="tp">int8_t</span> a, <span class="tp">int8_t</span> b) {\n' +
+    '    <span class="tp">int16_t</span> result = (<span class="tp">int16_t</span>)a + (<span class="tp">int16_t</span>)b;\n' +
+    '    <span class="kw">return</span> result > <span class="nm">127</span> || result < -<span class="nm">128</span>;\n' +
+    '}\n\n' +
+    '<span class="cm">// 비트 트릭: 올림수(Carry) XOR 오버플로우 비트</span>\n' +
+    '<span class="cm">// 오버플로우 ↔ 부호비트로의 올림수 ≠ 부호비트에서의 올림수</span>\n' +
+    '<span class="kw">bool</span> <span class="fn">overflowXOR</span>(<span class="tp">int8_t</span> a, <span class="tp">int8_t</span> b) {\n' +
+    '    <span class="kw">return</span> ((a ^ b) >> <span class="nm">7</span> == <span class="nm">0</span>) && <span class="cm">// 같은 부호</span>\n' +
+    '           (((a + b) ^ a) >> <span class="nm">7</span> != <span class="nm">0</span>); <span class="cm">// 결과 부호 다름</span>\n' +
+    '}'
+  );
+}
+
+function doOverflow() {
+  var a = parseInt(document.getElementById('ovA').value);
+  var b = parseInt(document.getElementById('ovB').value);
+  if (isNaN(a)||isNaN(b)) return;
+
+  var vis = document.getElementById('ovVis');
+  var meter = document.getElementById('ovMeter');
+  vis.innerHTML = ''; meter.innerHTML = '';
+
+  var aB = padBin(((a % 256) + 256) % 256, 8);
+  var bB = padBin(((b % 256) + 256) % 256, 8);
+  var sum = a + b;
+  var result8 = sum & 0xFF;
+  var resultSigned = result8 >= 128 ? result8 - 256 : result8;
+  var overflow = (a >= 0 && b >= 0 && resultSigned < 0) || (a < 0 && b < 0 && resultSigned >= 0);
+
+  var rB = padBin(result8, 8);
+
+  // show rows
+  [[aB,'A = '+a],[ bB,'B = '+b],[rB,'A+B = '+resultSigned+(overflow?' ⚠ OVERFLOW!':'')]].forEach(function(r,i) {
+    var row = el('div');
+    row.style.cssText = 'display:flex;align-items:center;gap:14px;margin-bottom:8px;flex-wrap:wrap';
+    var lbl = el('div');
+    lbl.style.cssText = 'font-family:var(--mono);font-size:11px;width:160px;flex-shrink:0;text-align:right';
+    lbl.style.color = i===2&&overflow?'var(--red)':'var(--text2)';
+    lbl.textContent = r[1];
+    var brow = makeBitRow(r[0], function(j,b){ return j===0?'sign':(b==='1'?(i===2&&overflow?'over':'b1'):'b0'); });
+    row.appendChild(lbl); row.appendChild(brow);
+    vis.appendChild(row);
+  });
+
+  // Meter
+  var pct = Math.min(Math.abs(sum) / 256 * 100, 100);
+  var mWrap = el('div','overflow-meter');
+  var ml = el('div','om-label', '범위 사용률 (-128~127 기준)');
+  var mt = el('div','om-track');
+  var mf = el('div','om-fill');
+  mf.style.width = pct + '%';
+  mf.style.background = overflow ? 'linear-gradient(90deg,var(--amber),var(--red))' : 'linear-gradient(90deg,var(--lime),var(--sky))';
+  mt.appendChild(mf);
+  var mv = el('div','om-val', sum);
+  mv.style.color = overflow ? 'var(--red)' : 'var(--lime2)';
+  mWrap.appendChild(ml); mWrap.appendChild(mt); mWrap.appendChild(mv);
+  meter.appendChild(mWrap);
+
+  if (overflow) {
+    var warn = el('div');
+    warn.style.cssText = 'padding:12px 16px;background:rgba(240,61,95,.08);border:1px solid rgba(240,61,95,.3);border-radius:8px;font-family:var(--mono);font-size:13px;color:var(--red);margin-top:8px';
+    warn.textContent = '⚠️ OVERFLOW! ' + a + ' + ' + b + ' = ' + sum + ' → 8비트 범위(-128~127) 초과 → 실제 저장값: ' + resultSigned;
+    meter.appendChild(warn);
+  } else {
+    var ok = el('div');
+    ok.style.cssText = 'padding:12px 16px;background:rgba(181,240,61,.06);border:1px solid rgba(181,240,61,.2);border-radius:8px;font-family:var(--mono);font-size:13px;color:var(--lime2);margin-top:8px';
+    ok.textContent = '✅ 정상: ' + a + ' + ' + b + ' = ' + resultSigned + ' (범위 내)';
+    meter.appendChild(ok);
+  }
+}
+
+// ═══════════════════════════════════════════
+//   QUIZ
+// ═══════════════════════════════════════════
+var qScore = 0, qDone = new Array(QUIZ.length).fill(false);
+
+function buildQuiz() {
+  qScore = 0; qDone.fill(false);
+  document.getElementById('qsv').textContent = '0 / ' + QUIZ.length;
+  document.getElementById('qsfil').style.width = '0%';
+  var wrap = document.getElementById('quizWrap');
+  wrap.innerHTML = '';
+  QUIZ.forEach(function(q, qi) {
+    var card = el('div','qcard');
+    var qd = el('div','qq');
+    qd.innerHTML = '<span class="qno">Q'+(qi+1)+'.</span>' + q.q;
+    var opts = el('div','qopts');
+    var marks = ['A','B','C','D'];
+    q.opts.forEach(function(opt, oi) {
+      var o = el('div','qopt');
+      o.dataset.qi = qi; o.dataset.oi = oi;
+      var m = el('span','qmk', marks[oi]);
+      o.appendChild(m);
+      o.appendChild(document.createTextNode(opt));
+      o.addEventListener('click', function(){ answerQ(qi, oi); });
+      opts.appendChild(o);
+    });
+    var fb = el('div','qfb');
+    fb.id = 'qfb'+qi;
+    card.appendChild(qd); card.appendChild(opts); card.appendChild(fb);
+    wrap.appendChild(card);
+  });
+}
+function answerQ(qi, oi) {
+  if (qDone[qi]) return;
+  qDone[qi] = true;
+  var q = QUIZ[qi];
+  var opts = document.querySelectorAll('[data-qi="'+qi+'"]');
+  opts.forEach(function(o){ o.classList.add('dis'); });
+  opts[oi].classList.add(oi===q.ans?'right':'wrong');
+  opts[q.ans].classList.add('right');
+  var fb = document.getElementById('qfb'+qi);
+  fb.classList.add('show');
+  if (oi===q.ans) { fb.classList.add('ok'); fb.textContent='✅ 정답! '+q.exp; qScore++; }
+  else { fb.classList.add('ng'); fb.textContent='❌ 오답. '+q.exp; }
+  var total = QUIZ.length;
+  document.getElementById('qsv').textContent = qScore + ' / ' + total;
+  document.getElementById('qsfil').style.width = (qScore/total*100)+'%';
+}
+document.getElementById('qResetBtn').addEventListener('click', buildQuiz);
+
+// ═══════════════════════════════════════════
+//   INIT
+// ═══════════════════════════════════════════
+buildSystems();
+buildConvert();
+buildAddition();
+buildComplement();
+buildIEEE();
+buildBitwise();
+buildOverflow();
+buildQuiz();
+</script>
+</body>
+</html>

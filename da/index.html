@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>이산수학 제1장 수의 표현과 연산 30문제</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Pretendard", "Noto Sans KR", Arial, sans-serif;
+      background: linear-gradient(135deg, #eef7ff 0%, #f6f1ff 45%, #fff8e5 100%);
+      color: #1f2937;
+      line-height: 1.65;
+    }
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 32px 18px 80px; }
+    .hero {
+      background: white;
+      border-radius: 28px;
+      padding: 36px;
+      box-shadow: 0 20px 50px rgba(40, 70, 120, 0.12);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::after {
+      content: "30";
+      position: absolute;
+      right: 28px;
+      top: -4px;
+      font-size: 140px;
+      font-weight: 900;
+      color: rgba(55, 100, 255, 0.08);
+    }
+    .badge {
+      display: inline-block;
+      background: #2557d6;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-weight: 900;
+      margin-bottom: 14px;
+    }
+    h1 { margin: 0 0 10px; font-size: clamp(30px, 5vw, 54px); color: #172554; letter-spacing: -1.2px; }
+    h2 { color: #1d4ed8; margin: 0 0 14px; }
+    h3 { color: #1e3a8a; margin: 20px 0 10px; }
+    .subtitle { font-size: 19px; color: #4b5563; max-width: 850px; margin: 0; }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      margin: 18px 0 24px;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(10px);
+      border: 1px solid #dbeafe;
+      border-radius: 22px;
+      padding: 16px;
+      box-shadow: 0 12px 30px rgba(37, 87, 214, 0.1);
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 14px;
+      align-items: center;
+    }
+    .progress-wrap { background: #e5edff; border-radius: 999px; height: 18px; overflow: hidden; }
+    .progress { height: 100%; width: 0%; background: linear-gradient(90deg, #2563eb, #8b5cf6); transition: width .25s ease; }
+    .progress-text { font-weight: 900; color: #1e3a8a; white-space: nowrap; }
+    button {
+      border: none;
+      border-radius: 14px;
+      padding: 12px 16px;
+      font-size: 15px;
+      font-weight: 900;
+      cursor: pointer;
+      color: white;
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);
+    }
+    button.secondary { background: #334155; box-shadow: none; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .section-card, .question, .solution-box, .result-panel {
+      background: rgba(255, 255, 255, 0.94);
+      border: 1px solid rgba(100, 140, 220, 0.16);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 12px 34px rgba(50, 70, 110, 0.09);
+      margin-bottom: 18px;
+    }
+    .section-title {
+      background: #eff6ff;
+      border: 2px solid #bfdbfe;
+      color: #1e3a8a;
+      border-radius: 18px;
+      padding: 14px 18px;
+      margin: 28px 0 16px;
+      font-size: 24px;
+      font-weight: 900;
+    }
+    .q-title { font-size: 20px; font-weight: 900; color: #111827; margin-bottom: 14px; }
+    .choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .choice {
+      background: #f8fbff;
+      border: 2px solid #dbeafe;
+      border-radius: 16px;
+      padding: 13px 14px;
+      cursor: pointer;
+      font-weight: 800;
+      color: #1f2937;
+      transition: .15s ease;
+    }
+    .choice:hover { transform: translateY(-1px); border-color: #93c5fd; }
+    .choice.selected { background: #dbeafe; border-color: #2563eb; color: #1e3a8a; }
+    .choice.correct { background: #dcfce7; border-color: #22c55e; }
+    .choice.wrong { background: #fee2e2; border-color: #ef4444; }
+    .lock {
+      background: #fff7ed;
+      border: 2px solid #fed7aa;
+      color: #7c2d12;
+      border-radius: 20px;
+      padding: 20px;
+      font-weight: 900;
+      margin: 22px 0;
+    }
+    .result-panel { display: none; border: 3px solid #93c5fd; }
+    .score { font-size: 38px; font-weight: 900; color: #2563eb; }
+    .solution-box { display: none; }
+    .solution {
+      background: #f8fafc;
+      border-left: 8px solid #2563eb;
+      border-radius: 16px;
+      padding: 16px 18px;
+      margin: 14px 0;
+    }
+    .answer { font-weight: 900; color: #dc2626; }
+    pre {
+      margin: 10px 0 0;
+      background: #111827;
+      color: #e5e7eb;
+      padding: 14px;
+      border-radius: 14px;
+      overflow-x: auto;
+      line-height: 1.55;
+    }
+    .small { color: #64748b; font-size: 14px; }
+    .notice { color: #b45309; font-weight: 900; }
+    @media (max-width: 780px) {
+      .topbar { grid-template-columns: 1fr; }
+      .choices { grid-template-columns: 1fr; }
+      .hero { padding: 26px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <span class="badge">중등 정보올림피아드 대비</span>
+      <h1>이산수학 제1장: 수의 표현과 연산</h1>
+      <p class="subtitle">1교시 이론 문제 30개입니다. 모든 문제를 선택해야 정답과 해설을 볼 수 있습니다.</p>
+    </section>
+
+    <div class="topbar">
+      <div>
+        <div class="progress-wrap"><div id="progress" class="progress"></div></div>
+        <div id="progressText" class="progress-text">0 / 30문제 풀이 완료</div>
+      </div>
+      <button id="submitBtn" onclick="submitQuiz()" disabled>정답과 해설 보기</button>
+      <button class="secondary" onclick="resetQuiz()">다시 풀기</button>
+    </div>
+
+    <div class="section-card">
+      <h2>학습 목표</h2>
+      <p>1. 진법 변환, 비트, 약수와 배수, 나머지 연산, 논리 연산의 기본 개념을 점검합니다.</p>
+      <p>2. 정보올림피아드 이론 문제에서 자주 나오는 수의 표현 방식을 연습합니다.</p>
+      <p>3. 모든 문제를 끝까지 풀고 난 뒤 정답과 해설을 확인하도록 구성했습니다.</p>
+    </div>
+
+    <div id="quiz"></div>
+
+    <div id="lockBox" class="lock">아직 모든 문제를 풀지 않았습니다. 30문제를 모두 선택하면 정답과 해설을 볼 수 있습니다.</div>
+
+    <div id="resultPanel" class="result-panel">
+      <h2>채점 결과</h2>
+      <div class="score" id="scoreText"></div>
+      <p id="scoreComment"></p>
+    </div>
+
+    <div id="solutions" class="solution-box">
+      <h2>정답과 해설</h2>
+      <div id="solutionList"></div>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      {s:'1. 진법 변환', q:'10진수 45를 2진수로 바르게 나타낸 것은?', c:['101101','110101','111001','100101'], a:0, e:'45를 2로 나누면 나머지가 1,0,1,1,0,1 순서로 나오고, 이를 거꾸로 읽으면 101101₂입니다.'},
+      {s:'1. 진법 변환', q:'2진수 101101₂를 10진수로 바르게 변환한 것은?', c:['43','44','45','46'], a:2, e:'101101₂ = 1×2⁵ + 0×2⁴ + 1×2³ + 1×2² + 0×2¹ + 1×2⁰ = 32+8+4+1 = 45입니다.'},
+      {s:'1. 진법 변환', q:'16진수 A를 10진수로 바르게 나타낸 것은?', c:['8','9','10','11'], a:2, e:'16진수에서 A는 10, B는 11, C는 12를 의미합니다.'},
+      {s:'1. 진법 변환', q:'8진수 17₈을 10진수로 변환하면?', c:['13','14','15','16'], a:2, e:'17₈ = 1×8¹ + 7×8⁰ = 8 + 7 = 15입니다.'},
+      {s:'1. 진법 변환', q:'10진수 255를 16진수로 바르게 나타낸 것은?', c:['EE','FF','FE','EF'], a:1, e:'255 ÷ 16 = 15 ... 15이고, 15는 16진수에서 F이므로 255 = FF₁₆입니다.'},
+
+      {s:'2. 비트와 이진수', q:'2진수에서 한 자리(bit)가 가질 수 있는 값은?', c:['0만 가능','1만 가능','0 또는 1','0~9'], a:2, e:'비트는 binary digit의 줄임말이며 0 또는 1 두 가지 값만 가질 수 있습니다.'},
+      {s:'2. 비트와 이진수', q:'다음 중 짝수인 2진수는?', c:['1011','1111','1001','1100'], a:3, e:'2진수의 마지막 자리가 0이면 짝수, 1이면 홀수입니다. 1100은 마지막 자리가 0입니다.'},
+      {s:'2. 비트와 이진수', q:'2진수 100000₂는 10진수로 얼마인가?', c:['16','32','64','128'], a:1, e:'100000₂ = 1×2⁵ = 32입니다.'},
+      {s:'2. 비트와 이진수', q:'2⁷의 값은?', c:['64','96','128','256'], a:2, e:'2⁷ = 2×2×2×2×2×2×2 = 128입니다.'},
+      {s:'2. 비트와 이진수', q:'컴퓨터에서 1Byte는 몇 bit인가?', c:['2','4','8','16'], a:2, e:'1Byte는 8bit입니다. 정보 표현의 기본 단위로 자주 출제됩니다.'},
+
+      {s:'3. 약수와 배수', q:'24의 약수가 아닌 것은?', c:['2','3','5','6'], a:2, e:'24는 5로 나누어떨어지지 않습니다. 따라서 5는 24의 약수가 아닙니다.'},
+      {s:'3. 약수와 배수', q:'18과 24의 최대공약수는?', c:['3','4','5','6'], a:3, e:'18의 약수는 1,2,3,6,9,18이고 24의 약수는 1,2,3,4,6,8,12,24입니다. 공통 약수 중 가장 큰 수는 6입니다.'},
+      {s:'3. 약수와 배수', q:'18과 24의 최소공배수는?', c:['48','60','72','96'], a:2, e:'gcd(18,24)=6입니다. 최소공배수는 18×24÷6 = 72입니다.'},
+      {s:'3. 약수와 배수', q:'다음 중 소수(prime number)는?', c:['21','27','29','33'], a:2, e:'29는 1과 자기 자신인 29만 약수로 가지므로 소수입니다.'},
+      {s:'3. 약수와 배수', q:'60을 소인수분해한 결과는?', c:['2² × 3 × 5','2 × 3² × 5','2² × 5²','2³ × 3 × 5'], a:0, e:'60 = 2×30 = 2×2×15 = 2²×3×5입니다.'},
+
+      {s:'4. 나머지 연산', q:'25 % 7의 결과는?', c:['2','3','4','5'], a:2, e:'25 ÷ 7 = 3 ... 4이므로 25 % 7 = 4입니다.'},
+      {s:'4. 나머지 연산', q:'다음 중 3의 배수 판별법으로 올바른 것은?', c:['마지막 자리만 확인','각 자리 숫자의 합 확인','짝수인지 확인','2로 나누기'], a:1, e:'각 자리 숫자의 합이 3의 배수이면 원래 수도 3의 배수입니다.'},
+      {s:'4. 나머지 연산', q:'123456의 각 자리수 합은?', c:['18','19','20','21'], a:3, e:'1+2+3+4+5+6 = 21입니다.'},
+      {s:'4. 나머지 연산', q:'다음 중 홀수는?', c:['100100₂','111000₂','101010₂','110101₂'], a:3, e:'2진수에서 마지막 비트가 1이면 홀수입니다. 110101₂만 마지막 비트가 1입니다.'},
+      {s:'4. 나머지 연산', q:'10진수 31을 2진수로 바르게 나타낸 것은?', c:['11111','11110','10111','11011'], a:0, e:'31 = 16+8+4+2+1이므로 2진수로 11111₂입니다.'},
+
+      {s:'5. 정보올림피아드 사고력', q:'2진수 1111₂ + 1의 결과는?', c:['1000₂','10000₂','11111₂','10101₂'], a:1, e:'1111₂는 15입니다. 15+1=16이고 16은 10000₂입니다.'},
+      {s:'5. 정보올림피아드 사고력', q:'다음 중 10진수 값이 가장 작은 수는?', c:['1111₂','17₈','F₁₆','14₁₀'], a:3, e:'1111₂=15, 17₈=15, F₁₆=15, 14₁₀=14입니다. 따라서 가장 작은 수는 14₁₀입니다.'},
+      {s:'5. 정보올림피아드 사고력', q:'어떤 수를 2로 나누었을 때 나머지가 항상 0이면?', c:['홀수','짝수','소수','음수'], a:1, e:'2로 나누었을 때 나머지가 0인 정수는 짝수입니다.'},
+      {s:'5. 정보올림피아드 사고력', q:'다음 중 NOT 연산 결과가 올바른 것은?', c:['NOT 0 = 0','NOT 1 = 1','NOT 0 = 1','NOT 1 = 2'], a:2, e:'NOT 연산은 값을 반대로 바꿉니다. 0은 1로, 1은 0으로 바뀝니다.'},
+      {s:'5. 정보올림피아드 사고력', q:'2진수 1010₂ AND 1100₂ 결과는?', c:['1000₂','1010₂','1100₂','1110₂'], a:0, e:'AND는 두 비트가 모두 1일 때만 1입니다. 1010 AND 1100 = 1000입니다.'},
+      {s:'5. 정보올림피아드 사고력', q:'다음 중 XOR 결과가 1이 되는 경우는?', c:['둘 다 0','둘 다 1','서로 다를 때','항상 1'], a:2, e:'XOR은 두 값이 서로 다를 때 1입니다. 0 XOR 1 = 1, 1 XOR 0 = 1입니다.'},
+      {s:'5. 정보올림피아드 사고력', q:'2진수 100000000₂는 몇 비트인가?', c:['7','8','9','10'], a:2, e:'비트 수는 숫자의 자리 개수입니다. 100000000은 숫자가 9개이므로 9비트입니다.'},
+      {s:'5. 정보올림피아드 사고력', q:'10진수 64는 2의 몇 제곱인가?', c:['2⁴','2⁵','2⁶','2⁷'], a:2, e:'2⁶ = 64입니다.'},
+      {s:'5. 정보올림피아드 사고력', q:'어떤 수가 2의 거듭제곱이면 2진수 특징은?', c:['1이 여러 개','항상 짝수','1이 하나만 존재','마지막 비트가 1'], a:2, e:'8=1000₂, 16=10000₂, 32=100000₂처럼 2의 거듭제곱은 2진수에서 1이 하나만 존재합니다.'},
+      {s:'5. 정보올림피아드 사고력', q:'컴퓨터에서 음수를 표현할 때 주로 사용하는 방법은?', c:['ASCII','보수 표현','진법 변환','소수 표현'], a:1, e:'컴퓨터에서 정수 음수 표현에는 보수 표현, 특히 2의 보수가 많이 사용됩니다.'}
+    ];
+
+    const answers = Array(questions.length).fill(null);
+    let submitted = false;
+
+    function renderQuiz() {
+      const quiz = document.getElementById('quiz');
+      quiz.innerHTML = '';
+      let currentSection = '';
+
+      questions.forEach((item, idx) => {
+        if (item.s !== currentSection) {
+          currentSection = item.s;
+          const title = document.createElement('div');
+          title.className = 'section-title';
+          title.textContent = currentSection;
+          quiz.appendChild(title);
+        }
+
+        const q = document.createElement('div');
+        q.className = 'question';
+        q.id = `q${idx}`;
+        q.innerHTML = `<div class="q-title">문제 ${idx + 1}. ${item.q}</div>`;
+
+        const choices = document.createElement('div');
+        choices.className = 'choices';
+        item.c.forEach((choice, cidx) => {
+          const btn = document.createElement('div');
+          btn.className = 'choice';
+          btn.textContent = `${cidx + 1}. ${choice}`;
+          btn.onclick = () => selectChoice(idx, cidx);
+          choices.appendChild(btn);
+        });
+        q.appendChild(choices);
+        quiz.appendChild(q);
+      });
+    }
+
+    function selectChoice(qidx, cidx) {
+      if (submitted) return;
+      answers[qidx] = cidx;
+      const q = document.getElementById(`q${qidx}`);
+      q.querySelectorAll('.choice').forEach((el, idx) => {
+        el.classList.toggle('selected', idx === cidx);
+      });
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const done = answers.filter(v => v !== null).length;
+      const percent = done / questions.length * 100;
+      document.getElementById('progress').style.width = percent + '%';
+      document.getElementById('progressText').textContent = `${done} / ${questions.length}문제 풀이 완료`;
+      document.getElementById('submitBtn').disabled = done !== questions.length;
+      document.getElementById('lockBox').style.display = done === questions.length ? 'none' : 'block';
+    }
+
+    function submitQuiz() {
+      if (answers.some(v => v === null)) return;
+      submitted = true;
+      let score = 0;
+
+      questions.forEach((item, qidx) => {
+        const q = document.getElementById(`q${qidx}`);
+        q.querySelectorAll('.choice').forEach((el, cidx) => {
+          el.classList.remove('selected');
+          if (cidx === item.a) el.classList.add('correct');
+          if (cidx === answers[qidx] && cidx !== item.a) el.classList.add('wrong');
+        });
+        if (answers[qidx] === item.a) score++;
+      });
+
+      document.getElementById('submitBtn').disabled = true;
+      document.getElementById('resultPanel').style.display = 'block';
+      document.getElementById('solutions').style.display = 'block';
+      document.getElementById('scoreText').textContent = `${score} / ${questions.length}점`;
+      document.getElementById('scoreComment').textContent = score >= 27 ? '훌륭합니다. 이론 기본기가 매우 좋습니다.' : score >= 22 ? '좋습니다. 틀린 문제의 해설을 다시 확인하면 안정적입니다.' : score >= 15 ? '기본 개념은 잡혀 있습니다. 진법 변환과 나머지 연산을 다시 복습하세요.' : '개념부터 다시 정리하는 것이 좋습니다. 해설을 보며 한 문제씩 다시 풀어보세요.';
+      renderSolutions();
+      document.getElementById('resultPanel').scrollIntoView({behavior:'smooth'});
+    }
+
+    function renderSolutions() {
+      const list = document.getElementById('solutionList');
+      list.innerHTML = '';
+      questions.forEach((item, idx) => {
+        const div = document.createElement('div');
+        div.className = 'solution';
+        const user = answers[idx] === null ? '미선택' : `${answers[idx] + 1}. ${item.c[answers[idx]]}`;
+        div.innerHTML = `
+          <h3>문제 ${idx + 1}</h3>
+          <p><b>${item.q}</b></p>
+          <p>내 선택: ${user}</p>
+          <p class="answer">정답: ${item.a + 1}. ${item.c[item.a]}</p>
+          <p><b>해설:</b> ${item.e}</p>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    function resetQuiz() {
+      answers.fill(null);
+      submitted = false;
+      document.getElementById('resultPanel').style.display = 'none';
+      document.getElementById('solutions').style.display = 'none';
+      document.getElementById('submitBtn').disabled = true;
+      renderQuiz();
+      updateProgress();
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+
+    renderQuiz();
+    updateProgress();
+  </script>
+</body>
+</html>
