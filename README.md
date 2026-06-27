@@ -20,6 +20,9 @@ a0   :  모듈러 산술
 a1   :  모듈러 산술 10문제
 bit  :  비트마스킹
 bit2 : 비트마스킹 30문제
+da_discrete_math_ch_1_30_quiz_locked_solutions_html
+db_discrete_math_ch01_numbers
+
 
 01 이산수학_1장_문제
 http://iioiinet-spec.github.io/dmath/free1/01
