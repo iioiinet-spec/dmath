@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>11강 집합의 분할 인터랙티브 강의 | 세영코딩연구소</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a1628; --panel:#10203a; --panel2:#152848; --line:#24406b;
+  --teal:#2dd4bf; --cyan:#38bdf8; --orange:#fbbf24;
+  --text:#e8f1fb; --sub:#a9c2e0; --good:#34d399; --bad:#f87171;
+  --mono:'JetBrains Mono','Noto Sans KR',monospace;
+  --sans:'Noto Sans KR',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:17px;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.7;}
+
+header.hero{padding:2.5rem 1.2rem 1.5rem;text-align:center;background:linear-gradient(180deg,#0c1e3d 0%,var(--bg) 100%);border-bottom:1px solid var(--line);}
+.hero .lab{font-family:var(--mono);color:var(--teal);font-size:.95rem;letter-spacing:.18em;font-weight:600;}
+.hero h1{font-size:2rem;font-weight:900;margin:.5rem 0 .3rem;line-height:1.35;}
+.hero h1 .fx{color:var(--cyan);}
+.hero .desc{color:var(--sub);font-size:1rem;}
+
+nav.tabs{position:sticky;top:0;z-index:50;display:flex;justify-content:center;flex-wrap:wrap;gap:.4rem;padding:.7rem .6rem;background:rgba(10,22,40,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
+nav.tabs button{font-family:var(--sans);font-size:.94rem;font-weight:700;color:var(--sub);background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:.5rem .85rem;cursor:pointer;transition:all .15s;}
+nav.tabs button:hover{color:var(--text);border-color:var(--teal);}
+nav.tabs button.on{color:#06251f;background:var(--teal);border-color:var(--teal);}
+nav.tabs button:focus-visible{outline:3px solid var(--orange);outline-offset:2px;}
+
+main{max-width:960px;margin:0 auto;padding:1.6rem 1.1rem 4rem;}
+section.page{display:none;}
+section.page.on{display:block;animation:fade .25s ease;}
+@keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+.page-title{font-size:1.45rem;font-weight:900;margin:.6rem 0 .4rem;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;}
+.page-title .chip{font-family:var(--mono);font-size:.8rem;font-weight:700;color:#06251f;background:var(--teal);border-radius:6px;padding:.15rem .55rem;}
+.page-sub{color:var(--sub);margin-bottom:1.3rem;font-size:.98rem;}
+
+.tcard{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:1.25rem 1.35rem;margin-bottom:1.1rem;}
+.tcard h3{font-size:1.13rem;font-weight:900;color:var(--cyan);margin-bottom:.55rem;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;}
+.tcard h3 .num{font-family:var(--mono);font-size:.85rem;color:var(--orange);}
+.tcard p{margin:.35rem 0;}
+.tcard .note{color:var(--sub);font-size:.95rem;}
+.tcard .plus{color:var(--orange);font-weight:700;font-size:.9rem;font-family:var(--mono);}
+pre.code{font-family:var(--mono);font-size:.9rem;line-height:1.6;background:#0b1730;border:1px solid var(--line);border-radius:10px;padding:.9rem 1.05rem;overflow-x:auto;color:#cfe6ff;margin:.6rem 0;white-space:pre;}
+pre.code .cm{color:#6f8db3;}
+
+.lab-box{background:#0b1e33;border:1px solid var(--line);border-left:4px solid var(--cyan);border-radius:12px;padding:1rem 1.1rem;margin:.8rem 0;}
+.lab-box .lab-title{font-family:var(--mono);font-weight:700;color:var(--cyan);font-size:.9rem;letter-spacing:.08em;margin-bottom:.6rem;}
+.ctrl{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin:.55rem 0;}
+.ctrl label{font-size:.92rem;color:var(--sub);font-weight:700;}
+.ctrl input[type=text],.ctrl input[type=number]{font-family:var(--mono);font-size:.95rem;color:var(--text);background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:.42rem .6rem;width:96px;}
+.ctrl input.wide{width:240px;}
+.ctrl select{font-family:var(--mono);font-size:.95rem;color:var(--text);background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:.42rem .6rem;}
+.ctrl input:focus-visible,.ctrl select:focus-visible{outline:2px solid var(--orange);}
+button.act{font-family:var(--mono);font-size:.9rem;font-weight:700;color:#06251f;background:var(--teal);border:1px solid var(--teal);border-radius:8px;padding:.45rem .8rem;cursor:pointer;transition:all .12s;}
+button.act:hover{filter:brightness(1.12);}
+button.act.alt{background:transparent;color:var(--teal);}
+button.act.warn2{background:transparent;color:var(--orange);border-color:var(--orange);}
+button.act:focus-visible{outline:3px solid var(--orange);outline-offset:2px;}
+.result{font-family:var(--mono);font-size:.95rem;background:#081426;border:1px solid var(--line);border-radius:8px;padding:.6rem .85rem;margin-top:.55rem;color:#d7fef7;min-height:2.3rem;white-space:pre-wrap;}
+
+/* 조건 체크리스트 */
+.checks{display:flex;flex-direction:column;gap:.5rem;margin:.6rem 0;}
+.checks .ck{font-family:var(--mono);font-size:.95rem;background:var(--panel2);border:2px solid var(--line);border-radius:10px;padding:.55rem .9rem;display:flex;justify-content:space-between;gap:.7rem;flex-wrap:wrap;}
+.checks .ck.pass{border-color:var(--good);background:rgba(52,211,153,.1);}
+.checks .ck.fail{border-color:var(--bad);background:rgba(248,113,113,.1);}
+.checks .ck .v{font-weight:700;}
+.checks .ck.pass .v{color:var(--good);}
+.checks .ck.fail .v{color:var(--bad);}
+
+/* 그룹 상자 */
+.groups{display:flex;gap:.6rem;flex-wrap:wrap;margin:.6rem 0;}
+.gbox{background:var(--panel2);border:2px solid var(--teal);border-radius:12px;padding:.5rem .7rem;min-width:70px;}
+.gbox .gt{font-family:var(--mono);font-size:.75rem;color:var(--teal);font-weight:700;}
+.gbox .gm{display:flex;gap:.35rem;flex-wrap:wrap;margin-top:.25rem;}
+.gbox .gm span{font-family:var(--mono);font-weight:700;background:#0b1730;border:1px solid var(--line);border-radius:7px;padding:.2rem .55rem;color:#d7fef7;}
+.parr{display:flex;gap:.4rem;flex-wrap:wrap;margin:.55rem 0;}
+.parr .pc{text-align:center;}
+.parr .pc .pi{font-family:var(--mono);font-size:.75rem;color:var(--teal);display:block;}
+.parr .pc .pv{font-family:var(--mono);font-weight:700;min-width:44px;padding:.4rem .4rem;display:block;background:var(--panel2);border:2px solid var(--line);border-radius:9px;}
+.parr .pc.chg .pv{border-color:var(--orange);color:#ffe9b3;}
+
+/* 분할 목록 */
+.plist{font-family:var(--mono);font-size:.93rem;background:#081426;border:1px solid var(--line);border-radius:8px;padding:.6rem .85rem;margin-top:.55rem;color:#d7fef7;max-height:300px;overflow-y:auto;white-space:pre;}
+
+/* 스털링 표 */
+table.stir{border-collapse:collapse;margin:.6rem 0;font-family:var(--mono);font-size:.92rem;}
+table.stir th,table.stir td{border:1px solid var(--line);padding:.4rem .65rem;text-align:right;min-width:52px;}
+table.stir th{background:var(--panel2);color:var(--cyan);text-align:center;}
+table.stir td{color:#d7fef7;cursor:pointer;}
+table.stir td:hover{border-color:var(--cyan);}
+table.stir td.sel{background:rgba(45,212,191,.18);border-color:var(--teal);color:#c7fff4;font-weight:700;}
+table.stir td.src{background:rgba(251,191,36,.14);border-color:var(--orange);color:#ffe9b3;font-weight:700;}
+table.stir td.bell{color:var(--orange);font-weight:700;cursor:default;}
+table.stir td.zero{color:#3d557a;cursor:default;}
+
+/* 퀴즈 */
+.scorebar{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:.8rem 1.1rem;margin-bottom:1.2rem;}
+.scorebar .sc{font-family:var(--mono);font-weight:700;font-size:1.05rem;color:var(--teal);}
+.scorebar button.reset{margin-left:auto;font-weight:700;font-size:.9rem;color:var(--sub);background:transparent;border:1px solid var(--line);border-radius:8px;padding:.35rem .85rem;cursor:pointer;font-family:var(--sans);}
+.scorebar button.reset:hover{color:var(--text);border-color:var(--teal);}
+.qcard{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:1.2rem 1.3rem;margin-bottom:1.1rem;}
+.qcard .qhead{display:flex;align-items:baseline;gap:.6rem;margin-bottom:.55rem;flex-wrap:wrap;}
+.qcard .qno{font-family:var(--mono);font-weight:700;color:var(--orange);white-space:nowrap;}
+.qcard .qtext{font-weight:700;font-size:1.03rem;flex:1;min-width:220px;}
+.qcard pre.code{margin:.4rem 0 .6rem;}
+.choices{display:grid;gap:.55rem;margin-top:.5rem;}
+.choices button{text-align:left;font-family:var(--sans);font-size:.97rem;color:var(--text);background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:.62rem .95rem;cursor:pointer;transition:all .12s;line-height:1.55;}
+.choices button:hover:not(:disabled){border-color:var(--cyan);}
+.choices button:focus-visible{outline:3px solid var(--orange);outline-offset:2px;}
+.choices button:disabled{cursor:default;opacity:.92;}
+.choices button.correct{background:rgba(52,211,153,.14);border-color:var(--good);color:#c9f7e4;font-weight:700;}
+.choices button.wrong{background:rgba(248,113,113,.12);border-color:var(--bad);color:#ffd9d9;}
+.sol{display:none;margin-top:.8rem;background:#0b1e33;border:1px solid var(--line);border-left:4px solid var(--cyan);border-radius:8px;padding:.7rem 1rem;font-size:.96rem;color:#d5e8fb;white-space:pre-wrap;}
+.sol.show{display:block;animation:fade .2s ease;}
+.sol .tag{font-family:var(--mono);font-weight:700;color:var(--cyan);margin-right:.4rem;}
+
+table.cmp{width:100%;border-collapse:collapse;margin:.6rem 0;font-size:.95rem;}
+table.cmp th,table.cmp td{border:1px solid var(--line);padding:.5rem .75rem;text-align:left;}
+table.cmp th{background:var(--panel2);color:var(--cyan);font-family:var(--mono);}
+
+footer{text-align:center;color:var(--sub);font-family:var(--mono);font-size:.85rem;padding:2rem 1rem;border-top:1px solid var(--line);}
+
+@media (max-width:560px){
+  html{font-size:16.5px;}
+  .hero h1{font-size:1.45rem;}
+  nav.tabs button{font-size:.84rem;padding:.45rem .6rem;}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important;}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="lab">SEYEONG CODING LAB · KOI DISCRETE MATH</div>
+  <h1>11강 집합의 분할 <span class="fx">인터랙티브 강의</span></h1>
+  <div class="desc">분할 판정 · Union-Find · 백트래킹 분할 생성 · 스털링 수 · 벨 수 — KOI 중등 대비</div>
+</header>
+
+<nav class="tabs" id="tabs">
+  <button data-p="0" class="on">1. 분할이란?</button>
+  <button data-p="1">2. Union-Find 실험실</button>
+  <button data-p="2">3. 코드 &amp; DFS 비교</button>
+  <button data-p="3">4. 모든 분할 만들기</button>
+  <button data-p="4">5. 스털링 수 · 벨 수</button>
+  <button data-p="5">6. 확인 퀴즈</button>
+</nav>
+
+<main>
+
+<!-- ============ 0. 분할이란 ============ -->
+<section class="page on" id="page0">
+  <div class="page-title"><span class="chip">CONCEPT</span>집합의 분할 — 세 가지 조건</div>
+  <div class="page-sub">집합 S를 여러 부분집합으로 나누되, 아래 세 조건을 모두 만족해야 "분할"입니다.</div>
+
+  <div class="tcard">
+    <h3><span class="num">01</span>분할의 정의</h3>
+    <p>① 각 부분집합은 <b>비어 있으면 안 된다</b>.</p>
+    <p>② 부분집합끼리 <b>서로 겹치면 안 된다</b> (서로소).</p>
+    <p>③ 모두 합치면 <b>원래 집합 S가 되어야 한다</b>.</p>
+    <pre class="code">S = {1,2,3,4,5,6}
+{1,2}, {3,4,5}, {6}   → 세 조건을 모두 만족 → 분할이다! ✔</pre>
+    <p class="note">핵심 한 줄: <b style="color:var(--teal)">집합의 분할 = 서로소 집합들의 모음</b> — 그래서 알고리즘 이름이 "서로소 집합(Disjoint Set)"입니다.</p>
+  </div>
+
+  <div class="tcard">
+    <h3><span class="num">02</span>분할 판정기 <span class="plus">[추가됨: 분할이 아닌 반례]</span></h3>
+    <p class="note">올바른 분할 1개와 조건을 하나씩 어기는 반례 3개를 준비했습니다. 직접 입력할 수도 있어요. (그룹은 / 로 구분)</p>
+    <div class="lab-box">
+      <div class="lab-title">INTERACTIVE · S = {1,2,3,4,5,6} 의 분할일까?</div>
+      <div class="ctrl">
+        <button class="act alt" data-pj="1,2 / 3,4,5 / 6">{1,2}{3,4,5}{6}</button>
+        <button class="act alt" data-pj="1,2 / 2,3 / 4,5,6">{1,2}{2,3}{4,5,6}</button>
+        <button class="act alt" data-pj="1,2 /  / 3,4,5,6">{1,2}{ }{3,4,5,6}</button>
+        <button class="act alt" data-pj="1,2 / 3,4">{1,2}{3,4}</button>
+      </div>
+      <div class="ctrl">
+        <label>직접 입력:</label>
+        <input type="text" id="pjIn" class="wide" value="1,2 / 3,4,5 / 6">
+        <button class="act" id="pjBtn">판정 실행</button>
+      </div>
+      <div class="checks" id="pjChecks"></div>
+      <div class="result" id="pjOut"></div>
+    </div>
+  </div>
+
+  <div class="tcard">
+    <h3><span class="num">03</span>코딩에서 집합의 분할이 쓰이는 곳</h3>
+    <p>같은 그룹 판별 · 친구 관계 묶기 · 연결 요소 찾기 · 동치관계 처리 · <b>Union-Find</b> · 그래프 컴포넌트 · 모든 그룹 나누기(백트래킹) · 팀 나누기 · <b>크루스칼</b> · 집합 분할 DP</p>
+    <p class="note">이 중 가장 많이 쓰이는 것이 Union-Find(서로소 집합 자료구조)입니다. 다음 탭에서 직접 실험해 봅시다!</p>
+  </div>
+</section>
+
+<!-- ============ 1. Union-Find ============ -->
+<section class="page" id="page1">
+  <div class="page-title"><span class="chip">UNION-FIND</span>Union-Find 실험실</div>
+  <div class="page-sub">각 집합마다 대표자를 정하고, find(a) == find(b)로 같은 집합인지 확인합니다. 학생 6명으로 직접 실험해 보세요.</div>
+
+  <div class="tcard">
+    <h3><span class="num">01</span>시뮬레이터 — union · find · 사이클 판별까지</h3>
+    <div class="lab-box">
+      <div class="lab-title">INTERACTIVE · 학생 1~6 (처음엔 모두 혼자 팀)</div>
+      <div class="ctrl">
+        <label>a =</label><input type="number" id="ufA" value="1" min="1" max="6">
+        <label>b =</label><input type="number" id="ufB" value="2" min="1" max="6">
+        <button class="act" id="ufUnion">union(a, b)</button>
+        <button class="act alt" id="ufFind">같은 팀? find(a)==find(b)</button>
+        <button class="act warn2" id="ufReset">초기화</button>
+      </div>
+      <div class="ctrl">
+        <button class="act alt" id="ufDemo">예제 시나리오 실행: 1-2, 2-3, 4-5</button>
+      </div>
+      <div class="lab-title" style="margin-top:.6rem">parent 배열</div>
+      <div class="parr" id="ufParr"></div>
+      <div class="lab-title" style="margin-top:.6rem">현재 분할 상태</div>
+      <div class="groups" id="ufGroups"></div>
+      <div class="result" id="ufOut">union으로 팀을 합치고, find로 같은 팀인지 확인해 보세요.</div>
+    </div>
+    <p class="note">💡 이미 같은 집합인 두 원소를 union하면 "사이클 발생!"이 뜹니다 — 크루스칼 알고리즘이 간선을 버리는 바로 그 순간입니다(유형 4·5).</p>
+  </div>
+
+  <div class="tcard">
+    <h3><span class="num">02</span>핵심 아이디어 정리</h3>
+    <pre class="code">find(x)      : x가 속한 집합의 대표자를 찾는다
+union(a, b)  : a의 집합과 b의 집합을 합친다 (대표자 밑에 붙이기)
+find(a) == find(b)  →  같은 집합!</pre>
+    <p class="note">union(2, 3)을 하면 "2와 3"이 아니라 <b>2의 대표자와 3의 대표자</b>가 연결됩니다. 위 시뮬레이터의 parent 배열에서 직접 확인해 보세요.</p>
+  </div>
+</section>
+
+<!-- ============ 2. 코드 ============ -->
+<section class="page" id="page2">
+  <div class="page-title"><span class="chip">CODE</span>C 코드 &amp; DFS 비교</div>
+  <div class="page-sub">기본 코드 → 경로 압축 → 그룹 개수 → 그룹 크기 순서로 확장합니다.</div>
+
+  <div class="tcard">
+    <h3><span class="num">01</span>기본 Union-Find (C)</h3>
+    <pre class="code">int parent[1001];
+
+int find(int x) {
+    if (parent[x] == x) return x;
+    return find(parent[x]);
+}
+
+void union_set(int a, int b) {
+    int rootA = find(a);
+    int rootB = find(b);
+    if (rootA != rootB) {
+        parent[rootB] = rootA;   <span class="cm">// B의 대표를 A의 대표 밑에</span>
+    }
+}</pre>
+  </div>
+
+  <div class="tcard">
+    <h3><span class="num">02</span>경로 압축 최적화</h3>
+    <pre class="code">int find(int x) {
+    if (parent[x] == x) return x;
+    parent[x] = find(parent[x]);   <span class="cm">// 부모를 대표자로 바로 바꿈!</span>
+    return parent[x];
+}</pre>
+    <p class="note">find를 하면서 지나간 모든 노드가 대표자에 직접 매달리게 되어, 트리가 납작해지고 다음 find가 매우 빨라집니다.</p>
+  </div>
+
+  <div class="tcard">
+    <h3><span class="num">03</span>그룹 개수 · 그룹 크기</h3>
+    <pre class="code"><span class="cm">// 그룹 개수: 자기 자신이 대표인 원소를 센다</span>
+int count = 0;
+for (int i = 1; i <= n; i++) {
+    if (find(i) == i) count++;
+}
+
+<span class="cm">// 그룹 크기: size 배열을 함께 관리</span>
+if (rootA != rootB) {
+    parent[rootB] = rootA;
+    size[rootA] += size[rootB];   <span class="cm">// 크기를 합친다</span>
+}</pre>
+    <pre class="code"><span class="cm">// 입력: 6 3 / 1 2 / 2 3 / 4 5  →  출력:</span>
+대표 1 : 크기 3
+대표 4 : 크기 2
+대표 6 : 크기 1</pre>
+  </div>
+
+  <div class="tcard">
+    <h3><span class="num">04</span>DFS로 연결 요소 세기 &amp; 비교 <span class="plus">[보완: 복잡도 명시]</span></h3>
+    <pre class="code">void dfs(int x) {
+    visited[x] = 1;
+    for (int i = 1; i <= n; i++) {
+        if (graph[x][i] == 1 && visited[i] == 0) dfs(i);
+    }
+}
+<span class="cm">// 방문 안 한 정점에서 dfs를 시작할 때마다 groupCount++</span></pre>
+    <table class="cmp">
+      <tr><th>구분</th><th>Union-Find</th><th>DFS/BFS</th></tr>
+      <tr><td>목적</td><td>같은 집합인지 빠르게 확인</td><td>연결된 모든 원소 탐색</td></tr>
+      <tr><td>동적 관계 추가</td><td>좋음</td><td>매번 다시 탐색 필요</td></tr>
+      <tr><td>그룹 전체 출력</td><td>추가 작업 필요</td><td>쉽다</td></tr>
+      <tr><td>시간복잡도</td><td>거의 O(1) (경로 압축 시)</td><td>인접 리스트 O(N+M) · <b style="color:var(--orange)">인접 행렬은 O(N²)</b></td></tr>
+    </table>
+    <p class="note">위 DFS 코드는 인접 행렬(graph[101][101])이라 O(N²)입니다. N이 크면 인접 리스트로 바꿔 O(N+M)로 만들어야 합니다.</p>
+  </div>
+</section>
+
+<!-- ============ 3. 모든 분할 ============ -->
+<section class="page" id="page3">
+  <div class="page-title"><span class="chip">ENUMERATE</span>가능한 모든 분할 만들기 (백트래킹)</div>
+  <div class="page-sub">원소를 순서대로, "기존 그룹에 넣기" 또는 "새 그룹 만들기" — 새 그룹은 항상 맨 뒤에만 만들어 중복을 막습니다.</div>
+
+  <div class="tcard">
+    <h3><span class="num">01</span>백트래킹 코드 (교재 §21과 동일한 출력 순서)</h3>
+    <pre class="code">void backtrack(int x, int groupCount) {
+    if (x > n) { printGroups(groupCount); return; }
+
+    for (int i = 0; i < groupCount; i++) {   <span class="cm">// ① 기존 그룹에 넣기</span>
+        group[i][groupSize[i]++] = x;
+        backtrack(x + 1, groupCount);
+        groupSize[i]--;
+    }
+    group[groupCount][0] = x;                <span class="cm">// ② 새 그룹 만들기</span>
+    groupSize[groupCount] = 1;
+    backtrack(x + 1, groupCount + 1);
+    groupSize[groupCount] = 0;
+}</pre>
+    <p class="note"><span class="plus">[보완]</span> 배열이 group[10][10]이므로 n ≤ 9까지만 안전합니다. 새 그룹을 항상 맨 뒤에만 만들기 때문에 {1},{2}와 {2},{1}이 중복 출력되지 않습니다.</p>
+  </div>
+
+  <div class="tcard">
+    <h3><span class="num">02</span>분할 생성기 — 코드와 똑같은 순서로!</h3>
+    <div class="lab-box">
+      <div class="lab-title">INTERACTIVE · n과 그룹 개수 필터를 바꿔 보세요</div>
+      <div class="ctrl">
+        <label>n =</label>
+        <select id="enN">
+          <option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option>
+        </select>
+        <label>그룹 개수 K =</label>
+        <select id="enK"><option value="0" selected>전체 보기</option></select>
+        <button class="act" id="enBtn">생성 실행</button>
+      </div>
+      <div class="plist" id="enList"></div>
+      <div class="result" id="enOut"></div>
+    </div>
+    <p class="note">K를 고르면 "정확히 K개 그룹" 분할만 남고, 그 개수가 바로 스털링 수 S(n, K)입니다. 전체 개수는 벨 수 B(n)!</p>
+  </div>
+</section>
+
+<!-- ============ 4. 스털링/벨 ============ -->
+<section class="page" id="page4">
+  <div class="page-title"><span class="chip">COUNT</span>스털링 수 S(n,k) · 벨 수 B(n)</div>
+  <div class="page-sub">S(n,k) = n개를 정확히 k개의 비어있지 않은 그룹으로 나누는 경우의 수. 벨 수는 그 합입니다.</div>
+
+  <div class="tcard">
+    <h3><span class="num">01</span>점화식 — n번째 원소의 선택</h3>
+    <pre class="code">S(n, k) = S(n-1, k-1)  +  k × S(n-1, k)
+          └ 혼자 새 그룹      └ 기존 k개 그룹 중 하나에 합류</pre>
+    <pre class="code">long long dp[31][31];
+dp[0][0] = 1;
+for (int i = 1; i <= n; i++)
+    for (int j = 1; j <= k; j++)
+        dp[i][j] = dp[i-1][j-1] + (long long)j * dp[i-1][j];</pre>
+  </div>
+
+  <div class="tcard">
+    <h3><span class="num">02</span>S(n,k) 표 탐험기 — 셀을 클릭해 보세요!</h3>
+    <div class="lab-box">
+      <div class="lab-title">INTERACTIVE · 셀을 클릭하면 점화식 분해를 보여줍니다 (마지막 열 = 벨 수)</div>
+      <table class="stir" id="stTable"></table>
+      <div class="result" id="stOut">표의 셀을 클릭하면 S(n,k) = S(n-1,k-1) + k×S(n-1,k) 분해가 표시됩니다.</div>
+    </div>
+    <p class="note">확인해 보세요: S(3,2)=3 (분할 생성기의 K=2 결과와 일치!), S(5,2)=15, B(4)=15, B(5)=52.</p>
+  </div>
+
+  <div class="tcard">
+    <h3><span class="num">03</span>벨 삼각형 <span class="plus">[추가됨: 덧셈만으로 벨 수 구하기]</span></h3>
+    <p>① 첫 줄은 1. ② 각 줄의 첫 수 = 윗줄의 마지막 수. ③ 나머지는 왼쪽 수 + 왼쪽 위 수. ④ 각 줄의 첫 수가 벨 수 B(1), B(2), …</p>
+    <div class="lab-box">
+      <div class="lab-title">INTERACTIVE · 벨 삼각형 (6줄)</div>
+      <div class="plist" id="btList"></div>
+      <div class="result" id="btOut"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5. 퀴즈 ============ -->
+<section class="page" id="page5">
+  <div class="page-title"><span class="chip">QUIZ</span>확인 퀴즈 10제 <span class="plus">[추가됨]</span></div>
+  <div class="page-sub">클릭 즉시 채점과 해설이 표시됩니다.</div>
+  <div id="quizArea"></div>
+</section>
+
+</main>
+
+<footer>세영코딩연구소 · KOI 이산수학 시리즈 11강 — Set Partition</footer>
+
+<script>
+"use strict";
+
+function el(tag, cls, text){
+  var e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text !== undefined) e.textContent = text;
+  return e;
+}
+
+/* ============ 0. 분할 판정기 ============ */
+(function(){
+  var S = [1,2,3,4,5,6];
+  var checksBox = document.getElementById("pjChecks");
+  var out = document.getElementById("pjOut");
+
+  function judge(raw){
+    var groupsRaw = raw.split("/");
+    var groups = groupsRaw.map(function(g){
+      return g.split(",").map(function(x){ return x.trim(); })
+        .filter(function(x){ return x !== ""; })
+        .map(function(x){ return parseInt(x, 10); });
+    });
+    // 유효성: 숫자만
+    for (var gi = 0; gi < groups.length; gi++){
+      for (var k = 0; k < groups[gi].length; k++){
+        if (isNaN(groups[gi][k])){ out.textContent = "숫자와 쉼표, /만 사용해 주세요."; return; }
+      }
+    }
+    var c1 = groups.every(function(g){ return g.length > 0; });         // 빈 그룹 없음
+    var seen = {}, dupVal = null;
+    groups.forEach(function(g){
+      g.forEach(function(v){
+        if (seen[v]) dupVal = v;
+        seen[v] = (seen[v] || 0) + 1;
+      });
+    });
+    var c2 = dupVal === null;                                            // 서로소
+    var all = Object.keys(seen).map(Number).sort(function(a,b){return a-b;});
+    var c3 = all.length === S.length && S.every(function(v){ return seen[v]; })
+             && all.every(function(v){ return S.indexOf(v) !== -1; });   // 합집합 = S
+
+    while (checksBox.firstChild) checksBox.removeChild(checksBox.firstChild);
+    function ck(label, pass, detail){
+      var d = el("div", "ck " + (pass ? "pass" : "fail"));
+      d.appendChild(el("span", "", label + (detail ? "  —  " + detail : "")));
+      d.appendChild(el("span", "v", pass ? "만족 ✔" : "위반 ✘"));
+      checksBox.appendChild(d);
+    }
+    ck("조건 ① 빈 부분집합이 없다", c1, c1 ? "" : "빈 그룹이 있습니다");
+    ck("조건 ② 서로 겹치지 않는다", c2, c2 ? "" : "원소 " + dupVal + " 이(가) 두 그룹에 등장");
+    var missing = S.filter(function(v){ return !seen[v]; });
+    var extra = all.filter(function(v){ return S.indexOf(v) === -1; });
+    var d3 = "";
+    if (!c3){
+      if (missing.length) d3 = "빠진 원소: " + missing.join(", ");
+      if (extra.length) d3 += (d3 ? " / " : "") + "S에 없는 원소: " + extra.join(", ");
+    }
+    ck("조건 ③ 합치면 S = {1,2,3,4,5,6}", c3, d3);
+
+    var okAll = c1 && c2 && c3;
+    var shown = groups.map(function(g){ return "{" + g.join(",") + "}"; }).join(" ");
+    out.textContent = shown + "\n→ " + (okAll ? "세 조건을 모두 만족합니다. 집합의 분할이 맞습니다! ✔"
+      : "조건을 위반했으므로 분할이 아닙니다. ✘");
+  }
+
+  document.getElementById("pjBtn").addEventListener("click", function(){
+    judge(document.getElementById("pjIn").value);
+  });
+  document.querySelectorAll("button[data-pj]").forEach(function(b){
+    b.addEventListener("click", function(){
+      document.getElementById("pjIn").value = b.dataset.pj;
+      judge(b.dataset.pj);
+    });
+  });
+  judge("1,2 / 3,4,5 / 6");
+})();
+
+/* ============ 1. Union-Find 시뮬레이터 ============ */
+(function(){
+  var N = 6;
+  var parent = [];
+  var out = document.getElementById("ufOut");
+  var lastChanged = -1;
+
+  function init(){
+    parent = [0];
+    for (var i = 1; i <= N; i++) parent.push(i);
+    lastChanged = -1;
+  }
+  function find(x){ while (parent[x] !== x) x = parent[x]; return x; }
+
+  function paint(){
+    var pbox = document.getElementById("ufParr");
+    while (pbox.firstChild) pbox.removeChild(pbox.firstChild);
+    for (var i = 1; i <= N; i++){
+      var c = el("div", "pc" + (i === lastChanged ? " chg" : ""));
+      c.appendChild(el("span", "pi", "parent[" + i + "]"));
+      c.appendChild(el("span", "pv", String(parent[i])));
+      pbox.appendChild(c);
+    }
+    var gmap = {};
+    for (var j = 1; j <= N; j++){
+      var r = find(j);
+      if (!gmap[r]) gmap[r] = [];
+      gmap[r].push(j);
+    }
+    var gbox = document.getElementById("ufGroups");
+    while (gbox.firstChild) gbox.removeChild(gbox.firstChild);
+    Object.keys(gmap).map(Number).sort(function(a,b){return a-b;}).forEach(function(r){
+      var g = el("div", "gbox");
+      g.appendChild(el("div", "gt", "대표 " + r));
+      var gm = el("div", "gm");
+      gmap[r].forEach(function(m){ gm.appendChild(el("span", "", String(m))); });
+      g.appendChild(gm);
+      gbox.appendChild(g);
+    });
+  }
+  function getAB(){
+    var a = parseInt(document.getElementById("ufA").value, 10);
+    var b = parseInt(document.getElementById("ufB").value, 10);
+    if (isNaN(a) || isNaN(b) || a < 1 || a > N || b < 1 || b > N) return null;
+    return [a, b];
+  }
+  function doUnion(a, b, silent){
+    var ra = find(a), rb = find(b);
+    if (ra === rb){
+      lastChanged = -1; paint();
+      out.textContent = "union(" + a + ", " + b + ")\nfind(" + a + ") = " + ra + ", find(" + b + ") = " + rb + " — 이미 같은 집합!\n⚠ 사이클 발생! (크루스칼이라면 이 간선은 버립니다)";
+      return;
+    }
+    parent[rb] = ra;
+    lastChanged = rb; paint();
+    if (!silent) out.textContent = "union(" + a + ", " + b + ")\nfind(" + a + ") = " + ra + ", find(" + b + ") = " + rb + " → parent[" + rb + "] = " + ra;
+  }
+  document.getElementById("ufUnion").addEventListener("click", function(){
+    var p = getAB(); if (!p){ out.textContent = "1~6 사이의 수를 입력해 주세요."; return; }
+    doUnion(p[0], p[1], false);
+  });
+  document.getElementById("ufFind").addEventListener("click", function(){
+    var p = getAB(); if (!p){ out.textContent = "1~6 사이의 수를 입력해 주세요."; return; }
+    var ra = find(p[0]), rb = find(p[1]);
+    lastChanged = -1; paint();
+    out.textContent = "find(" + p[0] + ") = " + ra + ", find(" + p[1] + ") = " + rb + "\n→ " + (ra === rb ? "YES, 같은 팀입니다! ✔" : "NO, 다른 팀입니다. ✘");
+  });
+  document.getElementById("ufReset").addEventListener("click", function(){
+    init(); paint();
+    out.textContent = "초기화: {1} {2} {3} {4} {5} {6} — 모두 혼자 팀!";
+  });
+  document.getElementById("ufDemo").addEventListener("click", function(){
+    init();
+    doUnion(1, 2, true); doUnion(2, 3, true); doUnion(4, 5, true);
+    paint();
+    out.textContent = "시나리오 실행: union(1,2) → union(2,3) → union(4,5)\n분할 결과: {1,2,3} {4,5} {6}\n이제 find로 물어보세요 — 1과 3은? 1과 5는?";
+  });
+  init(); paint();
+})();
+
+/* ============ 3. 분할 생성기 ============ */
+(function(){
+  function enumerate(n){
+    var res = [];
+    var groups = [];
+    function bt(x){
+      if (x > n){
+        res.push(groups.map(function(g){ return g.slice(); }));
+        return;
+      }
+      for (var i = 0; i < groups.length; i++){
+        groups[i].push(x);
+        bt(x + 1);
+        groups[i].pop();
+      }
+      groups.push([x]);
+      bt(x + 1);
+      groups.pop();
+    }
+    bt(1);
+    return res;
+  }
+  function fmt(p){
+    return "{ " + p.map(function(g){ return "{" + g.join(",") + "}"; }).join(", ") + " }";
+  }
+  var selN = document.getElementById("enN");
+  var selK = document.getElementById("enK");
+  var list = document.getElementById("enList");
+  var out = document.getElementById("enOut");
+
+  function rebuildK(){
+    var n = parseInt(selN.value, 10);
+    var cur = selK.value;
+    while (selK.firstChild) selK.removeChild(selK.firstChild);
+    var o0 = el("option", "", "전체 보기");
+    o0.value = "0";
+    selK.appendChild(o0);
+    for (var k = 1; k <= n; k++){
+      var o = el("option", "", String(k));
+      o.value = String(k);
+      selK.appendChild(o);
+    }
+    selK.value = (parseInt(cur, 10) <= n) ? cur : "0";
+  }
+  function run(){
+    var n = parseInt(selN.value, 10);
+    var k = parseInt(selK.value, 10);
+    var all = enumerate(n);
+    var shown = k === 0 ? all : all.filter(function(p){ return p.length === k; });
+    list.textContent = shown.map(fmt).join("\n");
+    if (k === 0){
+      out.textContent = "n = " + n + " 의 모든 분할: " + all.length + "가지 = 벨 수 B(" + n + ")";
+    } else {
+      out.textContent = "정확히 " + k + "개 그룹인 분할: " + shown.length + "가지 = 스털링 수 S(" + n + ", " + k + ")   (전체 " + all.length + "가지 중)";
+    }
+  }
+  selN.addEventListener("change", function(){ rebuildK(); run(); });
+  selK.addEventListener("change", run);
+  document.getElementById("enBtn").addEventListener("click", run);
+  rebuildK(); run();
+})();
+
+/* ============ 4. 스털링 표 ============ */
+var STIR = (function(){
+  var NMAX = 8;
+  var dp = [];
+  for (var i = 0; i <= NMAX; i++){
+    dp.push([]);
+    for (var j = 0; j <= NMAX; j++) dp[i].push(0);
+  }
+  dp[0][0] = 1;
+  for (var a = 1; a <= NMAX; a++)
+    for (var b = 1; b <= a; b++)
+      dp[a][b] = dp[a-1][b-1] + b * dp[a-1][b];
+  return dp;
+})();
+
+(function(){
+  var NMAX = 8;
+  var table = document.getElementById("stTable");
+  var out = document.getElementById("stOut");
+  var cellRef = {};
+
+  var head = document.createElement("tr");
+  head.appendChild(el("th", "", "n＼k"));
+  for (var k = 1; k <= NMAX; k++) head.appendChild(el("th", "", String(k)));
+  head.appendChild(el("th", "", "B(n)"));
+  table.appendChild(head);
+
+  for (var n = 1; n <= NMAX; n++){
+    var tr = document.createElement("tr");
+    tr.appendChild(el("th", "", String(n)));
+    var bell = 0;
+    for (var k2 = 1; k2 <= NMAX; k2++){
+      var v = k2 <= n ? STIR[n][k2] : 0;
+      bell += v;
+      var td = el("td", v === 0 ? "zero" : "", v === 0 ? "·" : String(v));
+      if (v !== 0){
+        td.dataset.n = n; td.dataset.k = k2;
+        cellRef[n + "," + k2] = td;
+        td.addEventListener("click", onCell);
+      }
+      tr.appendChild(td);
+    }
+    tr.appendChild(el("td", "bell", String(bell)));
+    table.appendChild(tr);
+  }
+
+  function clearMarks(){
+    Object.keys(cellRef).forEach(function(key){
+      cellRef[key].classList.remove("sel", "src");
+    });
+  }
+  function onCell(ev){
+    var n = parseInt(ev.currentTarget.dataset.n, 10);
+    var k = parseInt(ev.currentTarget.dataset.k, 10);
+    clearMarks();
+    ev.currentTarget.classList.add("sel");
+    var p1 = STIR[n-1] ? (STIR[n-1][k-1] || 0) : 0;
+    var p2 = STIR[n-1] ? (STIR[n-1][k] || 0) : 0;
+    if (cellRef[(n-1) + "," + (k-1)]) cellRef[(n-1) + "," + (k-1)].classList.add("src");
+    if (cellRef[(n-1) + "," + k]) cellRef[(n-1) + "," + k].classList.add("src");
+    if (n === 1){
+      out.textContent = "S(1,1) = 1  (원소 1개를 그룹 1개로 — 방법은 하나뿐!)";
+      return;
+    }
+    out.textContent = "S(" + n + "," + k + ") = S(" + (n-1) + "," + (k-1) + ") + " + k + " × S(" + (n-1) + "," + k + ")"
+      + "\n        = " + p1 + " + " + k + " × " + p2 + " = " + STIR[n][k]
+      + "\n(주황 셀 = 점화식이 참조하는 두 값: 혼자 새 그룹 / 기존 " + k + "개 그룹에 합류)";
+  }
+})();
+
+/* ============ 4. 벨 삼각형 ============ */
+(function(){
+  var ROWS = 6;
+  var tri = [[1]];
+  for (var r = 1; r < ROWS; r++){
+    var prev = tri[r-1];
+    var row = [prev[prev.length - 1]];
+    for (var c = 0; c < prev.length; c++){
+      row.push(row[c] + prev[c]);
+    }
+    tri.push(row);
+  }
+  var lines = tri.map(function(row){ return row.join("  "); });
+  document.getElementById("btList").textContent = lines.join("\n");
+  var bells = tri.map(function(row){ return row[0]; });
+  document.getElementById("btOut").textContent =
+    "각 줄의 첫 수 = 벨 수: B(1)~B(" + ROWS + ") = " + bells.join(", ")
+    + "\n표 탐험기의 B(n) 열과 똑같죠? 덧셈만으로 벨 수를 만들 수 있습니다!";
+})();
+
+/* ============ 5. 퀴즈 ============ */
+var QUIZ = [
+  {q: "집합의 분할이 되기 위한 조건이 아닌 것은?", code: null,
+   c: ["모든 부분집합의 크기가 같아야 한다",
+       "각 부분집합은 비어 있으면 안 된다",
+       "부분집합끼리 서로 겹치면 안 된다",
+       "모두 합치면 원래 집합이 되어야 한다"], a: 0,
+   s: "크기가 같을 필요는 전혀 없습니다! {1,2},{3,4,5},{6}처럼 크기가 달라도 분할입니다. 나머지 셋이 분할의 3조건입니다."},
+  {q: "S={1,2,3,4,5,6}에서 {1,2},{2,3},{4,5,6}이 분할이 아닌 이유는?", code: null,
+   c: ["원소 2가 두 부분집합에 겹쳐 있어서",
+       "빈 부분집합이 있어서",
+       "부분집합의 개수가 3개라서",
+       "합쳐도 S가 되지 않아서"], a: 0,
+   s: "2가 {1,2}와 {2,3}에 동시에 들어 있어 조건 ②(서로소)를 위반합니다. 참고로 합집합은 S가 되므로 조건 ③은 만족합니다."},
+  {q: "Union-Find에서 두 원소 a, b가 같은 집합인지 확인하는 방법은?", code: null,
+   c: ["find(a) == find(b) 인지 비교한다",
+       "parent[a] == parent[b] 인지 비교한다",
+       "a == b 인지 비교한다",
+       "size[a] == size[b] 인지 비교한다"], a: 0,
+   s: "대표자끼리 비교해야 합니다. parent[a]는 '바로 위 부모'일 뿐 대표자가 아닐 수 있으므로 반드시 find로 뿌리까지 올라가야 합니다."},
+  {q: "초기 상태에서 순서대로 실행하면 parent[3]의 값은? (기본 코드 기준)",
+   code: "union_set(1, 2);\nunion_set(2, 3);",
+   c: ["1", "2", "3", "0"], a: 0,
+   s: "union(2,3)에서 2의 대표자는 1, 3의 대표자는 3이므로 parent[3] = 1이 됩니다. '2 밑에'가 아니라 '2의 대표자 밑에' 붙는 것이 핵심!"},
+  {q: "경로 압축(path compression)의 효과로 옳은 것은?", code: "parent[x] = find(parent[x]);",
+   c: ["find 과정에서 지나간 노드들을 대표자에 직접 연결해 트리를 납작하게 만든다",
+       "두 집합을 합칠 때 작은 집합을 큰 집합에 붙인다",
+       "그룹의 크기를 자동으로 계산한다",
+       "사이클을 자동으로 제거한다"], a: 0,
+   s: "find를 하면서 parent를 대표자로 바로 바꿔 두면, 다음 find가 한 번에 대표자에 도달합니다. ②는 union by size에 대한 설명입니다."},
+  {q: "n명 중 분할된 그룹의 개수를 세는 올바른 방법은?", code: null,
+   c: ["find(i) == i 인 i의 개수를 센다",
+       "parent[i] == 1 인 i의 개수를 센다",
+       "size[i] > 0 인 i의 개수를 센다",
+       "union을 호출한 횟수를 센다"], a: 0,
+   s: "자기 자신이 대표자인 원소가 각 그룹마다 정확히 1명씩 있으므로, find(i)==i인 원소 수 = 그룹 수입니다."},
+  {q: "S(4, 2)의 값은? (점화식 S(n,k) = S(n-1,k-1) + k·S(n-1,k))", code: null,
+   c: ["7", "6", "8", "3"], a: 0,
+   s: "S(4,2) = S(3,1) + 2×S(3,2) = 1 + 2×3 = 7. 표 탐험기에서 셀을 클릭해 확인해 보세요!"},
+  {q: "벨 수 B(3), 즉 {1,2,3}의 모든 분할 개수는?", code: null,
+   c: ["5", "3", "6", "4"], a: 0,
+   s: "{1,2,3} / {1,2}{3} / {1,3}{2} / {1}{2,3} / {1}{2}{3} — 총 5가지. B(3) = S(3,1)+S(3,2)+S(3,3) = 1+3+1 = 5."},
+  {q: "점화식의 k × S(n-1, k) 항이 의미하는 경우는?", code: "S(n,k) = S(n-1,k-1) + k·S(n-1,k)",
+   c: ["n번째 원소가 이미 만들어진 k개 그룹 중 하나를 골라 들어가는 경우",
+       "n번째 원소가 혼자 새로운 그룹을 만드는 경우",
+       "n번째 원소를 제외하는 경우",
+       "그룹의 순서를 바꾸는 경우"], a: 0,
+   s: "나머지 n-1개가 이미 k개 그룹을 이루고(S(n-1,k)), n번째 원소는 그중 하나를 선택(×k)합니다. 혼자 새 그룹을 만드는 경우가 S(n-1,k-1)입니다."},
+  {q: "크루스칼 알고리즘에서 간선 (a, b)를 추가하려는데 find(a) == find(b)라면?", code: null,
+   c: ["사이클이 생기므로 이 간선은 선택하지 않는다",
+       "두 정점을 union으로 합친다",
+       "가중치를 두 배로 만든다",
+       "그래프 탐색을 처음부터 다시 한다"], a: 0,
+   s: "이미 같은 집합인 두 정점을 연결하면 사이클이 생깁니다. 크루스칼은 이 간선을 버리고 다음 간선으로 넘어갑니다."}
+];
+
+(function(){
+  var solved = {};
+  var area = document.getElementById("quizArea");
+  var bar = el("div", "scorebar");
+  var sc = el("span", "sc", "점수 0 / " + QUIZ.length);
+  bar.appendChild(sc);
+  var rst = el("button", "reset", "다시 풀기");
+  rst.type = "button";
+  bar.appendChild(rst);
+  area.appendChild(bar);
+  var listWrap = el("div");
+  area.appendChild(listWrap);
+
+  function shuffle4(){
+    var idx = [0, 1, 2, 3];
+    for (var i = 3; i > 0; i--){
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = idx[i]; idx[i] = idx[j]; idx[j] = t;
+    }
+    return idx;
+  }
+  function updateScore(){
+    var c = 0;
+    for (var k in solved) if (solved[k] === true) c++;
+    sc.textContent = "점수 " + c + " / " + QUIZ.length;
+  }
+  function build(){
+    while (listWrap.firstChild) listWrap.removeChild(listWrap.firstChild);
+    QUIZ.forEach(function(q, gi){
+      var card = el("div", "qcard");
+      var head = el("div", "qhead");
+      head.appendChild(el("span", "qno", "Q" + (gi + 1 < 10 ? "0" + (gi + 1) : gi + 1)));
+      head.appendChild(el("span", "qtext", q.q));
+      card.appendChild(head);
+      if (q.code) card.appendChild(el("pre", "code", q.code));
+
+      var box = el("div", "choices");
+      var order = shuffle4();
+      var btns = [];
+      var sol = el("div", "sol");
+      sol.appendChild(el("span", "tag", "해설"));
+      sol.appendChild(document.createTextNode(q.s));
+
+      order.forEach(function(orig, pos){
+        var b = el("button", "", String.fromCharCode(9312 + pos) + " " + q.c[orig]);
+        b.type = "button";
+        b.addEventListener("click", function(){
+          if (solved[gi] !== undefined) return;
+          var ok = (orig === q.a);
+          solved[gi] = ok;
+          btns.forEach(function(bb, k){
+            bb.disabled = true;
+            if (order[k] === q.a) bb.classList.add("correct");
+          });
+          if (!ok) b.classList.add("wrong");
+          sol.classList.add("show");
+          updateScore();
+        });
+        btns.push(b);
+        box.appendChild(b);
+      });
+      card.appendChild(box);
+      card.appendChild(sol);
+      listWrap.appendChild(card);
+    });
+    updateScore();
+  }
+  rst.addEventListener("click", function(){ solved = {}; build(); });
+  build();
+})();
+
+/* ============ 탭 ============ */
+document.getElementById("tabs").addEventListener("click", function(ev){
+  var b = ev.target.closest("button");
+  if (!b) return;
+  var n = Number(b.dataset.p);
+  document.querySelectorAll("section.page").forEach(function(p, i){ p.classList.toggle("on", i === n); });
+  document.querySelectorAll("nav.tabs button").forEach(function(t){ t.classList.toggle("on", Number(t.dataset.p) === n); });
+  window.scrollTo({top: 0, behavior: "auto"});
+});
+</script>
+</body>
+</html>
