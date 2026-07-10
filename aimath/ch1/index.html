@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>인공지능수학 1장 — 지도학습과 비지도학습의 수학</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FAF6EF;
+  --ink:#2A2320;
+  --sub:#6B6157;
+  --accent:#2456A6;
+  --accent-deep:#17407F;
+  --accent-soft:#E7EEF9;
+  --accent-line:#C3D4EF;
+  --orange:#D97A28;
+  --orange-soft:#FBEBDC;
+  --card:#FFFFFF;
+  --line:#E6DECD;
+  --gold:#C89B12;
+  --gold-soft:#FFF3C8;
+  --code-bg:#1C2740;
+  --code-ink:#E8EDF7;
+  --code-kw:#9DBBF5;
+  --code-com:#8A93AC;
+  --code-num:#FFD08A;
+  --code-str:#A8E6B0;
+  --warn-bg:#FBEFE7;
+  --ok:#1F7A4D;
+  --no:#C0392B;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--ink);
+  font-family:'Noto Sans KR',sans-serif;
+  font-size:19px;line-height:1.75;padding-bottom:80px;
+}
+.wrap{max-width:1060px;margin:0 auto;padding:0 20px}
+
+/* ───── 헤더 ───── */
+header{
+  border-bottom:3px solid var(--accent);
+  background:linear-gradient(180deg,#E9EFF9 0%,var(--bg) 100%);
+  padding:38px 0 26px;
+}
+.series{
+  display:inline-block;font-family:'JetBrains Mono',monospace;
+  font-size:15px;font-weight:700;color:var(--accent-deep);
+  background:var(--accent-soft);border:1.5px solid var(--accent-line);
+  border-radius:999px;padding:4px 16px;letter-spacing:.5px;
+}
+h1.title{font-size:44px;font-weight:900;line-height:1.25;margin-top:14px;letter-spacing:-1px}
+h1.title .hl{color:var(--accent)}
+.subtitle{font-size:20px;color:var(--sub);margin-top:8px;font-weight:500}
+
+/* ───── 탭 ───── */
+nav.tabs{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:2px solid var(--line);padding:12px 0}
+nav.tabs .wrap{display:flex;flex-wrap:wrap;gap:8px}
+.tabbtn{
+  font-family:'Noto Sans KR',sans-serif;font-size:17px;font-weight:700;
+  color:var(--ink);background:var(--card);border:2px solid var(--line);
+  border-radius:12px;padding:9px 16px;cursor:pointer;transition:all .15s;
+}
+.tabbtn .no{font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--accent);margin-right:6px;font-weight:700}
+.tabbtn:hover{border-color:var(--accent);transform:translateY(-1px)}
+.tabbtn.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.tabbtn.on .no{color:#C7D8F3}
+
+/* ───── 페이지 공통 ───── */
+.page{display:none;padding-top:34px}
+.page.on{display:block;animation:fadein .3s}
+@keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+h2.sec{font-size:33px;font-weight:900;letter-spacing:-.5px;padding-left:16px;border-left:8px solid var(--accent);margin:38px 0 16px}
+h2.sec:first-child{margin-top:0}
+h3.sub{font-size:24px;font-weight:700;color:var(--accent-deep);margin:28px 0 10px}
+p.body{margin:10px 0;font-size:19.5px}
+strong{font-weight:700;color:var(--accent-deep)}
+.mono{font-family:'JetBrains Mono',monospace}
+.card{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:22px 26px;margin:16px 0}
+.card.tint{background:var(--accent-soft);border-color:var(--accent-line)}
+.point{
+  display:flex;gap:12px;align-items:flex-start;
+  background:var(--accent-soft);border-left:8px solid var(--accent);
+  border-radius:0 14px 14px 0;padding:16px 20px;margin:18px 0;font-size:19.5px;
+}
+.point .ico{font-size:26px;line-height:1.4}
+.warn{
+  display:flex;gap:12px;align-items:flex-start;
+  background:var(--warn-bg);border-left:8px solid #D07030;
+  border-radius:0 14px 14px 0;padding:16px 20px;margin:18px 0;font-size:19.5px;
+}
+.warn .ico{font-size:26px;line-height:1.4}
+
+/* ───── 공식 카드 ───── */
+.flist{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
+.fcard{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:18px 20px}
+.fcard .fname{font-weight:900;font-size:19px;color:var(--accent-deep);margin-bottom:8px}
+.fcard .formula{
+  font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;
+  text-align:center;color:var(--accent-deep);
+  background:var(--accent-soft);border-radius:10px;padding:12px 10px;
+}
+.fcard .fex{
+  margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:18px;
+  background:var(--gold-soft);border-left:5px solid var(--gold);
+  border-radius:0 10px 10px 0;padding:9px 14px;
+}
+.fcard .fex .lab{font-family:'Noto Sans KR',sans-serif;font-size:14px;color:#8a6d00;display:block;font-weight:700}
+.bigformula{
+  font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;text-align:center;
+  color:var(--accent-deep);background:var(--accent-soft);
+  border:2px dashed var(--accent);border-radius:14px;
+  padding:18px 12px;margin:18px 0;letter-spacing:.3px;
+}
+
+/* ───── 표 ───── */
+table.tb{width:100%;border-collapse:collapse;margin:16px 0;background:var(--card);font-size:19px}
+table.tb th{background:var(--accent);color:#fff;font-weight:700;padding:10px 14px;border:2px solid var(--accent-deep)}
+table.tb td{padding:10px 14px;border:2px solid var(--line);text-align:center}
+table.tb td.l{text-align:left}
+table.tb td.rowh{background:var(--accent-soft);font-weight:700;color:var(--accent-deep)}
+table.tb td.m{font-family:'JetBrains Mono',monospace}
+
+/* ───── 개요 SVG ───── */
+.nsdiag{background:var(--card);border:2.5px solid var(--accent);border-radius:18px;padding:18px;margin:18px 0}
+.nsdiag svg{width:100%;height:auto;display:block}
+.nsdiag .setbox{fill:#FDFBF6;stroke:#B9AE97;stroke-width:2.5}
+.nsdiag text{font-family:'Noto Sans KR',sans-serif}
+.nsdiag .setname{font-size:21px;font-weight:900;fill:#4d4438}
+.nsdiag .samp{font-size:16px;fill:#6B6157}
+
+/* ───── 단계 카드 ───── */
+.stepcard{
+  background:var(--card);border:2px solid var(--line);border-radius:16px;
+  padding:20px 24px;margin:14px 0;display:flex;gap:18px;align-items:flex-start;
+}
+.stepnum{
+  flex:none;width:46px;height:46px;border-radius:50%;
+  background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;
+}
+.stepbody{flex:1}
+.stepbody .st{font-weight:900;font-size:21px;margin-bottom:6px}
+.stepbody .calc{
+  font-family:'JetBrains Mono',monospace;font-size:18px;
+  background:var(--accent-soft);border-radius:10px;
+  padding:10px 16px;margin-top:8px;color:var(--accent-deep);font-weight:700;
+}
+
+/* ───── 코드 패널 ───── */
+.pane{border-radius:16px;overflow:hidden;border:2px solid var(--line);background:var(--card);margin:18px 0}
+.pane .phead{
+  display:flex;align-items:center;gap:10px;font-weight:900;font-size:19px;color:#fff;
+  padding:10px 18px;background:#1F7A4D;
+}
+.pane .phead .tag{
+  font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;
+  background:rgba(255,255,255,.22);border-radius:6px;padding:2px 8px;
+}
+pre.code{
+  background:var(--code-bg);color:var(--code-ink);
+  font-family:'JetBrains Mono',monospace;font-size:15.5px;line-height:1.7;
+  padding:18px 20px;overflow-x:auto;tab-size:4;
+}
+pre.code .k{color:var(--code-kw);font-weight:700}
+pre.code .c{color:var(--code-com);font-style:italic}
+pre.code .n{color:var(--code-num)}
+pre.code .s{color:var(--code-str)}
+.out{
+  font-family:'JetBrains Mono',monospace;font-size:15.5px;
+  background:#111A2E;color:#9BE8AE;padding:12px 20px;border-top:1.5px solid #33415F;
+  white-space:pre-wrap;
+}
+.out .lab{color:#8A93AC;font-size:13px;display:block;margin-bottom:2px}
+
+/* ───── 시뮬레이터 공통 ───── */
+.simbox{background:var(--card);border:2.5px solid var(--accent);border-radius:18px;padding:24px;margin:18px 0}
+.simbox svg{width:100%;height:auto;display:block;background:#FDFBF6;border:1.5px solid var(--line);border-radius:12px}
+.simstatus{
+  font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:700;text-align:center;
+  color:var(--accent-deep);background:var(--accent-soft);border-radius:12px;
+  padding:13px;margin:14px 0 4px;min-height:52px;
+}
+.simctrl{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+button.btn{
+  font-family:'Noto Sans KR',sans-serif;font-size:18px;font-weight:700;
+  border:none;border-radius:12px;padding:11px 24px;cursor:pointer;
+  background:var(--accent);color:#fff;transition:all .15s;
+}
+button.btn:hover{background:var(--accent-deep);transform:translateY(-1px)}
+button.btn.ghost{background:var(--card);color:var(--accent);border:2px solid var(--accent)}
+button.btn.ghost:hover{background:var(--accent-soft)}
+
+/* 회귀 시뮬레이터 슬라이더 */
+.sliders{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:14px 0}
+.sld{background:var(--accent-soft);border-radius:12px;padding:14px 18px}
+.sld label{font-weight:900;font-size:19px;color:var(--accent-deep);display:flex;justify-content:space-between}
+.sld label .val{font-family:'JetBrains Mono',monospace}
+.sld input[type=range]{width:100%;accent-color:var(--accent);height:34px;cursor:pointer}
+.msebar{
+  display:flex;align-items:center;gap:14px;justify-content:center;flex-wrap:wrap;
+  font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;
+  color:var(--accent-deep);margin-top:8px;
+}
+.msebar .eq{background:var(--gold-soft);border:2px solid var(--gold);border-radius:10px;padding:8px 16px}
+.msebar .mseval{background:var(--accent-soft);border:2px dashed var(--accent);border-radius:10px;padding:8px 16px}
+
+/* ───── 퀴즈 ───── */
+.qz{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:22px 26px;margin:18px 0}
+.qz .qt{font-size:21px;font-weight:900;margin-bottom:14px}
+.qz .qt .qno{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:36px;height:36px;border-radius:50%;background:var(--accent);color:#fff;
+  font-family:'JetBrains Mono',monospace;font-size:18px;margin-right:10px;
+}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opt{
+  font-family:'JetBrains Mono',monospace;font-size:18.5px;font-weight:500;text-align:left;
+  background:var(--bg);border:2px solid var(--line);border-radius:12px;
+  padding:12px 16px;cursor:pointer;color:var(--ink);transition:all .15s;
+}
+.opt:hover{border-color:var(--accent);background:var(--accent-soft)}
+.opt.ok{background:#E3F5EA;border-color:var(--ok);color:var(--ok);font-weight:700}
+.opt.no{background:#FBE8E5;border-color:var(--no);color:var(--no);font-weight:700}
+.qz.done .opt{cursor:default}
+.expl{
+  display:none;margin-top:14px;background:var(--accent-soft);
+  border-left:6px solid var(--accent);border-radius:0 12px 12px 0;
+  padding:13px 18px;font-size:18.5px;
+}
+.expl.show{display:block}
+.scorebox{
+  text-align:center;font-size:24px;font-weight:900;
+  background:var(--accent-soft);border:2.5px solid var(--accent);
+  border-radius:16px;padding:18px;margin:20px 0;color:var(--accent-deep);
+}
+.scorebox .mono{font-size:30px}
+.pgnav{display:flex;justify-content:space-between;gap:12px;margin-top:44px;border-top:2px dashed var(--line);padding-top:22px}
+
+@media (max-width:860px){
+  h1.title{font-size:32px}
+  .flist{grid-template-columns:1fr}
+  .opts{grid-template-columns:1fr}
+  .sliders{grid-template-columns:1fr}
+  body{font-size:18px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <span class="series">고교학점제 인공지능수학 · 1장 인공지능과 빅데이터</span>
+    <h1 class="title">지도학습 vs 비지도학습<br><span class="hl">수학으로 이해하고, 파이썬으로 실습하기</span></h1>
+    <p class="subtitle">평균 · 오차 · 거리라는 수학 도구로 기계가 "학습"하는 원리를 파헤치고, 그대로 파이썬 코드로 옮깁니다.</p>
+  </div>
+</header>
+
+<nav class="tabs">
+  <div class="wrap">
+    <button class="tabbtn on" id="tab0" onclick="goPage(0)"><span class="no">0</span>AI와 빅데이터</button>
+    <button class="tabbtn" id="tab1" onclick="goPage(1)"><span class="no">1</span>지도학습의 수학</button>
+    <button class="tabbtn" id="tab2" onclick="goPage(2)"><span class="no">2</span>비지도학습의 수학</button>
+    <button class="tabbtn" id="tab3" onclick="goPage(3)"><span class="no">3</span>실습: 회귀</button>
+    <button class="tabbtn" id="tab4" onclick="goPage(4)"><span class="no">4</span>실습: k-평균</button>
+    <button class="tabbtn" id="tab5" onclick="goPage(5)"><span class="no">5</span>퀴즈</button>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<!-- ═══════════════ 0. AI와 빅데이터 ═══════════════ -->
+<section class="page on" id="pg0">
+  <h2 class="sec">인공지능 · 머신러닝 · 딥러닝 — 포함 관계부터</h2>
+  <p class="body"><strong>인공지능(AI)</strong>은 인간의 지적 능력을 기계로 구현하려는 가장 넓은 개념이고, 그 안에 <strong>데이터로부터 스스로 규칙을 찾는 머신러닝</strong>이, 다시 그 안에 <strong>인공신경망을 깊게 쌓은 딥러닝</strong>이 들어 있습니다.</p>
+
+  <div class="nsdiag">
+    <svg viewBox="0 0 940 380" xmlns="http://www.w3.org/2000/svg">
+      <rect class="setbox" x="10" y="10" width="920" height="360" rx="18"/>
+      <text class="setname" x="34" y="48">인공지능 (AI)</text>
+      <text class="samp" x="34" y="74">규칙 기반 전문가 시스템, 탐색 알고리즘 …</text>
+      <rect class="setbox" x="230" y="90" width="680" height="260" rx="16" style="fill:#F2F6FC"/>
+      <text class="setname" x="254" y="128" style="fill:#17407F">머신러닝 (기계학습)</text>
+      <text class="samp" x="254" y="154">데이터 → 스스로 규칙 발견 · 지도/비지도/강화학습</text>
+      <rect class="setbox" x="480" y="180" width="400" height="140" rx="14" style="fill:#E7EEF9;stroke:#2456A6;stroke-width:3"/>
+      <text class="setname" x="504" y="218" style="fill:#2456A6">딥러닝</text>
+      <text class="samp" x="504" y="244">깊은 인공신경망 · 이미지 인식,</text>
+      <text class="samp" x="504" y="268">음성 인식, 생성형 AI …</text>
+    </svg>
+  </div>
+
+  <h2 class="sec">빅데이터 — 머신러닝의 연료</h2>
+  <p class="body">머신러닝이 힘을 내려면 데이터가 필요합니다. 빅데이터의 특징은 <strong>3V</strong>로 요약됩니다.</p>
+  <div class="flist">
+    <div class="fcard">
+      <div class="fname">Volume — 규모</div>
+      <div class="formula">엄청난 양</div>
+      <div class="fex"><span class="lab">예</span>하루에 쌓이는 검색 기록, 유튜브 영상</div>
+    </div>
+    <div class="fcard">
+      <div class="fname">Velocity — 속도</div>
+      <div class="formula">실시간 생성 · 처리</div>
+      <div class="fex"><span class="lab">예</span>내비게이션 실시간 교통 정보</div>
+    </div>
+    <div class="fcard">
+      <div class="fname">Variety — 다양성</div>
+      <div class="formula">숫자 + 텍스트 + 이미지 + …</div>
+      <div class="fex"><span class="lab">예</span>SNS의 글, 사진, 영상, 위치 정보</div>
+    </div>
+    <div class="fcard">
+      <div class="fname">데이터의 수학적 표현</div>
+      <div class="formula">순서쌍 (x, y), 점 (x₁, x₂)</div>
+      <div class="fex"><span class="lab">핵심</span>데이터를 좌표평면의 점으로 보는 순간, 수학이 시작됩니다</div>
+    </div>
+  </div>
+
+  <h2 class="sec">기계는 어떻게 배울까? — 학습의 세 가지 방식</h2>
+  <table class="tb">
+    <tr><th style="width:150px">방식</th><th>데이터</th><th>목표</th><th style="width:260px">대표 예</th></tr>
+    <tr><td class="rowh">지도학습</td><td class="l">입력 + <strong>정답(레이블)</strong></td><td class="l">정답을 맞히는 규칙 찾기</td><td class="l">성적 예측(회귀), 스팸 분류</td></tr>
+    <tr><td class="rowh">비지도학습</td><td class="l">입력만 (<strong>정답 없음</strong>)</td><td class="l">숨은 구조 · 그룹 발견</td><td class="l">고객 군집화, 차원 축소</td></tr>
+    <tr><td class="rowh">강화학습</td><td class="l">행동 → <strong>보상</strong></td><td class="l">보상을 최대화하는 전략</td><td class="l">알파고, 게임 AI</td></tr>
+  </table>
+
+  <div class="point"><span class="ico">🧭</span><div><strong>구분 기준은 단 하나 — "정답이 주어지는가?"</strong> 문제집에 답지가 있으면 지도학습, 답지 없이 스스로 유형을 묶어 보면 비지도학습입니다. 이 단원에서는 앞의 두 가지를 수학으로 파헤칩니다.</div></div>
+
+  <div class="card tint">
+    <h3 class="sub" style="margin-top:0">이 강의에서 쓰는 수학 도구 4가지</h3>
+    <p class="body">① <strong>평균</strong> — 데이터의 중심 &nbsp;② <strong>오차와 제곱</strong> — 예측이 얼마나 틀렸나 &nbsp;③ <strong>일차함수</strong> — 가장 단순한 예측 모델 &nbsp;④ <strong>두 점 사이의 거리</strong> — "비슷하다"의 수학적 정의. 전부 이미 배운 내용입니다!</p>
+  </div>
+
+  <div class="pgnav">
+    <span></span>
+    <button class="btn" onclick="goPage(1)">다음: 지도학습의 수학 →</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 1. 지도학습의 수학 ═══════════════ -->
+<section class="page" id="pg1">
+  <h2 class="sec">지도학습 — 정답으로부터 배운다</h2>
+  <p class="body">지도학습의 데이터는 <strong>(입력 xᵢ, 정답 yᵢ)</strong> 쌍입니다. 정답이 <strong>연속적인 수</strong>(점수, 가격)면 <strong>회귀</strong>, <strong>범주</strong>(스팸/정상)면 <strong>분류</strong>라고 부릅니다. 여기서는 회귀의 대표인 <strong>선형회귀</strong>를 수학적으로 완전히 이해해 봅니다.</p>
+
+  <div class="card tint">
+    <p class="body" style="font-weight:700;text-align:center;font-size:21px">예제 데이터: 공부 시간(x)과 시험 점수(y) — 8명의 학생</p>
+    <table class="tb">
+      <tr><td class="rowh">x (시간)</td><td class="m">1</td><td class="m">2</td><td class="m">3</td><td class="m">4</td><td class="m">5</td><td class="m">6</td><td class="m">7</td><td class="m">8</td></tr>
+      <tr><td class="rowh">y (점수)</td><td class="m">55</td><td class="m">56</td><td class="m">62</td><td class="m">69</td><td class="m">74</td><td class="m">77</td><td class="m">81</td><td class="m">90</td></tr>
+    </table>
+    <p class="body" style="text-align:center;color:var(--sub)">목표: 이 데이터를 가장 잘 설명하는 직선 <span class="mono">ŷ = ax + b</span> 를 찾아 <strong>9시간 공부한 학생의 점수를 예측</strong>하기</p>
+  </div>
+
+  <h3 class="sub">① 모델과 오차 — "얼마나 틀렸는가"를 수로 만들기</h3>
+  <p class="body">직선 ŷ = ax + b 가 하나 정해지면, 각 학생마다 <strong>오차(잔차)</strong> eᵢ = yᵢ − ŷᵢ = yᵢ − (axᵢ + b) 가 생깁니다. 직선 전체의 "틀린 정도"는 오차들을 제곱해 평균 낸 <strong>평균제곱오차(MSE)</strong>로 측정합니다.</p>
+
+  <div class="bigformula">E(a, b) = (1/n) &Sigma; ( y&#7522; &minus; (ax&#7522; + b) )&sup2;</div>
+
+  <div class="point"><span class="ico">💡</span><div><strong>왜 제곱할까?</strong> ① 오차의 부호(+/−)가 상쇄되는 것을 막고 ② 큰 오차에 훨씬 큰 벌점을 주며 ③ 그래프가 매끄러운 아래로 볼록 함수가 되어 <strong>최솟값이 딱 하나</strong> 존재하기 때문입니다. "학습"이란 이 E(a,b)를 최소로 만드는 a, b를 찾는 일입니다.</div></div>
+
+  <h3 class="sub">② 최소제곱법 — 최적의 a, b를 공식으로</h3>
+  <p class="body">E(a,b)를 최소화하는 해는 공식으로 딱 떨어집니다. x̄, ȳ는 각각 x, y의 평균입니다.</p>
+  <div class="flist">
+    <div class="fcard">
+      <div class="fname">기울기 a — 편차곱의 합 ÷ 편차제곱의 합</div>
+      <div class="formula">a = &Sigma;(x&#7522;&minus;x&#772;)(y&#7522;&minus;y&#772;) / &Sigma;(x&#7522;&minus;x&#772;)&sup2;</div>
+      <div class="fex"><span class="lab">우리 데이터</span>a = Sxy/Sxx = 210/42 = 5</div>
+    </div>
+    <div class="fcard">
+      <div class="fname">절편 b — 직선은 평균점을 지난다</div>
+      <div class="formula">b = y&#772; &minus; a·x&#772;</div>
+      <div class="fex"><span class="lab">우리 데이터</span>b = 70.5 &minus; 5 × 4.5 = 48</div>
+    </div>
+  </div>
+  <p class="body">따라서 최적 직선은 <strong class="mono">ŷ = 5x + 48</strong>. 9시간 공부하면 <strong>5×9+48 = 93점</strong>으로 예측! 절편 공식은 <strong>회귀직선이 항상 평균점 (x̄, ȳ)를 지난다</strong>는 뜻이기도 합니다.</p>
+
+  <h3 class="sub">③ 작은 데이터로 손계산 연습</h3>
+  <div class="card">
+    <p class="body" style="font-weight:700">데이터 (1,3), (2,4), (3,6), (4,7) 의 회귀직선 구하기 — x̄ = 2.5, ȳ = 5</p>
+    <table class="tb">
+      <tr><th>xᵢ</th><th>yᵢ</th><th>xᵢ−x̄</th><th>yᵢ−ȳ</th><th>(xᵢ−x̄)(yᵢ−ȳ)</th><th>(xᵢ−x̄)²</th></tr>
+      <tr><td class="m">1</td><td class="m">3</td><td class="m">-1.5</td><td class="m">-2</td><td class="m">3.0</td><td class="m">2.25</td></tr>
+      <tr><td class="m">2</td><td class="m">4</td><td class="m">-0.5</td><td class="m">-1</td><td class="m">0.5</td><td class="m">0.25</td></tr>
+      <tr><td class="m">3</td><td class="m">6</td><td class="m">0.5</td><td class="m">1</td><td class="m">0.5</td><td class="m">0.25</td></tr>
+      <tr><td class="m">4</td><td class="m">7</td><td class="m">1.5</td><td class="m">2</td><td class="m">3.0</td><td class="m">2.25</td></tr>
+      <tr><td class="rowh" colspan="4">합계</td><td class="m"><strong>Sxy = 7</strong></td><td class="m"><strong>Sxx = 5</strong></td></tr>
+    </table>
+    <p class="body" style="text-align:center;font-weight:700">a = 7/5 = 1.4, &nbsp;b = 5 − 1.4×2.5 = 1.5 &nbsp;⟶&nbsp; <span class="mono">ŷ = 1.4x + 1.5</span></p>
+  </div>
+
+  <h2 class="sec">회귀 시뮬레이터 — 직접 직선을 움직여 오차를 줄여 보세요</h2>
+  <p class="body">슬라이더로 기울기 a와 절편 b를 조절하면 <strong>주황 점선(각 점의 오차)</strong>과 <strong>MSE</strong>가 실시간으로 변합니다. MSE를 얼마나 줄일 수 있나요? 다 줄였다면 「최소제곱 최적해」와 비교해 보세요.</p>
+
+  <div class="simbox">
+    <svg id="regSvg" viewBox="0 0 720 430" xmlns="http://www.w3.org/2000/svg">
+      <defs><clipPath id="regClip"><rect x="60" y="20" width="630" height="370"/></clipPath></defs>
+      <g id="regAxes"></g>
+      <g id="regDyn" clip-path="url(#regClip)"></g>
+      <g id="regPts"></g>
+    </svg>
+    <div class="sliders">
+      <div class="sld">
+        <label>기울기 a <span class="val" id="aVal">2.0</span></label>
+        <input type="range" id="aSlide" min="0" max="10" step="0.1" value="2">
+      </div>
+      <div class="sld">
+        <label>절편 b <span class="val" id="bVal">60.0</span></label>
+        <input type="range" id="bSlide" min="30" max="70" step="0.5" value="60">
+      </div>
+    </div>
+    <div class="msebar">
+      <span class="eq" id="regEq">ŷ = 2.0x + 60.0</span>
+      <span class="mseval">MSE = <span id="mseVal">?</span></span>
+    </div>
+    <div class="simctrl">
+      <button class="btn" id="optBtn">⭐ 최소제곱 최적해로! (a=5, b=48)</button>
+    </div>
+  </div>
+
+  <div class="warn"><span class="ico">⚠️</span><div><strong>예측의 한계도 함께 가르쳐야 합니다.</strong> ŷ = 5x + 48 로 20시간을 예측하면 148점 — 100점 만점을 넘어 버립니다! 모델은 <strong>학습 데이터의 범위 안</strong>에서만 신뢰할 수 있습니다(외삽의 위험).</div></div>
+
+  <div class="pgnav">
+    <button class="btn ghost" onclick="goPage(0)">← 이전: AI와 빅데이터</button>
+    <button class="btn" onclick="goPage(2)">다음: 비지도학습의 수학 →</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 2. 비지도학습의 수학 ═══════════════ -->
+<section class="page" id="pg2">
+  <h2 class="sec">비지도학습 — 정답 없이 구조를 발견한다</h2>
+  <p class="body">이번에는 정답(레이블)이 없습니다. 데이터의 <strong>숨은 구조</strong>를 스스로 찾아야 합니다. 대표 문제가 비슷한 점끼리 묶는 <strong>군집화(clustering)</strong>이고, 그 대표 알고리즘이 <strong>k-평균(k-means)</strong>입니다. (특징을 압축하는 <strong>차원 축소</strong>도 비지도학습입니다.)</p>
+
+  <h3 class="sub">① "비슷하다"의 수학적 정의 — 두 점 사이의 거리</h3>
+  <p class="body">군집화의 출발점은 "가깝다 = 비슷하다"입니다. 좌표평면에서 두 점 사이의 거리는 <strong>피타고라스 정리</strong> 그 자체입니다.</p>
+
+  <div class="flist">
+    <div class="fcard">
+      <div class="fname">유클리드 거리</div>
+      <div class="formula">d(P,Q) = &radic;( (x&#8321;&minus;x&#8322;)&sup2; + (y&#8321;&minus;y&#8322;)&sup2; )</div>
+      <div class="fex"><span class="lab">예제</span>P(1,2), Q(4,6): d = &radic;(3&sup2;+4&sup2;) = &radic;25 = 5</div>
+    </div>
+    <div class="fcard">
+      <div class="fname">중심(평균점) — 그룹의 대표 위치</div>
+      <div class="formula">c = ( x들의 평균, y들의 평균 )</div>
+      <div class="fex"><span class="lab">예제</span>(1,2),(3,4),(5,6)의 중심 = (3, 4)</div>
+    </div>
+  </div>
+
+  <h3 class="sub">② k-평균 알고리즘 — 딱 두 동작의 반복</h3>
+  <p class="body">군집의 개수 k를 정하면(여기서는 k = 2), 알고리즘은 <strong>할당</strong>과 <strong>갱신</strong>을 번갈아 반복할 뿐입니다.</p>
+
+  <div class="stepcard">
+    <div class="stepnum">0</div>
+    <div class="stepbody">
+      <div class="st">초기화 — 중심 k개를 아무 곳에나 놓는다</div>
+      우리 예제: 중심을 일부러 엉뚱한 위치 c₁(1, 2), c₂(6, 9)에 놓고 시작합니다.
+    </div>
+  </div>
+  <div class="stepcard">
+    <div class="stepnum">1</div>
+    <div class="stepbody">
+      <div class="st">할당 단계 — 각 점을 가장 가까운 중심의 그룹에</div>
+      모든 점 p에 대해 d(p, c₁)과 d(p, c₂)를 계산해 더 가까운 쪽 그룹에 넣습니다.
+      <div class="calc">p의 그룹 = argmin&#8342; d(p, c&#8342;)</div>
+    </div>
+  </div>
+  <div class="stepcard">
+    <div class="stepnum">2</div>
+    <div class="stepbody">
+      <div class="st">갱신 단계 — 각 중심을 자기 그룹의 평균점으로 이동</div>
+      그룹이 바뀌었으니 대표 위치도 다시 계산합니다. 새 중심 = 그룹에 속한 점들의 평균.
+      <div class="calc">c&#8342; = ( 그룹 점들의 x 평균, y 평균 )</div>
+    </div>
+  </div>
+  <div class="stepcard">
+    <div class="stepnum">3</div>
+    <div class="stepbody">
+      <div class="st">반복 — 할당이 더 이상 바뀌지 않으면 수렴!</div>
+      할당 → 갱신 → 할당 → … 을 반복하다가, 어떤 점도 그룹을 옮기지 않으면 끝납니다.
+    </div>
+  </div>
+
+  <div class="point"><span class="ico">🎯</span><div><strong>k-평균이 줄이려는 양(목적함수):</strong> 각 점에서 자기 중심까지 거리 제곱의 총합 &Sigma;&Sigma;‖p − c&#8342;‖². 할당 단계도, 갱신 단계도 이 값을 <strong>절대 늘리지 않기 때문에</strong> 알고리즘은 반드시 멈춥니다. 지도학습의 MSE처럼, 비지도학습도 결국 <strong>"오차 제곱합 최소화"</strong>라는 같은 수학 위에 서 있습니다!</div></div>
+
+  <h2 class="sec">k-평균 시뮬레이터 — 할당과 갱신을 직접 반복해 보세요</h2>
+  <p class="body">회색 점 12개와 엉뚱한 곳에 놓인 중심 2개(◆)가 있습니다. 「다음 단계」를 누를 때마다 <strong>할당(점 색칠) → 갱신(◆ 이동)</strong>이 번갈아 실행됩니다. 몇 번 만에 수렴하는지 세어 보세요!</p>
+
+  <div class="simbox">
+    <svg id="kmSvg" viewBox="0 0 640 440" xmlns="http://www.w3.org/2000/svg">
+      <g id="kmAxes"></g>
+      <g id="kmTrail"></g>
+      <g id="kmPts"></g>
+      <g id="kmCent"></g>
+    </svg>
+    <div class="simstatus" id="kmStatus">준비 완료 — 「다음 단계」를 눌러 할당부터 시작하세요</div>
+    <div class="simctrl">
+      <button class="btn ghost" id="kmReset">⟲ 처음부터</button>
+      <button class="btn" id="kmNext">다음 단계 →</button>
+    </div>
+  </div>
+
+  <div class="card tint">
+    <h3 class="sub" style="margin-top:0">지도학습 vs 비지도학습 — 최종 비교</h3>
+    <table class="tb">
+      <tr><th></th><th>지도학습 (선형회귀)</th><th>비지도학습 (k-평균)</th></tr>
+      <tr><td class="rowh">데이터</td><td class="l">(xᵢ, yᵢ) — 정답 있음</td><td class="l">점들만 — 정답 없음</td></tr>
+      <tr><td class="rowh">찾는 것</td><td class="l">직선 ŷ = ax + b</td><td class="l">중심 c₁, …, c&#8342;와 그룹</td></tr>
+      <tr><td class="rowh">핵심 수학</td><td class="l">평균, 오차 제곱합(MSE)</td><td class="l">거리, 평균, 거리 제곱합</td></tr>
+      <tr><td class="rowh">"학습"의 의미</td><td class="l">MSE를 최소화하는 a, b 찾기</td><td class="l">거리 제곱합을 줄이는 반복</td></tr>
+    </table>
+  </div>
+
+  <div class="pgnav">
+    <button class="btn ghost" onclick="goPage(1)">← 이전: 지도학습의 수학</button>
+    <button class="btn" onclick="goPage(3)">다음: 실습 — 회귀 →</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 3. 실습: 회귀 ═══════════════ -->
+<section class="page" id="pg3">
+  <h2 class="sec">파이썬 실습 ① — 최소제곱법을 직접 구현하기</h2>
+  <p class="body">1번 탭의 공식을 <strong>순수 파이썬</strong>으로 그대로 옮깁니다. 라이브러리 없이도 회귀는 열 줄이면 충분합니다.</p>
+
+  <div class="pane">
+    <div class="phead">Python <span class="tag">regression.py — 공식을 코드로</span></div>
+    <pre class="code"><span class="c"># 데이터: 공부 시간(x) vs 시험 점수(y)</span>
+x = [<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>, <span class="n">4</span>, <span class="n">5</span>, <span class="n">6</span>, <span class="n">7</span>, <span class="n">8</span>]
+y = [<span class="n">55</span>, <span class="n">56</span>, <span class="n">62</span>, <span class="n">69</span>, <span class="n">74</span>, <span class="n">77</span>, <span class="n">81</span>, <span class="n">90</span>]
+n = len(x)
+
+mx = sum(x) / n                       <span class="c"># x의 평균 = 4.5</span>
+my = sum(y) / n                       <span class="c"># y의 평균 = 70.5</span>
+
+<span class="c"># 편차곱의 합 Sxy, 편차제곱의 합 Sxx</span>
+Sxy = sum((x[i]-mx) * (y[i]-my) <span class="k">for</span> i <span class="k">in</span> range(n))
+Sxx = sum((x[i]-mx) ** <span class="n">2</span> <span class="k">for</span> i <span class="k">in</span> range(n))
+
+a = Sxy / Sxx                         <span class="c"># 기울기 공식</span>
+b = my - a * mx                       <span class="c"># 절편 공식</span>
+<span class="k">print</span>(<span class="s">"Sxy ="</span>, Sxy, <span class="s">", Sxx ="</span>, Sxx)
+<span class="k">print</span>(<span class="s">"회귀 직선: y ="</span>, a, <span class="s">"x +"</span>, b)</pre>
+    <div class="out"><span class="lab">실행 결과</span>Sxy = 210.0 , Sxx = 42.0
+회귀 직선: y = 5.0 x + 48.0</div>
+  </div>
+
+  <div class="pane">
+    <div class="phead">Python <span class="tag">predict.py — 예측과 모델 평가</span></div>
+    <pre class="code"><span class="c"># 학습된 모델(a, b)로 새 입력을 예측</span>
+<span class="k">print</span>(<span class="s">"9시간 공부 예측 점수:"</span>, a*<span class="n">9</span> + b)
+
+<span class="c"># 모델이 얼마나 좋은지: MSE (작을수록 좋다)</span>
+mse = sum((y[i] - (a*x[i] + b))**<span class="n">2</span> <span class="k">for</span> i <span class="k">in</span> range(n)) / n
+<span class="k">print</span>(<span class="s">"MSE ="</span>, mse)</pre>
+    <div class="out"><span class="lab">실행 결과</span>9시간 공부 예측 점수: 93.0
+MSE = 2.5</div>
+  </div>
+
+  <div class="pane">
+    <div class="phead">Python <span class="tag">bonus.py — numpy로는 한 줄</span></div>
+    <pre class="code"><span class="k">import</span> numpy <span class="k">as</span> np
+
+a, b = np.polyfit(x, y, <span class="n">1</span>)   <span class="c"># 1차(직선) 다항식 피팅</span>
+<span class="k">print</span>(<span class="s">"기울기:"</span>, round(a, <span class="n">6</span>), <span class="s">" 절편:"</span>, round(b, <span class="n">6</span>))</pre>
+    <div class="out"><span class="lab">실행 결과</span>기울기: 5.0  절편: 48.0</div>
+  </div>
+
+  <div class="point"><span class="ico">✅</span><div><strong>손계산 = 코드 = 라이브러리, 세 결과가 완전히 일치!</strong> 공식(a = 210/42 = 5)과 직접 구현, np.polyfit이 모두 같은 답을 냅니다. 라이브러리는 마법이 아니라 <strong>우리가 아는 수학을 대신 계산해 주는 것</strong>뿐임을 보여주는 순간입니다.</div></div>
+
+  <div class="card tint">
+    <h3 class="sub" style="margin-top:0">📝 실습 과제 아이디어</h3>
+    <p class="body">① 1번 탭의 손계산 데이터 (1,3),(2,4),(3,6),(4,7)을 코드에 넣어 a=1.4, b=1.5가 나오는지 확인하기 &nbsp;② 자기 반 친구들의 실제 데이터(예: 수면 시간 vs 컨디션 점수)로 회귀 직선 구하기 &nbsp;③ x에 20을 넣어 외삽의 위험을 직접 확인하기</p>
+  </div>
+
+  <div class="pgnav">
+    <button class="btn ghost" onclick="goPage(2)">← 이전: 비지도학습의 수학</button>
+    <button class="btn" onclick="goPage(4)">다음: 실습 — k-평균 →</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 4. 실습: k-평균 ═══════════════ -->
+<section class="page" id="pg4">
+  <h2 class="sec">파이썬 실습 ② — k-평균을 직접 구현하기</h2>
+  <p class="body">2번 탭 시뮬레이터와 <strong>완전히 같은 데이터, 같은 초기 중심</strong>으로 k-평균을 구현합니다. 시뮬레이터에서 눈으로 본 중심의 이동 경로가 코드 출력에 그대로 나타나는지 비교해 보세요.</p>
+
+  <div class="pane">
+    <div class="phead">Python <span class="tag">kmeans.py — 할당과 갱신의 반복</span></div>
+    <pre class="code"><span class="k">import</span> math
+
+points = [(<span class="n">1</span>, <span class="n">6</span>), (<span class="n">2</span>, <span class="n">8</span>), (<span class="n">2.5</span>, <span class="n">7</span>), (<span class="n">1.5</span>, <span class="n">7.5</span>), (<span class="n">3</span>, <span class="n">6.5</span>), (<span class="n">2</span>, <span class="n">6</span>),
+          (<span class="n">6</span>, <span class="n">2</span>), (<span class="n">7</span>, <span class="n">3.5</span>), (<span class="n">8</span>, <span class="n">2.5</span>), (<span class="n">7.5</span>, <span class="n">4</span>), (<span class="n">6.5</span>, <span class="n">3</span>), (<span class="n">8</span>, <span class="n">3.5</span>)]
+centroids = [(<span class="n">1</span>, <span class="n">2</span>), (<span class="n">6</span>, <span class="n">9</span>)]      <span class="c"># 초기 중심 (일부러 엉뚱한 곳에!)</span>
+
+<span class="k">def</span> dist(p, q):                    <span class="c"># 유클리드 거리 = 피타고라스</span>
+    <span class="k">return</span> math.sqrt((p[<span class="n">0</span>]-q[<span class="n">0</span>])**<span class="n">2</span> + (p[<span class="n">1</span>]-q[<span class="n">1</span>])**<span class="n">2</span>)
+
+prev = <span class="k">None</span>
+<span class="k">for</span> step <span class="k">in</span> range(<span class="n">1</span>, <span class="n">11</span>):
+    <span class="c"># ① 할당: 각 점을 더 가까운 중심의 그룹(0 또는 1)으로</span>
+    assign = [<span class="n">0</span> <span class="k">if</span> dist(p, centroids[<span class="n">0</span>]) &lt; dist(p, centroids[<span class="n">1</span>]) <span class="k">else</span> <span class="n">1</span>
+              <span class="k">for</span> p <span class="k">in</span> points]
+    <span class="k">if</span> assign == prev:             <span class="c"># 할당이 안 바뀌면 수렴</span>
+        <span class="k">print</span>(step, <span class="s">"번째 할당에서 변화 없음 → 수렴!"</span>)
+        <span class="k">break</span>
+    <span class="c"># ② 갱신: 각 그룹의 평균점으로 중심 이동</span>
+    groups = [[], []]
+    <span class="k">for</span> p, k <span class="k">in</span> zip(points, assign):
+        groups[k].append(p)
+    centroids = [(sum(p[<span class="n">0</span>] <span class="k">for</span> p <span class="k">in</span> g)/len(g), sum(p[<span class="n">1</span>] <span class="k">for</span> p <span class="k">in</span> g)/len(g))
+                 <span class="k">for</span> g <span class="k">in</span> groups]
+    <span class="k">print</span>(step, <span class="s">"회 갱신 후 중심:"</span>,
+          [(round(cx, <span class="n">2</span>), round(cy, <span class="n">2</span>)) <span class="k">for</span> cx, cy <span class="k">in</span> centroids])
+    prev = assign
+
+<span class="k">print</span>(<span class="s">"최종 중심:"</span>, [(round(cx, <span class="n">2</span>), round(cy, <span class="n">2</span>)) <span class="k">for</span> cx, cy <span class="k">in</span> centroids])</pre>
+    <div class="out"><span class="lab">실행 결과</span>1 회 갱신 후 중심: [(3.88, 4.25), (4.94, 5.31)]
+2 회 갱신 후 중심: [(2.62, 5.38), (5.56, 4.75)]
+3 회 갱신 후 중심: [(2.0, 6.83), (7.17, 3.08)]
+4 번째 할당에서 변화 없음 → 수렴!
+최종 중심: [(2.0, 6.83), (7.17, 3.08)]</div>
+  </div>
+
+  <div class="point"><span class="ico">✅</span><div><strong>시뮬레이터와 코드가 완전히 같은 경로로 움직입니다.</strong> 3회 갱신 만에 중심이 (2, 6.83)과 (7.17, 3.08) — 왼쪽 위 그룹과 오른쪽 아래 그룹의 한가운데 — 로 수렴합니다. 눈으로 본 것과 코드가 일치할 때 알고리즘은 완전히 이해된 것입니다.</div></div>
+
+  <div class="warn"><span class="ico">⚠️</span><div><strong>k-평균의 두 가지 주의점.</strong> ① k(군집 개수)는 사람이 미리 정해야 합니다. ② 초기 중심 위치에 따라 <strong>다른 결과로 수렴</strong>할 수 있습니다(지역 최적해). 그래서 실무에서는 초기값을 바꿔 여러 번 실행합니다.</div></div>
+
+  <div class="card tint">
+    <h3 class="sub" style="margin-top:0">📝 실습 과제 아이디어</h3>
+    <p class="body">① 초기 중심을 (0,0), (9,9)로 바꿔 몇 회 만에 수렴하는지 비교하기 &nbsp;② 점을 4~5개 추가해 k=3으로 확장하기 (groups를 [[],[],[]]로!) &nbsp;③ scikit-learn의 <span class="mono">KMeans(n_clusters=2)</span>와 결과 비교하기</p>
+  </div>
+
+  <div class="pgnav">
+    <button class="btn ghost" onclick="goPage(3)">← 이전: 실습 — 회귀</button>
+    <button class="btn" onclick="goPage(5)">다음: 퀴즈 →</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 5. 퀴즈 ═══════════════ -->
+<section class="page" id="pg5">
+  <h2 class="sec">확인 퀴즈 — 8문제</h2>
+  <p class="body">보기를 클릭하면 바로 채점됩니다. 초록색이 정답, 빨간색이 오답입니다.</p>
+  <div class="scorebox">맞힌 개수: <span class="mono" id="scoreNum">0</span> / <span class="mono">8</span></div>
+
+  <div class="qz">
+    <div class="qt"><span class="qno">1</span>지도학습과 비지도학습을 나누는 근본 기준은?</div>
+    <div class="opts">
+      <button class="opt">데이터의 양</button>
+      <button class="opt" data-ok="1">정답(레이블)의 유무</button>
+      <button class="opt">컴퓨터의 성능</button>
+      <button class="opt">수식의 복잡성</button>
+    </div>
+    <div class="expl">지도학습은 (입력, 정답) 쌍으로, 비지도학습은 입력만으로 학습합니다. "답지가 있는 문제집인가?"가 유일한 기준입니다.</div>
+  </div>
+
+  <div class="qz">
+    <div class="qt"><span class="qno">2</span>"공부 시간으로 시험 점수를 예측"하는 문제는?</div>
+    <div class="opts">
+      <button class="opt" data-ok="1">지도학습 — 회귀</button>
+      <button class="opt">지도학습 — 분류</button>
+      <button class="opt">비지도학습 — 군집화</button>
+      <button class="opt">강화학습</button>
+    </div>
+    <div class="expl">정답(점수)이 있으니 지도학습이고, 점수는 연속적인 수이므로 회귀입니다. 스팸/정상처럼 범주를 맞히면 분류입니다.</div>
+  </div>
+
+  <div class="qz">
+    <div class="qt"><span class="qno">3</span>평균제곱오차(MSE)의 올바른 식은?</div>
+    <div class="opts">
+      <button class="opt">(1/n) Σ (yᵢ − ŷᵢ)</button>
+      <button class="opt" data-ok="1">(1/n) Σ (yᵢ − ŷᵢ)²</button>
+      <button class="opt">Σ |yᵢ| / n</button>
+      <button class="opt">max(yᵢ − ŷᵢ)</button>
+    </div>
+    <div class="expl">오차를 제곱해 평균 냅니다. 제곱이 없으면(1번 보기) 양수·음수 오차가 상쇄되어 엉망인 직선도 오차 0처럼 보일 수 있습니다.</div>
+  </div>
+
+  <div class="qz">
+    <div class="qt"><span class="qno">4</span>최소제곱법에서 기울기 a를 구하는 공식은?</div>
+    <div class="opts">
+      <button class="opt" data-ok="1">a = Sxy / Sxx</button>
+      <button class="opt">a = Sxx / Sxy</button>
+      <button class="opt">a = ȳ / x̄</button>
+      <button class="opt">a = Σy / Σx</button>
+    </div>
+    <div class="expl">a = 편차곱의 합 ÷ x 편차제곱의 합 = Σ(xᵢ−x̄)(yᵢ−ȳ) / Σ(xᵢ−x̄)². 절편은 b = ȳ − a·x̄로 뒤따라 나옵니다.</div>
+  </div>
+
+  <div class="qz">
+    <div class="qt"><span class="qno">5</span>데이터 (1,3),(2,4),(3,6),(4,7)의 회귀직선 기울기는? (Sxy=7, Sxx=5)</div>
+    <div class="opts">
+      <button class="opt">0.7</button>
+      <button class="opt">1.25</button>
+      <button class="opt" data-ok="1">1.4</button>
+      <button class="opt">5/7</button>
+    </div>
+    <div class="expl">a = Sxy/Sxx = 7/5 = 1.4. 절편은 b = 5 − 1.4×2.5 = 1.5, 회귀직선은 ŷ = 1.4x + 1.5.</div>
+  </div>
+
+  <div class="qz">
+    <div class="qt"><span class="qno">6</span>두 점 P(1, 2), Q(4, 6) 사이의 유클리드 거리는?</div>
+    <div class="opts">
+      <button class="opt">7</button>
+      <button class="opt" data-ok="1">5</button>
+      <button class="opt">√7</button>
+      <button class="opt">25</button>
+    </div>
+    <div class="expl">d = √((4−1)² + (6−2)²) = √(9+16) = √25 = 5. 3-4-5 직각삼각형, 피타고라스 정리입니다.</div>
+  </div>
+
+  <div class="qz">
+    <div class="qt"><span class="qno">7</span>k-평균의 갱신 단계에서 각 중심은 어디로 이동하는가?</div>
+    <div class="opts">
+      <button class="opt">가장 가까운 점 위로</button>
+      <button class="opt">두 중심의 중간 지점으로</button>
+      <button class="opt" data-ok="1">자기 그룹 점들의 평균점으로</button>
+      <button class="opt">원점 방향으로 조금씩</button>
+    </div>
+    <div class="expl">새 중심 = (그룹 점들의 x 평균, y 평균). 평균점이 그룹까지의 거리 제곱합을 최소로 만드는 위치이기 때문입니다.</div>
+  </div>
+
+  <div class="qz">
+    <div class="qt"><span class="qno">8</span>"쇼핑몰 고객을 비슷한 구매 패턴끼리 묶기"는 어떤 문제인가?</div>
+    <div class="opts">
+      <button class="opt">회귀 (지도학습)</button>
+      <button class="opt">분류 (지도학습)</button>
+      <button class="opt" data-ok="1">군집화 (비지도학습)</button>
+      <button class="opt">강화학습</button>
+    </div>
+    <div class="expl">"어떤 그룹이 몇 개 있는지" 정답이 미리 없으므로 비지도학습의 군집화입니다. 만약 '우수/일반 고객' 정답표가 이미 있다면 분류가 됩니다.</div>
+  </div>
+
+  <div class="pgnav">
+    <button class="btn ghost" onclick="goPage(4)">← 이전: 실습 — k-평균</button>
+    <button class="btn" onclick="goPage(0)">⟲ 처음으로</button>
+  </div>
+</section>
+
+</main>
+
+<script>
+/* ───────── 탭 이동 ───────── */
+function goPage(n){
+  for(var i=0;i<6;i++){
+    document.getElementById('pg'+i).classList.toggle('on', i===n);
+    document.getElementById('tab'+i).classList.toggle('on', i===n);
+  }
+  window.scrollTo(0,0);
+}
+
+var SVGNS='http://www.w3.org/2000/svg';
+function svgEl(tag, attrs){
+  var e=document.createElementNS(SVGNS, tag);
+  for(var k in attrs) e.setAttribute(k, attrs[k]);
+  return e;
+}
+
+/* ═════════ 회귀 시뮬레이터 ═════════ */
+var regX=[1,2,3,4,5,6,7,8];
+var regY=[55,56,62,69,74,77,81,90];
+function rfx(x){ return 60 + x/9*630; }
+function rfy(y){ return 20 + (100-y)/60*370; }
+
+function regAxesDraw(){
+  var g=document.getElementById('regAxes');
+  g.appendChild(svgEl('line',{x1:60,y1:390,x2:690,y2:390,stroke:'#8d8270','stroke-width':2}));
+  g.appendChild(svgEl('line',{x1:60,y1:20,x2:60,y2:390,stroke:'#8d8270','stroke-width':2}));
+  for(var x=0;x<=9;x++){
+    var px=rfx(x);
+    g.appendChild(svgEl('line',{x1:px,y1:390,x2:px,y2:395,stroke:'#8d8270','stroke-width':2}));
+    var t=svgEl('text',{x:px,y:414,'text-anchor':'middle','font-size':15,fill:'#6B6157','font-family':'JetBrains Mono, monospace'});
+    t.textContent=String(x); g.appendChild(t);
+  }
+  for(var y=40;y<=100;y+=10){
+    var py=rfy(y);
+    g.appendChild(svgEl('line',{x1:55,y1:py,x2:60,y2:py,stroke:'#8d8270','stroke-width':2}));
+    var t2=svgEl('text',{x:48,y:py+5,'text-anchor':'end','font-size':15,fill:'#6B6157','font-family':'JetBrains Mono, monospace'});
+    t2.textContent=String(y); g.appendChild(t2);
+    if(y>40) g.appendChild(svgEl('line',{x1:60,y1:py,x2:690,y2:py,stroke:'#EDE7D8','stroke-width':1}));
+  }
+  var xt=svgEl('text',{x:690,y:414,'text-anchor':'end','font-size':15,fill:'#6B6157','font-weight':700});
+  xt.textContent='공부 시간'; g.appendChild(xt);
+  var pts=document.getElementById('regPts');
+  for(var i=0;i<regX.length;i++){
+    pts.appendChild(svgEl('circle',{cx:rfx(regX[i]),cy:rfy(regY[i]),r:8,fill:'#2456A6',stroke:'#fff','stroke-width':2}));
+  }
+}
+
+function fmt1(v){ return (Math.round(v*10)/10).toFixed(1); }
+
+function regUpdate(){
+  var a=parseFloat(document.getElementById('aSlide').value);
+  var b=parseFloat(document.getElementById('bSlide').value);
+  document.getElementById('aVal').textContent=fmt1(a);
+  document.getElementById('bVal').textContent=fmt1(b);
+  document.getElementById('regEq').textContent='\u0177 = '+fmt1(a)+'x + '+fmt1(b);
+  var dyn=document.getElementById('regDyn');
+  while(dyn.firstChild) dyn.removeChild(dyn.firstChild);
+  /* 잔차(주황 점선) */
+  var se=0;
+  for(var i=0;i<regX.length;i++){
+    var pred=a*regX[i]+b;
+    se+=(regY[i]-pred)*(regY[i]-pred);
+    dyn.appendChild(svgEl('line',{
+      x1:rfx(regX[i]), y1:rfy(regY[i]), x2:rfx(regX[i]), y2:rfy(pred),
+      stroke:'#D97A28','stroke-width':3,'stroke-dasharray':'5 4'
+    }));
+  }
+  /* 회귀 직선 */
+  dyn.appendChild(svgEl('line',{
+    x1:rfx(0), y1:rfy(b), x2:rfx(9), y2:rfy(9*a+b),
+    stroke:'#17407F','stroke-width':4
+  }));
+  var mse=se/regX.length;
+  document.getElementById('mseVal').textContent=String(Math.round(mse*100)/100);
+}
+
+/* ═════════ k-평균 시뮬레이터 ═════════ */
+var kmPoints=[[1,6],[2,8],[2.5,7],[1.5,7.5],[3,6.5],[2,6],
+              [6,2],[7,3.5],[8,2.5],[7.5,4],[6.5,3],[8,3.5]];
+var KM_INIT=[[1,2],[6,9]];
+var kmCent, kmAssign, kmPrev, kmPhase, kmIter, kmDone;
+var KM_COLS=['#2456A6','#D97A28'];
+function kfx(x){ return 50 + x/9*560; }
+function kfy(y){ return 20 + (10-y)/10*380; }
+function kdist(p,q){ return Math.sqrt((p[0]-q[0])*(p[0]-q[0])+(p[1]-q[1])*(p[1]-q[1])); }
+function kround(v){
+  /* 파이썬 round()와 동일한 half-to-even 반올림 (소수 둘째 자리) */
+  var x=v*100, f=Math.floor(x), diff=x-f;
+  var r;
+  if(Math.abs(diff-0.5)<1e-9){ r=(f%2===0)?f:f+1; }
+  else{ r=Math.round(x); }
+  return r/100;
+}
+
+function kmAxesDraw(){
+  var g=document.getElementById('kmAxes');
+  for(var x=0;x<=9;x++){
+    g.appendChild(svgEl('line',{x1:kfx(x),y1:20,x2:kfx(x),y2:400,stroke:'#EDE7D8','stroke-width':1}));
+  }
+  for(var y=0;y<=10;y+=2){
+    g.appendChild(svgEl('line',{x1:50,y1:kfy(y),x2:610,y2:kfy(y),stroke:'#EDE7D8','stroke-width':1}));
+  }
+  g.appendChild(svgEl('rect',{x:50,y:20,width:560,height:380,fill:'none',stroke:'#8d8270','stroke-width':2,rx:8}));
+}
+
+function diamondPath(cx,cy,r){
+  return 'M '+cx+' '+(cy-r)+' L '+(cx+r)+' '+cy+' L '+cx+' '+(cy+r)+' L '+(cx-r)+' '+cy+' Z';
+}
+
+function kmDraw(){
+  var pg=document.getElementById('kmPts');
+  while(pg.firstChild) pg.removeChild(pg.firstChild);
+  for(var i=0;i<kmPoints.length;i++){
+    var col=(kmAssign && kmAssign[i]!==null)?KM_COLS[kmAssign[i]]:'#B9AE97';
+    pg.appendChild(svgEl('circle',{cx:kfx(kmPoints[i][0]),cy:kfy(kmPoints[i][1]),r:9,fill:col,stroke:'#fff','stroke-width':2}));
+  }
+  var cg=document.getElementById('kmCent');
+  while(cg.firstChild) cg.removeChild(cg.firstChild);
+  for(var k=0;k<2;k++){
+    cg.appendChild(svgEl('path',{d:diamondPath(kfx(kmCent[k][0]),kfy(kmCent[k][1]),15),
+      fill:KM_COLS[k],stroke:'#2A2320','stroke-width':2.5}));
+  }
+}
+
+function kmTrailAdd(from,to,k){
+  var tg=document.getElementById('kmTrail');
+  tg.appendChild(svgEl('line',{x1:kfx(from[0]),y1:kfy(from[1]),x2:kfx(to[0]),y2:kfy(to[1]),
+    stroke:KM_COLS[k],'stroke-width':2.5,'stroke-dasharray':'4 4',opacity:.55}));
+}
+
+function kmResetAll(){
+  kmCent=[KM_INIT[0].slice(),KM_INIT[1].slice()];
+  kmAssign=null; kmPrev=null; kmPhase='assign'; kmIter=0; kmDone=false;
+  var tg=document.getElementById('kmTrail');
+  while(tg.firstChild) tg.removeChild(tg.firstChild);
+  kmDraw();
+  document.getElementById('kmStatus').textContent='준비 완료 — 「다음 단계」를 눌러 할당부터 시작하세요';
+}
+
+function kmStep(){
+  if(kmDone) return;
+  var st=document.getElementById('kmStatus');
+  if(kmPhase==='assign'){
+    var na=[];
+    for(var i=0;i<kmPoints.length;i++){
+      na.push(kdist(kmPoints[i],kmCent[0])<kdist(kmPoints[i],kmCent[1])?0:1);
+    }
+    kmAssign=na;
+    kmDraw();
+    if(kmPrev!==null){
+      var same=true;
+      for(var j=0;j<na.length;j++) if(na[j]!==kmPrev[j]){same=false;break;}
+      if(same){
+        kmDone=true;
+        st.textContent='\uD83C\uDF89 수렴! 할당 변화 없음 (갱신 '+kmIter+'회) — 최종 중심 ('
+          +kround(kmCent[0][0])+', '+kround(kmCent[0][1])+') / ('+kround(kmCent[1][0])+', '+kround(kmCent[1][1])+')';
+        return;
+      }
+    }
+    var n0=0; for(var m=0;m<na.length;m++) if(na[m]===0) n0++;
+    st.textContent='① 할당 완료 — 파랑 '+n0+'개, 주황 '+(na.length-n0)+'개. 이제 중심을 갱신하세요';
+    kmPrev=na.slice();
+    kmPhase='update';
+  }else{
+    var sums=[[0,0,0],[0,0,0]];
+    for(var i2=0;i2<kmPoints.length;i2++){
+      var k2=kmAssign[i2];
+      sums[k2][0]+=kmPoints[i2][0]; sums[k2][1]+=kmPoints[i2][1]; sums[k2][2]++;
+    }
+    var moved=[];
+    for(var c=0;c<2;c++){
+      if(sums[c][2]===0){ moved.push(kmCent[c]); continue; }
+      var nc=[sums[c][0]/sums[c][2], sums[c][1]/sums[c][2]];
+      kmTrailAdd(kmCent[c], nc, c);
+      moved.push(nc);
+    }
+    kmCent=moved;
+    kmIter++;
+    kmDraw();
+    st.textContent='② 갱신 '+kmIter+'회 — 새 중심 ('+kround(kmCent[0][0])+', '+kround(kmCent[0][1])+') / ('
+      +kround(kmCent[1][0])+', '+kround(kmCent[1][1])+'). 다시 할당해 보세요';
+    kmPhase='assign';
+  }
+}
+
+/* ───────── 퀴즈 ───────── */
+var quizScore=0;
+function initQuiz(){
+  var qzs=document.querySelectorAll('.qz');
+  for(var i=0;i<qzs.length;i++){
+    (function(qz){
+      var opts=qz.querySelectorAll('.opt');
+      for(var j=0;j<opts.length;j++){
+        opts[j].addEventListener('click', function(){
+          if(qz.classList.contains('done')) return;
+          qz.classList.add('done');
+          var isOk=this.getAttribute('data-ok')==='1';
+          if(isOk){
+            this.classList.add('ok');
+            quizScore++;
+            document.getElementById('scoreNum').textContent=String(quizScore);
+          }else{
+            this.classList.add('no');
+            var right=qz.querySelector('.opt[data-ok="1"]');
+            if(right) right.classList.add('ok');
+          }
+          var ex=qz.querySelector('.expl');
+          if(ex) ex.classList.add('show');
+        });
+      }
+    })(qzs[i]);
+  }
+}
+
+/* ───────── 초기화 ───────── */
+document.addEventListener('DOMContentLoaded', function(){
+  regAxesDraw();
+  regUpdate();
+  document.getElementById('aSlide').addEventListener('input', regUpdate);
+  document.getElementById('bSlide').addEventListener('input', regUpdate);
+  document.getElementById('optBtn').addEventListener('click', function(){
+    document.getElementById('aSlide').value='5';
+    document.getElementById('bSlide').value='48';
+    regUpdate();
+  });
+  kmAxesDraw();
+  kmResetAll();
+  document.getElementById('kmNext').addEventListener('click', kmStep);
+  document.getElementById('kmReset').addEventListener('click', kmResetAll);
+  initQuiz();
+});
+</script>
+</body>
+</html>
