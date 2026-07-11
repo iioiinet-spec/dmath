@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>특수수 암호 — 파이썬 코드로 이해하기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FAF6EF;
+  --ink:#2A2320;
+  --sub:#6B6157;
+  --accent:#4A3B8C;
+  --accent-deep:#352A69;
+  --accent-soft:#EAE7F6;
+  --accent-line:#CFC7EC;
+  --gold:#C89B12;
+  --gold-soft:#FFF3C8;
+  --y-col:#8C6D1F;    /* 유준수 */
+  --y-soft:#FBF1D8;
+  --s-col:#1F6F8C;    /* 수현수 */
+  --s-soft:#DFF0F5;
+  --j-col:#A0447A;    /* 수준수 */
+  --j-soft:#F8E4F0;
+  --card:#FFFFFF;
+  --line:#E6DECD;
+  --code-bg:#221C38;
+  --code-ink:#ECE8F7;
+  --code-kw:#C3B4F5;
+  --code-com:#8D84AD;
+  --code-num:#FFD08A;
+  --code-str:#A8E6B0;
+  --code-fn:#8AD4E8;
+  --warn-bg:#FBECEA;
+  --ok:#1F7A4D;
+  --no:#C0392B;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:'Noto Sans KR',sans-serif;font-size:19px;line-height:1.75;padding-bottom:80px}
+.wrap{max-width:1060px;margin:0 auto;padding:0 20px}
+
+/* 헤더 */
+header{border-bottom:3px solid var(--accent);background:linear-gradient(180deg,#E7E3F4 0%,var(--bg) 100%);padding:38px 0 26px}
+.series{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:var(--accent-deep);background:var(--accent-soft);border:1.5px solid var(--accent-line);border-radius:999px;padding:4px 16px;letter-spacing:.5px}
+h1.title{font-size:43px;font-weight:900;line-height:1.25;margin-top:14px;letter-spacing:-1px}
+h1.title .hl{color:var(--accent)}
+.subtitle{font-size:20px;color:var(--sub);margin-top:8px;font-weight:500}
+
+/* 탭 */
+nav.tabs{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:2px solid var(--line);padding:12px 0}
+nav.tabs .wrap{display:flex;flex-wrap:wrap;gap:8px}
+.tabbtn{font-family:'Noto Sans KR',sans-serif;font-size:16.5px;font-weight:700;color:var(--ink);background:var(--card);border:2px solid var(--line);border-radius:12px;padding:9px 15px;cursor:pointer;transition:all .15s}
+.tabbtn .no{font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--accent);margin-right:6px;font-weight:700}
+.tabbtn:hover{border-color:var(--accent);transform:translateY(-1px)}
+.tabbtn.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.tabbtn.on .no{color:#D6CDF3}
+
+/* 페이지 */
+.page{display:none;padding-top:34px}
+.page.on{display:block;animation:fadein .3s}
+@keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+h2.sec{font-size:32px;font-weight:900;letter-spacing:-.5px;padding-left:16px;border-left:8px solid var(--accent);margin:38px 0 16px}
+h2.sec:first-child{margin-top:0}
+h3.sub{font-size:23px;font-weight:700;color:var(--accent-deep);margin:28px 0 10px}
+p.body{margin:10px 0;font-size:19.5px}
+strong{font-weight:700;color:var(--accent-deep)}
+.mono{font-family:'JetBrains Mono',monospace}
+.card{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:22px 26px;margin:16px 0}
+.card.tint{background:var(--accent-soft);border-color:var(--accent-line)}
+.point{display:flex;gap:12px;align-items:flex-start;background:var(--accent-soft);border-left:8px solid var(--accent);border-radius:0 14px 14px 0;padding:16px 20px;margin:18px 0;font-size:19.5px}
+.point .ico{font-size:26px;line-height:1.4}
+.warn{display:flex;gap:12px;align-items:flex-start;background:var(--warn-bg);border-left:8px solid var(--no);border-radius:0 14px 14px 0;padding:16px 20px;margin:18px 0;font-size:19.5px}
+.warn .ico{font-size:26px;line-height:1.4}
+.disc{display:flex;gap:12px;align-items:flex-start;background:var(--gold-soft);border-left:8px solid var(--gold);border-radius:0 14px 14px 0;padding:16px 20px;margin:18px 0;font-size:19px}
+.disc .ico{font-size:26px;line-height:1.4}
+
+/* 공식/정의 카드 */
+.flist{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
+.fcard{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:18px 20px}
+.fcard .fname{font-weight:900;font-size:19px;color:var(--accent-deep);margin-bottom:8px}
+.fcard .formula{font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:700;text-align:center;color:var(--accent-deep);background:var(--accent-soft);border-radius:10px;padding:12px 10px}
+.fcard .fex{margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:17.5px;background:var(--gold-soft);border-left:5px solid var(--gold);border-radius:0 10px 10px 0;padding:9px 14px}
+.fcard .fex .lab{font-family:'Noto Sans KR',sans-serif;font-size:14px;color:#8a6d00;display:block;font-weight:700}
+.bigformula{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;text-align:center;color:var(--accent-deep);background:var(--accent-soft);border:2px dashed var(--accent);border-radius:14px;padding:18px 12px;margin:18px 0}
+
+/* 표 */
+table.tb{width:100%;border-collapse:collapse;margin:16px 0;background:var(--card);font-size:19px}
+table.tb th{background:var(--accent);color:#fff;font-weight:700;padding:10px 14px;border:2px solid var(--accent-deep)}
+table.tb td{padding:9px 14px;border:2px solid var(--line);text-align:center}
+table.tb td.l{text-align:left}
+table.tb td.rowh{background:var(--accent-soft);font-weight:700;color:var(--accent-deep)}
+table.tb td.m{font-family:'JetBrains Mono',monospace}
+table.tb td.hit{background:#E3F5EA;color:var(--ok);font-weight:900}
+table.tb td.miss{background:#FBE8E5;color:var(--no);font-weight:900}
+
+/* 코드 패널 */
+.pane{border-radius:16px;overflow:hidden;border:2px solid var(--line);background:var(--card);margin:18px 0}
+.pane .phead{display:flex;align-items:center;gap:10px;font-weight:900;font-size:19px;color:#fff;padding:10px 18px;background:#1F7A4D}
+.pane .phead .tag{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;background:rgba(255,255,255,.22);border-radius:6px;padding:2px 8px}
+pre.code{background:var(--code-bg);color:var(--code-ink);font-family:'JetBrains Mono',monospace;font-size:15px;line-height:1.7;padding:18px 20px;overflow-x:auto;tab-size:4}
+pre.code .k{color:var(--code-kw);font-weight:700}
+pre.code .c{color:var(--code-com);font-style:italic}
+pre.code .n{color:var(--code-num)}
+pre.code .s{color:var(--code-str)}
+pre.code .f{color:var(--code-fn)}
+.out{font-family:'JetBrains Mono',monospace;font-size:15px;background:#171226;color:#9BE8AE;padding:12px 20px;border-top:1.5px solid #3A3158;white-space:pre-wrap}
+.out .lab{color:#8D84AD;font-size:13px;display:block;margin-bottom:2px}
+
+/* 코드 줄별 해설 */
+.annot{display:grid;grid-template-columns:auto 1fr;gap:0;margin:16px 0;border:2px solid var(--line);border-radius:14px;overflow:hidden;background:var(--card)}
+.annot .ln{font-family:'JetBrains Mono',monospace;font-size:14.5px;background:var(--code-bg);color:var(--code-ink);padding:11px 16px;white-space:pre;border-bottom:1px solid #3A3158}
+.annot .ds{padding:11px 16px;font-size:17px;border-bottom:1px solid var(--line);display:flex;align-items:center}
+.annot .ln:last-of-type,.annot .ds:last-of-type{border-bottom:none}
+.annot .ln .k{color:var(--code-kw);font-weight:700}
+.annot .ln .c{color:var(--code-com)}
+.annot .ln .n{color:var(--code-num)}
+.annot .ln .s{color:var(--code-str)}
+.annot .ln .f{color:var(--code-fn)}
+
+/* 시뮬레이터 공통 */
+.simbox{background:var(--card);border:2.5px solid var(--accent);border-radius:18px;padding:24px;margin:18px 0}
+.simstatus{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;text-align:center;color:var(--accent-deep);background:var(--accent-soft);border-radius:12px;padding:13px;margin:14px 0 4px;min-height:52px}
+.simstatus.win{background:#E3F5EA;color:var(--ok)}
+.simctrl{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+button.btn{font-family:'Noto Sans KR',sans-serif;font-size:18px;font-weight:700;border:none;border-radius:12px;padding:11px 22px;cursor:pointer;background:var(--accent);color:#fff;transition:all .15s}
+button.btn:hover{background:var(--accent-deep);transform:translateY(-1px)}
+button.btn.ghost{background:var(--card);color:var(--accent);border:2px solid var(--accent)}
+button.btn.ghost:hover{background:var(--accent-soft)}
+.numin{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin:12px 0;justify-content:center}
+.numin label{font-weight:700;font-size:18px}
+.numin input{width:130px;font-family:'JetBrains Mono',monospace;font-size:20px;text-align:center;border:2px solid var(--line);border-radius:10px;padding:9px;background:var(--bg);color:var(--ink)}
+.numin input:focus{outline:none;border-color:var(--accent)}
+
+/* 수 분해 위젯 */
+.divviz{font-family:'JetBrains Mono',monospace;font-size:19px;margin:14px 0}
+.divchips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:10px 0}
+.divchip{background:var(--accent-soft);border:2px solid var(--accent-line);border-radius:8px;padding:6px 14px;font-weight:700;color:var(--accent-deep)}
+.verdict{font-size:22px;font-weight:900;text-align:center;padding:14px;border-radius:12px;margin-top:10px}
+.verdict.def{background:var(--s-soft);color:var(--s-col);border:2px solid var(--s-col)}
+.verdict.abu{background:var(--j-soft);color:var(--j-col);border:2px solid var(--j-col)}
+.verdict.per{background:var(--gold-soft);color:#8a6d00;border:2px solid var(--gold)}
+
+/* 특수수 그리드 */
+.numgrid{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;margin:14px 0}
+@media(max-width:680px){.numgrid{grid-template-columns:repeat(8,1fr)}}
+.ncell{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;border-radius:7px;background:#F1ECE0;color:#B4A990;border:2px solid transparent;transition:all .12s}
+.ncell.lit{transform:scale(1.04)}
+.ncell.y{background:var(--y-soft);color:var(--y-col);border-color:var(--y-col)}
+.ncell.s{background:var(--s-soft);color:var(--s-col);border-color:var(--s-col)}
+.ncell.j{background:var(--j-soft);color:var(--j-col);border-color:var(--j-col)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin:12px 0;font-size:16px;font-weight:700}
+.legc{display:inline-flex;align-items:center;gap:7px}
+.legc .sw{width:20px;height:20px;border-radius:5px;border:2px solid}
+.tog{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:12px 0}
+.tog .btn{font-size:17px;padding:9px 18px}
+
+/* 암호화 시뮬레이터 */
+.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:12px 0}
+.chip{font-family:'Noto Sans KR',sans-serif;font-size:18px;font-weight:700;background:var(--bg);border:2px solid var(--line);border-radius:999px;padding:8px 18px;cursor:pointer;color:var(--ink);transition:all .15s}
+.chip:hover{border-color:var(--accent);background:var(--accent-soft)}
+.chip.sel{background:var(--accent);border-color:var(--accent);color:#fff}
+.encout{font-family:'JetBrains Mono',monospace;font-size:19px;background:var(--accent-soft);border:2px dashed var(--accent);border-radius:12px;padding:16px 18px;margin-top:12px;min-height:60px;color:var(--accent-deep);white-space:pre-wrap;line-height:1.9}
+.flow{display:flex;flex-direction:column;gap:8px;margin:12px 0}
+.flowrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:18px}
+.flowrow .lb{font-family:'Noto Sans KR',sans-serif;font-weight:700;color:var(--sub);width:130px;text-align:right;font-size:16px}
+.tok{background:var(--card);border:2px solid var(--accent-line);border-radius:8px;padding:5px 11px;font-weight:700;color:var(--accent-deep)}
+.tok.b{background:var(--j-soft);border-color:var(--j-col);color:var(--j-col)}
+
+/* 퀴즈 */
+.qz{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:22px 26px;margin:18px 0}
+.qz .qt{font-size:21px;font-weight:900;margin-bottom:14px}
+.qz .qt .qno{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;background:var(--accent);color:#fff;font-family:'JetBrains Mono',monospace;font-size:18px;margin-right:10px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opt{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:500;text-align:left;background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:12px 16px;cursor:pointer;color:var(--ink);transition:all .15s}
+.opt:hover{border-color:var(--accent);background:var(--accent-soft)}
+.opt.ok{background:#E3F5EA;border-color:var(--ok);color:var(--ok);font-weight:700}
+.opt.no{background:#FBE8E5;border-color:var(--no);color:var(--no);font-weight:700}
+.qz.done .opt{cursor:default}
+.expl{display:none;margin-top:14px;background:var(--accent-soft);border-left:6px solid var(--accent);border-radius:0 12px 12px 0;padding:13px 18px;font-size:18px}
+.expl.show{display:block}
+.scorebox{text-align:center;font-size:24px;font-weight:900;background:var(--accent-soft);border:2.5px solid var(--accent);border-radius:16px;padding:18px;margin:20px 0;color:var(--accent-deep)}
+.scorebox .mono{font-size:30px}
+.pgnav{display:flex;justify-content:space-between;gap:12px;margin-top:44px;border-top:2px dashed var(--line);padding-top:22px}
+
+@media (max-width:860px){
+  h1.title{font-size:30px}
+  .flist{grid-template-columns:1fr}
+  .opts{grid-template-columns:1fr}
+  .annot{grid-template-columns:1fr}
+  .annot .ln{border-bottom:none}
+  body{font-size:18px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <span class="series">2026 KSA 과학축전 · 특수수 암호 코드 해설</span>
+    <h1 class="title">특수수로 만든 나만의 암호<br><span class="hl">파이썬 코드로 하나씩 이해하기</span></h1>
+    <p class="subtitle">완전수·과잉수·부족수라는 정수론 개념으로 직접 정의한 특수수 3종과, 그것을 만들어내는 파이썬 코드를 완전히 분해합니다.</p>
+  </div>
+</header>
+
+<nav class="tabs">
+  <div class="wrap">
+    <button class="tabbtn on" id="tab0" onclick="goPage(0)"><span class="no">0</span>연구 한눈에</button>
+    <button class="tabbtn" id="tab1" onclick="goPage(1)"><span class="no">1</span>수의 종류</button>
+    <button class="tabbtn" id="tab2" onclick="goPage(2)"><span class="no">2</span>3가지 특수수</button>
+    <button class="tabbtn" id="tab3" onclick="goPage(3)"><span class="no">3</span>코드 완전분해</button>
+    <button class="tabbtn" id="tab4" onclick="goPage(4)"><span class="no">4</span>암호화 체험</button>
+    <button class="tabbtn" id="tab5" onclick="goPage(5)"><span class="no">5</span>퀴즈</button>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<!-- ═══════════════ 0. 연구 한눈에 ═══════════════ -->
+<section class="page on" id="pg0">
+  <h2 class="sec">이 연구는 무엇을 만들었나?</h2>
+  <p class="body">은행 OTP(몇 분마다 바뀌는 6자리 비밀번호)에서 출발한 궁금증이, <strong>"나만의 수로 나만의 암호를 만들어 보자"</strong>는 연구가 되었습니다. 핵심 아이디어는 <strong>두 겹의 매핑(이중 매핑)</strong>입니다.</p>
+
+  <div class="card tint">
+    <div class="flow">
+      <div class="flowrow"><span class="lb">① 기초 암호 A</span><span class="tok">한글·영어·기호</span> <span style="color:var(--accent);font-weight:900">→</span> <span class="tok">특수수(숫자)</span><span style="color:var(--sub);font-size:16px">글자를 나만의 특수수로 바꿈</span></div>
+      <div class="flowrow"><span class="lb">② 기초 암호 B</span><span class="tok b">그 숫자</span> <span style="color:var(--j-col);font-weight:900">→</span> <span class="tok b">달 그림으로 다시 변환</span><span style="color:var(--sub);font-size:16px">시기(기간)에 따라 규칙이 자동으로 바뀜</span></div>
+    </div>
+  </div>
+
+  <p class="body">글자를 그냥 숫자로 바꾸는 것을 넘어, <strong>"어떤 특수수인지 그 조건을 모르면 규칙을 못 찾고"</strong>, 게다가 <strong>"달 그림 대응이 기간마다 바뀌어"</strong> 두 겹으로 숨겼습니다. OTP처럼 <strong>시간에 따라 변하는 암호</strong>를 수학으로 흉내 낸 셈입니다.</p>
+
+  <h2 class="sec">이 강의자료의 목표</h2>
+  <p class="body">이 연구의 <strong>수학적 뼈대</strong>와 <strong>파이썬 코드</strong>를 초등학생도 한 줄씩 이해할 수 있도록 풀어냅니다. 특히 특수수를 만드는 코드를 완전히 분해하고, 직접 숫자를 넣어 확인하는 인터랙티브 도구를 담았습니다.</p>
+
+  <table class="tb">
+    <tr><th style="width:130px">탭</th><th>내용</th><th style="width:280px">핵심 도구</th></tr>
+    <tr><td class="rowh">1 수의 종류</td><td class="l">부족수·과잉수·완전수·제곱수의 정의</td><td class="l">수 분해 판별기 (아무 수나 입력)</td></tr>
+    <tr><td class="rowh">2 3가지 특수수</td><td class="l">유준수·수현수·수준수의 조건</td><td class="l">1~200 특수수 지도 (색칠 그리드)</td></tr>
+    <tr><td class="rowh">3 코드 완전분해</td><td class="l">파이썬 코드를 줄 단위로 해설</td><td class="l">줄별 주석 + 실행 결과</td></tr>
+    <tr><td class="rowh">4 암호화 체험</td><td class="l">글자 → 특수수 → 달 그림(B) 변환</td><td class="l">2단계 암호화 시뮬레이터</td></tr>
+  </table>
+
+  <div class="point"><span class="ico">🌟</span><div><strong>이 연구가 훌륭한 점:</strong> 학교에서 배우는 <strong>약수·배수</strong> 개념만으로 세상에 없던 규칙(특수수)을 스스로 정의하고, 그것을 <strong>파이썬으로 검증</strong>했다는 것입니다. AI(ChatGPT)로 놓친 수를 찾아 확인한 과정도 훌륭한 연구 태도입니다. 이 강의에서는 그 코드가 <strong>정말 맞는지</strong>까지 직접 따져 봅니다.</div></div>
+
+  <div class="pgnav">
+    <span></span>
+    <button class="btn" onclick="goPage(1)">다음: 수의 종류 →</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 1. 수의 종류 ═══════════════ -->
+<section class="page" id="pg1">
+  <h2 class="sec">모든 것의 출발점 — 진약수의 합</h2>
+  <p class="body">이 연구의 특수수들은 전부 <strong>"진약수의 합"</strong> 하나에서 갈라집니다. <strong>진약수</strong>란 자기 자신을 뺀 약수입니다.</p>
+
+  <div class="bigformula">진약수의 합 S(n) = (n의 약수 중 자기 자신 n을 뺀 것들의 합)</div>
+
+  <p class="body">예를 들어 12의 약수는 1, 2, 3, 4, 6, 12인데, 12를 뺀 <strong>진약수는 1, 2, 3, 4, 6</strong>이고 그 합은 <strong>16</strong>입니다. 이 S(n)을 n과 비교하면 수의 성격이 정해집니다.</p>
+
+  <div class="flist">
+    <div class="fcard">
+      <div class="fname">부족수 (deficient)</div>
+      <div class="formula">S(n) &lt; n</div>
+      <div class="fex"><span class="lab">예: 8</span>진약수 1+2+4 = 7 &lt; 8 → 부족수</div>
+    </div>
+    <div class="fcard">
+      <div class="fname">과잉수 (abundant)</div>
+      <div class="formula">S(n) &gt; n</div>
+      <div class="fex"><span class="lab">예: 12</span>진약수 1+2+3+4+6 = 16 &gt; 12 → 과잉수</div>
+    </div>
+    <div class="fcard">
+      <div class="fname">완전수 (perfect)</div>
+      <div class="formula">S(n) = n</div>
+      <div class="fex"><span class="lab">예: 6</span>진약수 1+2+3 = 6 = 6 → 완전수 (6, 28, 496 …)</div>
+    </div>
+    <div class="fcard">
+      <div class="fname">제곱수 (square) — 별도 조건</div>
+      <div class="formula">n = k × k</div>
+      <div class="fex"><span class="lab">예: 36</span>= 6×6 → 제곱수 (특수수에서 제외됨)</div>
+    </div>
+  </div>
+
+  <div class="point"><span class="ico">🔑</span><div>연구에서 <strong>유준수·수현수</strong>는 <strong>부족수</strong>를, <strong>수준수</strong>는 <strong>과잉수</strong>를 골랐습니다. 부족수는 개수가 많아 다양한 글자에 대응하기 좋고, 과잉수는 상대적으로 적어 숫자·기호용으로 알맞습니다.</div></div>
+
+  <h2 class="sec">수 분해 판별기 — 아무 수나 넣어 보세요</h2>
+  <p class="body">1부터 200 사이의 수를 넣으면 진약수를 모두 찾아 합을 구하고, 부족수·과잉수·완전수 중 무엇인지 판별합니다. 제곱수인지, 각 자리 숫자의 곱(연구의 핵심 조건!)도 함께 보여줍니다.</p>
+
+  <div class="simbox">
+    <div class="numin">
+      <label for="divIn">수 n =</label>
+      <input type="text" id="divIn" value="12">
+      <button class="btn" id="divBtn">분해하기</button>
+    </div>
+    <div class="divviz">
+      <div style="text-align:center;color:var(--sub);font-size:16px;font-weight:700">진약수 (자기 자신 제외)</div>
+      <div class="divchips" id="divChips"></div>
+      <div style="text-align:center;font-size:19px;margin-top:6px" id="divSum"></div>
+    </div>
+    <div class="verdict" id="divVerdict">수를 입력하고 「분해하기」를 눌러 보세요</div>
+    <div style="text-align:center;margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:17px;color:var(--sub)" id="divExtra"></div>
+    <div class="tog">
+      <button class="btn ghost dq" data-n="6">완전수 6</button>
+      <button class="btn ghost dq" data-n="28">완전수 28</button>
+      <button class="btn ghost dq" data-n="26">유준수 26</button>
+      <button class="btn ghost dq" data-n="90">수준수 90</button>
+      <button class="btn ghost dq" data-n="50">문제의 50</button>
+    </div>
+  </div>
+
+  <div class="disc"><span class="ico">🔎</span><div><strong>"문제의 50"을 꼭 눌러 보세요!</strong> 보고서 표에는 50이 수준수(과잉수)로 적혀 있지만, 실제로 계산하면 진약수 합이 1+2+5+10+25 = 43으로 <strong>50보다 작은 부족수</strong>입니다. 3번 탭에서 이 흥미로운 발견을 파이썬으로 다시 확인합니다.</div></div>
+
+  <div class="pgnav">
+    <button class="btn ghost" onclick="goPage(0)">← 이전: 연구 한눈에</button>
+    <button class="btn" onclick="goPage(2)">다음: 3가지 특수수 →</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 2. 3가지 특수수 ═══════════════ -->
+<section class="page" id="pg2">
+  <h2 class="sec">직접 정의한 3가지 특수수</h2>
+  <p class="body">연구자는 앞서 배운 조건들을 <strong>여러 개 겹쳐서</strong> 세상에 없던 새 규칙 3개를 만들었습니다. 각각 한글·영어·숫자 암호표의 재료가 됩니다.</p>
+
+  <div class="flist">
+    <div class="fcard" style="border-color:var(--y-col)">
+      <div class="fname" style="color:var(--y-col)">유준수 — 한글용 (44개)</div>
+      <div class="formula" style="background:var(--y-soft);color:var(--y-col)">101 미만 · 부족수 · 제곱수 아님 · 자리곱 두 자릿수</div>
+      <div class="fex"><span class="lab">뜻</span>각 자리 숫자를 곱한 값이 10~99 사이</div>
+    </div>
+    <div class="fcard" style="border-color:var(--s-col)">
+      <div class="fname" style="color:var(--s-col)">수현수 — 영어용 (34개)</div>
+      <div class="formula" style="background:var(--s-soft);color:var(--s-col)">101~200 · 부족수 · 합성수 · 자리곱 두 자릿수</div>
+      <div class="fex"><span class="lab">뜻</span>유준수와 겹치지 않게 101~200에서 뽑음</div>
+    </div>
+    <div class="fcard" style="border-color:var(--j-col)">
+      <div class="fname" style="color:var(--j-col)">수준수 — 숫자·기호용 (11개)</div>
+      <div class="formula" style="background:var(--j-soft);color:var(--j-col)">101 미만 · 과잉수 · 제곱수 아님 · 자리곱 한 자릿수</div>
+      <div class="fex"><span class="lab">뜻</span>각 자리 숫자를 곱한 값이 0~9 (자리곱이 작음)</div>
+    </div>
+    <div class="fcard">
+      <div class="fname">"자리곱" 조건이 핵심 열쇠 🔑</div>
+      <div class="formula">26 → 2×6 = 12 · 90 → 9×0 = 0</div>
+      <div class="fex"><span class="lab">왜?</span>부족수/과잉수만으론 수가 너무 많아, 자리곱으로 개수를 조절</div>
+    </div>
+  </div>
+
+  <h2 class="sec">1~200 특수수 지도 — 어디에 흩어져 있을까?</h2>
+  <p class="body">아래 버튼으로 각 특수수를 켜 보세요. <strong>규칙 없이 흩어진 것처럼</strong> 보이는 이 배치가 바로 암호의 힘입니다 — 조건을 모르면 어떤 수가 어떤 글자인지 짐작조차 어렵습니다.</p>
+
+  <div class="simbox">
+    <div class="tog">
+      <button class="btn nq on" data-t="y" style="background:var(--y-col)">유준수 (한글)</button>
+      <button class="btn nq on" data-t="s" style="background:var(--s-col)">수현수 (영어)</button>
+      <button class="btn nq on" data-t="j" style="background:var(--j-col)">수준수 (숫자)</button>
+    </div>
+    <div class="numgrid" id="numGrid"></div>
+    <div class="legend">
+      <span class="legc"><span class="sw" style="background:var(--y-soft);border-color:var(--y-col)"></span>유준수 <span id="cntY" class="mono"></span></span>
+      <span class="legc"><span class="sw" style="background:var(--s-soft);border-color:var(--s-col)"></span>수현수 <span id="cntS" class="mono"></span></span>
+      <span class="legc"><span class="sw" style="background:var(--j-soft);border-color:var(--j-col)"></span>수준수 <span id="cntJ" class="mono"></span></span>
+    </div>
+    <div class="simstatus" id="gridMsg">각 특수수 버튼을 켜고 끄며 분포를 살펴보세요</div>
+  </div>
+
+  <div class="point"><span class="ico">🧩</span><div><strong>겹치지 않게 설계한 지혜:</strong> 유준수(1~100)와 수현수(101~200)는 <strong>범위를 나눠</strong> 서로 겹치지 않습니다. 같은 수가 한글이면서 동시에 영어가 되면 해독할 때 헷갈리기 때문입니다. 이런 세심한 설계가 좋은 암호를 만듭니다.</div></div>
+
+  <div class="pgnav">
+    <button class="btn ghost" onclick="goPage(1)">← 이전: 수의 종류</button>
+    <button class="btn" onclick="goPage(3)">다음: 코드 완전분해 →</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 3. 코드 완전분해 ═══════════════ -->
+<section class="page" id="pg3">
+  <h2 class="sec">파이썬 코드, 한 줄씩 완전분해</h2>
+  <p class="body">이제 연구의 심장인 <strong>유준수 찾기 코드</strong>를 한 줄씩 뜯어봅니다. 겁먹지 마세요 — 앞에서 배운 정의를 그대로 코드로 옮긴 것뿐입니다.</p>
+
+  <div class="annot">
+    <div class="ln"><span class="k">for</span> n <span class="k">in</span> <span class="f">range</span>(<span class="n">1</span>, <span class="n">101</span>):</div>
+    <div class="ds">1부터 100까지 모든 수 n을 하나씩 검사합니다 (101 미만).</div>
+    <div class="ln">    divisors_sum = <span class="n">0</span></div>
+    <div class="ds">n의 진약수를 더할 그릇을 0으로 준비합니다.</div>
+    <div class="ln">    <span class="k">for</span> i <span class="k">in</span> <span class="f">range</span>(<span class="n">1</span>, n):</div>
+    <div class="ds">1부터 n−1까지 (자기 자신 제외!) 약수 후보 i를 살핍니다.</div>
+    <div class="ln">        <span class="k">if</span> n % i == <span class="n">0</span>:</div>
+    <div class="ds">n을 i로 나눈 나머지가 0이면 → i는 약수입니다.</div>
+    <div class="ln">            divisors_sum += i</div>
+    <div class="ds">약수 i를 그릇에 더합니다. 이 반복이 끝나면 진약수의 합 완성.</div>
+    <div class="ln">    <span class="k">if</span> divisors_sum >= n:</div>
+    <div class="ds">진약수 합이 n 이상이면 부족수가 아니므로…</div>
+    <div class="ln">        <span class="k">continue</span>  <span class="c"># 부족수 아니면 탈락</span></div>
+    <div class="ds">continue = "이 수는 통과, 다음 수로!" (탈락시킴)</div>
+    <div class="ln">    <span class="k">if</span> (n**<span class="n">0.5</span>) == <span class="f">int</span>(n**<span class="n">0.5</span>):</div>
+    <div class="ds">√n이 정수와 같으면 제곱수 → 역시 탈락시킵니다.</div>
+    <div class="ln">    s_n = <span class="f">str</span>(n)</div>
+    <div class="ds">숫자 n을 글자로 바꿔 각 자리를 하나씩 볼 준비를 합니다.</div>
+    <div class="ln">    digit_product = <span class="n">1</span></div>
+    <div class="ds">자리 숫자들을 곱할 그릇 (곱셈이므로 1로 시작!).</div>
+    <div class="ln">    <span class="k">for</span> digit <span class="k">in</span> s_n:</div>
+    <div class="ds">각 자리 글자를 하나씩 꺼내서…</div>
+    <div class="ln">        digit_product *= <span class="f">int</span>(digit)</div>
+    <div class="ds">다시 숫자로 바꿔 곱합니다. 26이면 2×6 = 12.</div>
+    <div class="ln">    <span class="k">if</span> <span class="n">10</span> <= digit_product <= <span class="n">99</span>:</div>
+    <div class="ds">자리곱이 두 자릿수(10~99)이면 → 마지막 조건 통과!</div>
+    <div class="ln">        yujun_numbers.append(n)</div>
+    <div class="ds">모든 조건을 통과한 n을 유준수 목록에 추가합니다. 🎉</div>
+  </div>
+
+  <div class="pane">
+    <div class="phead">Python <span class="tag">yujun.py — 유준수(한글용) 찾기</span></div>
+    <pre class="code"><span class="c"># 101 미만 자연수 중 '유준수' 찾기</span>
+yujun_numbers = []
+
+<span class="k">for</span> n <span class="k">in</span> <span class="f">range</span>(<span class="n">1</span>, <span class="n">101</span>):
+    <span class="c"># 1. 부족수인지 확인 (진약수의 합 &lt; 자신)</span>
+    divisors_sum = <span class="n">0</span>
+    <span class="k">for</span> i <span class="k">in</span> <span class="f">range</span>(<span class="n">1</span>, n):
+        <span class="k">if</span> n % i == <span class="n">0</span>:
+            divisors_sum += i
+    <span class="k">if</span> divisors_sum >= n:
+        <span class="k">continue</span>              <span class="c"># 부족수 아니면 탈락</span>
+    <span class="c"># 2. 제곱수가 아니어야 함</span>
+    <span class="k">if</span> (n**<span class="n">0.5</span>) == <span class="f">int</span>(n**<span class="n">0.5</span>):
+        <span class="k">continue</span>              <span class="c"># 제곱수면 탈락</span>
+    <span class="c"># 3. 각 자릿수의 곱이 두 자릿수인가?</span>
+    s_n = <span class="f">str</span>(n)
+    digit_product = <span class="n">1</span>
+    <span class="k">for</span> digit <span class="k">in</span> s_n:
+        digit_product *= <span class="f">int</span>(digit)
+    <span class="k">if</span> <span class="n">10</span> <= digit_product <= <span class="n">99</span>:
+        yujun_numbers.append(n)   <span class="c"># 조건 통과!</span>
+
+<span class="k">print</span>(f<span class="s">"유준수 리스트: {yujun_numbers}"</span>)
+<span class="k">print</span>(f<span class="s">"총 개수: {len(yujun_numbers)}개"</span>)</pre>
+    <div class="out"><span class="lab">실행 결과</span>유준수 리스트: [26, 27, 29, 34, 35, 37, 38, 39, 43, 44, 45, 46, 47, 52, 53, 55, 57, 58, 59, 62, 63, 65, 67, 68, 69, 73, 74, 75, 76, 77, 79, 82, 83, 85, 86, 87, 89, 92, 93, 94, 95, 97, 98, 99]
+총 개수: 44개</div>
+  </div>
+
+  <div class="point"><span class="ico">💡</span><div><strong>수현수·수준수 코드도 구조가 똑같습니다!</strong> 딱 세 군데만 바꾸면 됩니다: ① 범위(<span class="mono">range</span>) ② 부족수/과잉수 부등호 방향(<span class="mono">&gt;=</span> ↔ <span class="mono">&lt;=</span>) ③ 자리곱 조건(두 자릿수 <span class="mono">10~99</span> ↔ 한 자릿수 <span class="mono">&lt;10</span>). 수현수는 여기에 "합성수(소수 아님)" 확인만 추가됩니다.</div></div>
+
+  <h2 class="sec">직접 검증 — 보고서의 "수준수 12개"가 정말 맞을까?</h2>
+  <p class="body">진짜 과학자처럼, 우리도 <strong>코드로 확인</strong>해 봅시다. 보고서는 수준수(과잉수)가 12개라고 했지만, 조건을 바꾼 코드를 돌리면…</p>
+
+  <div class="pane">
+    <div class="phead">Python <span class="tag">sujun.py — 수준수(숫자용) 찾기</span></div>
+    <pre class="code"><span class="c"># 101 미만 자연수 중 '수준수' 찾기 (과잉수 버전)</span>
+sujun_numbers = []
+<span class="k">for</span> n <span class="k">in</span> <span class="f">range</span>(<span class="n">1</span>, <span class="n">101</span>):
+    check_sum = <span class="n">0</span>
+    <span class="k">for</span> i <span class="k">in</span> <span class="f">range</span>(<span class="n">1</span>, n):
+        <span class="k">if</span> n % i == <span class="n">0</span>:
+            check_sum += i
+    <span class="k">if</span> check_sum <= n:
+        <span class="k">continue</span>              <span class="c"># 과잉수 아니면 탈락 (합 &gt; 자신이어야)</span>
+    <span class="k">if</span> (n**<span class="n">0.5</span>) == <span class="f">int</span>(n**<span class="n">0.5</span>):
+        <span class="k">continue</span>
+    prod = <span class="n">1</span>
+    <span class="k">for</span> ch <span class="k">in</span> <span class="f">str</span>(n):
+        prod *= <span class="f">int</span>(ch)
+    <span class="k">if</span> prod < <span class="n">10</span>:            <span class="c"># 자리곱이 한 자릿수</span>
+        sujun_numbers.append(n)
+
+<span class="k">print</span>(f<span class="s">"수준수: {sujun_numbers}"</span>)
+<span class="k">print</span>(f<span class="s">"총 개수: {len(sujun_numbers)}개"</span>)</pre>
+    <div class="out"><span class="lab">실행 결과</span>수준수: [12, 18, 20, 24, 30, 40, 42, 60, 70, 80, 90]
+총 개수: 11개</div>
+  </div>
+
+  <div class="disc"><span class="ico">🕵️</span><div><strong>발견! 코드는 11개를 냅니다 (50이 빠짐).</strong> 보고서 표에 있던 <strong>50</strong>은 진약수 합이 1+2+5+10+25 = <strong>43 &lt; 50 이라 부족수</strong>이므로 과잉수 조건에 맞지 않습니다. 코드가 사람의 손계산 실수를 잡아낸 것! 1번 탭 판별기에서 "문제의 50"으로 직접 확인할 수 있습니다. <strong>이것이 바로 코드로 검증하는 이유</strong>입니다 — 연구자가 AI로 수현수 3개(178·182·187)를 더 찾은 것과 똑같은 정신이죠.</div></div>
+
+  <div class="pgnav">
+    <button class="btn ghost" onclick="goPage(2)">← 이전: 3가지 특수수</button>
+    <button class="btn" onclick="goPage(4)">다음: 암호화 체험 →</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 4. 암호화 체험 ═══════════════ -->
+<section class="page" id="pg4">
+  <h2 class="sec">이중 매핑 암호화 — 글자가 암호가 되기까지</h2>
+  <p class="body">이제 완성된 특수수로 실제 암호화를 해 봅니다. 두 단계입니다: <strong>① 글자 → 특수수(기초 암호 A)</strong>, 그다음 <strong>② 각 숫자 → 달 그림 대응으로 변환(기초 암호 B)</strong>.</p>
+
+  <h3 class="sub">기초 암호 B — 달 그림 이중 대응이란?</h3>
+  <p class="body">연구자는 0~9 숫자를 달의 위상 그림에 <strong>두 번</strong> 대응시켰습니다. 아래 표에서 위쪽 숫자를 아래쪽 숫자로 바꾸는 규칙입니다. (기간이 바뀌면 이 대응도 바뀌어 OTP처럼 작동!)</p>
+
+  <table class="tb">
+    <tr><td class="rowh">A 숫자</td><td class="m">7</td><td class="m">2</td><td class="m">9</td><td class="m">0</td><td class="m">5</td><td class="m">3</td><td class="m">8</td><td class="m">1</td><td class="m">4</td><td class="m">6</td></tr>
+    <tr><td class="rowh">달 그림</td><td>🌑</td><td>🌒</td><td>🌓</td><td>🌔</td><td>🌕</td><td>🌖</td><td>🌗</td><td>🌘</td><td>🔴</td><td>🔵</td></tr>
+    <tr><td class="rowh">B 숫자</td><td class="m">3</td><td class="m">8</td><td class="m">1</td><td class="m">6</td><td class="m">0</td><td class="m">9</td><td class="m">4</td><td class="m">2</td><td class="m">7</td><td class="m">5</td></tr>
+  </table>
+  <p class="body" style="text-align:center;color:var(--sub);font-size:17px">즉 7→3, 2→8, 9→1, 0→6, 5→0, 3→9, 8→4, 1→2, 4→7, 6→5 로 각 자리 숫자를 바꿉니다.</p>
+
+  <div class="card tint">
+    <p class="body" style="font-weight:700;text-align:center;margin:0">보고서의 예시: 기초 암호 A <span class="mono">73 95 43</span> → 각 자리 변환 → 기초 암호 B <span class="mono">39 10 79</span></p>
+    <p class="body" style="text-align:center;color:var(--sub);font-size:16.5px;margin:6px 0 0">7→3, 3→9 / 9→1, 5→0 / 4→7, 3→9</p>
+  </div>
+
+  <h2 class="sec">암호화 시뮬레이터 — 자음·모음을 직접 골라 보세요</h2>
+  <p class="body">한글 자모나 숫자를 클릭하면 <strong>유준수/수준수(A) → 달 그림 변환(B)</strong> 두 단계가 눈앞에서 진행됩니다.</p>
+
+  <div class="simbox">
+    <p class="body" style="margin-top:0;font-weight:700;text-align:center">글자/숫자를 클릭 (여러 개 순서대로):</p>
+    <div class="chips" id="charRow"></div>
+    <div class="simctrl" style="margin-top:6px">
+      <button class="btn ghost" id="encClear">⟲ 지우기</button>
+      <button class="btn ghost" id="encBack">← 하나 지우기</button>
+    </div>
+    <div class="flow" style="margin-top:16px">
+      <div class="flowrow"><span class="lb">입력 글자</span><span id="encChars" style="font-family:'Noto Sans KR';font-weight:700;color:var(--accent-deep)">(없음)</span></div>
+      <div class="flowrow"><span class="lb">① 기초 암호 A</span><span id="encA" class="mono" style="color:var(--y-col);font-weight:700">—</span></div>
+      <div class="flowrow"><span class="lb">② 기초 암호 B</span><span id="encB" class="mono" style="color:var(--j-col);font-weight:700">—</span></div>
+    </div>
+    <div class="encout" id="encOut">글자를 골라 보세요. 두 단계 변환이 표시됩니다.</div>
+  </div>
+
+  <div class="point"><span class="ico">🔐</span><div><strong>왜 이게 안전할까?</strong> 최종 암호 숫자만 봐서는 ① 그게 어떤 특수수인지(조건을 모르면 못 찾음) ② 달 그림 대응이 무엇인지(기간마다 바뀜) 둘 다 알 수 없습니다. <strong>두 겹의 비밀</strong>이 겹쳐 해독을 매우 어렵게 만드는 것이 이 연구의 핵심 아이디어입니다.</div></div>
+
+  <div class="warn"><span class="ico">💭</span><div><strong>더 생각해볼 점 (중·고등학교로 이어지는 질문):</strong> 이 암호는 같은 글자가 항상 같은 숫자가 되는 <strong>단일 치환 방식</strong>이라, 긴 글에서는 자주 나오는 글자의 <strong>빈도</strong>로 추측될 수 있습니다. 그래서 실제 현대 암호(AES, RSA 등)는 이런 빈도 분석까지 막도록 설계됩니다. 이 연구는 그 <strong>첫걸음</strong>으로 아주 훌륭합니다!</div></div>
+
+  <div class="pgnav">
+    <button class="btn ghost" onclick="goPage(3)">← 이전: 코드 완전분해</button>
+    <button class="btn" onclick="goPage(5)">다음: 퀴즈 →</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 5. 퀴즈 ═══════════════ -->
+<section class="page" id="pg5">
+  <h2 class="sec">확인 퀴즈 — 8문제</h2>
+  <p class="body">보기를 클릭하면 바로 채점됩니다. 초록색이 정답, 빨간색이 오답입니다.</p>
+  <div class="scorebox">맞힌 개수: <span class="mono" id="scoreNum">0</span> / <span class="mono">8</span></div>
+
+  <div class="qz">
+    <div class="qt"><span class="qno">1</span>12의 진약수(자기 자신 제외)를 모두 더하면?</div>
+    <div class="opts">
+      <button class="opt">12</button>
+      <button class="opt" data-ok="1">16</button>
+      <button class="opt">28</button>
+      <button class="opt">10</button>
+    </div>
+    <div class="expl">12의 진약수는 1, 2, 3, 4, 6이고 합은 16입니다. 16 &gt; 12 이므로 12는 과잉수입니다.</div>
+  </div>
+
+  <div class="qz">
+    <div class="qt"><span class="qno">2</span>진약수의 합이 자기 자신과 같은 수를 무엇이라 하나?</div>
+    <div class="opts">
+      <button class="opt">부족수</button>
+      <button class="opt">과잉수</button>
+      <button class="opt" data-ok="1">완전수</button>
+      <button class="opt">제곱수</button>
+    </div>
+    <div class="expl">S(n) = n이면 완전수입니다. 6(1+2+3), 28(1+2+4+7+14)이 대표적입니다.</div>
+  </div>
+
+  <div class="qz">
+    <div class="qt"><span class="qno">3</span>유준수의 조건이 아닌 것은?</div>
+    <div class="opts">
+      <button class="opt">101 미만</button>
+      <button class="opt">부족수</button>
+      <button class="opt" data-ok="1">과잉수</button>
+      <button class="opt">제곱수가 아님</button>
+    </div>
+    <div class="expl">유준수는 부족수입니다. 과잉수를 쓰는 것은 수준수(숫자용)입니다.</div>
+  </div>
+
+  <div class="qz">
+    <div class="qt"><span class="qno">4</span>코드에서 <span class="mono">for i in range(1, n):</span> 이 1부터 n−1까지만 도는 이유는?</div>
+    <div class="opts">
+      <button class="opt">n이 너무 커서</button>
+      <button class="opt" data-ok="1">진약수는 자기 자신 n을 빼기 때문</button>
+      <button class="opt">0을 피하려고</button>
+      <button class="opt">속도를 위해</button>
+    </div>
+    <div class="expl">진약수 = 자기 자신을 제외한 약수. 그래서 n은 포함하지 않고 1~(n−1)만 검사합니다.</div>
+  </div>
+
+  <div class="qz">
+    <div class="qt"><span class="qno">5</span>26의 각 자리 숫자의 곱(digit_product)은?</div>
+    <div class="opts">
+      <button class="opt">8</button>
+      <button class="opt" data-ok="1">12</button>
+      <button class="opt">26</button>
+      <button class="opt">62</button>
+    </div>
+    <div class="expl">2 × 6 = 12. 두 자릿수(10~99)이므로 26은 유준수의 자리곱 조건을 만족합니다.</div>
+  </div>
+
+  <div class="qz">
+    <div class="qt"><span class="qno">6</span>보고서의 "수준수 50"을 코드로 확인하면 왜 빠질까?</div>
+    <div class="opts">
+      <button class="opt">제곱수라서</button>
+      <button class="opt" data-ok="1">진약수 합 43 &lt; 50 이라 부족수라서</button>
+      <button class="opt">자리곱이 너무 커서</button>
+      <button class="opt">100을 넘어서</button>
+    </div>
+    <div class="expl">50의 진약수 1+2+5+10+25 = 43 &lt; 50. 부족수이므로 과잉수 조건(수준수)에 맞지 않아 코드가 정확히 제외합니다.</div>
+  </div>
+
+  <div class="qz">
+    <div class="qt"><span class="qno">7</span>이 암호가 "이중 매핑"이라 불리는 이유는?</div>
+    <div class="opts">
+      <button class="opt">숫자를 두 번 쓴다</button>
+      <button class="opt" data-ok="1">글자→특수수(A), 숫자→달그림(B) 두 단계라서</button>
+      <button class="opt">두 사람이 만들어서</button>
+      <button class="opt">암호가 두 개라서</button>
+    </div>
+    <div class="expl">기초 암호 A(글자→특수수)와 기초 암호 B(숫자→달 그림 변환)를 겹쳐 두 겹으로 숨기기 때문입니다.</div>
+  </div>
+
+  <div class="qz">
+    <div class="qt"><span class="qno">8</span>기초 암호 B 규칙(7→3, 5→0)으로 <span class="mono">75</span>를 변환하면?</div>
+    <div class="opts">
+      <button class="opt">57</button>
+      <button class="opt" data-ok="1">30</button>
+      <button class="opt">39</button>
+      <button class="opt">03</button>
+    </div>
+    <div class="expl">각 자리를 따로 변환: 7→3, 5→0 이므로 75 → 30. 보고서의 표 7 대응 규칙 그대로입니다.</div>
+  </div>
+
+  <div class="pgnav">
+    <button class="btn ghost" onclick="goPage(4)">← 이전: 암호화 체험</button>
+    <button class="btn" onclick="goPage(0)">⟲ 처음으로</button>
+  </div>
+</section>
+
+</main>
+
+<script>
+/* ───────── 탭 이동 ───────── */
+function goPage(n){
+  for(var i=0;i<6;i++){
+    document.getElementById('pg'+i).classList.toggle('on', i===n);
+    document.getElementById('tab'+i).classList.toggle('on', i===n);
+  }
+  window.scrollTo(0,0);
+}
+
+/* ───────── 수학 헬퍼 ───────── */
+function properDivisors(n){
+  var arr=[];
+  for(var i=1;i<n;i++){ if(n%i===0) arr.push(i); }
+  return arr;
+}
+function divisorsSum(n){
+  var s=0;
+  for(var i=1;i<n;i++){ if(n%i===0) s+=i; }
+  return s;
+}
+function isSquare(n){ var r=Math.round(Math.sqrt(n)); return r*r===n; }
+function digitProduct(n){
+  var p=1, s=String(n);
+  for(var i=0;i<s.length;i++) p*=parseInt(s[i],10);
+  return p;
+}
+function isPrime(n){
+  if(n<2) return false;
+  for(var i=2;i*i<=n;i++){ if(n%i===0) return false; }
+  return true;
+}
+
+/* ───────── 특수수 집합 (코드와 동일 로직으로 생성) ───────── */
+function buildYujun(){
+  var a=[];
+  for(var n=1;n<101;n++){
+    if(divisorsSum(n)>=n) continue;
+    if(isSquare(n)) continue;
+    var dp=digitProduct(n);
+    if(dp>=10 && dp<=99) a.push(n);
+  }
+  return a;
+}
+function buildSuhyeon(){
+  var a=[];
+  for(var n=101;n<201;n++){
+    if(isPrime(n)) continue;              // 합성수만
+    if(divisorsSum(n)>=n) continue;       // 부족수
+    var dp=digitProduct(n);
+    if(dp>=10 && dp<=99) a.push(n);
+  }
+  return a;
+}
+function buildSujun(){
+  var a=[];
+  for(var n=1;n<101;n++){
+    if(divisorsSum(n)<=n) continue;       // 과잉수
+    if(isSquare(n)) continue;
+    if(digitProduct(n)<10) a.push(n);
+  }
+  return a;
+}
+var YUJUN=buildYujun(), SUHYEON=buildSuhyeon(), SUJUN=buildSujun();
+
+/* ───────── 1탭: 수 분해 판별기 ───────── */
+function divRun(nRaw){
+  var out=document.getElementById('divVerdict');
+  var chips=document.getElementById('divChips');
+  var sumEl=document.getElementById('divSum');
+  var extra=document.getElementById('divExtra');
+  while(chips.firstChild) chips.removeChild(chips.firstChild);
+  var n=parseInt(nRaw,10);
+  if(isNaN(n)||n<1||n>200){
+    out.className='verdict';
+    out.textContent='\u26A0 1부터 200 사이의 수를 입력하세요';
+    sumEl.textContent=''; extra.textContent='';
+    return;
+  }
+  var divs=properDivisors(n);
+  if(divs.length===0){
+    var c=document.createElement('span'); c.className='divchip'; c.textContent='(없음)';
+    chips.appendChild(c);
+  }else{
+    for(var i=0;i<divs.length;i++){
+      var ch=document.createElement('span'); ch.className='divchip'; ch.textContent=String(divs[i]);
+      chips.appendChild(ch);
+    }
+  }
+  var s=divisorsSum(n);
+  sumEl.innerHTML='합 S('+n+') = <strong>'+s+'</strong>';
+  if(s<n){ out.className='verdict def'; out.textContent='S('+n+')='+s+' < '+n+' → 부족수 (deficient)'; }
+  else if(s>n){ out.className='verdict abu'; out.textContent='S('+n+')='+s+' > '+n+' → 과잉수 (abundant)'; }
+  else{ out.className='verdict per'; out.textContent='S('+n+')='+s+' = '+n+' → 완전수 (perfect)! ✨'; }
+  var tags=[];
+  tags.push(isSquare(n)?'제곱수 O':'제곱수 X');
+  tags.push('자리곱 '+digitProduct(n));
+  if(YUJUN.indexOf(n)>=0) tags.push('▶ 유준수!');
+  if(SUHYEON.indexOf(n)>=0) tags.push('▶ 수현수!');
+  if(SUJUN.indexOf(n)>=0) tags.push('▶ 수준수!');
+  extra.textContent=tags.join('  ·  ');
+}
+
+/* ───────── 2탭: 특수수 지도 그리드 ───────── */
+var gridOn={y:true,s:true,j:true};
+function classOf(n){
+  if(YUJUN.indexOf(n)>=0) return 'y';
+  if(SUHYEON.indexOf(n)>=0) return 's';
+  if(SUJUN.indexOf(n)>=0) return 'j';
+  return '';
+}
+function buildGrid(){
+  var g=document.getElementById('numGrid');
+  for(var n=1;n<=200;n++){
+    var cell=document.createElement('div');
+    cell.className='ncell'; cell.id='cell'+n; cell.textContent=String(n);
+    g.appendChild(cell);
+  }
+  document.getElementById('cntY').textContent='('+YUJUN.length+')';
+  document.getElementById('cntS').textContent='('+SUHYEON.length+')';
+  document.getElementById('cntJ').textContent='('+SUJUN.length+')';
+  paintGrid();
+}
+function paintGrid(){
+  for(var n=1;n<=200;n++){
+    var cell=document.getElementById('cell'+n);
+    var cl=classOf(n);
+    cell.className='ncell';
+    if(cl && gridOn[cl]){ cell.classList.add(cl,'lit'); }
+  }
+  var lit=0;
+  if(gridOn.y) lit+=YUJUN.length;
+  if(gridOn.s) lit+=SUHYEON.length;
+  if(gridOn.j) lit+=SUJUN.length;
+  document.getElementById('gridMsg').textContent='현재 켜진 특수수: '+lit+'개 (전체 200칸 중)';
+}
+
+/* ───────── 4탭: 암호화 시뮬레이터 ───────── */
+/* 한글 자모 44개(유준수 순서 대응) */
+var JAMO=['\u3131','\u3134','\u3137','\u3139','\u3141','\u3142','\u3145','\u3147','\u3148','\u314A','\u314B','\u314C','\u314D','\u314E','\u3132','\u3138','\u3143','\u3146','\u3149','\u314F','\u3151','\u3153','\u3155','\u3157','\u315B','\u315C','\u3160','\u3161','\u3163','\u3150','\u3152','\u3154','\u3156','\u3162','\u315A','\u315F','\u3161','\u314F','\uC810','\uAC79','\uB9C8','\uC260'];
+/* 위는 표시용 축약 — 실제 대응은 아래 MAP_A 사용 */
+/* 유준수→글자, 수준수→숫자·기호 대응 (보고서 표6 기준) */
+var HANGUL=['\u3131','\u3134','\u3137','\u3139','\u3141','\u3142','\u3145','\u3147','\u3148','\u314A','\u314B','\u314C','\u314D','\u314E','\u3132','\u3138','\u3143','\u3146','\u3149','\u314F','\u3151','\u3153','\u3155','\u3157','\u315B','\u315C','\u3160','\u3161','\u3163','\u3150','\u3152','\u3154','\u3156','\u315A','\u315D'];
+/* 자음19 + 모음16(표에 나온 순서 일부) — 시뮬레이터는 대표 자모만 노출 */
+var MAP_A={};      /* 글자 -> 유준수 */
+(function(){
+  var jamoFull=['\u3131','\u3134','\u3137','\u3139','\u3141','\u3142','\u3145','\u3147','\u3148','\u314A','\u314B','\u314C','\u314D','\u314E','\u3132','\u3138','\u3143','\u3146','\u3149','\u314F','\u3151','\u3153','\u3155','\u3157','\u315B','\u315C','\u3160','\u3161','\u3163','\u3150','\u3152','\u3154','\u3156','\u3162','\u315A','\u315F','\u315E','\u315D','.','\uACB9','\u2423',','];
+  for(var i=0;i<YUJUN.length;i++) MAP_A[jamoFull[i]]=YUJUN[i];
+})();
+/* 수준수 숫자 대응 (표3): 12->0,18->1,...  글자 '0'~'9','+','-' */
+var DIGIT_LABELS=['0','1','2','3','4','5','6','7','8','9','+'];  /* 11개(50 제외 반영) */
+var MAP_DIGIT={};
+(function(){
+  for(var i=0;i<SUJUN.length && i<DIGIT_LABELS.length;i++) MAP_DIGIT[DIGIT_LABELS[i]]=SUJUN[i];
+})();
+/* 기초 암호 B: 자리 숫자 변환 규칙 (표7) */
+var MAP_B={'7':'3','2':'8','9':'1','0':'6','5':'0','3':'9','8':'4','1':'2','4':'7','6':'5'};
+
+var encSeq=[];   /* [{label, a}] */
+
+function transformB(numStr){
+  var out='';
+  for(var i=0;i<numStr.length;i++){
+    var d=numStr[i];
+    out += (d in MAP_B) ? MAP_B[d] : d;
+  }
+  return out;
+}
+
+function encRender(){
+  var charsEl=document.getElementById('encChars');
+  var aEl=document.getElementById('encA');
+  var bEl=document.getElementById('encB');
+  var out=document.getElementById('encOut');
+  if(encSeq.length===0){
+    charsEl.textContent='(없음)'; aEl.textContent='\u2014'; bEl.textContent='\u2014';
+    out.textContent='글자를 골라 보세요. 두 단계 변환이 표시됩니다.';
+    return;
+  }
+  var labels=[], aList=[], bList=[], lines=[];
+  for(var i=0;i<encSeq.length;i++){
+    var lab=encSeq[i].label, a=String(encSeq[i].a), b=transformB(a);
+    labels.push(lab); aList.push(a); bList.push(b);
+    lines.push('  '+lab+'  →  A:'+a+'  →  B:'+b);
+  }
+  charsEl.textContent=labels.join(' ');
+  aEl.textContent=aList.join(' ');
+  bEl.textContent=bList.join(' ');
+  out.textContent='단계별 변환\n'+lines.join('\n')+'\n\n최종 암호(B): '+bList.join(' ');
+}
+
+function encAdd(label, aval){
+  encSeq.push({label:label, a:aval});
+  encRender();
+}
+
+function buildCharChips(){
+  var row=document.getElementById('charRow');
+  /* 대표 자음/모음 몇 개 + 숫자 */
+  var picks=['\u3131','\u3134','\u3137','\u3145','\u3147','\u314F','\u3157','\u3163'];  /* ㄱㄴㄷㅅㅇㅏㅗㅣ */
+  for(var i=0;i<picks.length;i++){
+    (function(ch){
+      if(!(ch in MAP_A)) return;
+      var b=document.createElement('button');
+      b.className='chip'; b.textContent=ch;
+      b.addEventListener('click', function(){ encAdd(ch, MAP_A[ch]); });
+      row.appendChild(b);
+    })(picks[i]);
+  }
+  /* 숫자 0~5 */
+  for(var d=0;d<=5;d++){
+    (function(dl){
+      if(!(dl in MAP_DIGIT)) return;
+      var b=document.createElement('button');
+      b.className='chip'; b.textContent=dl;
+      b.style.borderColor='var(--j-col)';
+      b.addEventListener('click', function(){ encAdd(dl, MAP_DIGIT[dl]); });
+      row.appendChild(b);
+    })(String(d));
+  }
+}
+
+/* ───────── 퀴즈 ───────── */
+var quizScore=0;
+function initQuiz(){
+  var qzs=document.querySelectorAll('.qz');
+  for(var i=0;i<qzs.length;i++){
+    (function(qz){
+      var opts=qz.querySelectorAll('.opt');
+      for(var j=0;j<opts.length;j++){
+        opts[j].addEventListener('click', function(){
+          if(qz.classList.contains('done')) return;
+          qz.classList.add('done');
+          var isOk=this.getAttribute('data-ok')==='1';
+          if(isOk){ this.classList.add('ok'); quizScore++; document.getElementById('scoreNum').textContent=String(quizScore); }
+          else{ this.classList.add('no'); var r=qz.querySelector('.opt[data-ok="1"]'); if(r) r.classList.add('ok'); }
+          var ex=qz.querySelector('.expl'); if(ex) ex.classList.add('show');
+        });
+      }
+    })(qzs[i]);
+  }
+}
+
+/* ───────── 초기화 ───────── */
+document.addEventListener('DOMContentLoaded', function(){
+  /* 1탭 */
+  divRun('12');
+  document.getElementById('divBtn').addEventListener('click', function(){ divRun(document.getElementById('divIn').value); });
+  document.getElementById('divIn').addEventListener('keydown', function(e){ if(e.key==='Enter') divRun(this.value); });
+  var dqs=document.querySelectorAll('.dq');
+  for(var i=0;i<dqs.length;i++){
+    (function(btn){ btn.addEventListener('click', function(){
+      document.getElementById('divIn').value=btn.getAttribute('data-n');
+      divRun(btn.getAttribute('data-n'));
+    }); })(dqs[i]);
+  }
+  /* 2탭 */
+  buildGrid();
+  var nqs=document.querySelectorAll('.nq');
+  for(var k=0;k<nqs.length;k++){
+    (function(btn){ btn.addEventListener('click', function(){
+      var t=btn.getAttribute('data-t');
+      gridOn[t]=!gridOn[t];
+      btn.style.opacity=gridOn[t]?'1':'0.4';
+      paintGrid();
+    }); })(nqs[k]);
+  }
+  /* 4탭 */
+  buildCharChips();
+  document.getElementById('encClear').addEventListener('click', function(){ encSeq=[]; encRender(); });
+  document.getElementById('encBack').addEventListener('click', function(){ encSeq.pop(); encRender(); });
+  encRender();
+  /* 5탭 */
+  initQuiz();
+});
+</script>
+</body>
+</html>
