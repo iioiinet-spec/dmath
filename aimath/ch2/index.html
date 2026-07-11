@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>인공지능수학 1장 — 강화학습과 자기지도학습의 수학</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FAF6EF;
+  --ink:#2A2320;
+  --sub:#6B6157;
+  --accent:#A02C52;
+  --accent-deep:#7C1F3E;
+  --accent-soft:#F7E7EE;
+  --accent-line:#EBC7D6;
+  --blue:#2456A6;
+  --card:#FFFFFF;
+  --line:#E6DECD;
+  --gold:#C89B12;
+  --gold-soft:#FFF3C8;
+  --code-bg:#2E1B26;
+  --code-ink:#F5EAEF;
+  --code-kw:#F2A9C4;
+  --code-com:#A88B99;
+  --code-num:#FFD08A;
+  --code-str:#A8E6B0;
+  --warn-bg:#FBEFE7;
+  --ok:#1F7A4D;
+  --no:#C0392B;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--ink);
+  font-family:'Noto Sans KR',sans-serif;
+  font-size:19px;line-height:1.75;padding-bottom:80px;
+}
+.wrap{max-width:1060px;margin:0 auto;padding:0 20px}
+
+/* ───── 헤더 ───── */
+header{
+  border-bottom:3px solid var(--accent);
+  background:linear-gradient(180deg,#F6E9EF 0%,var(--bg) 100%);
+  padding:38px 0 26px;
+}
+.series{
+  display:inline-block;font-family:'JetBrains Mono',monospace;
+  font-size:15px;font-weight:700;color:var(--accent-deep);
+  background:var(--accent-soft);border:1.5px solid var(--accent-line);
+  border-radius:999px;padding:4px 16px;letter-spacing:.5px;
+}
+h1.title{font-size:44px;font-weight:900;line-height:1.25;margin-top:14px;letter-spacing:-1px}
+h1.title .hl{color:var(--accent)}
+.subtitle{font-size:20px;color:var(--sub);margin-top:8px;font-weight:500}
+
+/* ───── 탭 ───── */
+nav.tabs{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:2px solid var(--line);padding:12px 0}
+nav.tabs .wrap{display:flex;flex-wrap:wrap;gap:8px}
+.tabbtn{
+  font-family:'Noto Sans KR',sans-serif;font-size:17px;font-weight:700;
+  color:var(--ink);background:var(--card);border:2px solid var(--line);
+  border-radius:12px;padding:9px 16px;cursor:pointer;transition:all .15s;
+}
+.tabbtn .no{font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--accent);margin-right:6px;font-weight:700}
+.tabbtn:hover{border-color:var(--accent);transform:translateY(-1px)}
+.tabbtn.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.tabbtn.on .no{color:#F2C7D8}
+
+/* ───── 페이지 공통 ───── */
+.page{display:none;padding-top:34px}
+.page.on{display:block;animation:fadein .3s}
+@keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+h2.sec{font-size:33px;font-weight:900;letter-spacing:-.5px;padding-left:16px;border-left:8px solid var(--accent);margin:38px 0 16px}
+h2.sec:first-child{margin-top:0}
+h3.sub{font-size:24px;font-weight:700;color:var(--accent-deep);margin:28px 0 10px}
+p.body{margin:10px 0;font-size:19.5px}
+strong{font-weight:700;color:var(--accent-deep)}
+.mono{font-family:'JetBrains Mono',monospace}
+.card{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:22px 26px;margin:16px 0}
+.card.tint{background:var(--accent-soft);border-color:var(--accent-line)}
+.point{
+  display:flex;gap:12px;align-items:flex-start;
+  background:var(--accent-soft);border-left:8px solid var(--accent);
+  border-radius:0 14px 14px 0;padding:16px 20px;margin:18px 0;font-size:19.5px;
+}
+.point .ico{font-size:26px;line-height:1.4}
+.warn{
+  display:flex;gap:12px;align-items:flex-start;
+  background:var(--warn-bg);border-left:8px solid #D07030;
+  border-radius:0 14px 14px 0;padding:16px 20px;margin:18px 0;font-size:19.5px;
+}
+.warn .ico{font-size:26px;line-height:1.4}
+
+/* ───── 공식 카드 ───── */
+.flist{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
+.fcard{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:18px 20px}
+.fcard .fname{font-weight:900;font-size:19px;color:var(--accent-deep);margin-bottom:8px}
+.fcard .formula{
+  font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;
+  text-align:center;color:var(--accent-deep);
+  background:var(--accent-soft);border-radius:10px;padding:12px 10px;
+}
+.fcard .fex{
+  margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:18px;
+  background:var(--gold-soft);border-left:5px solid var(--gold);
+  border-radius:0 10px 10px 0;padding:9px 14px;
+}
+.fcard .fex .lab{font-family:'Noto Sans KR',sans-serif;font-size:14px;color:#8a6d00;display:block;font-weight:700}
+.bigformula{
+  font-family:'JetBrains Mono',monospace;font-size:23px;font-weight:700;text-align:center;
+  color:var(--accent-deep);background:var(--accent-soft);
+  border:2px dashed var(--accent);border-radius:14px;
+  padding:18px 12px;margin:18px 0;letter-spacing:.3px;
+}
+
+/* ───── 표 ───── */
+table.tb{width:100%;border-collapse:collapse;margin:16px 0;background:var(--card);font-size:19px}
+table.tb th{background:var(--accent);color:#fff;font-weight:700;padding:10px 14px;border:2px solid var(--accent-deep)}
+table.tb td{padding:10px 14px;border:2px solid var(--line);text-align:center}
+table.tb td.l{text-align:left}
+table.tb td.rowh{background:var(--accent-soft);font-weight:700;color:var(--accent-deep)}
+table.tb td.m{font-family:'JetBrains Mono',monospace}
+.newbadge{
+  display:inline-block;font-size:14px;font-weight:900;color:#fff;
+  background:var(--accent);border-radius:999px;padding:2px 12px;margin-left:8px;vertical-align:2px;
+}
+
+/* ───── 다이어그램 ───── */
+.nsdiag{background:var(--card);border:2.5px solid var(--accent);border-radius:18px;padding:18px;margin:18px 0}
+.nsdiag svg{width:100%;height:auto;display:block}
+.nsdiag text{font-family:'Noto Sans KR',sans-serif}
+
+/* ───── 코드 패널 ───── */
+.pane{border-radius:16px;overflow:hidden;border:2px solid var(--line);background:var(--card);margin:18px 0}
+.pane .phead{
+  display:flex;align-items:center;gap:10px;font-weight:900;font-size:19px;color:#fff;
+  padding:10px 18px;background:#1F7A4D;
+}
+.pane .phead .tag{
+  font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;
+  background:rgba(255,255,255,.22);border-radius:6px;padding:2px 8px;
+}
+pre.code{
+  background:var(--code-bg);color:var(--code-ink);
+  font-family:'JetBrains Mono',monospace;font-size:15.5px;line-height:1.7;
+  padding:18px 20px;overflow-x:auto;tab-size:4;
+}
+pre.code .k{color:var(--code-kw);font-weight:700}
+pre.code .c{color:var(--code-com);font-style:italic}
+pre.code .n{color:var(--code-num)}
+pre.code .s{color:var(--code-str)}
+.out{
+  font-family:'JetBrains Mono',monospace;font-size:15.5px;
+  background:#1F1219;color:#9BE8AE;padding:12px 20px;border-top:1.5px solid #4A2E3C;
+  white-space:pre-wrap;
+}
+.out .lab{color:#A88B99;font-size:13px;display:block;margin-bottom:2px}
+
+/* ───── 시뮬레이터 공통 ───── */
+.simbox{background:var(--card);border:2.5px solid var(--accent);border-radius:18px;padding:24px;margin:18px 0}
+.simstatus{
+  font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;text-align:center;
+  color:var(--accent-deep);background:var(--accent-soft);border-radius:12px;
+  padding:13px;margin:14px 0 4px;min-height:52px;
+}
+.simctrl{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+button.btn{
+  font-family:'Noto Sans KR',sans-serif;font-size:18px;font-weight:700;
+  border:none;border-radius:12px;padding:11px 24px;cursor:pointer;
+  background:var(--accent);color:#fff;transition:all .15s;
+}
+button.btn:hover{background:var(--accent-deep);transform:translateY(-1px)}
+button.btn.ghost{background:var(--card);color:var(--accent);border:2px solid var(--accent)}
+button.btn.ghost:hover{background:var(--accent-soft)}
+
+/* γ 위젯 */
+.sld{background:var(--accent-soft);border-radius:12px;padding:14px 18px;margin:12px 0}
+.sld label{font-weight:900;font-size:19px;color:var(--accent-deep);display:flex;justify-content:space-between}
+.sld label .val{font-family:'JetBrains Mono',monospace}
+.sld input[type=range]{width:100%;accent-color:var(--accent);height:34px;cursor:pointer}
+.gbars{display:flex;align-items:flex-end;gap:6px;height:130px;margin:10px 4px 4px}
+.gbar{flex:1;background:var(--accent);border-radius:6px 6px 0 0;min-height:2px;position:relative}
+.gbar .gl{position:absolute;bottom:-24px;left:0;right:0;text-align:center;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--sub)}
+.gout{
+  display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:34px;
+  font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:var(--accent-deep);
+}
+.gout span{background:var(--gold-soft);border:2px solid var(--gold);border-radius:10px;padding:8px 16px}
+
+/* 밴딧 */
+.machs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:12px 0}
+.mach{background:var(--accent-soft);border:2px solid var(--accent-line);border-radius:16px;padding:16px;text-align:center}
+.mach .mname{font-weight:900;font-size:21px;color:var(--accent-deep)}
+.mach .btn{width:100%;margin:10px 0;font-size:17px;padding:10px 8px}
+.mach .mstat{font-family:'JetBrains Mono',monospace;font-size:16.5px;line-height:1.9}
+.qbarwrap{background:#fff;border:1.5px solid var(--accent-line);border-radius:8px;height:20px;overflow:hidden;margin:8px 0}
+.qbar{height:100%;width:0%;background:var(--accent);transition:width .2s}
+.truep{
+  font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;
+  color:#8a6d00;background:var(--gold-soft);border-radius:8px;padding:4px;
+}
+
+/* 다음 단어 시뮬레이터 */
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
+.chip{
+  font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:700;
+  background:var(--bg);border:2px solid var(--line);border-radius:999px;
+  padding:8px 18px;cursor:pointer;color:var(--ink);transition:all .15s;
+}
+.chip:hover{border-color:var(--accent);background:var(--accent-soft)}
+.chip.sel{background:var(--accent);border-color:var(--accent);color:#fff}
+.probrow{display:flex;align-items:center;gap:12px;margin:8px 0}
+.probrow .pw{font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:700;width:110px;text-align:right}
+.probrow .pbarwrap{flex:1;background:#fff;border:1.5px solid var(--accent-line);border-radius:8px;height:26px;overflow:hidden}
+.probrow .pbar{height:100%;background:var(--accent)}
+.probrow .pv{font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:700;width:150px;color:var(--accent-deep)}
+.genout{
+  font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;
+  background:var(--accent-soft);border:2px dashed var(--accent);border-radius:12px;
+  padding:14px 18px;margin-top:12px;min-height:56px;color:var(--accent-deep);white-space:pre-wrap;
+}
+
+/* ───── 퀴즈 ───── */
+.qz{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:22px 26px;margin:18px 0}
+.qz .qt{font-size:21px;font-weight:900;margin-bottom:14px}
+.qz .qt .qno{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:36px;height:36px;border-radius:50%;background:var(--accent);color:#fff;
+  font-family:'JetBrains Mono',monospace;font-size:18px;margin-right:10px;
+}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opt{
+  font-family:'JetBrains Mono',monospace;font-size:18.5px;font-weight:500;text-align:left;
+  background:var(--bg);border:2px solid var(--line);border-radius:12px;
+  padding:12px 16px;cursor:pointer;color:var(--ink);transition:all .15s;
+}
+.opt:hover{border-color:var(--accent);background:var(--accent-soft)}
+.opt.ok{background:#E3F5EA;border-color:var(--ok);color:var(--ok);font-weight:700}
+.opt.no{background:#FBE8E5;border-color:var(--no);color:var(--no);font-weight:700}
+.qz.done .opt{cursor:default}
+.expl{
+  display:none;margin-top:14px;background:var(--accent-soft);
+  border-left:6px solid var(--accent);border-radius:0 12px 12px 0;
+  padding:13px 18px;font-size:18.5px;
+}
+.expl.show{display:block}
+.scorebox{
+  text-align:center;font-size:24px;font-weight:900;
+  background:var(--accent-soft);border:2.5px solid var(--accent);
+  border-radius:16px;padding:18px;margin:20px 0;color:var(--accent-deep);
+}
+.scorebox .mono{font-size:30px}
+.pgnav{display:flex;justify-content:space-between;gap:12px;margin-top:44px;border-top:2px dashed var(--line);padding-top:22px}
+
+@media (max-width:860px){
+  h1.title{font-size:32px}
+  .flist{grid-template-columns:1fr}
+  .opts{grid-template-columns:1fr}
+  .machs{grid-template-columns:1fr}
+  body{font-size:18px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <span class="series">고교학점제 인공지능수학 · 1장 인공지능과 빅데이터</span>
+    <h1 class="title">강화학습 vs 자기지도학습<br><span class="hl">보상의 수학, 그리고 스스로 만드는 문제집</span></h1>
+    <p class="subtitle">등비급수 · 기대값 · 조건부확률이라는 익숙한 수학으로 알파고와 GPT의 학습 원리를 파헤치고, 파이썬으로 직접 구현합니다.</p>
+  </div>
+</header>
+
+<nav class="tabs">
+  <div class="wrap">
+    <button class="tabbtn on" id="tab0" onclick="goPage(0)"><span class="no">0</span>학습의 지도</button>
+    <button class="tabbtn" id="tab1" onclick="goPage(1)"><span class="no">1</span>강화학습의 수학</button>
+    <button class="tabbtn" id="tab2" onclick="goPage(2)"><span class="no">2</span>자기지도학습의 수학</button>
+    <button class="tabbtn" id="tab3" onclick="goPage(3)"><span class="no">3</span>실습: 강화학습</button>
+    <button class="tabbtn" id="tab4" onclick="goPage(4)"><span class="no">4</span>실습: 자기지도</button>
+    <button class="tabbtn" id="tab5" onclick="goPage(5)"><span class="no">5</span>퀴즈</button>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<!-- ═══════════════ 0. 학습의 지도 ═══════════════ -->
+<section class="page on" id="pg0">
+  <h2 class="sec">기계 학습의 전체 지도 — 4가지 방식 완성하기</h2>
+  <p class="body">지난 편에서 <strong>지도학습</strong>(정답으로 배움)과 <strong>비지도학습</strong>(구조를 발견)을 배웠습니다. 이번 편에서는 나머지 두 조각 — <strong>보상으로 배우는 강화학습</strong>과 <strong>데이터가 스스로 문제를 만드는 자기지도학습</strong> — 을 채워 지도를 완성합니다.</p>
+
+  <table class="tb">
+    <tr><th style="width:190px">방식</th><th>학습 신호</th><th>핵심 수학</th><th style="width:230px">대표 사례</th></tr>
+    <tr><td class="rowh">지도학습</td><td class="l">정답(레이블)</td><td class="l">오차 제곱합(MSE), 최소제곱법</td><td class="l">성적 예측, 스팸 분류</td></tr>
+    <tr><td class="rowh">비지도학습</td><td class="l">없음 (구조 발견)</td><td class="l">거리, 평균 (k-평균)</td><td class="l">고객 군집화</td></tr>
+    <tr><td class="rowh">강화학습<span class="newbadge">이번 편</span></td><td class="l"><strong>보상</strong> (시행착오)</td><td class="l">등비급수, 기대값, 평균 갱신</td><td class="l">알파고, 게임 AI, 로봇</td></tr>
+    <tr><td class="rowh">자기지도학습<span class="newbadge">이번 편</span></td><td class="l"><strong>스스로 만든 정답</strong></td><td class="l">조건부확률, 빈도 추정</td><td class="l">GPT(다음 단어), BERT(빈칸)</td></tr>
+  </table>
+
+  <h2 class="sec">강화학습 미리보기 — 에이전트와 환경의 핑퐁</h2>
+  <p class="body">강화학습에는 문제집도 답지도 없습니다. <strong>에이전트</strong>(학습 주체)가 <strong>환경</strong>에 행동을 던지면, 환경은 <strong>보상과 새로운 상태</strong>를 돌려줍니다. 이 핑퐁의 반복 속에서 "보상을 많이 받는 행동 요령(정책)"이 스스로 자라납니다.</p>
+
+  <div class="nsdiag">
+    <svg viewBox="0 0 940 320" xmlns="http://www.w3.org/2000/svg">
+      <rect x="60" y="90" width="300" height="140" rx="18" fill="#F7E7EE" stroke="#A02C52" stroke-width="3"/>
+      <text x="210" y="150" text-anchor="middle" font-size="27" font-weight="900" fill="#7C1F3E">에이전트</text>
+      <text x="210" y="185" text-anchor="middle" font-size="17" fill="#6B6157">행동을 고르는 학습 주체</text>
+      <rect x="580" y="90" width="300" height="140" rx="18" fill="#FDFBF6" stroke="#8d8270" stroke-width="3"/>
+      <text x="730" y="150" text-anchor="middle" font-size="27" font-weight="900" fill="#4d4438">환경</text>
+      <text x="730" y="185" text-anchor="middle" font-size="17" fill="#6B6157">게임판, 미로, 슬롯머신 …</text>
+      <path d="M 370 120 L 570 120" stroke="#A02C52" stroke-width="4" fill="none" marker-end="url(#arrR)"/>
+      <text x="470" y="106" text-anchor="middle" font-size="19" font-weight="700" fill="#A02C52">행동 aₜ</text>
+      <path d="M 570 205 L 370 205" stroke="#4d4438" stroke-width="4" fill="none" marker-end="url(#arrL)"/>
+      <text x="470" y="245" text-anchor="middle" font-size="19" font-weight="700" fill="#4d4438">보상 rₜ , 다음 상태 sₜ₊₁</text>
+      <defs>
+        <marker id="arrR" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#A02C52"/></marker>
+        <marker id="arrL" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#4d4438"/></marker>
+      </defs>
+    </svg>
+  </div>
+
+  <h2 class="sec">자기지도학습 미리보기 — 데이터가 스스로 문제집을 만든다</h2>
+  <div class="flist">
+    <div class="fcard">
+      <div class="fname">사람의 레이블은 비싸다</div>
+      <div class="formula">사진 100만 장 × 사람 분류 = 💸</div>
+      <div class="fex"><span class="lab">해결책</span>데이터 일부를 가리고 "가린 부분 맞히기"를 정답으로 쓰자!</div>
+    </div>
+    <div class="fcard">
+      <div class="fname">대표적인 "스스로 만든 문제" (pretext task)</div>
+      <div class="formula">다음 단어 맞히기 · 빈칸 채우기 · 회전 각도 맞히기</div>
+      <div class="fex"><span class="lab">놀라운 사실</span>GPT의 사전학습은 "다음 단어 맞히기" 단 하나입니다</div>
+    </div>
+  </div>
+
+  <div class="point"><span class="ico">🗺️</span><div><strong>현대 AI 양대 산맥의 정체:</strong> 알파고 = <strong>강화학습</strong>(스스로 두어 보며 승리 보상 최대화), GPT = <strong>자기지도학습</strong>(웹 텍스트로 다음 단어 맞히기) + 강화학습(사람 피드백, RLHF)으로 다듬기. 이번 편의 두 주인공이 곧 현대 AI의 두 기둥입니다.</div></div>
+
+  <div class="pgnav">
+    <span></span>
+    <button class="btn" onclick="goPage(1)">다음: 강화학습의 수학 →</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 1. 강화학습의 수학 ═══════════════ -->
+<section class="page" id="pg1">
+  <h2 class="sec">강화학습의 재료 — 상태, 행동, 보상, 정책</h2>
+  <table class="tb">
+    <tr><th style="width:170px">기호</th><th>이름</th><th>뜻</th><th style="width:250px">슬롯머신 예</th></tr>
+    <tr><td class="m rowh">s (상태)</td><td>state</td><td class="l">에이전트가 처한 상황</td><td class="l">기계 3대 앞에 서 있음</td></tr>
+    <tr><td class="m rowh">a (행동)</td><td>action</td><td class="l">고를 수 있는 선택지</td><td class="l">기계 A/B/C 중 하나 당기기</td></tr>
+    <tr><td class="m rowh">r (보상)</td><td>reward</td><td class="l">행동 직후 환경이 주는 점수</td><td class="l">당첨 1, 꽝 0</td></tr>
+    <tr><td class="m rowh">π (정책)</td><td>policy</td><td class="l">상태를 보고 행동을 고르는 규칙</td><td class="l">"Q가 가장 큰 기계를 당긴다"</td></tr>
+  </table>
+
+  <h3 class="sub">① 미래 보상의 가치 — 할인율과 등비급수</h3>
+  <p class="body">지금의 보상 1과 10턴 뒤의 보상 1은 같은 가치가 아닙니다. 미래 보상에 <strong>할인율 γ (0 ≤ γ &lt; 1)</strong>를 거듭 곱해 현재 가치로 환산한 것이 <strong>누적 보상(return)</strong>입니다.</p>
+
+  <div class="bigformula">G = r&#8321; + &gamma;r&#8322; + &gamma;&sup2;r&#8323; + &gamma;&sup3;r&#8324; + &hellip;</div>
+
+  <p class="body">보상이 매 턴 1로 일정하면 G는 <strong>첫째항 1, 공비 γ인 등비급수</strong>가 됩니다. 수학 시간에 배운 공식이 그대로 등장합니다!</p>
+
+  <div class="flist">
+    <div class="fcard">
+      <div class="fname">등비급수의 합 (|γ| &lt; 1)</div>
+      <div class="formula">1 + &gamma; + &gamma;&sup2; + &hellip; = 1/(1&minus;&gamma;)</div>
+      <div class="fex"><span class="lab">예제</span>&gamma; = 0.5 → G = 1/(1&minus;0.5) = 2</div>
+    </div>
+    <div class="fcard">
+      <div class="fname">γ의 의미 — 근시안 vs 원시안</div>
+      <div class="formula">&gamma; &asymp; 0: 눈앞만 &nbsp;·&nbsp; &gamma; &asymp; 1: 먼 미래까지</div>
+      <div class="fex"><span class="lab">직관</span>γ가 클수록 "당장 손해라도 나중에 크게"를 선호</div>
+    </div>
+  </div>
+
+  <div class="simbox">
+    <h3 class="sub" style="margin-top:0">γ 슬라이더 — 미래 보상의 무게를 눈으로</h3>
+    <p class="body" style="margin-top:0">매 턴 보상 1을 받을 때, 막대는 t번째 턴 보상의 현재 가치 γ<sup>t</sup>입니다. γ를 움직이며 10턴 합과 무한합(등비급수)을 비교해 보세요.</p>
+    <div class="sld">
+      <label>할인율 γ <span class="val" id="gVal">0.50</span></label>
+      <input type="range" id="gSlide" min="0" max="0.95" step="0.05" value="0.5">
+    </div>
+    <div class="gbars" id="gBars"></div>
+    <div class="gout">
+      <span>10턴 합 G₁₀ = <span id="g10Val">?</span></span>
+      <span>무한합 1/(1−γ) = <span id="gInfVal">?</span></span>
+    </div>
+  </div>
+
+  <h3 class="sub">② 행동의 가치 — 기대값 Q</h3>
+  <p class="body">보상이 확률적으로 나올 때 행동의 가치는 <strong>기대값</strong>으로 정의합니다. 당첨 확률 p인 기계(보상 1 또는 0)의 가치는 Q = p × 1 + (1−p) × 0 = <strong>p</strong>. 문제는 <strong>에이전트가 p를 모른다</strong>는 것 — 그래서 직접 당겨 보며 <strong>평균으로 추정</strong>합니다.</p>
+
+  <h3 class="sub">③ 핵심 무기 — 평균의 점진적 갱신</h3>
+  <p class="body">n번째 보상 rₙ을 받을 때마다 평균을 처음부터 다시 계산할 필요가 없습니다. 식을 변형하면:</p>
+  <div class="bigformula">Q&#8345; = Q&#8345;&#8331;&#8321; + (1/n)(r&#8345; &minus; Q&#8345;&#8331;&#8321;) &nbsp;&nbsp;즉&nbsp;&nbsp; 새 추정 = 옛 추정 + 학습률 × (오차)</div>
+
+  <div class="card">
+    <p class="body" style="font-weight:700">손계산: 보상이 1, 0, 1 순서로 나왔다면?</p>
+    <table class="tb">
+      <tr><th>n</th><th>보상 rₙ</th><th>계산</th><th>추정 Qₙ</th></tr>
+      <tr><td class="m">1</td><td class="m">1</td><td class="m l">0 + (1/1)(1−0)</td><td class="m"><strong>1</strong></td></tr>
+      <tr><td class="m">2</td><td class="m">0</td><td class="m l">1 + (1/2)(0−1)</td><td class="m"><strong>0.5</strong></td></tr>
+      <tr><td class="m">3</td><td class="m">1</td><td class="m l">0.5 + (1/3)(1−0.5)</td><td class="m"><strong>2/3 ≈ 0.667</strong></td></tr>
+    </table>
+    <p class="body" style="color:var(--sub);text-align:center">직접 평균 (1+0+1)/3 = 2/3과 정확히 일치 — 하지만 저장하는 것은 Q와 n 딱 두 개!</p>
+  </div>
+
+  <div class="point"><span class="ico">🧠</span><div><strong>이 한 줄이 강화학습의 심장입니다.</strong> 유명한 Q-러닝의 갱신식 <span class="mono">Q(s,a) ← Q(s,a) + α( r + γ·maxQ(s&#8242;) − Q(s,a) )</span>도 구조가 완전히 같습니다: <strong>새 추정 = 옛 추정 + 학습률 × (목표와의 오차)</strong>. 오차를 조금씩 줄여 간다는 점에서 지도학습의 MSE 최소화와도 닮았습니다.</div></div>
+
+  <h3 class="sub">④ 탐험 vs 활용 — ε-greedy 정책</h3>
+  <p class="body">지금까지 최고인 기계만 당기면(<strong>활용</strong>) 더 좋은 기계를 영영 못 찾을 수 있습니다. 그래서 확률 ε(예: 0.1)로는 <strong>아무 기계나 눌러 보고(탐험)</strong>, 나머지 1−ε로는 Q가 최대인 기계를 당깁니다. 이것이 <strong>ε-greedy</strong> 정책입니다.</p>
+
+  <h2 class="sec">슬롯머신 시뮬레이터 — 직접 에이전트가 되어 보세요</h2>
+  <p class="body">기계 3대의 당첨 확률은 비밀입니다. 레버를 당기면 보상(1/0)이 나오고 <strong>점진적 평균 갱신식으로 Q가 업데이트</strong>됩니다. 직접 탐험해 최고의 기계를 찾은 뒤, ε-greedy 자동 플레이·정답 공개와 비교해 보세요!</p>
+
+  <div class="simbox">
+    <div class="machs">
+      <div class="mach">
+        <div class="mname">기계 A</div>
+        <button class="btn lever" data-m="0">🎰 레버 당기기</button>
+        <div class="mstat">시도 <span id="n0">0</span>회 · Q = <span id="q0">0.000</span></div>
+        <div class="qbarwrap"><div class="qbar" id="qb0"></div></div>
+        <div class="truep" id="tp0">진짜 확률: ???</div>
+      </div>
+      <div class="mach">
+        <div class="mname">기계 B</div>
+        <button class="btn lever" data-m="1">🎰 레버 당기기</button>
+        <div class="mstat">시도 <span id="n1">0</span>회 · Q = <span id="q1">0.000</span></div>
+        <div class="qbarwrap"><div class="qbar" id="qb1"></div></div>
+        <div class="truep" id="tp1">진짜 확률: ???</div>
+      </div>
+      <div class="mach">
+        <div class="mname">기계 C</div>
+        <button class="btn lever" data-m="2">🎰 레버 당기기</button>
+        <div class="mstat">시도 <span id="n2">0</span>회 · Q = <span id="q2">0.000</span></div>
+        <div class="qbarwrap"><div class="qbar" id="qb2"></div></div>
+        <div class="truep" id="tp2">진짜 확률: ???</div>
+      </div>
+    </div>
+    <div class="simstatus" id="bMsg">레버를 당겨 보세요! (총 0회 · 누적 보상 0)</div>
+    <div class="simctrl">
+      <button class="btn ghost" id="bReset">⟲ 처음부터</button>
+      <button class="btn" id="bAuto">🤖 ε-greedy 자동 100회 (ε=0.1)</button>
+      <button class="btn ghost" id="bReveal">🔍 진짜 확률 공개</button>
+    </div>
+  </div>
+
+  <div class="warn"><span class="ico">⚠️</span><div><strong>탐험이 부족하면 생기는 일:</strong> 초반에 우연히 꽝만 나온 기계는 Q가 낮게 굳어져 다시 시도되지 않고, 추정이 진짜 확률과 크게 어긋난 채 남을 수 있습니다(3번 탭 실습에서 기계 A가 정확히 이 현상을 보여줍니다). ε의 크기는 <strong>탐험과 활용의 균형</strong>을 정하는 다이얼입니다.</div></div>
+
+  <div class="pgnav">
+    <button class="btn ghost" onclick="goPage(0)">← 이전: 학습의 지도</button>
+    <button class="btn" onclick="goPage(2)">다음: 자기지도학습의 수학 →</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 2. 자기지도학습의 수학 ═══════════════ -->
+<section class="page" id="pg2">
+  <h2 class="sec">자기지도학습 — 스스로 문제를 만들어 배운다</h2>
+  <p class="body">비지도학습처럼 <strong>사람이 만든 레이블은 없지만</strong>, 데이터의 일부를 가려 <strong>"가린 부분 맞히기"라는 문제와 정답을 스스로 만들어</strong> 지도학습처럼 훈련합니다. 그래서 이름이 자기(self)-지도(supervised)입니다.</p>
+
+  <table class="tb">
+    <tr><th style="width:230px">스스로 만든 문제</th><th>입력</th><th>스스로 만든 정답</th><th style="width:180px">쓰이는 곳</th></tr>
+    <tr><td class="rowh">다음 단어 맞히기</td><td class="l">"나는 오늘 학교에 ___"</td><td class="l">간다 (원문에 있음!)</td><td class="l">GPT 계열</td></tr>
+    <tr><td class="rowh">빈칸(마스크) 채우기</td><td class="l">"나는 [MASK] 학교에 간다"</td><td class="l">오늘</td><td class="l">BERT 계열</td></tr>
+    <tr><td class="rowh">회전 각도 맞히기</td><td class="l">90° 돌린 사진</td><td class="l">90° (돌린 각도)</td><td class="l">이미지 사전학습</td></tr>
+  </table>
+
+  <div class="point"><span class="ico">💡</span><div><strong>정답 공장이 공짜인 이유:</strong> 원본 문장 "나는 오늘 학교에 간다" 하나에서 (나는→오늘), (오늘→학교에), (학교에→간다) — 문제·정답 쌍 3개가 <strong>자동으로</strong> 생깁니다. 웹의 모든 텍스트가 통째로 문제집이 되는 셈입니다.</div></div>
+
+  <h3 class="sub">① "다음 단어 맞히기"의 수학 — 조건부확률</h3>
+  <p class="body">"나는" 다음에 어떤 단어가 올까? 이 질문의 수학적 형태가 <strong>조건부확률</strong>입니다. 확률 단원에서 배운 정의 그대로입니다.</p>
+
+  <div class="bigformula">P(다음 단어 = w&#8242; | 현재 단어 = w) = n(w w&#8242;) / n(w)</div>
+
+  <div class="flist">
+    <div class="fcard">
+      <div class="fname">확률은 세어서 추정한다 (상대도수)</div>
+      <div class="formula">P(w&#8242;|w) &asymp; (w 뒤에 w&#8242;가 온 횟수) / (w가 나온 횟수)</div>
+      <div class="fex"><span class="lab">예제 말뭉치</span>"나는" 3회, 그중 "나는 오늘" 2회 → P(오늘|나는) = 2/3</div>
+    </div>
+    <div class="fcard">
+      <div class="fname">예측은 argmax — 가장 그럴듯한 단어</div>
+      <div class="formula">예측 = argmax P(w&#8242; | w)</div>
+      <div class="fex"><span class="lab">예제</span>P(오늘|나는)=2/3 &gt; P(내일|나는)=1/3 → "오늘" 예측</div>
+    </div>
+  </div>
+
+  <p class="body">이렇게 <strong>바로 앞 단어 1개만 조건</strong>으로 삼는 모델을 <strong>바이그램(bigram) 언어모델</strong>이라 합니다. GPT는 조건을 "앞 문맥 전체"로 늘리고 확률 계산을 신경망에 맡긴 것일 뿐, <strong>"조건부확률이 가장 큰 다음 단어를 고른다"는 수학적 뼈대는 동일</strong>합니다.</p>
+
+  <h3 class="sub">② 예제 말뭉치 — 문장 4개로 만드는 미니 언어모델</h3>
+  <div class="card tint">
+    <p class="body mono" style="text-align:center;font-size:20px;font-weight:700">
+      "나는 오늘 학교에 간다" · "나는 오늘 도서관에 간다"<br>
+      "나는 내일 학교에 간다" · "우리는 오늘 공원에 간다"
+    </p>
+    <p class="body" style="text-align:center;color:var(--sub)">이 4문장에서 (앞 단어 → 뒷 단어) 쌍을 전부 세면 확률표가 완성됩니다.</p>
+  </div>
+
+  <h2 class="sec">다음 단어 예측 시뮬레이터 — 미니 GPT 체험</h2>
+  <p class="body">단어를 클릭하면 위 말뭉치에서 센 <strong>조건부확률 막대</strong>가 나타납니다. 「argmax로 문장 완성」은 가장 확률 높은 단어만 이어 붙이고, 「확률대로 생성」은 주사위를 던져 표본추출합니다 — 누를 때마다 다른 문장이 나올 수 있습니다!</p>
+
+  <div class="simbox">
+    <p class="body" style="margin-top:0;font-weight:700">시작 단어를 고르세요:</p>
+    <div class="chips" id="wordRow"></div>
+    <div id="probPanel"></div>
+    <div class="simctrl">
+      <button class="btn" id="chainBtn">🎯 argmax로 문장 완성</button>
+      <button class="btn ghost" id="sampleBtn">🎲 확률대로 생성</button>
+    </div>
+    <div class="genout" id="genOut">단어를 고르면 다음 단어의 확률 분포가 표시됩니다</div>
+  </div>
+
+  <div class="point"><span class="ico">🔗</span><div><strong>강화학습과의 연결:</strong> 자기지도학습(다음 단어 맞히기)으로 기른 GPT를, 사람의 선호 점수를 <strong>보상</strong>으로 삼는 강화학습(RLHF)으로 다듬습니다. 이번 편의 두 주제는 실제로 한 시스템 안에서 협력하고 있습니다.</div></div>
+
+  <div class="warn"><span class="ico">⚠️</span><div><strong>바이그램의 한계 = 문맥의 길이.</strong> "학교에" 다음은 무조건 "간다"가 되지만, 진짜 언어는 훨씬 긴 문맥에 의존합니다("어제 나는 학교에 <em>갔다</em>"). 조건을 얼마나 길게 잡을 수 있느냐가 언어모델 발전의 역사입니다.</div></div>
+
+  <div class="pgnav">
+    <button class="btn ghost" onclick="goPage(1)">← 이전: 강화학습의 수학</button>
+    <button class="btn" onclick="goPage(3)">다음: 실습 — 강화학습 →</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 3. 실습: 강화학습 ═══════════════ -->
+<section class="page" id="pg3">
+  <h2 class="sec">파이썬 실습 ① — 할인 보상, 등비급수로 확인하기</h2>
+  <div class="pane">
+    <div class="phead">Python <span class="tag">discount.py — 누적 보상과 등비급수</span></div>
+    <pre class="code"><span class="c"># 할인 누적 보상: G = r1 + γr2 + γ²r3 + ...</span>
+gamma = <span class="n">0.5</span>
+rewards = [<span class="n">1</span>, <span class="n">1</span>, <span class="n">1</span>, <span class="n">1</span>, <span class="n">1</span>, <span class="n">1</span>, <span class="n">1</span>, <span class="n">1</span>, <span class="n">1</span>, <span class="n">1</span>]   <span class="c"># 매 턴 보상 1을 10번</span>
+G = sum(gamma**t * rewards[t] <span class="k">for</span> t <span class="k">in</span> range(len(rewards)))
+<span class="k">print</span>(<span class="s">"10턴 할인 보상 G ="</span>, round(G, <span class="n">4</span>))
+<span class="k">print</span>(<span class="s">"무한히 계속되면 (등비급수의 합):"</span>, <span class="n">1</span>/(<span class="n">1</span>-gamma))</pre>
+    <div class="out"><span class="lab">실행 결과</span>10턴 할인 보상 G = 1.998
+무한히 계속되면 (등비급수의 합): 2.0</div>
+  </div>
+  <div class="point"><span class="ico">✅</span><div>10턴만 더해도 1.998 — 등비급수의 극한값 2에 이미 바짝 다가섭니다. 수열의 극한이 강화학습 안에서 살아 움직이는 순간입니다.</div></div>
+
+  <h2 class="sec">파이썬 실습 ② — ε-greedy 슬롯머신 에이전트</h2>
+  <p class="body">1번 탭 시뮬레이터의 에이전트를 그대로 구현합니다. <strong>점진적 평균 갱신식 한 줄</strong>이 학습의 전부임에 주목하세요. <span class="mono">random.seed(1)</span>로 고정해 누구나 같은 결과를 재현할 수 있습니다.</p>
+
+  <div class="pane">
+    <div class="phead">Python <span class="tag">bandit.py — 탐험과 활용</span></div>
+    <pre class="code"><span class="k">import</span> random
+random.seed(<span class="n">1</span>)                     <span class="c"># 재현 가능하게 고정</span>
+
+p_true = [<span class="n">0.3</span>, <span class="n">0.5</span>, <span class="n">0.8</span>]           <span class="c"># 진짜 당첨 확률 (에이전트는 모름!)</span>
+Q = [<span class="n">0.0</span>, <span class="n">0.0</span>, <span class="n">0.0</span>]                <span class="c"># 추정 가치</span>
+N = [<span class="n">0</span>, <span class="n">0</span>, <span class="n">0</span>]                      <span class="c"># 시도 횟수</span>
+epsilon = <span class="n">0.1</span>
+
+<span class="k">for</span> t <span class="k">in</span> range(<span class="n">1000</span>):
+    <span class="k">if</span> random.random() &lt; epsilon:              <span class="c"># 탐험: 아무 기계나</span>
+        a = random.randrange(<span class="n">3</span>)
+    <span class="k">else</span>:                                      <span class="c"># 활용: 현재 최고 Q</span>
+        a = Q.index(max(Q))
+    r = <span class="n">1</span> <span class="k">if</span> random.random() &lt; p_true[a] <span class="k">else</span> <span class="n">0</span>   <span class="c"># 보상</span>
+    N[a] += <span class="n">1</span>
+    Q[a] = Q[a] + (r - Q[a]) / N[a]            <span class="c"># 점진적 평균 갱신!</span>
+
+<span class="k">print</span>(<span class="s">"시도 횟수:"</span>, N)
+<span class="k">print</span>(<span class="s">"추정 Q :"</span>, [round(q, <span class="n">3</span>) <span class="k">for</span> q <span class="k">in</span> Q])
+<span class="k">print</span>(<span class="s">"진짜 확률:"</span>, p_true)</pre>
+    <div class="out"><span class="lab">실행 결과</span>시도 횟수: [67, 40, 893]
+추정 Q : [0.119, 0.6, 0.813]
+진짜 확률: [0.3, 0.5, 0.8]</div>
+  </div>
+
+  <div class="point"><span class="ico">🔍</span><div><strong>결과 해석 — 성공과 그늘이 함께 보입니다.</strong> 에이전트는 최고의 기계 C를 893번 골라냈고 추정 0.813은 진짜 0.8에 근접(많이 시도할수록 평균이 기대값에 다가감 — 큰 수의 법칙). 반면 67번밖에 안 당긴 기계 A의 추정 0.119는 진짜 0.3과 큰 차이 — <strong>탐험이 부족한 팔의 추정은 부정확하게 남는다</strong>는 교훈까지 한 번의 실행에 담겨 있습니다.</div></div>
+
+  <div class="card tint">
+    <h3 class="sub" style="margin-top:0">📝 실습 과제 아이디어</h3>
+    <p class="body">① epsilon을 0 / 0.3 / 1.0으로 바꿔 시도 횟수 분포와 누적 보상이 어떻게 달라지는지 비교하기 &nbsp;② seed를 바꿔 여러 번 실행해 "운"의 영향 관찰하기 &nbsp;③ 기계를 5대로 늘려 보기 &nbsp;④ 누적 보상 합계를 출력해 ε별로 비교하기</p>
+  </div>
+
+  <div class="pgnav">
+    <button class="btn ghost" onclick="goPage(2)">← 이전: 자기지도학습의 수학</button>
+    <button class="btn" onclick="goPage(4)">다음: 실습 — 자기지도 →</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 4. 실습: 자기지도 ═══════════════ -->
+<section class="page" id="pg4">
+  <h2 class="sec">파이썬 실습 ③ — 문장 4개로 미니 언어모델 만들기</h2>
+  <p class="body">2번 탭 시뮬레이터와 <strong>완전히 같은 말뭉치</strong>로 바이그램 언어모델을 구현합니다. ① 빈도 세기 → ② 조건부확률 → ③ argmax 예측 → ④ 문장 생성의 4단계입니다.</p>
+
+  <div class="pane">
+    <div class="phead">Python <span class="tag">bigram_lm.py — 조건부확률로 만드는 미니 GPT</span></div>
+    <pre class="code">corpus = [
+    <span class="s">"나는 오늘 학교에 간다"</span>,
+    <span class="s">"나는 오늘 도서관에 간다"</span>,
+    <span class="s">"나는 내일 학교에 간다"</span>,
+    <span class="s">"우리는 오늘 공원에 간다"</span>,
+]
+
+<span class="c"># ① 빈도 세기: count[w][w'] = w 다음에 w'가 나온 횟수</span>
+count = {}
+<span class="k">for</span> line <span class="k">in</span> corpus:
+    words = line.split()
+    <span class="k">for</span> w, nxt <span class="k">in</span> zip(words, words[<span class="n">1</span>:]):
+        count.setdefault(w, {})
+        count[w][nxt] = count[w].get(nxt, <span class="n">0</span>) + <span class="n">1</span>
+
+<span class="c"># ② 조건부확률 P(w'|w) = n(w w') / n(w)</span>
+<span class="k">def</span> prob(w, nxt):
+    total = sum(count[w].values())
+    <span class="k">return</span> count[w].get(nxt, <span class="n">0</span>) / total
+
+<span class="k">print</span>(<span class="s">"P(오늘|나는) ="</span>, round(prob(<span class="s">"나는"</span>, <span class="s">"오늘"</span>), <span class="n">3</span>))
+<span class="k">print</span>(<span class="s">"P(내일|나는) ="</span>, round(prob(<span class="s">"나는"</span>, <span class="s">"내일"</span>), <span class="n">3</span>))
+
+<span class="c"># ③ 예측: 조건부확률이 가장 큰 다음 단어 (argmax)</span>
+<span class="k">def</span> predict(w):
+    <span class="k">return</span> max(count[w], key=count[w].get)
+
+<span class="k">print</span>(<span class="s">"'나는' 다음 예측:"</span>, predict(<span class="s">"나는"</span>))
+
+<span class="c"># ④ 문장 생성: 예측을 사슬처럼 이어 붙이기</span>
+w = <span class="s">"나는"</span>; sentence = [w]
+<span class="k">while</span> w <span class="k">in</span> count:
+    w = predict(w)
+    sentence.append(w)
+<span class="k">print</span>(<span class="s">"생성:"</span>, <span class="s">" "</span>.join(sentence))</pre>
+    <div class="out"><span class="lab">실행 결과</span>P(오늘|나는) = 0.667
+P(내일|나는) = 0.333
+'나는' 다음 예측: 오늘
+생성: 나는 오늘 학교에 간다</div>
+  </div>
+
+  <div class="point"><span class="ico">✅</span><div><strong>시뮬레이터와 코드가 완전히 일치합니다.</strong> P(오늘|나는) = 2/3 ≈ 0.667, argmax 사슬은 "나는 오늘 학교에 간다". 레이블을 하나도 만들지 않았는데 문장을 생성하는 모델이 생겼습니다 — 이것이 자기지도학습의 힘입니다.</div></div>
+
+  <div class="warn"><span class="ico">⚠️</span><div><strong>argmax 생성의 한계:</strong> 항상 같은 문장만 나옵니다(결정적). 실제 언어모델은 확률에 따라 <strong>표본추출(sampling)</strong>해서 다양성을 만듭니다 — 2번 탭의 「확률대로 생성」 버튼과 아래 과제 ②가 바로 그것입니다.</div></div>
+
+  <div class="card tint">
+    <h3 class="sub" style="margin-top:0">📝 실습 과제 아이디어</h3>
+    <p class="body">① 자기가 좋아하는 문장 5개를 corpus에 추가해 확률표가 어떻게 변하는지 관찰하기 &nbsp;② <span class="mono">random.choices(단어들, weights=확률들)</span>로 표본추출 생성기 만들기 &nbsp;③ 조건을 앞 단어 2개로 늘린 트라이그램(trigram)으로 확장하기 &nbsp;④ "학교에" 뒤에 "갔다"가 있는 문장을 추가해 P(간다|학교에)가 1에서 내려가는 것 확인하기</p>
+  </div>
+
+  <div class="pgnav">
+    <button class="btn ghost" onclick="goPage(3)">← 이전: 실습 — 강화학습</button>
+    <button class="btn" onclick="goPage(5)">다음: 퀴즈 →</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 5. 퀴즈 ═══════════════ -->
+<section class="page" id="pg5">
+  <h2 class="sec">확인 퀴즈 — 8문제</h2>
+  <p class="body">보기를 클릭하면 바로 채점됩니다. 초록색이 정답, 빨간색이 오답입니다.</p>
+  <div class="scorebox">맞힌 개수: <span class="mono" id="scoreNum">0</span> / <span class="mono">8</span></div>
+
+  <div class="qz">
+    <div class="qt"><span class="qno">1</span>강화학습에서 에이전트가 배우는 데 쓰는 신호는?</div>
+    <div class="opts">
+      <button class="opt">사람이 붙인 정답 레이블</button>
+      <button class="opt" data-ok="1">환경이 주는 보상</button>
+      <button class="opt">데이터 사이의 거리</button>
+      <button class="opt">데이터의 평균</button>
+    </div>
+    <div class="expl">강화학습에는 정답 레이블이 없습니다. 행동 뒤에 돌아오는 보상만으로 "무엇이 좋은 행동인지"를 시행착오로 배웁니다.</div>
+  </div>
+
+  <div class="qz">
+    <div class="qt"><span class="qno">2</span>할인율 γ = 0.5, 매 턴 보상 1이 무한히 계속될 때 누적 보상 G는?</div>
+    <div class="opts">
+      <button class="opt">1</button>
+      <button class="opt" data-ok="1">2</button>
+      <button class="opt">10</button>
+      <button class="opt">무한대</button>
+    </div>
+    <div class="expl">G = 1 + 0.5 + 0.25 + … 는 첫째항 1, 공비 0.5인 등비급수 → 합 = 1/(1−0.5) = 2.</div>
+  </div>
+
+  <div class="qz">
+    <div class="qt"><span class="qno">3</span>보상 rₙ을 받았을 때 평균의 점진적 갱신식은?</div>
+    <div class="opts">
+      <button class="opt">Q ← rₙ</button>
+      <button class="opt">Q ← Q + rₙ</button>
+      <button class="opt" data-ok="1">Q ← Q + (1/n)(rₙ − Q)</button>
+      <button class="opt">Q ← Q × rₙ</button>
+    </div>
+    <div class="expl">새 추정 = 옛 추정 + 학습률 × (오차). 모든 보상을 저장하지 않고도 평균과 똑같은 값을 유지합니다. Q-러닝 갱신식도 같은 구조!</div>
+  </div>
+
+  <div class="qz">
+    <div class="qt"><span class="qno">4</span>ε-greedy 정책에서 ε이 하는 일은?</div>
+    <div class="opts">
+      <button class="opt">학습률을 조절한다</button>
+      <button class="opt">보상의 크기를 할인한다</button>
+      <button class="opt" data-ok="1">무작위 탐험을 하는 비율을 정한다</button>
+      <button class="opt">기계의 개수를 정한다</button>
+    </div>
+    <div class="expl">확률 ε로는 아무 행동이나(탐험), 1−ε로는 Q 최대 행동(활용). 탐험이 없으면 더 좋은 선택지를 영영 발견하지 못할 수 있습니다.</div>
+  </div>
+
+  <div class="qz">
+    <div class="qt"><span class="qno">5</span>자기지도학습이 "정답"을 얻는 방법은?</div>
+    <div class="opts">
+      <button class="opt">사람이 일일이 만들어 준다</button>
+      <button class="opt" data-ok="1">데이터 일부를 가리고 그것을 정답으로 쓴다</button>
+      <button class="opt">환경의 보상에서 얻는다</button>
+      <button class="opt">정답이 전혀 필요 없다</button>
+    </div>
+    <div class="expl">원본 데이터의 일부(다음 단어, 가린 빈칸, 회전 각도)를 감추면 그 자체가 공짜 정답이 됩니다 — 그래서 "자기" 지도입니다.</div>
+  </div>
+
+  <div class="qz">
+    <div class="qt"><span class="qno">6</span>GPT의 사전학습이 푸는 "스스로 만든 문제"는?</div>
+    <div class="opts">
+      <button class="opt">이미지 회전 각도 맞히기</button>
+      <button class="opt">비슷한 문장 군집화</button>
+      <button class="opt" data-ok="1">다음 단어 맞히기</button>
+      <button class="opt">승패 보상 최대화</button>
+    </div>
+    <div class="expl">GPT의 사전학습은 "다음 단어 맞히기" 하나입니다. 이후 사람 피드백을 보상으로 쓰는 강화학습(RLHF)으로 다듬어집니다.</div>
+  </div>
+
+  <div class="qz">
+    <div class="qt"><span class="qno">7</span>말뭉치에서 "나는"이 3번, 그중 "나는 오늘"이 2번 나왔다. P(오늘|나는)은?</div>
+    <div class="opts">
+      <button class="opt">1/3</button>
+      <button class="opt">1/2</button>
+      <button class="opt" data-ok="1">2/3</button>
+      <button class="opt">2/5</button>
+    </div>
+    <div class="expl">조건부확률의 상대도수 추정: P(오늘|나는) = n(나는 오늘)/n(나는) = 2/3.</div>
+  </div>
+
+  <div class="qz">
+    <div class="qt"><span class="qno">8</span>네 가지 학습 방식의 짝으로 옳은 것은?</div>
+    <div class="opts">
+      <button class="opt">알파고 - 자기지도학습</button>
+      <button class="opt" data-ok="1">알파고 - 강화학습, GPT 사전학습 - 자기지도학습</button>
+      <button class="opt">GPT 사전학습 - 강화학습</button>
+      <button class="opt">둘 다 지도학습</button>
+    </div>
+    <div class="expl">알파고는 승리 보상을 최대화하는 강화학습, GPT의 사전학습은 다음 단어 맞히기라는 자기지도학습입니다.</div>
+  </div>
+
+  <div class="pgnav">
+    <button class="btn ghost" onclick="goPage(4)">← 이전: 실습 — 자기지도</button>
+    <button class="btn" onclick="goPage(0)">⟲ 처음으로</button>
+  </div>
+</section>
+
+</main>
+
+<script>
+/* ───────── 탭 이동 ───────── */
+function goPage(n){
+  for(var i=0;i<6;i++){
+    document.getElementById('pg'+i).classList.toggle('on', i===n);
+    document.getElementById('tab'+i).classList.toggle('on', i===n);
+  }
+  window.scrollTo(0,0);
+}
+
+/* ───────── 시드 고정 난수 (재현 가능) ───────── */
+function mulberry32(a){
+  return function(){
+    a|=0; a=a+0x6D2B79F5|0;
+    var t=Math.imul(a^a>>>15,1|a);
+    t=t+Math.imul(t^t>>>7,61|t)^t;
+    return ((t^t>>>14)>>>0)/4294967296;
+  };
+}
+var SEED=20260710;
+var rng=mulberry32(SEED);
+
+/* ═════════ γ 슬라이더 위젯 ═════════ */
+function gammaUpdate(){
+  var g=parseFloat(document.getElementById('gSlide').value);
+  document.getElementById('gVal').textContent=g.toFixed(2);
+  var bars=document.getElementById('gBars');
+  while(bars.firstChild) bars.removeChild(bars.firstChild);
+  var G10=0;
+  for(var t=0;t<10;t++){
+    var w=Math.pow(g,t);
+    G10+=w;
+    var bar=document.createElement('div');
+    bar.className='gbar';
+    bar.style.height=Math.max(2, w*100)+'%';
+    var lbl=document.createElement('div');
+    lbl.className='gl';
+    lbl.textContent='t='+t;
+    bar.appendChild(lbl);
+    bars.appendChild(bar);
+  }
+  document.getElementById('g10Val').textContent=String(Math.round(G10*10000)/10000);
+  document.getElementById('gInfVal').textContent=(g<1)?String(Math.round(1/(1-g)*10000)/10000):'\u221E';
+}
+
+/* ═════════ 슬롯머신(밴딧) 시뮬레이터 ═════════ */
+var B_TRUE=[0.3,0.5,0.8];
+var bQ, bN, bTot, bRew;
+
+function banditReset(){
+  bQ=[0,0,0]; bN=[0,0,0]; bTot=0; bRew=0;
+  rng=mulberry32(SEED);           /* 난수도 처음부터 → 완전 재현 */
+  for(var i=0;i<3;i++){
+    document.getElementById('tp'+i).textContent='진짜 확률: ???';
+  }
+  banditPaint();
+  document.getElementById('bMsg').textContent='레버를 당겨 보세요! (총 0회 · 누적 보상 0)';
+}
+
+function banditPaint(){
+  for(var i=0;i<3;i++){
+    document.getElementById('n'+i).textContent=String(bN[i]);
+    document.getElementById('q'+i).textContent=bQ[i].toFixed(3);
+    document.getElementById('qb'+i).style.width=(bQ[i]*100)+'%';
+  }
+}
+
+function banditPull(a, silent){
+  var r=(rng()<B_TRUE[a])?1:0;
+  bN[a]++;
+  bQ[a]=bQ[a]+(r-bQ[a])/bN[a];   /* 점진적 평균 갱신 */
+  bTot++; bRew+=r;
+  if(!silent){
+    banditPaint();
+    var name=['A','B','C'][a];
+    document.getElementById('bMsg').textContent=
+      '기계 '+name+' \u2192 '+(r===1?'\uD83C\uDF89 당첨! (r=1)':'\uD83D\uDCA8 꽝 (r=0)')+
+      '  Q'+name+' = '+bQ[a].toFixed(3)+'  (총 '+bTot+'회 · 누적 보상 '+bRew+')';
+  }
+  return r;
+}
+
+function banditAuto(){
+  for(var t=0;t<100;t++){
+    var a;
+    if(rng()<0.1){ a=Math.floor(rng()*3); }
+    else{
+      a=0;
+      for(var i=1;i<3;i++) if(bQ[i]>bQ[a]) a=i;
+    }
+    banditPull(a, true);
+  }
+  banditPaint();
+  document.getElementById('bMsg').textContent=
+    '\uD83E\uDD16 \u03B5-greedy 100회 완료 \u2014 시도 [' + bN.join(', ') + ']  (총 '+bTot+'회 · 누적 보상 '+bRew+')';
+}
+
+function banditReveal(){
+  for(var i=0;i<3;i++){
+    document.getElementById('tp'+i).textContent='진짜 확률: '+B_TRUE[i].toFixed(1)+' \u2190 Q '+bQ[i].toFixed(3);
+  }
+  document.getElementById('bMsg').textContent=
+    '\uD83D\uDD0D 공개! 많이 당긴 기계일수록 Q가 진짜 확률에 가깝습니다 (큰 수의 법칙)';
+}
+
+/* ═════════ 다음 단어 시뮬레이터 (바이그램) ═════════ */
+var CORPUS=[
+  '나는 오늘 학교에 간다',
+  '나는 오늘 도서관에 간다',
+  '나는 내일 학교에 간다',
+  '우리는 오늘 공원에 간다'
+];
+var bgCount={};   /* bgCount[w][w'] = 횟수 (삽입 순서 보존) */
+var bgOrder={};   /* 다음 단어들의 등장 순서 */
+(function(){
+  for(var i=0;i<CORPUS.length;i++){
+    var ws=CORPUS[i].split(' ');
+    for(var j=0;j+1<ws.length;j++){
+      var w=ws[j], nx=ws[j+1];
+      if(!bgCount[w]){ bgCount[w]={}; bgOrder[w]=[]; }
+      if(!(nx in bgCount[w])){ bgCount[w][nx]=0; bgOrder[w].push(nx); }
+      bgCount[w][nx]++;
+    }
+  }
+})();
+var selWord=null;
+
+function bgTotal(w){
+  var s=0;
+  for(var k in bgCount[w]) s+=bgCount[w][k];
+  return s;
+}
+function bgArgmax(w){
+  /* 파이썬 max(dict, key=...)와 동일: 첫 최대값 */
+  var best=null, bv=-1;
+  var ord=bgOrder[w];
+  for(var i=0;i<ord.length;i++){
+    if(bgCount[w][ord[i]]>bv){ bv=bgCount[w][ord[i]]; best=ord[i]; }
+  }
+  return best;
+}
+
+function showProbs(w){
+  selWord=w;
+  var chips=document.querySelectorAll('#wordRow .chip');
+  for(var c=0;c<chips.length;c++) chips[c].classList.toggle('sel', chips[c].textContent===w);
+  var panel=document.getElementById('probPanel');
+  while(panel.firstChild) panel.removeChild(panel.firstChild);
+  if(!bgCount[w]){
+    document.getElementById('genOut').textContent='"'+w+'" 뒤에 온 단어가 말뭉치에 없습니다 (문장의 끝).';
+    return;
+  }
+  var total=bgTotal(w);
+  var ord=bgOrder[w].slice().sort(function(a,b){ return bgCount[w][b]-bgCount[w][a]; });
+  for(var i=0;i<ord.length;i++){
+    var nx=ord[i], cnt=bgCount[w][nx], p=cnt/total;
+    var row=document.createElement('div'); row.className='probrow';
+    var pw=document.createElement('div'); pw.className='pw'; pw.textContent=nx;
+    var wrap=document.createElement('div'); wrap.className='pbarwrap';
+    var bar=document.createElement('div'); bar.className='pbar'; bar.style.width=(p*100)+'%';
+    wrap.appendChild(bar);
+    var pv=document.createElement('div'); pv.className='pv';
+    pv.textContent=cnt+'/'+total+' = '+(Math.round(p*1000)/1000);
+    row.appendChild(pw); row.appendChild(wrap); row.appendChild(pv);
+    panel.appendChild(row);
+  }
+  document.getElementById('genOut').textContent='P(다음 단어 | "'+w+'") \u2014 argmax는 "'+bgArgmax(w)+'"';
+}
+
+function chainArgmax(){
+  if(!selWord){ document.getElementById('genOut').textContent='먼저 시작 단어를 고르세요!'; return; }
+  var w=selWord, out=[w];
+  while(bgCount[w]){ w=bgArgmax(w); out.push(w); }
+  document.getElementById('genOut').textContent='\uD83C\uDFAF argmax 생성: '+out.join(' ');
+}
+
+function chainSample(){
+  if(!selWord){ document.getElementById('genOut').textContent='먼저 시작 단어를 고르세요!'; return; }
+  var w=selWord, out=[w];
+  var guard=0;
+  while(bgCount[w] && guard<20){
+    var total=bgTotal(w), x=rng()*total, acc=0, pick=null;
+    var ord=bgOrder[w];
+    for(var i=0;i<ord.length;i++){
+      acc+=bgCount[w][ord[i]];
+      if(x<acc){ pick=ord[i]; break; }
+    }
+    w=pick; out.push(w); guard++;
+  }
+  document.getElementById('genOut').textContent='\uD83C\uDFB2 표본추출 생성: '+out.join(' ')+'  (다시 눌러 보세요!)';
+}
+
+function initWordChips(){
+  var vocab=[];
+  for(var i=0;i<CORPUS.length;i++){
+    var ws=CORPUS[i].split(' ');
+    for(var j=0;j<ws.length;j++){
+      if(vocab.indexOf(ws[j])<0) vocab.push(ws[j]);
+    }
+  }
+  var row=document.getElementById('wordRow');
+  for(var k=0;k<vocab.length;k++){
+    (function(w){
+      var b=document.createElement('button');
+      b.className='chip'; b.textContent=w;
+      b.addEventListener('click', function(){ showProbs(w); });
+      row.appendChild(b);
+    })(vocab[k]);
+  }
+}
+
+/* ───────── 퀴즈 ───────── */
+var quizScore=0;
+function initQuiz(){
+  var qzs=document.querySelectorAll('.qz');
+  for(var i=0;i<qzs.length;i++){
+    (function(qz){
+      var opts=qz.querySelectorAll('.opt');
+      for(var j=0;j<opts.length;j++){
+        opts[j].addEventListener('click', function(){
+          if(qz.classList.contains('done')) return;
+          qz.classList.add('done');
+          var isOk=this.getAttribute('data-ok')==='1';
+          if(isOk){
+            this.classList.add('ok');
+            quizScore++;
+            document.getElementById('scoreNum').textContent=String(quizScore);
+          }else{
+            this.classList.add('no');
+            var right=qz.querySelector('.opt[data-ok="1"]');
+            if(right) right.classList.add('ok');
+          }
+          var ex=qz.querySelector('.expl');
+          if(ex) ex.classList.add('show');
+        });
+      }
+    })(qzs[i]);
+  }
+}
+
+/* ───────── 초기화 ───────── */
+document.addEventListener('DOMContentLoaded', function(){
+  gammaUpdate();
+  document.getElementById('gSlide').addEventListener('input', gammaUpdate);
+  banditReset();
+  var levers=document.querySelectorAll('.lever');
+  for(var i=0;i<levers.length;i++){
+    (function(btn){
+      btn.addEventListener('click', function(){ banditPull(parseInt(btn.getAttribute('data-m'),10), false); });
+    })(levers[i]);
+  }
+  document.getElementById('bReset').addEventListener('click', banditReset);
+  document.getElementById('bAuto').addEventListener('click', banditAuto);
+  document.getElementById('bReveal').addEventListener('click', banditReveal);
+  initWordChips();
+  document.getElementById('chainBtn').addEventListener('click', chainArgmax);
+  document.getElementById('sampleBtn').addEventListener('click', chainSample);
+  initQuiz();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>딥러닝 — 신경망의 수학: 퍼셉트론 · 순전파 · 역전파 · 경사하강법</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FAF6EF;
+  --ink:#2A2320;
+  --sub:#6B6157;
+  --accent:#B65C1B;
+  --accent-deep:#8C4310;
+  --accent-soft:#F9EDE1;
+  --accent-line:#EDCFB2;
+  --blue:#2456A6;
+  --card:#FFFFFF;
+  --line:#E6DECD;
+  --gold:#C89B12;
+  --gold-soft:#FFF3C8;
+  --code-bg:#2B2014;
+  --code-ink:#F5EEE4;
+  --code-kw:#F3B77E;
+  --code-com:#A6947D;
+  --code-num:#FFD08A;
+  --code-str:#A8E6B0;
+  --warn-bg:#FBECEA;
+  --ok:#1F7A4D;
+  --no:#C0392B;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--ink);
+  font-family:'Noto Sans KR',sans-serif;
+  font-size:19px;line-height:1.75;padding-bottom:80px;
+}
+.wrap{max-width:1060px;margin:0 auto;padding:0 20px}
+
+/* ───── 헤더 ───── */
+header{
+  border-bottom:3px solid var(--accent);
+  background:linear-gradient(180deg,#F8ECDF 0%,var(--bg) 100%);
+  padding:38px 0 26px;
+}
+.series{
+  display:inline-block;font-family:'JetBrains Mono',monospace;
+  font-size:15px;font-weight:700;color:var(--accent-deep);
+  background:var(--accent-soft);border:1.5px solid var(--accent-line);
+  border-radius:999px;padding:4px 16px;letter-spacing:.5px;
+}
+h1.title{font-size:44px;font-weight:900;line-height:1.25;margin-top:14px;letter-spacing:-1px}
+h1.title .hl{color:var(--accent)}
+.subtitle{font-size:20px;color:var(--sub);margin-top:8px;font-weight:500}
+
+/* ───── 탭 ───── */
+nav.tabs{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:2px solid var(--line);padding:12px 0}
+nav.tabs .wrap{display:flex;flex-wrap:wrap;gap:8px}
+.tabbtn{
+  font-family:'Noto Sans KR',sans-serif;font-size:17px;font-weight:700;
+  color:var(--ink);background:var(--card);border:2px solid var(--line);
+  border-radius:12px;padding:9px 16px;cursor:pointer;transition:all .15s;
+}
+.tabbtn .no{font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--accent);margin-right:6px;font-weight:700}
+.tabbtn:hover{border-color:var(--accent);transform:translateY(-1px)}
+.tabbtn.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.tabbtn.on .no{color:#F5D4B4}
+
+/* ───── 페이지 공통 ───── */
+.page{display:none;padding-top:34px}
+.page.on{display:block;animation:fadein .3s}
+@keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+h2.sec{font-size:33px;font-weight:900;letter-spacing:-.5px;padding-left:16px;border-left:8px solid var(--accent);margin:38px 0 16px}
+h2.sec:first-child{margin-top:0}
+h3.sub{font-size:24px;font-weight:700;color:var(--accent-deep);margin:28px 0 10px}
+p.body{margin:10px 0;font-size:19.5px}
+strong{font-weight:700;color:var(--accent-deep)}
+.mono{font-family:'JetBrains Mono',monospace}
+.card{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:22px 26px;margin:16px 0}
+.card.tint{background:var(--accent-soft);border-color:var(--accent-line)}
+.point{
+  display:flex;gap:12px;align-items:flex-start;
+  background:var(--accent-soft);border-left:8px solid var(--accent);
+  border-radius:0 14px 14px 0;padding:16px 20px;margin:18px 0;font-size:19.5px;
+}
+.point .ico{font-size:26px;line-height:1.4}
+.warn{
+  display:flex;gap:12px;align-items:flex-start;
+  background:var(--warn-bg);border-left:8px solid var(--no);
+  border-radius:0 14px 14px 0;padding:16px 20px;margin:18px 0;font-size:19.5px;
+}
+.warn .ico{font-size:26px;line-height:1.4}
+
+/* ───── 공식 카드 ───── */
+.flist{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
+.fcard{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:18px 20px}
+.fcard .fname{font-weight:900;font-size:19px;color:var(--accent-deep);margin-bottom:8px}
+.fcard .formula{
+  font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;
+  text-align:center;color:var(--accent-deep);
+  background:var(--accent-soft);border-radius:10px;padding:12px 10px;
+}
+.fcard .fex{
+  margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:18px;
+  background:var(--gold-soft);border-left:5px solid var(--gold);
+  border-radius:0 10px 10px 0;padding:9px 14px;
+}
+.fcard .fex .lab{font-family:'Noto Sans KR',sans-serif;font-size:14px;color:#8a6d00;display:block;font-weight:700}
+.bigformula{
+  font-family:'JetBrains Mono',monospace;font-size:23px;font-weight:700;text-align:center;
+  color:var(--accent-deep);background:var(--accent-soft);
+  border:2px dashed var(--accent);border-radius:14px;
+  padding:18px 12px;margin:18px 0;letter-spacing:.3px;
+}
+
+/* ───── 표 ───── */
+table.tb{width:100%;border-collapse:collapse;margin:16px 0;background:var(--card);font-size:19px}
+table.tb th{background:var(--accent);color:#fff;font-weight:700;padding:10px 14px;border:2px solid var(--accent-deep)}
+table.tb td{padding:10px 14px;border:2px solid var(--line);text-align:center}
+table.tb td.l{text-align:left}
+table.tb td.rowh{background:var(--accent-soft);font-weight:700;color:var(--accent-deep)}
+table.tb td.m{font-family:'JetBrains Mono',monospace}
+table.tb td.hit{background:#E3F5EA;color:var(--ok);font-weight:900}
+table.tb td.miss{background:#FBE8E5;color:var(--no);font-weight:900}
+
+/* ───── 코드 패널 ───── */
+.pane{border-radius:16px;overflow:hidden;border:2px solid var(--line);background:var(--card);margin:18px 0}
+.pane .phead{
+  display:flex;align-items:center;gap:10px;font-weight:900;font-size:19px;color:#fff;
+  padding:10px 18px;background:#1F7A4D;
+}
+.pane .phead .tag{
+  font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;
+  background:rgba(255,255,255,.22);border-radius:6px;padding:2px 8px;
+}
+pre.code{
+  background:var(--code-bg);color:var(--code-ink);
+  font-family:'JetBrains Mono',monospace;font-size:15.5px;line-height:1.7;
+  padding:18px 20px;overflow-x:auto;tab-size:4;
+}
+pre.code .k{color:var(--code-kw);font-weight:700}
+pre.code .c{color:var(--code-com);font-style:italic}
+pre.code .n{color:var(--code-num)}
+pre.code .s{color:var(--code-str)}
+.out{
+  font-family:'JetBrains Mono',monospace;font-size:15.5px;
+  background:#1D1509;color:#9BE8AE;padding:12px 20px;border-top:1.5px solid #4A3A24;
+  white-space:pre-wrap;
+}
+.out .lab{color:#A6947D;font-size:13px;display:block;margin-bottom:2px}
+
+/* ───── 시뮬레이터 공통 ───── */
+.simbox{background:var(--card);border:2.5px solid var(--accent);border-radius:18px;padding:24px;margin:18px 0}
+.simbox svg{width:100%;height:auto;display:block;background:#FDFBF6;border:1.5px solid var(--line);border-radius:12px}
+.simstatus{
+  font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;text-align:center;
+  color:var(--accent-deep);background:var(--accent-soft);border-radius:12px;
+  padding:13px;margin:14px 0 4px;min-height:52px;
+}
+.simstatus.win{background:#E3F5EA;color:var(--ok)}
+.simctrl{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+button.btn{
+  font-family:'Noto Sans KR',sans-serif;font-size:18px;font-weight:700;
+  border:none;border-radius:12px;padding:11px 24px;cursor:pointer;
+  background:var(--accent);color:#fff;transition:all .15s;
+}
+button.btn:hover{background:var(--accent-deep);transform:translateY(-1px)}
+button.btn.ghost{background:var(--card);color:var(--accent);border:2px solid var(--accent)}
+button.btn.ghost:hover{background:var(--accent-soft)}
+.sliders{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:14px 0}
+.sld{background:var(--accent-soft);border-radius:12px;padding:12px 16px}
+.sld label{font-weight:900;font-size:18px;color:var(--accent-deep);display:flex;justify-content:space-between}
+.sld label .val{font-family:'JetBrains Mono',monospace}
+.sld input[type=range]{width:100%;accent-color:var(--accent);height:32px;cursor:pointer}
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0;justify-content:center}
+.chip{
+  font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:700;
+  background:var(--bg);border:2px solid var(--line);border-radius:999px;
+  padding:8px 22px;cursor:pointer;color:var(--ink);transition:all .15s;
+}
+.chip:hover{border-color:var(--accent);background:var(--accent-soft)}
+.chip.sel{background:var(--accent);border-color:var(--accent);color:#fff}
+.numin{display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin:12px 0;justify-content:center}
+.numin label{font-weight:700;font-size:18px}
+.numin input{
+  width:110px;font-family:'JetBrains Mono',monospace;font-size:20px;text-align:center;
+  border:2px solid var(--line);border-radius:10px;padding:8px;background:var(--bg);
+}
+.numin input:focus{outline:none;border-color:var(--accent)}
+.grid2{display:grid;grid-template-columns:1.2fr 1fr;gap:18px;align-items:start}
+@media (max-width:860px){.grid2{grid-template-columns:1fr}}
+
+/* ───── 퀴즈 ───── */
+.qz{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:22px 26px;margin:18px 0}
+.qz .qt{font-size:21px;font-weight:900;margin-bottom:14px}
+.qz .qt .qno{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:36px;height:36px;border-radius:50%;background:var(--accent);color:#fff;
+  font-family:'JetBrains Mono',monospace;font-size:18px;margin-right:10px;
+}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opt{
+  font-family:'JetBrains Mono',monospace;font-size:18.5px;font-weight:500;text-align:left;
+  background:var(--bg);border:2px solid var(--line);border-radius:12px;
+  padding:12px 16px;cursor:pointer;color:var(--ink);transition:all .15s;
+}
+.opt:hover{border-color:var(--accent);background:var(--accent-soft)}
+.opt.ok{background:#E3F5EA;border-color:var(--ok);color:var(--ok);font-weight:700}
+.opt.no{background:#FBE8E5;border-color:var(--no);color:var(--no);font-weight:700}
+.qz.done .opt{cursor:default}
+.expl{
+  display:none;margin-top:14px;background:var(--accent-soft);
+  border-left:6px solid var(--accent);border-radius:0 12px 12px 0;
+  padding:13px 18px;font-size:18.5px;
+}
+.expl.show{display:block}
+.scorebox{
+  text-align:center;font-size:24px;font-weight:900;
+  background:var(--accent-soft);border:2.5px solid var(--accent);
+  border-radius:16px;padding:18px;margin:20px 0;color:var(--accent-deep);
+}
+.scorebox .mono{font-size:30px}
+.pgnav{display:flex;justify-content:space-between;gap:12px;margin-top:44px;border-top:2px dashed var(--line);padding-top:22px}
+
+@media (max-width:860px){
+  h1.title{font-size:32px}
+  .flist{grid-template-columns:1fr}
+  .opts{grid-template-columns:1fr}
+  .sliders{grid-template-columns:1fr}
+  body{font-size:18px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <span class="series">고교학점제 인공지능수학 · 딥러닝 편</span>
+    <h1 class="title">신경망의 수학<br><span class="hl">퍼셉트론 · 순전파 · 역전파 · 경사하강법</span></h1>
+    <p class="subtitle">일차식과 합성함수, 미분 — 익숙한 수학만으로 딥러닝의 심장을 완전히 분해하고, 파이썬으로 XOR을 학습시켜 봅니다.</p>
+  </div>
+</header>
+
+<nav class="tabs">
+  <div class="wrap">
+    <button class="tabbtn on" id="tab0" onclick="goPage(0)"><span class="no">0</span>신경망이란?</button>
+    <button class="tabbtn" id="tab1" onclick="goPage(1)"><span class="no">1</span>퍼셉트론</button>
+    <button class="tabbtn" id="tab2" onclick="goPage(2)"><span class="no">2</span>순전파</button>
+    <button class="tabbtn" id="tab3" onclick="goPage(3)"><span class="no">3</span>경사하강법</button>
+    <button class="tabbtn" id="tab4" onclick="goPage(4)"><span class="no">4</span>역전파 &amp; XOR 실습</button>
+    <button class="tabbtn" id="tab5" onclick="goPage(5)"><span class="no">5</span>퀴즈</button>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<!-- ═══════════════ 0. 신경망이란? ═══════════════ -->
+<section class="page on" id="pg0">
+  <h2 class="sec">뉴런에서 신경망까지 — 큰 그림 먼저</h2>
+  <p class="body">뇌의 뉴런은 여러 신호를 받아 <strong>합쳐서, 일정 기준을 넘으면</strong> 다음 뉴런으로 신호를 쏩니다. 이것을 수학으로 흉내 낸 것이 <strong>퍼셉트론</strong>(인공 뉴런)이고, 퍼셉트론을 층층이 연결한 것이 <strong>신경망</strong>, 층을 깊게 쌓은 것이 <strong>딥러닝</strong>입니다.</p>
+
+  <div class="simbox" style="border-color:var(--line)">
+    <svg viewBox="0 0 940 360" xmlns="http://www.w3.org/2000/svg">
+      <text x="130" y="40" text-anchor="middle" font-size="20" font-weight="900" fill="#8C4310">입력층</text>
+      <text x="470" y="40" text-anchor="middle" font-size="20" font-weight="900" fill="#8C4310">은닉층</text>
+      <text x="810" y="40" text-anchor="middle" font-size="20" font-weight="900" fill="#8C4310">출력층</text>
+      <line x1="160" y1="120" x2="440" y2="110" stroke="#C9BBA4" stroke-width="3"/>
+      <line x1="160" y1="120" x2="440" y2="250" stroke="#C9BBA4" stroke-width="3"/>
+      <line x1="160" y1="240" x2="440" y2="110" stroke="#C9BBA4" stroke-width="3"/>
+      <line x1="160" y1="240" x2="440" y2="250" stroke="#C9BBA4" stroke-width="3"/>
+      <line x1="500" y1="110" x2="780" y2="180" stroke="#C9BBA4" stroke-width="3"/>
+      <line x1="500" y1="250" x2="780" y2="180" stroke="#C9BBA4" stroke-width="3"/>
+      <circle cx="130" cy="120" r="34" fill="#FDFBF6" stroke="#B65C1B" stroke-width="3"/>
+      <text x="130" y="128" text-anchor="middle" font-size="21" font-weight="700" font-family="JetBrains Mono, monospace" fill="#2A2320">x&#8321;</text>
+      <circle cx="130" cy="240" r="34" fill="#FDFBF6" stroke="#B65C1B" stroke-width="3"/>
+      <text x="130" y="248" text-anchor="middle" font-size="21" font-weight="700" font-family="JetBrains Mono, monospace" fill="#2A2320">x&#8322;</text>
+      <circle cx="470" cy="110" r="34" fill="#F9EDE1" stroke="#B65C1B" stroke-width="3"/>
+      <text x="470" y="118" text-anchor="middle" font-size="21" font-weight="700" font-family="JetBrains Mono, monospace" fill="#2A2320">h&#8321;</text>
+      <circle cx="470" cy="250" r="34" fill="#F9EDE1" stroke="#B65C1B" stroke-width="3"/>
+      <text x="470" y="258" text-anchor="middle" font-size="21" font-weight="700" font-family="JetBrains Mono, monospace" fill="#2A2320">h&#8322;</text>
+      <circle cx="810" cy="180" r="34" fill="#B65C1B" stroke="#8C4310" stroke-width="3"/>
+      <text x="810" y="188" text-anchor="middle" font-size="21" font-weight="700" font-family="JetBrains Mono, monospace" fill="#fff">&#375;</text>
+      <text x="470" y="330" text-anchor="middle" font-size="17" fill="#6B6157">이 강의의 예제 네트워크: 입력 2개 → 은닉 뉴런 2개 → 출력 1개 (2-2-1)</text>
+    </svg>
+  </div>
+
+  <table class="tb">
+    <tr><th style="width:190px">뇌의 뉴런</th><th>인공 뉴런(퍼셉트론)</th><th style="width:280px">수학적 정체</th></tr>
+    <tr><td class="rowh">여러 자극을 받음</td><td class="l">입력 x₁, x₂, …</td><td class="l">변수</td></tr>
+    <tr><td class="rowh">자극마다 민감도가 다름</td><td class="l">가중치 w₁, w₂, …</td><td class="l">계수 (일차식!)</td></tr>
+    <tr><td class="rowh">자극을 합침</td><td class="l">z = w₁x₁ + w₂x₂ + b</td><td class="l">일차결합</td></tr>
+    <tr><td class="rowh">기준을 넘으면 발화</td><td class="l">활성화 함수 f(z)</td><td class="l">함수의 합성</td></tr>
+  </table>
+
+  <div class="point"><span class="ico">🗺️</span><div><strong>이번 편의 여정 = 딥러닝 학습의 한 사이클.</strong> ① <strong>퍼셉트론</strong>(뉴런 하나의 수학) → ② <strong>순전파</strong>(입력이 출력이 되기까지) → ③ <strong>경사하강법</strong>(오차를 줄이는 방향으로 한 걸음) → ④ <strong>역전파</strong>(그 방향을 연쇄법칙으로 계산). 앞 편에서 배운 <strong>"학습 = 손실함수 최소화"</strong>가 신경망에서 어떻게 실현되는지의 이야기입니다.</div></div>
+
+  <div class="card tint">
+    <h3 class="sub" style="margin-top:0">이 강의에서 쓰는 수학 도구 4가지</h3>
+    <p class="body">① <strong>일차식</strong> — 가중합 z = w₁x₁+w₂x₂+b &nbsp;② <strong>함수의 합성</strong> — 층을 통과한다 = 함수를 겹친다 &nbsp;③ <strong>미분(기울기)</strong> — 어느 방향이 내리막인가 &nbsp;④ <strong>연쇄법칙</strong> — 합성함수의 미분. 미분만 알면 딥러닝의 문이 열립니다!</p>
+  </div>
+
+  <div class="pgnav">
+    <span></span>
+    <button class="btn" onclick="goPage(1)">다음: 퍼셉트론 →</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 1. 퍼셉트론 ═══════════════ -->
+<section class="page" id="pg1">
+  <h2 class="sec">퍼셉트론 — 인공 뉴런 하나의 수학</h2>
+  <p class="body">퍼셉트론은 입력의 <strong>가중합</strong>을 구하고, <strong>계단함수</strong>로 발화 여부(1/0)를 결정합니다.</p>
+
+  <div class="bigformula">y = f(w&#8321;x&#8321; + w&#8322;x&#8322; + b), &nbsp;&nbsp; f(z) = 1 (z &ge; 0), &nbsp;0 (z &lt; 0)</div>
+
+  <div class="flist">
+    <div class="fcard">
+      <div class="fname">가중치 w — 입력의 중요도</div>
+      <div class="formula">w가 클수록 그 입력에 민감</div>
+      <div class="fex"><span class="lab">직관</span>"출석 점수보다 시험 점수의 가중치가 크다"의 그 가중치!</div>
+    </div>
+    <div class="fcard">
+      <div class="fname">편향 b — 발화 문턱의 높이</div>
+      <div class="formula">z = w·x + b &ge; 0 &hArr; w·x &ge; &minus;b</div>
+      <div class="fex"><span class="lab">직관</span>b가 낮을수록(음수로 클수록) 웬만해선 발화하지 않음</div>
+    </div>
+  </div>
+
+  <h3 class="sub">예제 — AND 게이트를 퍼셉트론으로</h3>
+  <p class="body">w₁ = 1, w₂ = 1, b = −1.5 로 두면 <strong>둘 다 1일 때만</strong> z ≥ 0이 됩니다.</p>
+  <table class="tb">
+    <tr><th>x₁</th><th>x₂</th><th>z = x₁ + x₂ − 1.5</th><th>출력 f(z)</th><th>AND 정답</th></tr>
+    <tr><td class="m">0</td><td class="m">0</td><td class="m">−1.5</td><td class="m">0</td><td class="m hit">0 ✓</td></tr>
+    <tr><td class="m">0</td><td class="m">1</td><td class="m">−0.5</td><td class="m">0</td><td class="m hit">0 ✓</td></tr>
+    <tr><td class="m">1</td><td class="m">0</td><td class="m">−0.5</td><td class="m">0</td><td class="m hit">0 ✓</td></tr>
+    <tr><td class="m">1</td><td class="m">1</td><td class="m">0.5</td><td class="m">1</td><td class="m hit">1 ✓</td></tr>
+  </table>
+
+  <div class="pane">
+    <div class="phead">Python <span class="tag">perceptron.py — 5줄이면 충분</span></div>
+    <pre class="code"><span class="k">def</span> step(z):
+    <span class="k">return</span> <span class="n">1</span> <span class="k">if</span> z &gt;= <span class="n">0</span> <span class="k">else</span> <span class="n">0</span>
+
+<span class="k">def</span> perceptron(x1, x2, w1, w2, b):
+    <span class="k">return</span> step(w1*x1 + w2*x2 + b)
+
+<span class="c"># AND 게이트: w1=1, w2=1, b=-1.5</span>
+<span class="k">for</span> x1, x2 <span class="k">in</span> [(<span class="n">0</span>,<span class="n">0</span>),(<span class="n">0</span>,<span class="n">1</span>),(<span class="n">1</span>,<span class="n">0</span>),(<span class="n">1</span>,<span class="n">1</span>)]:
+    <span class="k">print</span>(x1, x2, <span class="s">"-&gt;"</span>, perceptron(x1, x2, <span class="n">1</span>, <span class="n">1</span>, -<span class="n">1.5</span>))</pre>
+    <div class="out"><span class="lab">실행 결과</span>0 0 -> 0
+0 1 -> 0
+1 0 -> 0
+1 1 -> 1</div>
+  </div>
+
+  <h2 class="sec">퍼셉트론 시뮬레이터 — 논리 게이트를 직접 만들어 보세요</h2>
+  <p class="body">퍼셉트론의 기하학적 정체는 <strong>직선 w₁x₁ + w₂x₂ + b = 0으로 평면을 둘로 자르는 것</strong>입니다. 슬라이더로 직선을 움직여 목표 게이트를 완성해 보세요. ●는 출력 1, ○는 출력 0이어야 하는 점입니다. <strong>AND와 OR을 성공시킨 뒤, XOR에 도전해 보세요!</strong></p>
+
+  <div class="simbox">
+    <div class="chips">
+      <button class="chip sel" id="gAND">AND</button>
+      <button class="chip" id="gOR">OR</button>
+      <button class="chip" id="gXOR">XOR</button>
+    </div>
+    <div class="grid2">
+      <svg id="pSvg" viewBox="0 0 460 440" xmlns="http://www.w3.org/2000/svg">
+        <defs><clipPath id="pClip"><rect x="40" y="20" width="400" height="380"/></clipPath></defs>
+        <g id="pAxes"></g>
+        <g id="pLineG" clip-path="url(#pClip)"></g>
+        <g id="pPts"></g>
+      </svg>
+      <div>
+        <table class="tb" style="margin-top:0">
+          <tr><th>x₁</th><th>x₂</th><th>출력</th><th>목표</th></tr>
+          <tr><td class="m">0</td><td class="m">0</td><td class="m" id="po00">?</td><td class="m" id="pt00">?</td></tr>
+          <tr><td class="m">0</td><td class="m">1</td><td class="m" id="po01">?</td><td class="m" id="pt01">?</td></tr>
+          <tr><td class="m">1</td><td class="m">0</td><td class="m" id="po10">?</td><td class="m" id="pt10">?</td></tr>
+          <tr><td class="m">1</td><td class="m">1</td><td class="m" id="po11">?</td><td class="m" id="pt11">?</td></tr>
+        </table>
+        <div class="simstatus" id="pMsg">?</div>
+      </div>
+    </div>
+    <div class="sliders">
+      <div class="sld"><label>w₁ <span class="val" id="w1Val">0.5</span></label><input type="range" id="w1S" min="-2" max="2" step="0.5" value="0.5"></div>
+      <div class="sld"><label>w₂ <span class="val" id="w2Val">0.5</span></label><input type="range" id="w2S" min="-2" max="2" step="0.5" value="0.5"></div>
+      <div class="sld"><label>b <span class="val" id="bVal">0.0</span></label><input type="range" id="bS" min="-3" max="3" step="0.5" value="0"></div>
+    </div>
+    <div class="simctrl">
+      <button class="btn ghost" id="pHint">💡 AND 정답 예시 (1, 1, −1.5)</button>
+    </div>
+  </div>
+
+  <div class="warn"><span class="ico">🚧</span><div><strong>XOR은 아무리 애써도 안 됩니다 — 이것이 역사적 발견!</strong> XOR의 ●(0,1)(1,0)과 ○(0,0)(1,1)은 <strong>직선 하나로는 절대 나눌 수 없습니다</strong>(1969, 민스키). 이 한계 때문에 신경망 연구가 얼어붙었고, 해결책은 <strong>퍼셉트론을 층으로 쌓는 것</strong> — 4번 탭에서 2-2-1 신경망이 XOR을 학습해 내는 것을 직접 확인합니다.</div></div>
+
+  <div class="pgnav">
+    <button class="btn ghost" onclick="goPage(0)">← 이전: 신경망이란?</button>
+    <button class="btn" onclick="goPage(2)">다음: 순전파 →</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 2. 순전파 ═══════════════ -->
+<section class="page" id="pg2">
+  <h2 class="sec">순전파 — 입력이 출력이 되기까지</h2>
+  <p class="body"><strong>순전파(forward propagation)</strong>는 입력이 층을 차례로 통과하며 출력이 되는 과정입니다. 각 뉴런에서 하는 일은 딱 두 가지 — <strong>가중합 z 계산</strong>, 그리고 <strong>활성화 함수 통과</strong>. 층을 지난다는 것은 수학적으로 <strong>함수를 합성한다</strong>는 뜻입니다.</p>
+
+  <div class="bigformula">&#375; = f( v&#8321;·f(w&#8321;&#8321;x&#8321;+w&#8321;&#8322;x&#8322;+b&#8321;) + v&#8322;·f(w&#8322;&#8321;x&#8321;+w&#8322;&#8322;x&#8322;+b&#8322;) + c )</div>
+
+  <h3 class="sub">활성화 함수 — 계단 대신 시그모이드</h3>
+  <p class="body">학습을 위해서는 <strong>미분 가능한</strong> 활성화 함수가 필요합니다(3·4번 탭에서 이유가 밝혀집니다). 대표가 <strong>시그모이드</strong>입니다.</p>
+  <div class="flist">
+    <div class="fcard">
+      <div class="fname">시그모이드 — 부드러운 계단</div>
+      <div class="formula">&sigma;(z) = 1 / (1 + e&#8315;&#7563;)</div>
+      <div class="fex"><span class="lab">성질</span>&sigma;(0)=0.5, 출력은 항상 0과 1 사이, &sigma;(&minus;z)=1&minus;&sigma;(z)</div>
+    </div>
+    <div class="fcard">
+      <div class="fname">시그모이드의 미분 — 자기 자신으로 표현!</div>
+      <div class="formula">&sigma;&prime;(z) = &sigma;(z)(1 &minus; &sigma;(z))</div>
+      <div class="fex"><span class="lab">예제</span>&sigma;(0)=0.5 → &sigma;&prime;(0) = 0.5×0.5 = 0.25 (최댓값)</div>
+    </div>
+  </div>
+
+  <h3 class="sub">손계산 예제 — 2-2-1 네트워크에 (1, 0) 넣기</h3>
+  <p class="body">가중치: 은닉 h₁는 (0.5, 0.5), h₂는 (−0.5, 1.0), 출력은 (1.0, −1.0), 편향은 모두 0.</p>
+  <table class="tb">
+    <tr><th>뉴런</th><th>가중합 z</th><th>계산</th><th>활성값 a = σ(z)</th></tr>
+    <tr><td class="rowh">h₁</td><td class="m">z₁ = 0.5·1 + 0.5·0 = 0.5</td><td class="m l">σ(0.5)</td><td class="m"><strong>0.6225</strong></td></tr>
+    <tr><td class="rowh">h₂</td><td class="m">z₂ = −0.5·1 + 1.0·0 = −0.5</td><td class="m l">σ(−0.5)</td><td class="m"><strong>0.3775</strong></td></tr>
+    <tr><td class="rowh">출력</td><td class="m">z₃ = 1.0·a₁ − 1.0·a₂ = 0.2449</td><td class="m l">σ(0.2449)</td><td class="m"><strong>ŷ = 0.5609</strong></td></tr>
+  </table>
+  <p class="body">정답이 y = 1이라면 손실은 E = ½(y − ŷ)² = ½(0.4391)² = <strong>0.0964</strong>. 이 오차를 줄이는 것이 3·4번 탭의 임무입니다.</p>
+
+  <div class="pane">
+    <div class="phead">Python <span class="tag">forward.py — 손계산 검산</span></div>
+    <pre class="code"><span class="k">import</span> math
+<span class="k">def</span> sig(z): <span class="k">return</span> <span class="n">1</span>/(<span class="n">1</span>+math.exp(-z))
+
+x1, x2 = <span class="n">1</span>, <span class="n">0</span>
+a1 = sig(<span class="n">0.5</span>*x1 + <span class="n">0.5</span>*x2)      <span class="c"># 은닉 1</span>
+a2 = sig(-<span class="n">0.5</span>*x1 + <span class="n">1.0</span>*x2)     <span class="c"># 은닉 2</span>
+yhat = sig(<span class="n">1.0</span>*a1 - <span class="n">1.0</span>*a2)    <span class="c"># 출력</span>
+<span class="k">print</span>(round(a1,<span class="n">4</span>), round(a2,<span class="n">4</span>), round(yhat,<span class="n">4</span>))</pre>
+    <div class="out"><span class="lab">실행 결과</span>0.6225 0.3775 0.5609</div>
+  </div>
+
+  <h2 class="sec">순전파 계산기 — 값이 흐르는 것을 눈으로</h2>
+  <p class="body">입력 x₁, x₂와 정답 y를 바꾸면 네트워크의 모든 z, a 값과 손실 E가 즉시 다시 계산됩니다. 간선의 숫자는 고정된 가중치입니다.</p>
+
+  <div class="simbox">
+    <div class="numin">
+      <label for="fIn1">x₁ =</label><input type="text" id="fIn1" value="1">
+      <label for="fIn2">x₂ =</label><input type="text" id="fIn2" value="0">
+      <label for="fInT">정답 y =</label><input type="text" id="fInT" value="1">
+    </div>
+    <svg viewBox="0 0 940 400" xmlns="http://www.w3.org/2000/svg">
+      <line x1="160" y1="120" x2="440" y2="110" stroke="#C9BBA4" stroke-width="3"/>
+      <line x1="160" y1="120" x2="440" y2="270" stroke="#C9BBA4" stroke-width="3"/>
+      <line x1="160" y1="280" x2="440" y2="110" stroke="#C9BBA4" stroke-width="3"/>
+      <line x1="160" y1="280" x2="440" y2="270" stroke="#C9BBA4" stroke-width="3"/>
+      <line x1="500" y1="110" x2="780" y2="190" stroke="#C9BBA4" stroke-width="3"/>
+      <line x1="500" y1="270" x2="780" y2="190" stroke="#C9BBA4" stroke-width="3"/>
+      <text x="290" y="98" text-anchor="middle" font-size="17" font-weight="700" font-family="JetBrains Mono, monospace" fill="#B65C1B">0.5</text>
+      <text x="255" y="176" text-anchor="middle" font-size="17" font-weight="700" font-family="JetBrains Mono, monospace" fill="#B65C1B">-0.5</text>
+      <text x="255" y="238" text-anchor="middle" font-size="17" font-weight="700" font-family="JetBrains Mono, monospace" fill="#B65C1B">0.5</text>
+      <text x="290" y="300" text-anchor="middle" font-size="17" font-weight="700" font-family="JetBrains Mono, monospace" fill="#B65C1B">1.0</text>
+      <text x="640" y="128" text-anchor="middle" font-size="17" font-weight="700" font-family="JetBrains Mono, monospace" fill="#B65C1B">1.0</text>
+      <text x="640" y="262" text-anchor="middle" font-size="17" font-weight="700" font-family="JetBrains Mono, monospace" fill="#B65C1B">-1.0</text>
+      <circle cx="130" cy="120" r="36" fill="#FDFBF6" stroke="#B65C1B" stroke-width="3"/>
+      <text id="ndX1" x="130" y="128" text-anchor="middle" font-size="20" font-weight="700" font-family="JetBrains Mono, monospace" fill="#2A2320">1</text>
+      <text x="130" y="70" text-anchor="middle" font-size="17" fill="#6B6157">x₁</text>
+      <circle cx="130" cy="280" r="36" fill="#FDFBF6" stroke="#B65C1B" stroke-width="3"/>
+      <text id="ndX2" x="130" y="288" text-anchor="middle" font-size="20" font-weight="700" font-family="JetBrains Mono, monospace" fill="#2A2320">0</text>
+      <text x="130" y="345" text-anchor="middle" font-size="17" fill="#6B6157">x₂</text>
+      <circle cx="470" cy="110" r="36" fill="#F9EDE1" stroke="#B65C1B" stroke-width="3"/>
+      <text id="ndA1" x="470" y="118" text-anchor="middle" font-size="18" font-weight="700" font-family="JetBrains Mono, monospace" fill="#2A2320">?</text>
+      <text id="ndZ1" x="470" y="60" text-anchor="middle" font-size="16" font-family="JetBrains Mono, monospace" fill="#6B6157">z₁=?</text>
+      <text x="470" y="170" text-anchor="middle" font-size="17" fill="#6B6157">h₁</text>
+      <circle cx="470" cy="270" r="36" fill="#F9EDE1" stroke="#B65C1B" stroke-width="3"/>
+      <text id="ndA2" x="470" y="278" text-anchor="middle" font-size="18" font-weight="700" font-family="JetBrains Mono, monospace" fill="#2A2320">?</text>
+      <text id="ndZ2" x="470" y="342" text-anchor="middle" font-size="16" font-family="JetBrains Mono, monospace" fill="#6B6157">z₂=?</text>
+      <text x="470" y="222" text-anchor="middle" font-size="17" fill="#6B6157">h₂</text>
+      <circle cx="810" cy="190" r="40" fill="#B65C1B" stroke="#8C4310" stroke-width="3"/>
+      <text id="ndY" x="810" y="198" text-anchor="middle" font-size="18" font-weight="700" font-family="JetBrains Mono, monospace" fill="#fff">?</text>
+      <text id="ndZ3" x="810" y="130" text-anchor="middle" font-size="16" font-family="JetBrains Mono, monospace" fill="#6B6157">z₃=?</text>
+      <text x="810" y="255" text-anchor="middle" font-size="17" fill="#6B6157">출력 ŷ</text>
+    </svg>
+    <div class="simstatus" id="fMsg">?</div>
+  </div>
+
+  <div class="point"><span class="ico">🔬</span><div><strong>실험:</strong> x = (0, 0)과 (1, 1)을 넣어 보세요 — ŷ가 어떻게 변하나요? 이 고정 가중치 네트워크는 아직 "학습 전"이라 출력이 정답과 멀 수 있습니다. 오차를 줄이려면 가중치를 <strong>어느 방향으로 얼마나</strong> 바꿔야 할까요? 그 답이 다음 탭입니다.</div></div>
+
+  <div class="pgnav">
+    <button class="btn ghost" onclick="goPage(1)">← 이전: 퍼셉트론</button>
+    <button class="btn" onclick="goPage(3)">다음: 경사하강법 →</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 3. 경사하강법 ═══════════════ -->
+<section class="page" id="pg3">
+  <h2 class="sec">경사하강법 — 안개 속 산에서 골짜기 찾기</h2>
+  <p class="body">손실 E는 가중치 w의 함수입니다. E가 최소가 되는 w를 찾고 싶은데, 함수 전체 모양은 볼 수 없고 <strong>지금 서 있는 곳의 기울기(미분값)</strong>만 알 수 있습니다. 그렇다면? <strong>기울기의 반대 방향(내리막)으로 한 걸음씩</strong> 내려가면 됩니다.</p>
+
+  <div class="bigformula">w &larr; w &minus; &eta; · dE/dw &nbsp;&nbsp;(&eta; = 학습률, 걸음의 크기)</div>
+
+  <div class="flist">
+    <div class="fcard">
+      <div class="fname">왜 "빼기"인가?</div>
+      <div class="formula">기울기 &gt; 0 (오르막) → w 감소 &nbsp;·&nbsp; 기울기 &lt; 0 → w 증가</div>
+      <div class="fex"><span class="lab">핵심</span>부호가 항상 내리막을 가리키도록 만드는 장치</div>
+    </div>
+    <div class="fcard">
+      <div class="fname">학습률 η — 보폭</div>
+      <div class="formula">너무 작으면 느림 · 너무 크면 발산</div>
+      <div class="fex"><span class="lab">아래에서 직접 체험</span>η = 1.1로 두면 골짜기를 건너뛰며 튕겨 나갑니다!</div>
+    </div>
+  </div>
+
+  <h3 class="sub">손계산 예제 — E(w) = (w − 3)², 시작 w = 0, η = 0.1</h3>
+  <p class="body">미분하면 dE/dw = 2(w − 3). 갱신식은 w ← w − 0.1 × 2(w − 3).</p>
+  <table class="tb">
+    <tr><th>단계</th><th>기울기 2(w−3)</th><th>갱신 계산</th><th>새 w</th><th>E(w)</th></tr>
+    <tr><td class="m">1</td><td class="m">−6</td><td class="m l">0 − 0.1×(−6)</td><td class="m"><strong>0.6</strong></td><td class="m">5.76</td></tr>
+    <tr><td class="m">2</td><td class="m">−4.8</td><td class="m l">0.6 + 0.48</td><td class="m"><strong>1.08</strong></td><td class="m">3.6864</td></tr>
+    <tr><td class="m">3</td><td class="m">−3.84</td><td class="m l">1.08 + 0.384</td><td class="m"><strong>1.464</strong></td><td class="m">2.3593</td></tr>
+    <tr><td class="m">⋮</td><td class="m">⋮</td><td class="m l">매번 남은 거리의 20%씩 접근</td><td class="m">⋮</td><td class="m">⋮</td></tr>
+    <tr><td class="m">20</td><td class="m">−0.087</td><td class="m l"></td><td class="m"><strong>2.9654</strong></td><td class="m">0.0012</td></tr>
+  </table>
+
+  <div class="pane">
+    <div class="phead">Python <span class="tag">gradient_descent.py</span></div>
+    <pre class="code"><span class="k">def</span> E(w):  <span class="k">return</span> (w - <span class="n">3</span>)**<span class="n">2</span>
+<span class="k">def</span> dE(w): <span class="k">return</span> <span class="n">2</span>*(w - <span class="n">3</span>)      <span class="c"># 미분</span>
+
+w, eta = <span class="n">0.0</span>, <span class="n">0.1</span>
+<span class="k">for</span> step <span class="k">in</span> range(<span class="n">1</span>, <span class="n">21</span>):
+    w = w - eta * dE(w)            <span class="c"># 경사하강법 갱신</span>
+    <span class="k">if</span> step &lt;= <span class="n">5</span> <span class="k">or</span> step == <span class="n">20</span>:
+        <span class="k">print</span>(f<span class="s">"{step:2d}회: w = {w:.4f}, E = {E(w):.4f}"</span>)</pre>
+    <div class="out"><span class="lab">실행 결과</span> 1회: w = 0.6000, E = 5.7600
+ 2회: w = 1.0800, E = 3.6864
+ 3회: w = 1.4640, E = 2.3593
+ 4회: w = 1.7712, E = 1.5099
+ 5회: w = 2.0170, E = 0.9664
+20회: w = 2.9654, E = 0.0012</div>
+  </div>
+
+  <h2 class="sec">경사하강 시뮬레이터 — 공을 골짜기로 굴려 보세요</h2>
+  <p class="body">곡선은 E(w) = (w−3)², 최솟값은 w = 3. 시작 위치와 학습률을 정하고 스텝을 밟아 보세요. <strong>η = 1.0에서는 영원히 왕복</strong>하고, <strong>η &gt; 1.0에서는 발산</strong>합니다!</p>
+
+  <div class="simbox">
+    <svg id="gdSvg" viewBox="0 0 720 430" xmlns="http://www.w3.org/2000/svg">
+      <g id="gdAxes"></g>
+      <path id="gdCurve" fill="none" stroke="#B65C1B" stroke-width="4"/>
+      <g id="gdTrail"></g>
+      <circle id="gdBall" r="11" fill="#8C4310" stroke="#fff" stroke-width="2.5"/>
+    </svg>
+    <div class="sliders">
+      <div class="sld"><label>시작 w₀ <span class="val" id="gw0Val">0.0</span></label><input type="range" id="gw0S" min="-2" max="8" step="0.5" value="0"></div>
+      <div class="sld"><label>학습률 η <span class="val" id="getaVal">0.10</span></label><input type="range" id="getaS" min="0.05" max="1.2" step="0.05" value="0.1"></div>
+      <div class="sld" style="display:flex;align-items:center;justify-content:center">
+        <span class="mono" id="gdInfo" style="font-weight:700;color:var(--accent-deep);font-size:17px">스텝 0</span>
+      </div>
+    </div>
+    <div class="simstatus" id="gdMsg">?</div>
+    <div class="simctrl">
+      <button class="btn ghost" id="gdReset">⟲ 리셋</button>
+      <button class="btn" id="gdStep">한 스텝 ↓</button>
+      <button class="btn" id="gdStep10">10 스텝 ⏩</button>
+    </div>
+  </div>
+
+  <div class="point"><span class="ico">🧗</span><div><strong>신경망 학습 = 이 공 굴리기의 고차원 버전.</strong> 실제 신경망은 가중치가 수백만~수십억 개인 초고차원 산맥이지만, 원리는 완전히 같습니다: <strong>모든 가중치에 대해 기울기 dE/dw를 구하고, 각자 반대 방향으로 η만큼 이동.</strong> 그런데 그 수많은 기울기를 어떻게 한 번에 구할까요? 답이 바로 역전파입니다 →</div></div>
+
+  <div class="pgnav">
+    <button class="btn ghost" onclick="goPage(2)">← 이전: 순전파</button>
+    <button class="btn" onclick="goPage(4)">다음: 역전파 &amp; XOR 실습 →</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 4. 역전파 & XOR 실습 ═══════════════ -->
+<section class="page" id="pg4">
+  <h2 class="sec">역전파 — 연쇄법칙으로 기울기를 거꾸로 전달</h2>
+  <p class="body">순전파는 <strong>합성함수</strong>였습니다: x → z₁ → a₁ → z₃ → ŷ → E. 그렇다면 dE/dw는 <strong>합성함수의 미분, 즉 연쇄법칙</strong>으로 구할 수 있습니다. 오차의 책임을 출력에서 입력 쪽으로 <strong>거꾸로(back) 전파</strong>하며 곱해 나가는 것입니다.</p>
+
+  <div class="bigformula">dE/dv&#8321; = (dE/d&#375;) × (d&#375;/dz&#8323;) × (dz&#8323;/dv&#8321;) = (&#375;&minus;y) · &sigma;&prime;(z&#8323;) · a&#8321;</div>
+
+  <div class="flist">
+    <div class="fcard">
+      <div class="fname">출력층의 오차 신호 δ</div>
+      <div class="formula">&delta; = (&#375; &minus; y) · &sigma;&prime;(z&#8323;) = (&#375;&minus;y)·&#375;(1&minus;&#375;)</div>
+      <div class="fex"><span class="lab">뜻</span>"출력이 정답에서 얼마나, 어느 방향으로 어긋났나"</div>
+    </div>
+    <div class="fcard">
+      <div class="fname">가중치의 기울기 = δ × 입력 쪽 활성값</div>
+      <div class="formula">dE/dv&#8321; = &delta; · a&#8321;, &nbsp; dE/dv&#8322; = &delta; · a&#8322;</div>
+      <div class="fex"><span class="lab">뜻</span>"많이 켜져 있던 뉴런일수록 책임이 크다"</div>
+    </div>
+  </div>
+
+  <h3 class="sub">손계산 — 2번 탭 예제 이어서 (x=(1,0), y=1)</h3>
+  <p class="body">순전파 결과: a₁ = 0.6225, a₂ = 0.3775, ŷ = 0.5609 였습니다. 이제 출력층 가중치 v₁=1.0, v₂=−1.0의 기울기를 구하고 η = 0.5로 갱신합니다.</p>
+  <table class="tb">
+    <tr><th>단계</th><th>계산</th><th>값</th></tr>
+    <tr><td class="rowh">σ′(z₃) = ŷ(1−ŷ)</td><td class="m l">0.5609 × 0.4391</td><td class="m"><strong>0.2463</strong></td></tr>
+    <tr><td class="rowh">δ = (ŷ−y)·σ′(z₃)</td><td class="m l">(−0.4391) × 0.2463</td><td class="m"><strong>−0.1081</strong></td></tr>
+    <tr><td class="rowh">dE/dv₁ = δ·a₁</td><td class="m l">−0.1081 × 0.6225</td><td class="m"><strong>−0.0673</strong></td></tr>
+    <tr><td class="rowh">dE/dv₂ = δ·a₂</td><td class="m l">−0.1081 × 0.3775</td><td class="m"><strong>−0.0408</strong></td></tr>
+    <tr><td class="rowh">v₁ 갱신</td><td class="m l">1.0 − 0.5×(−0.0673)</td><td class="m hit">1.0337 (커짐 ↑)</td></tr>
+    <tr><td class="rowh">v₂ 갱신</td><td class="m l">−1.0 − 0.5×(−0.0408)</td><td class="m hit">−0.9796 (커짐 ↑)</td></tr>
+  </table>
+  <p class="body">두 가중치 모두 커졌습니다 — ŷ(0.5609)를 정답 1 쪽으로 <strong>끌어올리는 방향</strong>이니 이치에 맞습니다! 은닉층 가중치도 연쇄를 한 층 더 이어가면 됩니다: δ<sub>h1</sub> = δ·v₁·a₁(1−a₁) = <span class="mono">−0.0254</span>, dE/dw₁₁ = δ<sub>h1</sub>·x₁ = <span class="mono">−0.0254</span>.</p>
+
+  <div class="point"><span class="ico">🔁</span><div><strong>딥러닝 학습 1사이클 완성:</strong> ① 순전파로 ŷ 계산 → ② 손실 E 측정 → ③ 역전파(연쇄법칙)로 모든 dE/dw 계산 → ④ 경사하강법으로 전 가중치 갱신 → 반복. 이 네 박자가 GPT까지 이어지는 모든 신경망 학습의 전부입니다.</div></div>
+
+  <h2 class="sec">종합 실습 — 신경망이 XOR을 학습한다!</h2>
+  <p class="body">1번 탭에서 단층 퍼셉트론이 실패했던 XOR을, <strong>2-2-1 신경망 + 순전파 + 역전파 + 경사하강법</strong>으로 학습시킵니다. 라이브러리 없이 순수 파이썬 30줄입니다.</p>
+
+  <div class="pane">
+    <div class="phead">Python <span class="tag">xor_network.py — 이 강의 전체의 결정판</span></div>
+    <pre class="code"><span class="k">import</span> math, random
+random.seed(<span class="n">42</span>)
+
+<span class="k">def</span> sig(z): <span class="k">return</span> <span class="n">1</span>/(<span class="n">1</span>+math.exp(-z))
+
+X = [(<span class="n">0</span>,<span class="n">0</span>),(<span class="n">0</span>,<span class="n">1</span>),(<span class="n">1</span>,<span class="n">0</span>),(<span class="n">1</span>,<span class="n">1</span>)]
+Y = [<span class="n">0</span>, <span class="n">1</span>, <span class="n">1</span>, <span class="n">0</span>]                      <span class="c"># XOR</span>
+
+<span class="c"># 가중치 초기화: 은닉 뉴런 2개 [w1,w2,b], 출력 [v1,v2,b]</span>
+w = [[random.uniform(-<span class="n">1</span>,<span class="n">1</span>) <span class="k">for</span> _ <span class="k">in</span> range(<span class="n">3</span>)] <span class="k">for</span> _ <span class="k">in</span> range(<span class="n">2</span>)]
+v = [random.uniform(-<span class="n">1</span>,<span class="n">1</span>) <span class="k">for</span> _ <span class="k">in</span> range(<span class="n">3</span>)]
+eta = <span class="n">0.5</span>
+
+<span class="k">for</span> epoch <span class="k">in</span> range(<span class="n">1</span>, <span class="n">5001</span>):
+    loss = <span class="n">0</span>
+    <span class="k">for</span> (x1,x2), y <span class="k">in</span> zip(X, Y):
+        <span class="c"># ① 순전파</span>
+        a = [sig(w[j][<span class="n">0</span>]*x1 + w[j][<span class="n">1</span>]*x2 + w[j][<span class="n">2</span>]) <span class="k">for</span> j <span class="k">in</span> range(<span class="n">2</span>)]
+        yhat = sig(v[<span class="n">0</span>]*a[<span class="n">0</span>] + v[<span class="n">1</span>]*a[<span class="n">1</span>] + v[<span class="n">2</span>])
+        loss += <span class="n">0.5</span>*(y-yhat)**<span class="n">2</span>       <span class="c"># ② 손실</span>
+        <span class="c"># ③ 역전파 (연쇄법칙)</span>
+        d_out = (yhat-y)*yhat*(<span class="n">1</span>-yhat)
+        d_hid = [d_out*v[j]*a[j]*(<span class="n">1</span>-a[j]) <span class="k">for</span> j <span class="k">in</span> range(<span class="n">2</span>)]
+        <span class="c"># ④ 경사하강법 갱신</span>
+        v[<span class="n">0</span>]-=eta*d_out*a[<span class="n">0</span>]; v[<span class="n">1</span>]-=eta*d_out*a[<span class="n">1</span>]; v[<span class="n">2</span>]-=eta*d_out
+        <span class="k">for</span> j <span class="k">in</span> range(<span class="n">2</span>):
+            w[j][<span class="n">0</span>]-=eta*d_hid[j]*x1; w[j][<span class="n">1</span>]-=eta*d_hid[j]*x2; w[j][<span class="n">2</span>]-=eta*d_hid[j]
+    <span class="k">if</span> epoch <span class="k">in</span> (<span class="n">1</span>, <span class="n">100</span>, <span class="n">1000</span>, <span class="n">5000</span>):
+        <span class="k">print</span>(f<span class="s">"epoch {epoch:4d}: loss = {loss:.4f}"</span>)
+
+<span class="k">for</span> (x1,x2) <span class="k">in</span> X:
+    a = [sig(w[j][<span class="n">0</span>]*x1 + w[j][<span class="n">1</span>]*x2 + w[j][<span class="n">2</span>]) <span class="k">for</span> j <span class="k">in</span> range(<span class="n">2</span>)]
+    yhat = sig(v[<span class="n">0</span>]*a[<span class="n">0</span>] + v[<span class="n">1</span>]*a[<span class="n">1</span>] + v[<span class="n">2</span>])
+    <span class="k">print</span>(f<span class="s">"XOR({x1},{x2}) = {yhat:.3f} -&gt; {round(yhat)}"</span>)</pre>
+    <div class="out"><span class="lab">실행 결과</span>epoch    1: loss = 0.5373
+epoch  100: loss = 0.5212
+epoch 1000: loss = 0.0481
+epoch 5000: loss = 0.0013
+XOR(0,0) = 0.026 -> 0
+XOR(0,1) = 0.970 -> 1
+XOR(1,0) = 0.976 -> 1
+XOR(1,1) = 0.023 -> 0</div>
+  </div>
+
+  <div class="point"><span class="ico">🎉</span><div><strong>손실 0.5373 → 0.0013, 네 입력 모두 정답!</strong> 직선 하나로는 불가능했던 XOR을, 은닉층 2개짜리 신경망이 스스로 풀어냈습니다. 은닉층이 공간을 <strong>휘어서</strong> 나눌 수 없던 것을 나눌 수 있게 만든 것 — 이것이 "딥"의 힘입니다.</div></div>
+
+  <div class="card tint">
+    <h3 class="sub" style="margin-top:0">📝 실습 과제 아이디어</h3>
+    <p class="body">① eta를 0.1 / 2.0으로 바꿔 loss 곡선 비교하기 (3번 탭의 학습률 실험과 연결) &nbsp;② Y를 [0,0,0,1](AND)로 바꾸면 몇 epoch에 수렴하는지 관찰하기 &nbsp;③ 은닉 뉴런을 3개로 늘려 보기 &nbsp;④ seed를 바꿔 초기값의 영향(수렴 속도 차이) 확인하기</p>
+  </div>
+
+  <div class="pgnav">
+    <button class="btn ghost" onclick="goPage(3)">← 이전: 경사하강법</button>
+    <button class="btn" onclick="goPage(5)">다음: 퀴즈 →</button>
+  </div>
+</section>
+
+<!-- ═══════════════ 5. 퀴즈 ═══════════════ -->
+<section class="page" id="pg5">
+  <h2 class="sec">확인 퀴즈 — 8문제</h2>
+  <p class="body">보기를 클릭하면 바로 채점됩니다. 초록색이 정답, 빨간색이 오답입니다.</p>
+  <div class="scorebox">맞힌 개수: <span class="mono" id="scoreNum">0</span> / <span class="mono">8</span></div>
+
+  <div class="qz">
+    <div class="qt"><span class="qno">1</span>퍼셉트론의 출력을 올바르게 나타낸 것은?</div>
+    <div class="opts">
+      <button class="opt">y = w₁x₁ + w₂x₂</button>
+      <button class="opt" data-ok="1">y = f(w₁x₁ + w₂x₂ + b)</button>
+      <button class="opt">y = x₁ · x₂ · b</button>
+      <button class="opt">y = f(x₁) + f(x₂)</button>
+    </div>
+    <div class="expl">가중합 z = w₁x₁+w₂x₂+b를 만든 뒤 활성화 함수 f에 통과시킵니다. 일차식 + 함수, 두 부품이 전부입니다.</div>
+  </div>
+
+  <div class="qz">
+    <div class="qt"><span class="qno">2</span>단층 퍼셉트론(직선 하나)이 절대 만들 수 없는 논리 게이트는?</div>
+    <div class="opts">
+      <button class="opt">AND</button>
+      <button class="opt">OR</button>
+      <button class="opt" data-ok="1">XOR</button>
+      <button class="opt">NOT</button>
+    </div>
+    <div class="expl">XOR의 1인 점 (0,1),(1,0)과 0인 점 (0,0),(1,1)은 직선 하나로 나눌 수 없습니다(선형 분리 불가능). 은닉층이 필요한 이유입니다.</div>
+  </div>
+
+  <div class="qz">
+    <div class="qt"><span class="qno">3</span>시그모이드 함수 σ(0)의 값은?</div>
+    <div class="opts">
+      <button class="opt">0</button>
+      <button class="opt" data-ok="1">0.5</button>
+      <button class="opt">1</button>
+      <button class="opt">e</button>
+    </div>
+    <div class="expl">σ(0) = 1/(1+e⁰) = 1/2 = 0.5. 시그모이드는 0을 중심으로 0과 1 사이를 부드럽게 잇는 S자 곡선입니다.</div>
+  </div>
+
+  <div class="qz">
+    <div class="qt"><span class="qno">4</span>시그모이드의 도함수 σ′(z)는?</div>
+    <div class="opts">
+      <button class="opt">σ(z)²</button>
+      <button class="opt">1 − σ(z)</button>
+      <button class="opt" data-ok="1">σ(z)(1 − σ(z))</button>
+      <button class="opt">e⁻ᶻ</button>
+    </div>
+    <div class="expl">σ′ = σ(1−σ). 자기 자신의 값만으로 미분값이 나오므로 역전파 계산이 매우 편합니다. 최댓값은 z=0에서 0.25.</div>
+  </div>
+
+  <div class="qz">
+    <div class="qt"><span class="qno">5</span>경사하강법의 가중치 갱신식은?</div>
+    <div class="opts">
+      <button class="opt">w ← w + η·dE/dw</button>
+      <button class="opt" data-ok="1">w ← w − η·dE/dw</button>
+      <button class="opt">w ← η·dE/dw</button>
+      <button class="opt">w ← w − E(w)</button>
+    </div>
+    <div class="expl">기울기의 반대 방향(−)으로 학습률 η만큼 이동해야 내리막입니다. +로 하면 오히려 손실이 커지는 오르막 등반이 됩니다.</div>
+  </div>
+
+  <div class="qz">
+    <div class="qt"><span class="qno">6</span>E(w) = (w−3)², w = 0, η = 0.1일 때 한 스텝 후 w는?</div>
+    <div class="opts">
+      <button class="opt">0.3</button>
+      <button class="opt" data-ok="1">0.6</button>
+      <button class="opt">−0.6</button>
+      <button class="opt">3</button>
+    </div>
+    <div class="expl">dE/dw = 2(0−3) = −6. w ← 0 − 0.1×(−6) = 0.6. 음의 기울기이므로 w가 커지는 방향(골짜기 w=3 쪽)으로 이동합니다.</div>
+  </div>
+
+  <div class="qz">
+    <div class="qt"><span class="qno">7</span>학습률 η가 너무 크면 일어나는 일은?</div>
+    <div class="opts">
+      <button class="opt">더 정확하게 수렴한다</button>
+      <button class="opt">아무 변화 없다</button>
+      <button class="opt" data-ok="1">골짜기를 건너뛰며 진동하거나 발산한다</button>
+      <button class="opt">기울기가 0이 된다</button>
+    </div>
+    <div class="expl">보폭이 골짜기 폭보다 크면 반대편 벽으로 건너뛰고, 더 크면 점점 멀어져 발산합니다. 3번 탭 시뮬레이터에서 η=1.1로 직접 확인!</div>
+  </div>
+
+  <div class="qz">
+    <div class="qt"><span class="qno">8</span>역전파의 수학적 핵심 도구는?</div>
+    <div class="opts">
+      <button class="opt">피타고라스 정리</button>
+      <button class="opt">등비급수</button>
+      <button class="opt" data-ok="1">연쇄법칙 (합성함수의 미분)</button>
+      <button class="opt">인수분해</button>
+    </div>
+    <div class="expl">신경망 = 합성함수이므로, dE/dw는 층별 미분값들의 곱(연쇄법칙)으로 구합니다. 오차 신호 δ를 뒤로 전달하며 곱하는 것이 역전파입니다.</div>
+  </div>
+
+  <div class="pgnav">
+    <button class="btn ghost" onclick="goPage(4)">← 이전: 역전파 &amp; XOR 실습</button>
+    <button class="btn" onclick="goPage(0)">⟲ 처음으로</button>
+  </div>
+</section>
+
+</main>
+
+<script>
+/* ───────── 탭 이동 ───────── */
+function goPage(n){
+  for(var i=0;i<6;i++){
+    document.getElementById('pg'+i).classList.toggle('on', i===n);
+    document.getElementById('tab'+i).classList.toggle('on', i===n);
+  }
+  window.scrollTo(0,0);
+}
+var SVGNS='http://www.w3.org/2000/svg';
+function svgEl(tag, attrs){
+  var e=document.createElementNS(SVGNS, tag);
+  for(var k in attrs) e.setAttribute(k, attrs[k]);
+  return e;
+}
+
+/* ═════════ 퍼셉트론 시뮬레이터 ═════════ */
+var GATES={AND:[0,0,0,1], OR:[0,1,1,1], XOR:[0,1,1,0]};
+var pGate='AND';
+var P_IN=[[0,0],[0,1],[1,0],[1,1]];
+function pfx(x){ return 40 + (x+0.5)/2*400; }   /* x: -0.5..1.5 */
+function pfy(y){ return 400 - (y+0.5)/2*380; }
+
+function pAxesDraw(){
+  var g=document.getElementById('pAxes');
+  g.appendChild(svgEl('rect',{x:40,y:20,width:400,height:380,fill:'none',stroke:'#8d8270','stroke-width':2,rx:8}));
+  g.appendChild(svgEl('line',{x1:pfx(0),y1:20,x2:pfx(0),y2:400,stroke:'#EDE7D8','stroke-width':2}));
+  g.appendChild(svgEl('line',{x1:pfx(1),y1:20,x2:pfx(1),y2:400,stroke:'#EDE7D8','stroke-width':2}));
+  g.appendChild(svgEl('line',{x1:40,y1:pfy(0),x2:440,y2:pfy(0),stroke:'#EDE7D8','stroke-width':2}));
+  g.appendChild(svgEl('line',{x1:40,y1:pfy(1),x2:440,y2:pfy(1),stroke:'#EDE7D8','stroke-width':2}));
+  var lbl=[[0,0],[1,0],[0,1],[1,1]];
+  for(var i=0;i<lbl.length;i++){
+    var t=svgEl('text',{x:pfx(lbl[i][0])+16,y:pfy(lbl[i][1])+22,'font-size':14,fill:'#6B6157','font-family':'JetBrains Mono, monospace'});
+    t.textContent='('+lbl[i][0]+','+lbl[i][1]+')';
+    document.getElementById('pAxes').appendChild(t);
+  }
+}
+
+function pUpdate(){
+  var w1=parseFloat(document.getElementById('w1S').value);
+  var w2=parseFloat(document.getElementById('w2S').value);
+  var b=parseFloat(document.getElementById('bS').value);
+  document.getElementById('w1Val').textContent=w1.toFixed(1);
+  document.getElementById('w2Val').textContent=w2.toFixed(1);
+  document.getElementById('bVal').textContent=b.toFixed(1);
+  var target=GATES[pGate];
+  var ids=['00','01','10','11'];
+  var okCnt=0;
+  for(var i=0;i<4;i++){
+    var z=w1*P_IN[i][0]+w2*P_IN[i][1]+b;
+    var out=(z>=0)?1:0;
+    var oc=document.getElementById('po'+ids[i]);
+    var tc=document.getElementById('pt'+ids[i]);
+    oc.textContent=String(out);
+    tc.textContent=String(target[i]);
+    oc.className = (out===target[i]) ? 'm hit' : 'm miss';
+    tc.className='m';
+    if(out===target[i]) okCnt++;
+  }
+  var msg=document.getElementById('pMsg');
+  if(okCnt===4){
+    msg.textContent='\uD83C\uDF89 '+pGate+' 게이트 완성! (4/4)';
+    msg.classList.add('win');
+  }else{
+    msg.textContent=pGate+' 도전 중\u2026 맞춘 조합 '+okCnt+'/4';
+    msg.classList.remove('win');
+  }
+  /* 결정경계 & 점 */
+  var lg=document.getElementById('pLineG');
+  while(lg.firstChild) lg.removeChild(lg.firstChild);
+  if(Math.abs(w2)>1e-9){
+    var xa=-0.5, xb=1.5;
+    var ya=-(w1*xa+b)/w2, yb=-(w1*xb+b)/w2;
+    lg.appendChild(svgEl('line',{x1:pfx(xa),y1:pfy(ya),x2:pfx(xb),y2:pfy(yb),stroke:'#8C4310','stroke-width':4}));
+  }else if(Math.abs(w1)>1e-9){
+    var xv=-b/w1;
+    lg.appendChild(svgEl('line',{x1:pfx(xv),y1:20,x2:pfx(xv),y2:400,stroke:'#8C4310','stroke-width':4}));
+  }
+  var pp=document.getElementById('pPts');
+  while(pp.firstChild) pp.removeChild(pp.firstChild);
+  for(var j=0;j<4;j++){
+    var isOne=(target[j]===1);
+    pp.appendChild(svgEl('circle',{
+      cx:pfx(P_IN[j][0]), cy:pfy(P_IN[j][1]), r:13,
+      fill:isOne?'#B65C1B':'#FDFBF6', stroke:'#2A2320','stroke-width':3
+    }));
+  }
+}
+
+function pSetGate(g, btn){
+  pGate=g;
+  var chips=[document.getElementById('gAND'),document.getElementById('gOR'),document.getElementById('gXOR')];
+  for(var i=0;i<chips.length;i++) chips[i].classList.toggle('sel', chips[i]===btn);
+  pUpdate();
+}
+
+/* ═════════ 순전파 계산기 ═════════ */
+function sigJ(z){ return 1/(1+Math.exp(-z)); }
+function r4(v){ return (Math.round(v*10000)/10000).toFixed(4); }
+function fParse(id){
+  var t=document.getElementById(id).value.trim();
+  var v=Number(t);
+  return (t===''||isNaN(v))?null:v;
+}
+function fUpdate(){
+  var x1=fParse('fIn1'), x2=fParse('fIn2'), y=fParse('fInT');
+  var msg=document.getElementById('fMsg');
+  if(x1===null||x2===null||y===null){
+    msg.textContent='\u26A0 숫자를 입력하세요';
+    return;
+  }
+  var z1=0.5*x1+0.5*x2, a1=sigJ(z1);
+  var z2=-0.5*x1+1.0*x2, a2=sigJ(z2);
+  var z3=1.0*a1-1.0*a2, yh=sigJ(z3);
+  var E=0.5*(y-yh)*(y-yh);
+  document.getElementById('ndX1').textContent=String(x1);
+  document.getElementById('ndX2').textContent=String(x2);
+  document.getElementById('ndZ1').textContent='z\u2081='+r4(z1);
+  document.getElementById('ndA1').textContent=r4(a1);
+  document.getElementById('ndZ2').textContent='z\u2082='+r4(z2);
+  document.getElementById('ndA2').textContent=r4(a2);
+  document.getElementById('ndZ3').textContent='z\u2083='+r4(z3);
+  document.getElementById('ndY').textContent=r4(yh);
+  msg.textContent='\u0177 = '+r4(yh)+'  \u2192  손실 E = \u00BD(y\u2212\u0177)\u00B2 = '+r4(E);
+}
+
+/* ═════════ 경사하강 시뮬레이터 ═════════ */
+function gEw(w){ return (w-3)*(w-3); }
+function gdE(w){ return 2*(w-3); }
+function gfx(w){ return 60 + (w+2)/10*630; }
+function gfy(E){ return 380 - Math.min(E,25)/25*350; }
+var gdW, gdSteps, gdDiverged;
+
+function gdAxesDraw(){
+  var g=document.getElementById('gdAxes');
+  g.appendChild(svgEl('line',{x1:60,y1:380,x2:690,y2:380,stroke:'#8d8270','stroke-width':2}));
+  for(var w=-2;w<=8;w+=1){
+    g.appendChild(svgEl('line',{x1:gfx(w),y1:380,x2:gfx(w),y2:386,stroke:'#8d8270','stroke-width':2}));
+    var t=svgEl('text',{x:gfx(w),y:406,'text-anchor':'middle','font-size':15,fill:'#6B6157','font-family':'JetBrains Mono, monospace'});
+    t.textContent=String(w); g.appendChild(t);
+  }
+  var xt=svgEl('text',{x:690,y:426,'text-anchor':'end','font-size':15,fill:'#6B6157','font-weight':700});
+  xt.textContent='w'; g.appendChild(xt);
+  /* 곡선 */
+  var d='';
+  for(var i=0;i<=100;i++){
+    var wv=-2+i*0.1;
+    d+=(i===0?'M ':'L ')+gfx(wv)+' '+gfy(gEw(wv))+' ';
+  }
+  document.getElementById('gdCurve').setAttribute('d', d);
+  /* 최솟값 표시 */
+  g.appendChild(svgEl('line',{x1:gfx(3),y1:380,x2:gfx(3),y2:372,stroke:'#1F7A4D','stroke-width':4}));
+}
+
+function gdPaint(){
+  var b=document.getElementById('gdBall');
+  var wc=Math.max(-2, Math.min(8, gdW));
+  b.setAttribute('cx', gfx(wc));
+  b.setAttribute('cy', gfy(gEw(gdW)));
+  document.getElementById('gdInfo').textContent='스텝 '+gdSteps;
+  var msg=document.getElementById('gdMsg');
+  if(gdDiverged){
+    msg.textContent='\uD83D\uDCA5 발산! |w|가 너무 커졌습니다 \u2014 학습률을 줄여 보세요';
+    return;
+  }
+  msg.textContent='w = '+(Math.round(gdW*10000)/10000)+'  ·  E = '+(Math.round(gEw(gdW)*10000)/10000)+'  ·  기울기 = '+(Math.round(gdE(gdW)*10000)/10000);
+}
+
+function gdReset(){
+  gdW=parseFloat(document.getElementById('gw0S').value);
+  gdSteps=0; gdDiverged=false;
+  document.getElementById('gw0Val').textContent=gdW.toFixed(1);
+  document.getElementById('getaVal').textContent=parseFloat(document.getElementById('getaS').value).toFixed(2);
+  var tr=document.getElementById('gdTrail');
+  while(tr.firstChild) tr.removeChild(tr.firstChild);
+  gdPaint();
+}
+
+function gdOneStep(){
+  if(gdDiverged) return;
+  var eta=parseFloat(document.getElementById('getaS').value);
+  /* 이동 전 위치에 흔적 */
+  var wc=Math.max(-2, Math.min(8, gdW));
+  document.getElementById('gdTrail').appendChild(svgEl('circle',{
+    cx:gfx(wc), cy:gfy(gEw(gdW)), r:6, fill:'#B65C1B', opacity:.45
+  }));
+  gdW = gdW - eta*gdE(gdW);
+  gdSteps++;
+  if(Math.abs(gdW-3)>20){ gdDiverged=true; }
+  gdPaint();
+}
+
+/* ───────── 퀴즈 ───────── */
+var quizScore=0;
+function initQuiz(){
+  var qzs=document.querySelectorAll('.qz');
+  for(var i=0;i<qzs.length;i++){
+    (function(qz){
+      var opts=qz.querySelectorAll('.opt');
+      for(var j=0;j<opts.length;j++){
+        opts[j].addEventListener('click', function(){
+          if(qz.classList.contains('done')) return;
+          qz.classList.add('done');
+          var isOk=this.getAttribute('data-ok')==='1';
+          if(isOk){
+            this.classList.add('ok');
+            quizScore++;
+            document.getElementById('scoreNum').textContent=String(quizScore);
+          }else{
+            this.classList.add('no');
+            var right=qz.querySelector('.opt[data-ok="1"]');
+            if(right) right.classList.add('ok');
+          }
+          var ex=qz.querySelector('.expl');
+          if(ex) ex.classList.add('show');
+        });
+      }
+    })(qzs[i]);
+  }
+}
+
+/* ───────── 초기화 ───────── */
+document.addEventListener('DOMContentLoaded', function(){
+  /* 퍼셉트론 */
+  pAxesDraw();
+  pUpdate();
+  document.getElementById('w1S').addEventListener('input', pUpdate);
+  document.getElementById('w2S').addEventListener('input', pUpdate);
+  document.getElementById('bS').addEventListener('input', pUpdate);
+  document.getElementById('gAND').addEventListener('click', function(){ pSetGate('AND', this); });
+  document.getElementById('gOR').addEventListener('click', function(){ pSetGate('OR', this); });
+  document.getElementById('gXOR').addEventListener('click', function(){ pSetGate('XOR', this); });
+  document.getElementById('pHint').addEventListener('click', function(){
+    document.getElementById('w1S').value='1';
+    document.getElementById('w2S').value='1';
+    document.getElementById('bS').value='-1.5';
+    pUpdate();
+  });
+  /* 순전파 */
+  fUpdate();
+  document.getElementById('fIn1').addEventListener('input', fUpdate);
+  document.getElementById('fIn2').addEventListener('input', fUpdate);
+  document.getElementById('fInT').addEventListener('input', fUpdate);
+  /* 경사하강 */
+  gdAxesDraw();
+  gdReset();
+  document.getElementById('gw0S').addEventListener('input', gdReset);
+  document.getElementById('getaS').addEventListener('input', function(){
+    document.getElementById('getaVal').textContent=parseFloat(this.value).toFixed(2);
+  });
+  document.getElementById('gdReset').addEventListener('click', gdReset);
+  document.getElementById('gdStep').addEventListener('click', gdOneStep);
+  document.getElementById('gdStep10').addEventListener('click', function(){
+    for(var i=0;i<10;i++) gdOneStep();
+  });
+  initQuiz();
+});
+</script>
+</body>
+</html>
