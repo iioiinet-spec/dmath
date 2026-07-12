@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>이산수학 제2장 명제와 논리 기본 인터랙티브 문제 50</title>
+<style>
+  :root{--bg:#f5f7fb;--card:#ffffff;--ink:#172033;--muted:#667085;--main:#4f46e5;--ok:#16a34a;--bad:#dc2626;--soft:#eef2ff;--line:#dbe1f0;}
+  *{box-sizing:border-box} body{margin:0;font-family:'Pretendard','Noto Sans KR',Arial,sans-serif;background:linear-gradient(135deg,#eef2ff,#f8fafc);color:var(--ink)}
+  header{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.9);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:18px 24px}
+  h1{margin:0;font-size:26px} .sub{color:var(--muted);margin-top:6px;font-size:14px}
+  .wrap{max-width:1100px;margin:0 auto;padding:24px}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px;box-shadow:0 12px 35px rgba(20,30,70,.08);margin-bottom:18px}
+  .progress{height:14px;background:#e5e7eb;border-radius:999px;overflow:hidden;margin:14px 0}.bar{height:100%;width:0;background:linear-gradient(90deg,#6366f1,#22c55e);transition:.3s}
+  .stats{display:flex;gap:10px;flex-wrap:wrap}.chip{background:var(--soft);color:#3730a3;border-radius:999px;padding:8px 12px;font-weight:700;font-size:14px}
+  .q{margin-bottom:18px}.qhead{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:10px}.num{font-weight:900;color:var(--main)}.tag{font-size:12px;background:#f1f5f9;color:#334155;border-radius:999px;padding:5px 9px}
+  .question{font-size:18px;line-height:1.65;margin:10px 0}.options{display:grid;gap:8px;margin:12px 0}.opt{border:1px solid var(--line);border-radius:14px;padding:11px 12px;cursor:pointer;background:#fff;transition:.15s}.opt:hover{border-color:var(--main);background:#f8f7ff}.opt input{margin-right:8px}
+  .answerBox{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.answerBox input{flex:1;min-width:180px;border:1px solid var(--line);border-radius:12px;padding:11px;font-size:15px}.btn{border:0;border-radius:12px;padding:11px 14px;font-weight:800;cursor:pointer;background:var(--main);color:white}.btn.secondary{background:#475569}.btn.light{background:#e0e7ff;color:#3730a3}.result{margin-top:10px;padding:12px;border-radius:14px;display:none;line-height:1.55}.correct{background:#dcfce7;color:#14532d;border:1px solid #86efac}.wrong{background:#fee2e2;color:#7f1d1d;border:1px solid #fca5a5}.explain{display:none;margin-top:8px;background:#f8fafc;border-left:5px solid var(--main);padding:12px;border-radius:12px;line-height:1.7;color:#334155}
+  .controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:24px 0}.small{font-size:13px;color:var(--muted);line-height:1.6}.toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px}.toc a{text-decoration:none;color:#3730a3;background:#eef2ff;border-radius:12px;padding:9px;text-align:center;font-weight:700}
+  code{background:#f1f5f9;border-radius:6px;padding:2px 5px}.math{font-family:Georgia,serif;font-weight:700}
+</style>
+</head>
+<body>
+<header>
+  <h1>이산수학 제2장 명제와 논리</h1>
+  <div class="sub">기본 개념 익히기 인터랙티브 문제 50개 | 정답 확인 · 해설 보기 · 점수 계산</div>
+</header>
+<div class="wrap">
+  <section class="panel">
+    <div class="stats">
+      <span class="chip">총 50문제</span><span class="chip">기본 개념</span><span class="chip">중등 정보올림피아드 준비</span><span class="chip" id="scoreChip">점수 0 / 50</span>
+    </div>
+    <div class="progress"><div class="bar" id="bar"></div></div>
+    <div class="small">답은 선택형 또는 입력형입니다. 입력형은 대소문자를 구분하지 않으며, 참/거짓은 T/F 또는 참/거짓으로 입력해도 됩니다.</div>
+  </section>
+  <section class="panel toc">
+    <a href="#s1">1. 명제</a><a href="#s2">2. 논리 연산자</a><a href="#s3">3. 조건명제</a><a href="#s4">4. 합성명제</a><a href="#s5">5. 논리적 동치</a><a href="#s6">6. 명제함수와 한정자</a><a href="#s7">7. 추론</a>
+  </section>
+  <main id="quiz"></main>
+  <div class="controls"><button class="btn" onclick="gradeAll()">전체 채점</button><button class="btn secondary" onclick="showAllExplanations()">전체 해설 보기</button><button class="btn light" onclick="resetQuiz()">다시 풀기</button></div>
+</div>
+<script>
+const questions = [
+{sec:'1. 명제', type:'mc', q:'다음 중 명제인 것은?', opts:['오늘 기분이 어때?','x + 3 = 7','서울은 대한민국의 수도이다.','문을 닫아라.'], ans:'서울은 대한민국의 수도이다.', exp:'명제는 참 또는 거짓을 분명하게 판단할 수 있는 문장입니다. “서울은 대한민국의 수도이다”는 참인 명제입니다.'},
+{sec:'1. 명제', type:'mc', q:'다음 중 명제가 아닌 것은?', opts:['2는 짝수이다.','5 > 10','내일 비가 올까?','3 + 4 = 7'], ans:'내일 비가 올까?', exp:'질문, 명령, 감탄은 참/거짓을 판단할 수 없으므로 명제가 아닙니다.'},
+{sec:'1. 명제', type:'text', q:'“7은 홀수이다.”의 진리값을 T 또는 F로 쓰시오.', ans:['T','참'], exp:'7은 2로 나누어떨어지지 않으므로 홀수입니다. 따라서 참입니다.'},
+{sec:'1. 명제', type:'text', q:'“10은 3의 배수이다.”의 진리값을 T 또는 F로 쓰시오.', ans:['F','거짓'], exp:'10은 3으로 나누어떨어지지 않습니다. 따라서 거짓입니다.'},
+{sec:'1. 명제', type:'mc', q:'명제 p가 “4는 소수이다.”일 때 p의 진리값은?', opts:['참','거짓','판단 불가','명제가 아님'], ans:'거짓', exp:'4는 1과 4뿐 아니라 2로도 나누어집니다. 소수가 아니므로 거짓입니다.'},
+{sec:'1. 명제', type:'mc', q:'다음 문장 “x는 짝수이다.”가 명제가 되기 위해 필요한 것은?', opts:['x의 값이 정해져야 한다','문장이 더 길어져야 한다','질문으로 바꾸어야 한다','항상 참이어야 한다'], ans:'x의 값이 정해져야 한다', exp:'변수가 들어간 문장은 변수의 값이 정해져야 참/거짓을 판단할 수 있습니다.'},
+{sec:'1. 명제', type:'mc', q:'항상 참인 명제를 무엇이라고 하는가?', opts:['모순명제','항진명제','조건명제','명제함수'], ans:'항진명제', exp:'어떤 경우에도 참인 명제를 항진명제라고 합니다.'},
+{sec:'1. 명제', type:'mc', q:'항상 거짓인 명제를 무엇이라고 하는가?', opts:['항진명제','모순명제','동치명제','역명제'], ans:'모순명제', exp:'어떤 경우에도 거짓인 명제를 모순명제라고 합니다.'},
+
+{sec:'2. 논리 연산자', type:'mc', q:'p가 참일 때 ¬p의 진리값은?', opts:['참','거짓','항상 참','판단 불가'], ans:'거짓', exp:'¬p는 p의 부정입니다. p가 참이면 ¬p는 거짓입니다.'},
+{sec:'2. 논리 연산자', type:'mc', q:'p∧q가 참이 되려면?', opts:['p만 참이면 된다','q만 참이면 된다','p와 q가 모두 참이어야 한다','둘 중 하나만 참이면 된다'], ans:'p와 q가 모두 참이어야 한다', exp:'논리곱 AND는 두 명제가 모두 참일 때만 참입니다.'},
+{sec:'2. 논리 연산자', type:'mc', q:'p∨q가 거짓이 되려면?', opts:['p와 q가 모두 거짓이어야 한다','p만 거짓이면 된다','q만 거짓이면 된다','둘 중 하나가 참이면 된다'], ans:'p와 q가 모두 거짓이어야 한다', exp:'논리합 OR은 둘 중 하나라도 참이면 참이므로, 거짓이 되려면 둘 다 거짓이어야 합니다.'},
+{sec:'2. 논리 연산자', type:'text', q:'p=T, q=F일 때 p∧q의 값은?', ans:['F','거짓'], exp:'AND는 둘 다 참이어야 참입니다. q가 거짓이므로 p∧q는 거짓입니다.'},
+{sec:'2. 논리 연산자', type:'text', q:'p=F, q=T일 때 p∨q의 값은?', ans:['T','참'], exp:'OR은 하나라도 참이면 참입니다. q가 참이므로 p∨q는 참입니다.'},
+{sec:'2. 논리 연산자', type:'text', q:'p=T, q=F일 때 ¬p∨q의 값은?', ans:['F','거짓'], exp:'p가 참이므로 ¬p는 거짓입니다. 거짓∨거짓은 거짓입니다.'},
+{sec:'2. 논리 연산자', type:'text', q:'p=F, q=F일 때 ¬p∧¬q의 값은?', ans:['T','참'], exp:'p와 q가 모두 거짓이므로 ¬p와 ¬q는 모두 참입니다. 참∧참은 참입니다.'},
+{sec:'2. 논리 연산자', type:'mc', q:'배타적 논리합 XOR는 언제 참인가?', opts:['두 값이 모두 같을 때','두 값이 서로 다를 때','두 값이 모두 참일 때만','두 값이 모두 거짓일 때만'], ans:'두 값이 서로 다를 때', exp:'XOR는 두 진리값이 서로 다를 때 참입니다.'},
+
+{sec:'3. 조건명제', type:'mc', q:'조건명제 p→q가 거짓이 되는 경우는?', opts:['p 참, q 참','p 참, q 거짓','p 거짓, q 참','p 거짓, q 거짓'], ans:'p 참, q 거짓', exp:'조건명제는 앞 조건 p가 참인데 결론 q가 거짓일 때만 거짓입니다.'},
+{sec:'3. 조건명제', type:'text', q:'p=T, q=F일 때 p→q의 진리값은?', ans:['F','거짓'], exp:'참이면 거짓이다라는 약속은 틀린 약속이므로 p→q는 거짓입니다.'},
+{sec:'3. 조건명제', type:'text', q:'p=F, q=F일 때 p→q의 진리값은?', ans:['T','참'], exp:'조건 p가 거짓이면 조건명제 p→q는 참으로 봅니다.'},
+{sec:'3. 조건명제', type:'mc', q:'명제 p→q의 역은?', opts:['q→p','¬p→¬q','¬q→¬p','p∧q'], ans:'q→p', exp:'역은 앞과 뒤를 바꾼 q→p입니다.'},
+{sec:'3. 조건명제', type:'mc', q:'명제 p→q의 이는?', opts:['q→p','¬p→¬q','¬q→¬p','¬p∨q'], ans:'¬p→¬q', exp:'이는 p와 q를 각각 부정한 ¬p→¬q입니다.'},
+{sec:'3. 조건명제', type:'mc', q:'명제 p→q의 대우는?', opts:['q→p','¬p→¬q','¬q→¬p','p∨q'], ans:'¬q→¬p', exp:'대우는 순서를 바꾸고 둘 다 부정한 ¬q→¬p입니다.'},
+{sec:'3. 조건명제', type:'mc', q:'원명제 p→q와 항상 논리적으로 동치인 것은?', opts:['역','이','대우','논리합'], ans:'대우', exp:'조건명제 p→q는 대우 ¬q→¬p와 항상 같은 진리값을 가집니다.'},
+{sec:'3. 조건명제', type:'mc', q:'“n이 4의 배수이면 n은 짝수이다.”의 대우는?', opts:['n이 짝수이면 n은 4의 배수이다','n이 4의 배수가 아니면 n은 짝수가 아니다','n이 짝수가 아니면 n은 4의 배수가 아니다','n이 4의 배수이고 짝수이다'], ans:'n이 짝수가 아니면 n은 4의 배수가 아니다', exp:'p: 4의 배수, q: 짝수입니다. 대우는 ¬q→¬p입니다.'},
+
+{sec:'4. 합성명제', type:'mc', q:'합성명제란 무엇인가?', opts:['하나의 단어로 된 명제','여러 명제를 논리 연산자로 연결한 명제','항상 참인 명제','변수가 없는 명제'], ans:'여러 명제를 논리 연산자로 연결한 명제', exp:'합성명제는 p, q 같은 명제를 ¬, ∧, ∨, → 등으로 연결한 명제입니다.'},
+{sec:'4. 합성명제', type:'text', q:'p=T, q=F, r=T일 때 (p∧q)∨r의 값은?', ans:['T','참'], exp:'p∧q는 T∧F=F이고, F∨r는 F∨T=T입니다.'},
+{sec:'4. 합성명제', type:'text', q:'p=F, q=T, r=F일 때 ¬p∧(q∨r)의 값은?', ans:['T','참'], exp:'¬p=T이고 q∨r=T∨F=T입니다. 따라서 T∧T=T입니다.'},
+{sec:'4. 합성명제', type:'text', q:'p=T, q=T일 때 ¬(p∧q)의 값은?', ans:['F','거짓'], exp:'p∧q=T이므로 그 부정은 F입니다.'},
+{sec:'4. 합성명제', type:'text', q:'p=F, q=T일 때 p∨¬q의 값은?', ans:['F','거짓'], exp:'¬q=F이고 p도 F이므로 F∨F=F입니다.'},
+{sec:'4. 합성명제', type:'mc', q:'진리표에서 p와 q 두 명제가 있을 때 가능한 진리값 조합은 몇 개인가?', opts:['2개','3개','4개','8개'], ans:'4개', exp:'명제 2개는 각각 참/거짓 2가지이므로 2²=4가지 조합입니다.'},
+{sec:'4. 합성명제', type:'mc', q:'명제 p, q, r 세 개의 진리표 행 수는?', opts:['3','6','8','9'], ans:'8', exp:'명제 3개는 2³=8개의 진리값 조합을 가집니다.'},
+
+{sec:'5. 논리적 동치', type:'mc', q:'두 명제가 논리적으로 동치라는 뜻은?', opts:['모양이 같다','항상 같은 진리값을 가진다','항상 참이다','항상 거짓이다'], ans:'항상 같은 진리값을 가진다', exp:'논리적 동치는 모든 경우에서 두 명제의 진리값이 같다는 뜻입니다.'},
+{sec:'5. 논리적 동치', type:'mc', q:'드모르간 법칙으로 옳은 것은?', opts:['¬(p∧q) ≡ ¬p∨¬q','¬(p∧q) ≡ p∨q','¬(p∨q) ≡ p∧q','p→q ≡ p∧q'], ans:'¬(p∧q) ≡ ¬p∨¬q', exp:'드모르간 법칙: 전체 부정은 각각 부정하고 AND와 OR을 바꿉니다.'},
+{sec:'5. 논리적 동치', type:'mc', q:'p→q와 동치인 명제는?', opts:['p∨q','¬p∨q','p∧q','¬p∧q'], ans:'¬p∨q', exp:'조건명제 p→q는 ¬p∨q와 논리적으로 동치입니다.'},
+{sec:'5. 논리적 동치', type:'mc', q:'이중부정 법칙으로 옳은 것은?', opts:['¬¬p ≡ p','¬p ≡ p','p∨p ≡ ¬p','p∧p ≡ ¬p'], ans:'¬¬p ≡ p', exp:'두 번 부정하면 원래 명제와 같습니다.'},
+{sec:'5. 논리적 동치', type:'mc', q:'멱등법칙으로 옳은 것은?', opts:['p∨p ≡ p','p∨p ≡ ¬p','p∧p ≡ 참','p∨거짓 ≡ 거짓'], ans:'p∨p ≡ p', exp:'같은 명제를 OR 또는 AND로 반복해도 값은 그대로입니다.'},
+{sec:'5. 논리적 동치', type:'mc', q:'항등법칙으로 옳은 것은?', opts:['p∧참 ≡ p','p∧참 ≡ 참','p∨거짓 ≡ 거짓','p∨참 ≡ p'], ans:'p∧참 ≡ p', exp:'AND에서 참은 값에 영향을 주지 않습니다. p∧참은 p입니다.'},
+{sec:'5. 논리적 동치', type:'mc', q:'지배법칙으로 옳은 것은?', opts:['p∨참 ≡ 참','p∨참 ≡ p','p∧거짓 ≡ p','p∧참 ≡ 거짓'], ans:'p∨참 ≡ 참', exp:'OR에서 참이 하나라도 있으면 전체가 참입니다.'},
+
+{sec:'6. 명제함수와 한정자', type:'mc', q:'명제함수 P(x)의 특징은?', opts:['항상 참이다','변수 x의 값에 따라 참/거짓이 정해진다','명제가 아니다','항상 거짓이다'], ans:'변수 x의 값에 따라 참/거짓이 정해진다', exp:'명제함수는 변수가 들어 있으며, 변수 값이 정해지면 명제가 됩니다.'},
+{sec:'6. 명제함수와 한정자', type:'mc', q:'∀x P(x)의 뜻은?', opts:['어떤 x는 P(x)를 만족한다','모든 x에 대해 P(x)가 참이다','P(x)는 항상 거짓이다','x가 없다'], ans:'모든 x에 대해 P(x)가 참이다', exp:'∀는 전칭 한정자로 “모든”을 뜻합니다.'},
+{sec:'6. 명제함수와 한정자', type:'mc', q:'∃x P(x)의 뜻은?', opts:['모든 x에 대해 참이다','적어도 하나의 x가 P(x)를 만족한다','어떤 x도 없다','항상 거짓이다'], ans:'적어도 하나의 x가 P(x)를 만족한다', exp:'∃는 존재 한정자로 “적어도 하나 존재한다”를 뜻합니다.'},
+{sec:'6. 명제함수와 한정자', type:'text', q:'자연수 전체에서 “∀x, x+1 > x”의 진리값은?', ans:['T','참'], exp:'모든 자연수 x에 대해 x+1은 x보다 큽니다. 따라서 참입니다.'},
+{sec:'6. 명제함수와 한정자', type:'text', q:'자연수 전체에서 “∃x, x+3=5”의 진리값은?', ans:['T','참'], exp:'x=2이면 x+3=5입니다. 만족하는 자연수가 존재하므로 참입니다.'},
+{sec:'6. 명제함수와 한정자', type:'text', q:'자연수 전체에서 “∀x, x는 짝수이다”의 진리값은?', ans:['F','거짓'], exp:'자연수 1, 3, 5처럼 홀수가 있으므로 모든 자연수가 짝수라는 말은 거짓입니다.'},
+{sec:'6. 명제함수와 한정자', type:'mc', q:'“모든 학생이 문제를 풀었다”의 부정으로 가장 알맞은 것은?', opts:['모든 학생이 문제를 풀지 않았다','어떤 학생은 문제를 풀지 않았다','어떤 학생은 문제를 풀었다','학생이 없다'], ans:'어떤 학생은 문제를 풀지 않았다', exp:'∀의 부정은 ∃가 됩니다. “모든 학생이 풀었다”의 부정은 “적어도 한 학생은 풀지 않았다”입니다.'},
+{sec:'6. 명제함수와 한정자', type:'mc', q:'“어떤 정수 x는 x²=4를 만족한다”의 부정은?', opts:['모든 정수 x는 x²=4를 만족한다','모든 정수 x는 x²≠4이다','어떤 정수 x는 x²≠4이다','정수 x가 없다'], ans:'모든 정수 x는 x²≠4이다', exp:'∃의 부정은 ∀입니다. 존재하지 않는다는 뜻은 모든 x가 그 조건을 만족하지 않는다는 뜻입니다.'},
+
+{sec:'7. 추론', type:'mc', q:'추론이란 무엇인가?', opts:['명제를 외우는 것','주어진 명제들로부터 결론을 이끌어내는 것','명제를 질문으로 바꾸는 것','진리표를 지우는 것'], ans:'주어진 명제들로부터 결론을 이끌어내는 것', exp:'추론은 전제에서 논리적으로 결론을 얻는 과정입니다.'},
+{sec:'7. 추론', type:'mc', q:'전제 p→q와 p가 참일 때 q를 결론으로 얻는 추론 규칙은?', opts:['선언삼단논법','긍정논법','부정논법','드모르간 법칙'], ans:'긍정논법', exp:'p→q와 p가 참이면 q가 참이라고 결론낼 수 있습니다. 이를 긍정논법이라고 합니다.'},
+{sec:'7. 추론', type:'mc', q:'전제 p→q와 ¬q가 참일 때 ¬p를 결론으로 얻는 추론 규칙은?', opts:['긍정논법','부정논법','가언삼단논법','항등법칙'], ans:'부정논법', exp:'p→q와 ¬q에서 ¬p를 얻는 것은 대우를 이용한 부정논법입니다.'},
+{sec:'7. 추론', type:'mc', q:'p→q, q→r가 참이면 p→r를 결론으로 얻는 추론은?', opts:['가언삼단논법','선언삼단논법','드모르간 법칙','이중부정'], ans:'가언삼단논법', exp:'조건명제가 사슬처럼 이어질 때 p→r을 결론낼 수 있습니다.'},
+{sec:'7. 추론', type:'mc', q:'p∨q와 ¬p가 참이면 q를 결론으로 얻는 추론은?', opts:['선언삼단논법','긍정논법','부정논법','항진명제'], ans:'선언삼단논법', exp:'p 또는 q가 참인데 p가 거짓이면 q가 참이어야 합니다.'},
+{sec:'7. 추론', type:'mc', q:'다음 추론은 타당한가? “비가 오면 땅이 젖는다. 비가 온다. 따라서 땅이 젖는다.”', opts:['타당하다','타당하지 않다','명제가 아니다','항상 거짓이다'], ans:'타당하다', exp:'p→q와 p에서 q를 얻는 긍정논법이므로 타당합니다.'},
+{sec:'7. 추론', type:'mc', q:'다음 추론은 타당한가? “비가 오면 땅이 젖는다. 땅이 젖었다. 따라서 비가 왔다.”', opts:['타당하다','타당하지 않다','항상 참이다','조건명제가 아니다'], ans:'타당하지 않다', exp:'땅이 젖은 이유가 비가 아닐 수도 있습니다. q에서 p를 결론내는 것은 일반적으로 타당하지 않습니다.'}
+];
+let checked = Array(questions.length).fill(false);
+let correct = Array(questions.length).fill(false);
+function norm(x){return String(x).trim().toLowerCase().replaceAll(' ','');}
+function isCorrect(i){const qu=questions[i]; if(qu.type==='mc'){const v=document.querySelector(`input[name="q${i}"]:checked`); return v && v.value===qu.ans;} const val=document.getElementById(`input${i}`).value; return Array.isArray(qu.ans)? qu.ans.map(norm).includes(norm(val)): norm(val)===norm(qu.ans);}
+function render(){const quiz=document.getElementById('quiz'); let html=''; let last=''; questions.forEach((qu,i)=>{ if(qu.sec!==last){last=qu.sec; html+=`<section class="panel" id="s${qu.sec[0]}"><h2>${qu.sec}</h2></section>`;} html+=`<section class="panel q"><div class="qhead"><span class="num">문제 ${i+1}</span><span class="tag">${qu.sec}</span></div><div class="question">${qu.q}</div>`; if(qu.type==='mc'){html+=`<div class="options">`+qu.opts.map(o=>`<label class="opt"><input type="radio" name="q${i}" value="${o}">${o}</label>`).join('')+`</div>`;} else {html+=`<div class="answerBox"><input id="input${i}" placeholder="정답 입력 예: T, F, 참, 거짓"></div>`;} html+=`<div class="answerBox"><button class="btn" onclick="checkOne(${i})">정답 확인</button><button class="btn secondary" onclick="toggleExplain(${i})">해설 보기</button></div><div class="result" id="res${i}"></div><div class="explain" id="exp${i}"><b>해설:</b> ${qu.exp}</div></section>`; }); quiz.innerHTML=html;}
+function checkOne(i){const ok=isCorrect(i); checked[i]=true; correct[i]=!!ok; const r=document.getElementById(`res${i}`); r.style.display='block'; r.className='result '+(ok?'correct':'wrong'); r.innerHTML=ok?'정답입니다!':'다시 생각해 보세요. 해설을 확인해 보세요.'; updateScore();}
+function toggleExplain(i){const e=document.getElementById(`exp${i}`); e.style.display=e.style.display==='block'?'none':'block';}
+function showAllExplanations(){questions.forEach((_,i)=>document.getElementById(`exp${i}`).style.display='block');}
+function gradeAll(){questions.forEach((_,i)=>checkOne(i)); window.scrollTo({top:0,behavior:'smooth'});}
+function updateScore(){const s=correct.filter(Boolean).length; const c=checked.filter(Boolean).length; document.getElementById('scoreChip').textContent=`점수 ${s} / 50`; document.getElementById('bar').style.width=(c/questions.length*100)+'%';}
+function resetQuiz(){checked.fill(false); correct.fill(false); render(); updateScore(); window.scrollTo({top:0,behavior:'smooth'});}
+render();
+</script>
+</body>
+</html>

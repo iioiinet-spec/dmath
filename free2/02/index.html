@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>제2장 명제와 논리 심화 인터랙티브 문제 50</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:'Pretendard','Noto Sans KR',Arial,sans-serif;background:linear-gradient(135deg,#111827,#1e293b 45%,#312e81);color:#111827}
+header{color:white;padding:34px 22px;text-align:center}
+header h1{margin:0;font-size:34px}
+header p{margin:12px auto 0;max-width:900px;line-height:1.6;color:#dbeafe}
+.wrap{max-width:1180px;margin:0 auto;padding:0 18px 50px}
+.panel{background:rgba(255,255,255,.96);border-radius:24px;box-shadow:0 20px 50px rgba(0,0,0,.25);overflow:hidden}
+.topbar{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:18px;background:#f8fafc;border-bottom:1px solid #e5e7eb}
+.stat{background:white;border:1px solid #e5e7eb;border-radius:18px;padding:14px;text-align:center}
+.stat b{display:block;font-size:24px;color:#3730a3}
+.stat span{font-size:13px;color:#64748b}
+.controls{display:flex;gap:10px;flex-wrap:wrap;padding:18px;border-bottom:1px solid #e5e7eb;background:white}
+button,select{border:0;border-radius:14px;padding:12px 16px;font-weight:700;cursor:pointer}
+button.primary{background:#4f46e5;color:white}
+button.good{background:#16a34a;color:white}
+button.warn{background:#f97316;color:white}
+button.gray{background:#e5e7eb;color:#111827}
+select{background:#eef2ff;color:#312e81}
+.grid{display:grid;grid-template-columns:280px 1fr;min-height:640px}
+.nav{padding:16px;background:#f8fafc;border-right:1px solid #e5e7eb;max-height:720px;overflow:auto}
+.qbtn{width:100%;text-align:left;margin-bottom:8px;background:white;border:1px solid #e5e7eb;color:#111827;padding:10px 12px;font-size:14px}
+.qbtn.active{border-color:#4f46e5;background:#eef2ff}
+.qbtn.correct{border-color:#16a34a;background:#dcfce7}
+.qbtn.wrong{border-color:#dc2626;background:#fee2e2}
+.main{padding:28px}
+.badge{display:inline-block;background:#eef2ff;color:#3730a3;padding:7px 12px;border-radius:999px;font-size:13px;font-weight:800;margin-bottom:16px}
+.question{font-size:24px;font-weight:900;line-height:1.5;margin:0 0 22px}
+.choices{display:grid;gap:12px}
+.choice{background:#f8fafc;border:2px solid #e5e7eb;border-radius:18px;padding:15px;cursor:pointer;line-height:1.5}
+.choice:hover{background:#eef2ff}
+.choice.selected{border-color:#4f46e5;background:#eef2ff}
+.choice.answer{border-color:#16a34a;background:#dcfce7}
+.choice.bad{border-color:#dc2626;background:#fee2e2}
+.result{margin-top:20px;padding:18px;border-radius:18px;display:none;line-height:1.7}
+.result.show{display:block}
+.result.ok{background:#dcfce7;border:1px solid #86efac}
+.result.no{background:#fee2e2;border:1px solid #fca5a5}
+.explain{margin-top:16px;padding:18px;background:#fffbeb;border:1px solid #fde68a;border-radius:18px;line-height:1.8;display:none}
+.explain.show{display:block}
+.progress{height:12px;background:#e5e7eb;border-radius:999px;overflow:hidden;margin:18px}
+.bar{height:100%;width:0;background:linear-gradient(90deg,#4f46e5,#22c55e);transition:.3s}
+.footer-note{padding:18px;background:#f8fafc;border-top:1px solid #e5e7eb;color:#475569;line-height:1.6}
+@media(max-width:800px){.topbar{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.nav{max-height:240px;border-right:0;border-bottom:1px solid #e5e7eb}header h1{font-size:26px}}
+</style>
+</head>
+<body>
+<header>
+  <h1>제2장 명제와 논리 심화 인터랙티브 문제 50</h1>
+  <p>명제, 논리 연산자, 조건명제, 합성명제, 논리적 동치, 명제함수와 한정자, 추론을 심화 수준으로 연습합니다.</p>
+</header>
+<div class="wrap">
+  <div class="panel">
+    <div class="topbar">
+      <div class="stat"><b id="total">50</b><span>전체 문제</span></div>
+      <div class="stat"><b id="solved">0</b><span>푼 문제</span></div>
+      <div class="stat"><b id="correct">0</b><span>정답</span></div>
+      <div class="stat"><b id="score">0%</b><span>점수</span></div>
+    </div>
+    <div class="progress"><div class="bar" id="bar"></div></div>
+    <div class="controls">
+      <select id="filter" onchange="renderNav()">
+        <option value="all">전체 보기</option>
+        <option value="명제 판별">명제 판별</option>
+        <option value="부정">부정</option>
+        <option value="조건명제">조건명제</option>
+        <option value="동치">동치</option>
+        <option value="한정자">한정자</option>
+        <option value="추론">추론</option>
+        <option value="복합 추론">복합 추론</option>
+        <option value="논리식 단순화">논리식 단순화</option>
+      </select>
+      <button class="primary" onclick="checkAnswer()">정답 확인</button>
+      <button class="warn" onclick="toggleExplain()">해설 보기</button>
+      <button class="gray" onclick="prevQ()">이전 문제</button>
+      <button class="gray" onclick="nextQ()">다음 문제</button>
+      <button class="good" onclick="resetAll()">처음부터 다시</button>
+    </div>
+    <div class="grid">
+      <aside class="nav" id="nav"></aside>
+      <main class="main">
+        <div class="badge" id="unit"></div>
+        <p class="question" id="question"></p>
+        <div class="choices" id="choices"></div>
+        <div class="result" id="result"></div>
+        <div class="explain" id="explain"></div>
+      </main>
+    </div>
+    <div class="footer-note">
+      1. 학생은 먼저 답을 고른 뒤 정답 확인을 누릅니다.<br>
+      2. 틀린 문제는 해설을 보고 다시 개념을 정리합니다.<br>
+      3. 수업에서는 문제 번호를 골라 단원별로 풀이할 수 있습니다.
+    </div>
+  </div>
+</div>
+<script>
+const questions = [{"unit": "명제 판별", "q": "다음 중 항상 참 또는 거짓이 정해지는 명제는?", "choices": ["오늘 기분이 어때?", "x+3=7", "서울은 대한민국의 수도이다.", "열심히 공부하자."], "answer": "서울은 대한민국의 수도이다.", "explain": "명제는 참/거짓을 분명히 판단할 수 있는 문장입니다. 질문, 명령, 미지수가 있는 열린 문장은 명제가 아닙니다."}, {"unit": "명제 판별", "q": "다음 문장 중 명제가 아닌 것은?", "choices": ["2는 짝수이다.", "모든 자연수 n에 대해 n+1>n 이다.", "이 수는 소수이다.", "5<3"], "answer": "이 수는 소수이다.", "explain": "'이 수'가 무엇인지 정해지지 않았으므로 참/거짓을 판단할 수 없습니다."}, {"unit": "부정", "q": "명제 p: '모든 학생이 숙제를 했다.'의 부정은?", "choices": ["모든 학생이 숙제를 하지 않았다.", "숙제를 하지 않은 학생이 적어도 한 명 있다.", "어떤 학생은 숙제를 했다.", "학생이 없다."], "answer": "숙제를 하지 않은 학생이 적어도 한 명 있다.", "explain": "'모든 A가 B이다'의 부정은 'B가 아닌 A가 적어도 하나 있다'입니다."}, {"unit": "논리곱", "q": "p가 참, q가 거짓일 때 p ∧ q의 진리값은?", "choices": ["참", "거짓", "알 수 없음", "p와 같음"], "answer": "거짓", "explain": "논리곱 AND는 두 명제가 모두 참일 때만 참입니다."}, {"unit": "논리합", "q": "p가 거짓, q가 거짓일 때 p ∨ q의 진리값은?", "choices": ["참", "거짓", "항상 참", "항상 거짓이 아님"], "answer": "거짓", "explain": "논리합 OR는 둘 중 하나라도 참이면 참이고, 둘 다 거짓이면 거짓입니다."}, {"unit": "배타적 논리합", "q": "p가 참, q가 참일 때 p XOR q의 진리값은?", "choices": ["참", "거짓", "p와 같음", "q와 반대"], "answer": "거짓", "explain": "XOR는 두 값이 서로 다를 때만 참입니다."}, {"unit": "조건명제", "q": "p가 거짓, q가 거짓일 때 p → q의 진리값은?", "choices": ["참", "거짓", "항상 거짓", "판단 불가"], "answer": "참", "explain": "조건명제 p→q는 p가 참이고 q가 거짓일 때만 거짓입니다."}, {"unit": "조건명제", "q": "조건명제 '비가 오면 우산을 쓴다'의 역은?", "choices": ["우산을 쓰면 비가 온다.", "비가 오지 않으면 우산을 쓰지 않는다.", "우산을 쓰지 않으면 비가 오지 않는다.", "비가 와도 우산을 쓰지 않는다."], "answer": "우산을 쓰면 비가 온다.", "explain": "p→q의 역은 q→p입니다."}, {"unit": "조건명제", "q": "조건명제 '비가 오면 우산을 쓴다'의 이는?", "choices": ["우산을 쓰면 비가 온다.", "비가 오지 않으면 우산을 쓰지 않는다.", "우산을 쓰지 않으면 비가 오지 않는다.", "비가 오고 우산을 쓴다."], "answer": "비가 오지 않으면 우산을 쓰지 않는다.", "explain": "p→q의 이는 ¬p→¬q입니다."}, {"unit": "대우", "q": "조건명제 '비가 오면 우산을 쓴다'의 대우는?", "choices": ["우산을 쓰면 비가 온다.", "비가 오지 않으면 우산을 쓰지 않는다.", "우산을 쓰지 않으면 비가 오지 않는다.", "비가 오지 않거나 우산을 쓴다."], "answer": "우산을 쓰지 않으면 비가 오지 않는다.", "explain": "p→q의 대우는 ¬q→¬p이며 원명제와 논리적으로 동치입니다."}, {"unit": "동치", "q": "p→q와 논리적으로 동치인 것은?", "choices": ["q→p", "¬p→¬q", "¬q→¬p", "p∧q"], "answer": "¬q→¬p", "explain": "조건명제는 그 대우와 항상 동치입니다."}, {"unit": "조건명제 변환", "q": "p→q와 동치인 논리식은?", "choices": ["p∨q", "¬p∨q", "p∧¬q", "¬p∧q"], "answer": "¬p∨q", "explain": "p→q는 'p가 아니거나 q이다'와 같습니다."}, {"unit": "합성명제", "q": "p=true, q=false, r=true일 때 (p∨q)∧r의 값은?", "choices": ["참", "거짓", "q와 같음", "알 수 없음"], "answer": "참", "explain": "p∨q는 참이고, 참∧r도 참입니다."}, {"unit": "합성명제", "q": "p=true, q=false, r=false일 때 p∧(q∨r)의 값은?", "choices": ["참", "거짓", "p와 같음", "항상 참"], "answer": "거짓", "explain": "q∨r가 거짓이므로 p∧거짓은 거짓입니다."}, {"unit": "드모르간", "q": "¬(p∧q)와 동치인 것은?", "choices": ["¬p∧¬q", "¬p∨¬q", "p∨q", "p→q"], "answer": "¬p∨¬q", "explain": "AND 전체의 부정은 각각 부정한 뒤 OR로 바뀝니다."}, {"unit": "드모르간", "q": "¬(p∨q)와 동치인 것은?", "choices": ["¬p∨¬q", "¬p∧¬q", "p∧q", "p→q"], "answer": "¬p∧¬q", "explain": "OR 전체의 부정은 각각 부정한 뒤 AND로 바뀝니다."}, {"unit": "흡수법칙", "q": "p∨(p∧q)와 동치인 것은?", "choices": ["p", "q", "p∧q", "p∨q"], "answer": "p", "explain": "p가 이미 참이면 전체가 참이고, p가 거짓이면 전체가 거짓이므로 p와 같습니다."}, {"unit": "흡수법칙", "q": "p∧(p∨q)와 동치인 것은?", "choices": ["p", "q", "p∨q", "p→q"], "answer": "p", "explain": "p가 거짓이면 전체가 거짓, p가 참이면 전체가 참이므로 p와 같습니다."}, {"unit": "분배법칙", "q": "p∧(q∨r)와 동치인 것은?", "choices": ["(p∧q)∨(p∧r)", "(p∨q)∧(p∨r)", "p∨(q∧r)", "(p→q)∨r"], "answer": "(p∧q)∨(p∧r)", "explain": "AND는 OR에 대해 분배됩니다."}, {"unit": "분배법칙", "q": "p∨(q∧r)와 동치인 것은?", "choices": ["(p∨q)∧(p∨r)", "(p∧q)∨(p∧r)", "p∧(q∨r)", "p→(q∧r)"], "answer": "(p∨q)∧(p∨r)", "explain": "OR는 AND에 대해 분배됩니다."}, {"unit": "항진명제", "q": "항상 참인 명제는?", "choices": ["p∧¬p", "p∨¬p", "p→¬p", "p↔¬p"], "answer": "p∨¬p", "explain": "명제 p는 참 또는 거짓이므로 p∨¬p는 항상 참입니다."}, {"unit": "모순명제", "q": "항상 거짓인 명제는?", "choices": ["p∨¬p", "p∧¬p", "p→p", "p↔p"], "answer": "p∧¬p", "explain": "p와 ¬p가 동시에 참일 수 없으므로 항상 거짓입니다."}, {"unit": "논리적 동치", "q": "p↔q와 동치인 것은?", "choices": ["(p→q)∧(q→p)", "(p→q)∨(q→p)", "p∧q", "p∨q"], "answer": "(p→q)∧(q→p)", "explain": "쌍조건명제는 양방향 조건명제가 모두 성립한다는 뜻입니다."}, {"unit": "쌍조건명제", "q": "p=true, q=false일 때 p↔q의 값은?", "choices": ["참", "거짓", "p와 같음", "q와 반대"], "answer": "거짓", "explain": "쌍조건명제는 두 진리값이 같을 때만 참입니다."}, {"unit": "동치 판별", "q": "다음 중 p→q와 같은 의미가 아닌 것은?", "choices": ["¬p∨q", "¬q→¬p", "p이면 q이다", "q→p"], "answer": "q→p", "explain": "q→p는 역이며, 일반적으로 원명제와 동치가 아닙니다."}, {"unit": "한정자", "q": "∀x P(x)의 부정은?", "choices": ["∀x ¬P(x)", "∃x ¬P(x)", "∃x P(x)", "¬∃x ¬P(x)"], "answer": "∃x ¬P(x)", "explain": "모든 x에 대해 참이라는 말의 부정은 반례가 적어도 하나 있다는 뜻입니다."}, {"unit": "한정자", "q": "∃x P(x)의 부정은?", "choices": ["∀x ¬P(x)", "∃x ¬P(x)", "∀x P(x)", "¬∀x ¬P(x)"], "answer": "∀x ¬P(x)", "explain": "존재명제의 부정은 모든 대상이 그 성질을 만족하지 않는다는 뜻입니다."}, {"unit": "명제함수", "q": "자연수 전체에서 P(x): 'x는 짝수이다'일 때 ∀x P(x)는?", "choices": ["참", "거짓", "항상 참", "명제가 아님"], "answer": "거짓", "explain": "자연수 중 1, 3, 5처럼 짝수가 아닌 수가 있으므로 거짓입니다."}, {"unit": "명제함수", "q": "자연수 전체에서 P(x): 'x+1>x'일 때 ∀x P(x)는?", "choices": ["참", "거짓", "명제가 아님", "x가 있어야 함"], "answer": "참", "explain": "모든 자연수 x에 대해 x+1은 x보다 큽니다."}, {"unit": "존재명제", "q": "정수 전체에서 ∃x (x²=4)는?", "choices": ["참", "거짓", "항상 거짓", "명제가 아님"], "answer": "참", "explain": "x=2 또는 x=-2가 존재합니다."}, {"unit": "존재명제", "q": "자연수 전체에서 ∃x (x<0)는?", "choices": ["참", "거짓", "항상 참", "알 수 없음"], "answer": "거짓", "explain": "자연수에는 0보다 작은 수가 없습니다."}, {"unit": "한정자 부정", "q": "'모든 소수는 홀수이다'의 부정은?", "choices": ["모든 소수는 짝수이다.", "홀수가 아닌 소수가 적어도 하나 있다.", "소수는 없다.", "어떤 홀수는 소수이다."], "answer": "홀수가 아닌 소수가 적어도 하나 있다.", "explain": "모든 명제의 부정은 반례의 존재입니다. 실제로 2는 짝수인 소수입니다."}, {"unit": "한정자 부정", "q": "'어떤 학생은 C언어를 할 수 있다'의 부정은?", "choices": ["모든 학생은 C언어를 할 수 있다.", "어떤 학생은 C언어를 못한다.", "모든 학생은 C언어를 할 수 없다.", "학생이 없다."], "answer": "모든 학생은 C언어를 할 수 없다.", "explain": "존재명제의 부정은 모든 대상에 대해 부정하는 것입니다."}, {"unit": "추론", "q": "p→q, p가 참일 때 q를 결론으로 얻는 추론 규칙은?", "choices": ["긍정논법", "부정논법", "가언삼단논법", "선언삼단논법"], "answer": "긍정논법", "explain": "p→q와 p로부터 q를 얻는 규칙은 Modus Ponens, 즉 긍정논법입니다."}, {"unit": "추론", "q": "p→q, ¬q가 참일 때 ¬p를 결론으로 얻는 추론 규칙은?", "choices": ["긍정논법", "부정논법", "가언삼단논법", "선언삼단논법"], "answer": "부정논법", "explain": "p→q와 ¬q로부터 ¬p를 얻는 것은 Modus Tollens, 즉 부정논법입니다."}, {"unit": "추론", "q": "p→q, q→r일 때 p→r을 결론으로 얻는 추론 규칙은?", "choices": ["가언삼단논법", "선언삼단논법", "흡수법칙", "드모르간 법칙"], "answer": "가언삼단논법", "explain": "조건명제가 사슬처럼 이어지면 p→r을 얻을 수 있습니다."}, {"unit": "추론", "q": "p∨q, ¬p일 때 q를 결론으로 얻는 추론 규칙은?", "choices": ["가언삼단논법", "선언삼단논법", "긍정논법", "부정논법"], "answer": "선언삼단논법", "explain": "둘 중 하나가 참이고 p가 거짓이면 q가 참이어야 합니다."}, {"unit": "오류 추론", "q": "p→q, q가 참이므로 p가 참이라고 결론 내리는 것은?", "choices": ["항상 타당", "전건 부정의 오류", "후건 긍정의 오류", "부정논법"], "answer": "후건 긍정의 오류", "explain": "q가 참이어도 p 때문에 q가 참이라고 보장할 수 없습니다."}, {"unit": "오류 추론", "q": "p→q, ¬p가 참이므로 ¬q가 참이라고 결론 내리는 것은?", "choices": ["전건 부정의 오류", "후건 긍정의 오류", "긍정논법", "항상 타당"], "answer": "전건 부정의 오류", "explain": "p가 거짓이어도 q는 다른 이유로 참일 수 있습니다."}, {"unit": "복합 추론", "q": "p→q, q→r, ¬r이 참이면 반드시 참인 것은?", "choices": ["p", "q", "¬p", "r"], "answer": "¬p", "explain": "q→r와 ¬r에서 ¬q, p→q와 ¬q에서 ¬p를 얻습니다."}, {"unit": "복합 추론", "q": "p∨q, p→r, q→r가 참이면 얻을 수 있는 결론은?", "choices": ["r", "¬r", "p∧q", "p↔q"], "answer": "r", "explain": "p 또는 q 중 하나가 참이고 둘 다 r로 이어지므로 r이 참입니다."}, {"unit": "진리표 개수", "q": "서로 다른 명제변수 4개 p,q,r,s가 있을 때 진리표의 행 수는?", "choices": ["4", "8", "16", "32"], "answer": "16", "explain": "명제변수 n개의 진리값 조합은 2^n개입니다."}, {"unit": "진리표 개수", "q": "명제변수 5개가 있을 때 가능한 진리값 조합 수는?", "choices": ["10", "16", "25", "32"], "answer": "32", "explain": "각 변수마다 참/거짓 2가지이므로 2^5=32입니다."}, {"unit": "합성명제 분석", "q": "p=false, q=true, r=false일 때 ¬p ∧ (q∨r)의 값은?", "choices": ["참", "거짓", "r과 같음", "알 수 없음"], "answer": "참", "explain": "¬p는 참, q∨r도 참이므로 전체는 참입니다."}, {"unit": "합성명제 분석", "q": "p=true, q=false, r=true일 때 (p→q)∨r의 값은?", "choices": ["참", "거짓", "p와 같음", "q와 같음"], "answer": "참", "explain": "p→q는 거짓이지만 r이 참이므로 OR 결과는 참입니다."}, {"unit": "동치 변형", "q": "¬(p→q)와 동치인 것은?", "choices": ["p∧¬q", "¬p∨q", "¬p∧q", "p∨¬q"], "answer": "p∧¬q", "explain": "p→q는 ¬p∨q이므로 이를 부정하면 p∧¬q입니다."}, {"unit": "조건명제 부정", "q": "'공부하면 합격한다'의 부정으로 가장 알맞은 것은?", "choices": ["공부하지 않으면 합격하지 않는다.", "합격하면 공부한다.", "공부했지만 합격하지 않는다.", "공부하지 않고 합격한다."], "answer": "공부했지만 합격하지 않는다.", "explain": "p→q의 부정은 p∧¬q입니다."}, {"unit": "한정자 순서", "q": "자연수에서 '모든 x에 대해 어떤 y가 있어 y>x이다'는?", "choices": ["참", "거짓", "명제가 아님", "x가 필요함"], "answer": "참", "explain": "어떤 자연수 x를 골라도 y=x+1을 선택하면 y>x입니다."}, {"unit": "한정자 순서", "q": "자연수에서 '어떤 y가 있어 모든 x에 대해 y>x이다'는?", "choices": ["참", "거짓", "항상 참", "명제가 아님"], "answer": "거짓", "explain": "모든 자연수보다 큰 하나의 자연수 y는 존재하지 않습니다."}, {"unit": "논리식 단순화", "q": "(p∧q)∨(p∧¬q)와 동치인 것은?", "choices": ["p", "q", "¬p", "p∧q"], "answer": "p", "explain": "p∧(q∨¬q)=p∧참=p입니다."}];
+let current = 0;
+let selected = Array(questions.length).fill(null);
+let checked = Array(questions.length).fill(false);
+let corrects = Array(questions.length).fill(false);
+
+function renderNav(){
+  const nav = document.getElementById('nav');
+  const filter = document.getElementById('filter').value;
+  nav.innerHTML = '';
+  questions.forEach((q,i)=>{
+    if(filter !== 'all' && q.unit !== filter) return;
+    const b = document.createElement('button');
+    b.className = 'qbtn' + (i===current?' active':'') + (checked[i] ? (corrects[i]?' correct':' wrong') : '');
+    b.innerHTML = `<b>${i+1}.</b> ${q.unit}`;
+    b.onclick = ()=>{current=i; renderQuestion();};
+    nav.appendChild(b);
+  });
+}
+function renderQuestion(){
+  const q = questions[current];
+  document.getElementById('unit').textContent = `${current+1}번 · ${q.unit}`;
+  document.getElementById('question').textContent = q.q;
+  const choices = document.getElementById('choices');
+  choices.innerHTML = '';
+  q.choices.forEach(c=>{
+    const div = document.createElement('div');
+    div.className = 'choice';
+    if(selected[current]===c) div.classList.add('selected');
+    if(checked[current] && c===q.answer) div.classList.add('answer');
+    if(checked[current] && selected[current]===c && c!==q.answer) div.classList.add('bad');
+    div.textContent = c;
+    div.onclick = ()=>{
+      if(checked[current]) return;
+      selected[current]=c;
+      renderQuestion();
+    };
+    choices.appendChild(div);
+  });
+  const result = document.getElementById('result');
+  result.className = 'result';
+  result.innerHTML = '';
+  const explain = document.getElementById('explain');
+  explain.className = 'explain';
+  explain.innerHTML = `<b>해설</b><br>${q.explain}`;
+  if(checked[current]){
+    const ok = corrects[current];
+    result.className = 'result show ' + (ok?'ok':'no');
+    result.innerHTML = ok ? '정답입니다.' : `오답입니다. 정답은 <b>${q.answer}</b> 입니다.`;
+  }
+  updateStats();
+  renderNav();
+}
+function checkAnswer(){
+  if(selected[current] === null){ alert('먼저 답을 선택하세요.'); return; }
+  checked[current] = true;
+  corrects[current] = selected[current] === questions[current].answer;
+  renderQuestion();
+}
+function toggleExplain(){ document.getElementById('explain').classList.toggle('show'); }
+function nextQ(){ current = (current + 1) % questions.length; renderQuestion(); }
+function prevQ(){ current = (current - 1 + questions.length) % questions.length; renderQuestion(); }
+function updateStats(){
+  const solved = checked.filter(Boolean).length;
+  const cor = corrects.filter(Boolean).length;
+  const score = solved ? Math.round(cor/solved*100) : 0;
+  document.getElementById('solved').textContent = solved;
+  document.getElementById('correct').textContent = cor;
+  document.getElementById('score').textContent = score + '%';
+  document.getElementById('bar').style.width = (solved/questions.length*100) + '%';
+}
+function resetAll(){
+  if(!confirm('모든 풀이 기록을 지울까요?')) return;
+  current=0; selected=Array(questions.length).fill(null); checked=Array(questions.length).fill(false); corrects=Array(questions.length).fill(false);
+  renderQuestion();
+}
+renderQuestion();
+</script>
+</body>
+</html>
