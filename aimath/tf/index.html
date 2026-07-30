@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python TF-IDF & 코사인 유사도 실습 강의 자료</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #7c3aed;
+            --code-bg: #1e293b;
+            --bg-body: #f1f5f9;
+            --card-bg: #ffffff;
+            --text-main: #334155;
+            --border-color: #cbd5e1;
+            --accent-green: #10b981;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 24px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            color: white;
+            padding: 32px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            font-size: 2rem;
+            color: #60a5fa;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        header p {
+            color: #94a3b8;
+            font-size: 1.05rem;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(96, 165, 250, 0.2);
+            color: #60a5fa;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
+
+        @media (min-width: 992px) {
+            .layout-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+            margin-bottom: 24px;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 10px;
+        }
+
+        /* Preset selector */
+        .preset-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .preset-btn {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            padding: 12px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s ease;
+        }
+
+        .preset-btn:hover {
+            border-color: var(--primary);
+            background: #eff6ff;
+        }
+
+        .preset-btn.active {
+            border-color: var(--primary);
+            background: #dbeafe;
+        }
+
+        .preset-btn h4 {
+            font-size: 0.95rem;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+
+        .preset-btn p {
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        /* Inputs */
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+            color: #334155;
+        }
+
+        .input-group textarea {
+            width: 100%;
+            height: 70px;
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .input-group textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .calc-btn {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .calc-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Code Block Wrapper & Copy Button */
+        .code-wrapper {
+            position: relative;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            color: #f8fafc;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            z-index: 10;
+        }
+
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .copy-btn.copied {
+            background: var(--accent-green);
+            border-color: var(--accent-green);
+            color: white;
+        }
+
+        /* Code Block */
+        .code-container {
+            background: var(--code-bg);
+            color: #f8fafc;
+            border-radius: 12px;
+            padding: 18px;
+            padding-top: 40px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 0.88rem;
+            overflow-x: auto;
+            position: relative;
+            line-height: 1.5;
+        }
+
+        .code-keyword { color: #f472b6; }
+        .code-func { color: #60a5fa; }
+        .code-str { color: #34d399; }
+        .code-comment { color: #94a3b8; font-style: italic; }
+        .code-num { color: #fbbf24; }
+
+        /* Output Tables & Results */
+        .result-box {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid #e2e8f0;
+            margin-top: 16px;
+        }
+
+        .sim-score-display {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+
+        .sim-val {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--primary);
+            font-family: monospace;
+        }
+
+        .matrix-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 0.85rem;
+        }
+
+        .matrix-table th, .matrix-table td {
+            border: 1px solid #e2e8f0;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .matrix-table th {
+            background: #f1f5f9;
+            color: #1e293b;
+            font-weight: 600;
+        }
+
+        .matrix-table td.highlight {
+            background: #dbeafe;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <span class="badge">Python Natural Language Processing (NLP)</span>
+        <h1>🐍 TF-IDF & 코사인 유사도 실습 시뮬레이터</h1>
+        <p>Scikit-learn의 TfidfVectorizer 동작 원리와 문장 간 코사인 유사도 계산을 실시간 인터랙티브 환경에서 학습해 보세요.</p>
+    </header>
+
+    <!-- Preset Selection Area -->
+    <div class="card">
+        <div class="card-title">
+            <span>📌 대표 문장 예제 선택 (총 4가지 시나리오)</span>
+        </div>
+        <div class="preset-container">
+            <div class="preset-btn active" id="preset0" onclick="loadPreset(0)">
+                <h4>예제 1. 날씨 & 기분</h4>
+                <p>유사 문장 구조 (높은 유사도)</p>
+            </div>
+            <div class="preset-btn" id="preset1" onclick="loadPreset(1)">
+                <h4>예제 2. 프로그래밍 언어</h4>
+                <p>Python 및 코딩 관련 주제</p>
+            </div>
+            <div class="preset-btn" id="preset2" onclick="loadPreset(2)">
+                <h4>예제 3. 식품 vs 스포츠</h4>
+                <p>서로 완전히 다른 분야 (낮은 유사도)</p>
+            </div>
+            <div class="preset-btn" id="preset3" onclick="loadPreset(3)">
+                <h4>예제 4. 영화 리뷰 평가</h4>
+                <p>긍정 vs 부정 리뷰 키워드 비교</p>
+            </div>
+        </div>
+
+        <div class="layout-grid" style="margin-bottom: 0;">
+            <div class="input-group">
+                <label for="doc1">문장 1 (Document 1)</label>
+                <textarea id="doc1"></textarea>
+            </div>
+            <div class="input-group">
+                <label for="doc2">문장 2 (Document 2)</label>
+                <textarea id="doc2"></textarea>
+            </div>
+        </div>
+
+        <button class="calc-btn" onclick="runTfidfSim()">⚡ 실시간 TF-IDF 및 코사인 유사도 계산하기</button>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="layout-grid">
+        <!-- Left Column: Executable Python Code -->
+        <div class="card" style="margin-bottom: 0;">
+            <div class="card-title">
+                <span>💻 Python 실행 코드 (Scikit-learn)</span>
+            </div>
+            <p style="font-size: 0.88rem; color: #64748b; margin-bottom: 12px;">
+                현재 설정된 문장이 적용된 파이썬 코드입니다. 오른쪽 상단 버튼으로 복사할 수 있습니다.
+            </p>
+            <div class="code-wrapper">
+                <button class="copy-btn" id="copyBtn" onclick="copyPythonCode()">📋 코드 복사</button>
+                <div class="code-container" id="codeBlock">
+<span class="code-keyword">from</span> sklearn.feature_extraction.text <span class="code-keyword">import</span> TfidfVectorizer
+<span class="code-keyword">from</span> sklearn.metrics.pairwise <span class="code-keyword">import</span> cosine_similarity
+
+<span class="code-comment"># 1. 입력 문장 정의</span>
+sentences = [
+    <span class="code-str" id="pyDoc1">"오늘 날씨는 매우 화창하고 기분이 좋습니다"</span>,
+    <span class="code-str" id="pyDoc2">"오늘 날씨가 정말 화창해서 기분이 좋습니다"</span>
+]
+
+<span class="code-comment"># 2. TfidfVectorizer 객체 생성 및 학습</span>
+vectorizer = TfidfVectorizer()
+tfidf_matrix = vectorizer.<span class="code-func">fit_transform</span>(sentences)
+
+<span class="code-comment"># 3. 추출된 단어 목록 및 TF-IDF 행렬 확인</span>
+feature_names = vectorizer.<span class="code-func">get_feature_names_out</span>()
+matrix_array = tfidf_matrix.<span class="code-func">toarray</span>()
+
+<span class="code-comment"># 4. 코사인 유사도 계산</span>
+sim_matrix = <span class="code-func">cosine_similarity</span>(tfidf_matrix[<span class="code-num">0</span>:<span class="code-num">1</span>], tfidf_matrix[<span class="code-num">1</span>:<span class="code-num">2</span>])
+similarity_score = sim_matrix[<span class="code-num">0</span>][<span class="code-num">0</span>]
+
+<span class="code-func">print</span>(<span class="code-str">f"코사인 유사도: {similarity_score:.4f}"</span>)
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Results Visualization -->
+        <div class="card" style="margin-bottom: 0;">
+            <div class="card-title">
+                <span>📊 분석 결과 및 TF-IDF 행렬</span>
+            </div>
+
+            <div class="sim-score-display">
+                <div>
+                    <div style="font-size: 0.85rem; color: #475569;">코사인 유사도 (Cosine Similarity)</div>
+                    <div class="sim-val" id="simScore">0.8165</div>
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-size: 0.85rem; color: #475569;">일치율 평가</div>
+                    <div id="simBadge" style="font-weight: bold; color: var(--primary);">매우 높은 유사도</div>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div style="font-size: 0.9rem; font-weight: bold; margin-bottom: 8px;">1. 단어 토큰화 및 TF-IDF 행렬 (Matrix)</div>
+                <div style="overflow-x: auto;">
+                    <table class="matrix-table" id="matrixTable">
+                        <!-- Table generated dynamically -->
+                    </table>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div style="font-size: 0.9rem; font-weight: bold; margin-bottom: 6px;">2. 수식 연산 상세</div>
+                <div id="calcDetail" style="font-size: 0.85rem; color: #475569; line-height: 1.7; font-family: monospace;">
+                    <!-- Calculations generated dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© Seyeong Coding Academy - Python NLP Educational Materials</p>
+    </footer>
+</div>
+
+<script>
+    // 4 Preset Examples
+    const presets = [
+        {
+            title: "예제 1. 날씨 & 기분",
+            doc1: "오늘 날씨는 매우 화창하고 기분이 좋습니다",
+            doc2: "오늘 날씨가 정말 화창해서 기분이 좋습니다"
+        },
+        {
+            title: "예제 2. 프로그래밍 언어",
+            doc1: "파이썬 데이터 분석 과정은 매우 흥미롭고 유익합니다",
+            doc2: "파이썬 활용 빅데이터 분석 수업은 유익하고 재미있습니다"
+        },
+        {
+            title: "예제 3. 식품 vs 스포츠",
+            doc1: "맛있는 사과와 바나나는 몸에 좋은 과일입니다",
+            doc2: "축구와 농구는 매우 인기있는 열정적인 스포츠입니다"
+        },
+        {
+            title: "예제 4. 영화 리뷰 평가",
+            doc1: "이 영화는 연기력이 뛰어난 배우들의 최고의 작품이다",
+            doc2: "이 영화는 지루하고 연기력도 아쉬운 최악의 작품이다"
+        }
+    ];
+
+    function loadPreset(index) {
+        document.querySelectorAll('.preset-btn').forEach((btn, i) => {
+            if(i === index) btn.classList.add('active');
+            else btn.classList.remove('active');
+        });
+
+        document.getElementById('doc1').value = presets[index].doc1;
+        document.getElementById('doc2').value = presets[index].doc2;
+        runTfidfSim();
+    }
+
+    function runTfidfSim() {
+        const text1 = document.getElementById('doc1').value.trim();
+        const text2 = document.getElementById('doc2').value.trim();
+
+        // Update Python code view
+        document.getElementById('pyDoc1').textContent = `"${text1}"`;
+        document.getElementById('pyDoc2').textContent = `"${text2}"`;
+
+        // Tokenization (Whitespace-based simulation matching standard sklearn default)
+        const tokens1 = text1 ? text1.split(/\s+/) : [];
+        const tokens2 = text2 ? text2.split(/\s+/) : [];
+
+        // Vocabulary
+        const vocabSet = new Set([...tokens1, ...tokens2]);
+        const vocab = Array.from(vocabSet).sort();
+
+        if (vocab.length === 0) {
+            document.getElementById('simScore').textContent = "0.0000";
+            return;
+        }
+
+        const N = 2; // Num documents
+
+        // Calculate TF & IDF
+        const tf1 = vocab.map(w => tokens1.filter(t => t === w).length);
+        const tf2 = vocab.map(w => tokens2.filter(t => t === w).length);
+
+        const tfidf1 = [];
+        const tfidf2 = [];
+
+        for (let i = 0; i < vocab.length; i++) {
+            // Document Frequency
+            let df = 0;
+            if (tf1[i] > 0) df++;
+            if (tf2[i] > 0) df++;
+
+            // Smooth IDF as in sklearn default: log((1 + N) / (1 + df)) + 1
+            const idf = Math.log((1 + N) / (1 + df)) + 1;
+
+            tfidf1.push(tf1[i] * idf);
+            tfidf2.push(tf2[i] * idf);
+        }
+
+        // L2 Normalization
+        const norm1 = Math.sqrt(tfidf1.reduce((sum, val) => sum + val * val, 0));
+        const norm2 = Math.sqrt(tfidf2.reduce((sum, val) => sum + val * val, 0));
+
+        const normTfidf1 = norm1 > 0 ? tfidf1.map(v => v / norm1) : tfidf1;
+        const normTfidf2 = norm2 > 0 ? tfidf2.map(v => v / norm2) : tfidf2;
+
+        // Cosine Similarity = Dot product of L2 normalized vectors
+        let dotProduct = 0;
+        for (let i = 0; i < vocab.length; i++) {
+            dotProduct += normTfidf1[i] * normTfidf2[i];
+        }
+
+        const simScore = Math.min(1.0, Math.max(0.0, dotProduct));
+
+        // Update UI
+        document.getElementById('simScore').textContent = simScore.toFixed(4);
+
+        const badge = document.getElementById('simBadge');
+        if (simScore >= 0.7) {
+            badge.textContent = "매우 높은 유사도";
+            badge.style.color = "#10b981";
+        } else if (simScore >= 0.3) {
+            badge.textContent = "보통 유사도";
+            badge.style.color = "#f59e0b";
+        } else {
+            badge.textContent = "낮은 유사도 (서로 다름)";
+            badge.style.color = "#ef4444";
+        }
+
+        // Render Matrix Table
+        const table = document.getElementById('matrixTable');
+        let tableHtml = `<thead><tr><th>문서 / 단어</th>${vocab.map(w => `<th>${w}</th>`).join('')}</tr></thead><tbody>`;
+        
+        tableHtml += `<tr><td>문서 1 (TF-IDF)</td>${normTfidf1.map(v => `<td class="${v > 0 ? 'highlight' : ''}">${v.toFixed(3)}</td>`).join('')}</tr>`;
+        tableHtml += `<tr><td>문서 2 (TF-IDF)</td>${normTfidf2.map(v => `<td class="${v > 0 ? 'highlight' : ''}">${v.toFixed(3)}</td>`).join('')}</tr>`;
+        tableHtml += '</tbody>';
+        table.innerHTML = tableHtml;
+
+        // Render Calc Details
+        document.getElementById('calcDetail').innerHTML = `
+            • 단어 사전 크기 (Vocabulary Size): ${vocab.length}개 단어<br>
+            • L2 Norm 크기: ||Vec1|| = ${norm1.toFixed(3)}, ||Vec2|| = ${norm2.toFixed(3)}<br>
+            • 내적(Dot Product) 연산 결과: cos(θ) = ${simScore.toFixed(4)}
+        `;
+    }
+
+    // Function to Copy Python Code
+    function copyPythonCode() {
+        const text1 = document.getElementById('doc1').value.trim();
+        const text2 = document.getElementById('doc2').value.trim();
+
+        const rawCode = `from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
+# 1. 입력 문장 정의
+sentences = [
+    "${text1}",
+    "${text2}"
+]
+
+# 2. TfidfVectorizer 객체 생성 및 학습
+vectorizer = TfidfVectorizer()
+tfidf_matrix = vectorizer.fit_transform(sentences)
+
+# 3. 추출된 단어 목록 및 TF-IDF 행렬 확인
+feature_names = vectorizer.get_feature_names_out()
+matrix_array = tfidf_matrix.toarray()
+
+# 4. 코사인 유사도 계산
+sim_matrix = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:2])
+similarity_score = sim_matrix[0][0]
+
+print(f"코사인 유사도: {similarity_score:.4f}")`;
+
+        navigator.clipboard.writeText(rawCode).then(() => {
+            const copyBtn = document.getElementById('copyBtn');
+            copyBtn.textContent = '✅ 복사 완료!';
+            copyBtn.classList.add('copied');
+
+            setTimeout(() => {
+                copyBtn.textContent = '📋 코드 복사';
+                copyBtn.classList.remove('copied');
+            }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy: ', err);
+        });
+    }
+
+    // Initialize
+    window.onload = function() {
+        loadPreset(0);
+    };
+</script>
+
+</body>
+</html>
