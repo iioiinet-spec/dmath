@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>유클리드 유사도 시각화 - 인터랙티브 강의자료</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+        }
+
+        .textbook-card {
+            background: #ffffff;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .textbook-header {
+            background: #1e3a5f;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 8px 8px 0 0;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .textbook-label {
+            background: #f1f5f9;
+            border-left: 4px solid #3b82f6;
+            padding: 8px 16px;
+            font-weight: 700;
+            color: #1e40af;
+            margin-bottom: 12px;
+        }
+
+        .formula-box {
+            background: #fefce8;
+            border: 1px solid #fde047;
+            border-radius: 6px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .highlight-red { color: #dc2626; font-weight: 700; }
+        .highlight-blue { color: #2563eb; font-weight: 700; }
+        .highlight-green { color: #16a34a; font-weight: 700; }
+        .highlight-purple { color: #7c3aed; font-weight: 700; }
+        .highlight-orange { color: #ea580c; font-weight: 700; }
+
+        .mode-btn {
+            border: 2px solid #94a3b8;
+            background: #ffffff;
+            color: #475569;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+
+        .mode-btn:hover {
+            border-color: #3b82f6;
+            color: #3b82f6;
+        }
+
+        .mode-btn.active {
+            background: #3b82f6;
+            border-color: #3b82f6;
+            color: white;
+        }
+
+        .dimension-btn {
+            border: 2px solid #cbd5e1;
+            background: #ffffff;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 13px;
+        }
+
+        .dimension-btn:hover { border-color: #3b82f6; }
+        .dimension-btn.active { background: #3b82f6; border-color: #3b82f6; color: white; }
+
+        .slider-track {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #e2e8f0;
+            outline: none;
+        }
+
+        .slider-track::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #3b82f6;
+            cursor: pointer;
+            border: 3px solid #ffffff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+
+        .value-display {
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+        }
+
+        .vector-input {
+            width: 60px;
+            padding: 6px 8px;
+            border: 2px solid #cbd5e1;
+            border-radius: 6px;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            font-size: 15px;
+            font-weight: 600;
+            transition: border-color 0.2s;
+        }
+
+        .vector-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+        .similarity-bar {
+            height: 24px;
+            border-radius: 12px;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            color: white;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .distance-line {
+            stroke-dasharray: 8, 4;
+            animation: dash 2s linear infinite;
+        }
+
+        @keyframes dash {
+            to { stroke-dashoffset: -24; }
+        }
+
+        .point-label {
+            font-family: 'Courier New', monospace;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        table.textbook-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        table.textbook-table th {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            padding: 10px 8px;
+            font-weight: 700;
+        }
+
+        table.textbook-table td {
+            border: 1px solid #cbd5e1;
+            padding: 10px 8px;
+            text-align: center;
+        }
+
+        table.textbook-table tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        .canvas-border {
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            background: #ffffff;
+        }
+
+        .note-box {
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 14px;
+            color: #9a3412;
+        }
+
+        .preset-btn {
+            border: 1px solid #cbd5e1;
+            background: #f8fafc;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .preset-btn:hover {
+            background: #e2e8f0;
+            border-color: #3b82f6;
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8">
+    <div class="max-w-7xl mx-auto">
+
+        <!-- 교과서 스타일 헤더 -->
+        <div class="textbook-card mb-6">
+            <div class="textbook-header flex items-center gap-3">
+                <span class="text-2xl">📏</span>
+                <span>유클리드 유사도 (Euclidean Similarity)</span>
+                <span class="ml-auto text-sm font-normal opacity-80">수학 / 머신러닝 기초</span>
+            </div>
+            <div class="p-6">
+                <h1 class="text-2xl font-bold text-slate-800 mb-2">유클리드 거리와 유사도</h1>
+                <p class="text-slate-600">
+                    두 점(또는 벡터) 사이의 <strong>직선 거리</strong>를 유클리드 거리라 하며, 
+                    이 거리를 이용하여 두 데이터의 <strong>유사도</strong>를 측정할 수 있습니다.
+                </p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+
+            <!-- 왼쪽: 시각화 영역 -->
+            <div class="xl:col-span-7 space-y-4">
+
+                <!-- 2D/3D 시각화 -->
+                <div class="textbook-card">
+                    <div class="p-4 border-b border-slate-200">
+                        <div class="flex items-center justify-between flex-wrap gap-2">
+                            <span class="font-bold text-slate-700 text-lg">[그림] 유클리드 거리 시각화</span>
+                            <div class="flex gap-2">
+                                <button onclick="setDimension(2)" id="btn-2d" class="dimension-btn active">2차원</button>
+                                <button onclick="setDimension(3)" id="btn-3d" class="dimension-btn">3차원</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <div class="canvas-border">
+                            <canvas id="mainCanvas" width="640" height="480"></canvas>
+                        </div>
+                        <div class="mt-3 flex flex-wrap justify-center gap-4 text-sm">
+                            <span class="flex items-center gap-2">
+                                <span class="w-4 h-4 rounded-full bg-red-500"></span> 
+                                <span class="text-red-700 font-semibold">점 A (벡터 A)</span>
+                            </span>
+                            <span class="flex items-center gap-2">
+                                <span class="w-4 h-4 rounded-full bg-blue-500"></span> 
+                                <span class="text-blue-700 font-semibold">점 B (벡터 B)</span>
+                            </span>
+                            <span class="flex items-center gap-2">
+                                <span class="w-8 h-1 bg-purple-500 rounded distance-line" style="height:3px;"></span> 
+                                <span class="text-purple-700 font-semibold">유클리드 거리 d(A,B)</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 벡터 입력 -->
+                <div class="textbook-card p-5">
+                    <div class="textbook-label mb-4">벡터 좌표 입력</div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Vector A -->
+                        <div class="border-2 border-red-200 rounded-lg p-4 bg-red-50">
+                            <div class="flex items-center gap-2 mb-3">
+                                <span class="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center text-white font-bold">A</span>
+                                <span class="font-bold text-red-700">벡터 A</span>
+                            </div>
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <span class="font-mono text-lg">A = (</span>
+                                <input type="number" id="ax" value="3" step="0.5" class="vector-input" onchange="updateFromInput()">
+                                <span class="font-mono text-lg">,</span>
+                                <input type="number" id="ay" value="4" step="0.5" class="vector-input" onchange="updateFromInput()">
+                                <span id="az-container" class="hidden">
+                                    <span class="font-mono text-lg">,</span>
+                                    <input type="number" id="az" value="0" step="0.5" class="vector-input" onchange="updateFromInput()">
+                                </span>
+                                <span class="font-mono text-lg">)</span>
+                            </div>
+                            <div class="flex gap-2 mt-2">
+                                <button class="preset-btn" onclick="setVectorA(1,0)">(1, 0)</button>
+                                <button class="preset-btn" onclick="setVectorA(0,1)">(0, 1)</button>
+                                <button class="preset-btn" onclick="setVectorA(3,4)">(3, 4)</button>
+                                <button class="preset-btn" onclick="setVectorA(5,0)">(5, 0)</button>
+                            </div>
+                        </div>
+
+                        <!-- Vector B -->
+                        <div class="border-2 border-blue-200 rounded-lg p-4 bg-blue-50">
+                            <div class="flex items-center gap-2 mb-3">
+                                <span class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">B</span>
+                                <span class="font-bold text-blue-700">벡터 B</span>
+                            </div>
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <span class="font-mono text-lg">B = (</span>
+                                <input type="number" id="bx" value="6" step="0.5" class="vector-input" onchange="updateFromInput()">
+                                <span class="font-mono text-lg">,</span>
+                                <input type="number" id="by" value="8" step="0.5" class="vector-input" onchange="updateFromInput()">
+                                <span id="bz-container" class="hidden">
+                                    <span class="font-mono text-lg">,</span>
+                                    <input type="number" id="bz" value="0" step="0.5" class="vector-input" onchange="updateFromInput()">
+                                </span>
+                                <span class="font-mono text-lg">)</span>
+                            </div>
+                            <div class="flex gap-2 mt-2">
+                                <button class="preset-btn" onclick="setVectorB(1,1)">(1, 1)</button>
+                                <button class="preset-btn" onclick="setVectorB(6,8)">(6, 8)</button>
+                                <button class="preset-btn" onclick="setVectorB(0,5)">(0, 5)</button>
+                                <button class="preset-btn" onclick="setVectorB(-3,4)">(-3, 4)</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="note-box mt-4">
+                        💡 <strong>팁:</strong> 입력칸에 직접 숫자를 입력하거나, 프리셋 버튼을 클릭하여 벡터를 설정하세요. 
+                        캔버스 위의 점을 드래그하여 직접 이동시킬 수도 있습니다.
+                    </div>
+                </div>
+
+                <!-- 공식 설명 -->
+                <div class="textbook-card p-5">
+                    <div class="textbook-label mb-4">유클리드 거리 공식</div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="formula-box">
+                            <div class="font-bold text-slate-700 mb-2">2차원 공간</div>
+                            <div class="value-display text-lg text-slate-800">
+                                d(A,B) = √[(x₂−x₁)² + (y₂−y₁)²]
+                            </div>
+                        </div>
+                        <div class="formula-box">
+                            <div class="font-bold text-slate-700 mb-2">n차원 공간</div>
+                            <div class="value-display text-lg text-slate-800">
+                                d(A,B) = √[Σ(Aᵢ − Bᵢ)²]
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 p-4 bg-slate-50 rounded-lg border border-slate-200">
+                        <div class="font-bold text-slate-700 mb-2">유클리드 유사도 (Similarity)</div>
+                        <div class="value-display text-lg text-slate-800 mb-2">
+                            similarity = 1 / (1 + d(A,B))
+                        </div>
+                        <div class="text-sm text-slate-500">
+                            거리가 0이면 유사도는 1(완전 동일), 거리가 커질수록 유사도는 0에 가까워집니다.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 오른쪽: 결과 패널 -->
+            <div class="xl:col-span-5 space-y-4">
+
+                <!-- 거리 계산 -->
+                <div class="textbook-card">
+                    <div class="textbook-label">계산 결과</div>
+                    <div class="p-4 space-y-4">
+
+                        <!-- Distance -->
+                        <div class="border-2 border-purple-200 rounded-lg p-4 bg-purple-50">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="highlight-purple text-lg font-bold">유클리드 거리 d(A,B)</span>
+                            </div>
+                            <div class="text-center py-2">
+                                <div id="distanceFormula" class="value-display text-slate-600 text-sm mb-2">
+                                    √[(6−3)² + (8−4)²]
+                                </div>
+                                <div class="text-3xl font-bold text-purple-700 font-mono" id="distanceValue">
+                                    5.000
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Similarity -->
+                        <div class="border-2 border-green-200 rounded-lg p-4 bg-green-50">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="highlight-green text-lg font-bold">유클리드 유사도</span>
+                            </div>
+                            <div class="text-center py-2">
+                                <div class="text-sm text-slate-500 mb-2">
+                                    similarity = 1 / (1 + <span id="simDist">5.000</span>)
+                                </div>
+                                <div class="text-3xl font-bold text-green-700 font-mono" id="similarityValue">
+                                    0.167
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <div class="flex justify-between text-xs text-slate-500 mb-1">
+                                    <span>0 (완전 다름)</span>
+                                    <span>1 (완전 동일)</span>
+                                </div>
+                                <div class="w-full bg-white rounded-full h-6 border border-green-200">
+                                    <div id="similarityBar" class="similarity-bar bg-green-500" style="width: 16.7%">
+                                        16.7%
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step by step -->
+                        <div class="border border-slate-200 rounded-lg p-4 bg-slate-50">
+                            <div class="font-bold text-slate-700 mb-3">계산 과정</div>
+                            <div id="calcSteps" class="space-y-2 text-sm font-mono text-slate-600">
+                                <div>① d² = (6 − 3)² + (8 − 4)²</div>
+                                <div>② d² = 3² + 4² = 9 + 16 = 25</div>
+                                <div>③ d = √25 = 5.000</div>
+                                <div>④ similarity = 1/(1+5) = 0.167</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 벡터 정보 -->
+                <div class="textbook-card p-5">
+                    <div class="textbook-label">벡터 정보</div>
+                    <div class="space-y-3 mt-3">
+                        <div class="flex justify-between items-center p-3 bg-red-50 rounded-lg border border-red-200">
+                            <div class="flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-full bg-red-500 flex items-center justify-center text-white font-bold text-xs">A</span>
+                                <span class="font-semibold text-red-700">벡터 A의 크기 |A|</span>
+                            </div>
+                            <span id="magnitudeA" class="font-mono font-bold text-red-700 text-lg">5.000</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-blue-50 rounded-lg border border-blue-200">
+                            <div class="flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-xs">B</span>
+                                <span class="font-semibold text-blue-700">벡터 B의 크기 |B|</span>
+                            </div>
+                            <span id="magnitudeB" class="font-mono font-bold text-blue-700 text-lg">10.000</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-purple-50 rounded-lg border border-purple-200">
+                            <div class="flex items-center gap-2">
+                                <span class="font-semibold text-purple-700">|A − B| (거리)</span>
+                            </div>
+                            <span id="diffMagnitude" class="font-mono font-bold text-purple-700 text-lg">5.000</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 응용 예시 -->
+                <div class="textbook-card p-5">
+                    <div class="textbook-label">유클리드 유사도의 응용</div>
+                    <div class="space-y-3 mt-3">
+                        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                            <div class="font-bold text-slate-700 mb-1">🎬 영화 추천 시스템</div>
+                            <div class="text-sm text-slate-500">
+                                사용자의 영화 평점 벡터와 유사한 평점 패턴을 가진 다른 사용자를 찾아 영화를 추천
+                            </div>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                            <div class="font-bold text-slate-700 mb-1">🖼️ 이미지 유사도 검색</div>
+                            <div class="text-sm text-slate-500">
+                                이미지의 픽셀값을 벡터로 변환하여 유사한 이미지를 검색
+                            </div>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                            <div class="font-bold text-slate-700 mb-1">📊 K-Means 클러스터링</div>
+                            <div class="text-sm text-slate-500">
+                                데이터 포인트 간의 거리를 기준으로 군집(클러스터)을 형성
+                            </div>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                            <div class="font-bold text-slate-700 mb-1">🤖 K-NN 분류</div>
+                            <div class="text-sm text-slate-500">
+                                가장 가까운 K개의 이웃 데이터를 찾아 새로운 데이터의 클래스를 예측
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 코사인 유사도와 비교 -->
+                <div class="textbook-card p-5">
+                    <div class="textbook-label">코사인 유사도와 비교</div>
+                    <div class="space-y-3 mt-3">
+                        <div class="flex justify-between items-center p-3 bg-amber-50 rounded-lg border border-amber-200">
+                            <span class="font-semibold text-amber-700">코사인 유사도</span>
+                            <span id="cosineSim" class="font-mono font-bold text-amber-700 text-lg">1.000</span>
+                        </div>
+                        <div class="text-sm text-slate-500 px-2">
+                            <strong>차이점:</strong> 유클리드 유사도는 <strong>거리</strong>를 기준으로 하고, 
+                            코사인 유사도는 <strong>방향(각도)</strong>을 기준으로 합니다. 
+                            같은 방향이면 코사인 유사도는 1이지만, 거리가 멀면 유클리드 유사도는 작아집니다.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 예제 테이블 -->
+        <div class="textbook-card mt-6">
+            <div class="textbook-label m-4 mb-0">유클리드 거리 계산 예제</div>
+            <div class="p-4">
+                <div class="overflow-x-auto">
+                    <table class="textbook-table">
+                        <thead>
+                            <tr>
+                                <th>예제</th>
+                                <th>벡터 A</th>
+                                <th>벡터 B</th>
+                                <th class="highlight-purple">d(A,B)</th>
+                                <th class="highlight-green">유사도</th>
+                                <th>설명</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="font-bold">1</td>
+                                <td class="font-mono">(1, 1)</td>
+                                <td class="font-mono">(1, 1)</td>
+                                <td class="highlight-purple font-mono">0</td>
+                                <td class="highlight-green font-bold">1.000</td>
+                                <td>완전히 같은 점</td>
+                            </tr>
+                            <tr>
+                                <td class="font-bold">2</td>
+                                <td class="font-mono">(0, 0)</td>
+                                <td class="font-mono">(3, 4)</td>
+                                <td class="highlight-purple font-mono">5</td>
+                                <td class="highlight-green font-bold">0.167</td>
+                                <td>원점에서 (3,4)까지의 거리</td>
+                            </tr>
+                            <tr>
+                                <td class="font-bold">3</td>
+                                <td class="font-mono">(1, 2)</td>
+                                <td class="font-mono">(4, 6)</td>
+                                <td class="highlight-purple font-mono">5</td>
+                                <td class="highlight-green font-bold">0.167</td>
+                                <td>두 점 사이의 거리</td>
+                            </tr>
+                            <tr>
+                                <td class="font-bold">4</td>
+                                <td class="font-mono">(3, 0)</td>
+                                <td class="font-mono">(0, 4)</td>
+                                <td class="highlight-purple font-mono">5</td>
+                                <td class="highlight-green font-bold">0.167</td>
+                                <td>직각을 이루는 두 점</td>
+                            </tr>
+                            <tr>
+                                <td class="font-bold">5</td>
+                                <td class="font-mono">(1, 1, 1)</td>
+                                <td class="font-mono">(4, 5, 6)</td>
+                                <td class="highlight-purple font-mono">√43 ≈ 6.56</td>
+                                <td class="highlight-green font-bold">0.132</td>
+                                <td>3차원 공간의 거리</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- 정리 -->
+        <div class="textbook-card mt-6 p-5">
+            <div class="textbook-label mb-4">정리</div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="formula-box">
+                    <div class="font-bold text-slate-700 mb-2">📏 유클리드 거리</div>
+                    <div class="value-display text-lg text-slate-800">
+                        두 점 사이의 직선 거리<br>
+                        <span class="text-sm">값이 작을수록 가까움</span>
+                    </div>
+                </div>
+                <div class="formula-box">
+                    <div class="font-bold text-slate-700 mb-2">🤝 유클리드 유사도</div>
+                    <div class="value-display text-lg text-slate-800">
+                        1/(1+d)<br>
+                        <span class="text-sm">0~1 사이, 1에 가까울수록 유사</span>
+                    </div>
+                </div>
+                <div class="formula-box">
+                    <div class="font-bold text-slate-700 mb-2">⚡ 활용 분야</div>
+                    <div class="value-display text-lg text-slate-800">
+                        추천 시스템, 클러스터링,<br>
+                        이미지 검색, K-NN
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('mainCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let dimension = 2;
+        let pointA = {x: 3, y: 4, z: 0};
+        let pointB = {x: 6, y: 8, z: 0};
+        let isDragging = null; // 'A', 'B', or null
+
+        const centerX = 320;
+        const centerY = 280;
+        const scale = 35; // pixels per unit
+
+        function toCanvas(x, y) {
+            return {
+                x: centerX + x * scale,
+                y: centerY - y * scale
+            };
+        }
+
+        function toGrid(cx, cy) {
+            return {
+                x: (cx - centerX) / scale,
+                y: (centerY - cy) / scale
+            };
+        }
+
+        function drawGrid() {
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.lineWidth = 1;
+
+            for (let i = -10; i <= 10; i++) {
+                const pos = i * scale;
+                ctx.beginPath();
+                ctx.moveTo(centerX + pos, 20);
+                ctx.lineTo(centerX + pos, canvas.height - 20);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(20, centerY - pos);
+                ctx.lineTo(canvas.width - 20, centerY - pos);
+                ctx.stroke();
+            }
+        }
+
+        function drawAxes() {
+            ctx.strokeStyle = '#475569';
+            ctx.lineWidth = 2;
+
+            // X axis
+            ctx.beginPath();
+            ctx.moveTo(30, centerY);
+            ctx.lineTo(canvas.width - 30, centerY);
+            ctx.stroke();
+
+            // Y axis
+            ctx.beginPath();
+            ctx.moveTo(centerX, 30);
+            ctx.lineTo(centerX, canvas.height - 30);
+            ctx.stroke();
+
+            // Arrows
+            ctx.fillStyle = '#475569';
+            ctx.beginPath();
+            ctx.moveTo(canvas.width - 30, centerY);
+            ctx.lineTo(canvas.width - 40, centerY - 5);
+            ctx.lineTo(canvas.width - 40, centerY + 5);
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.moveTo(centerX, 30);
+            ctx.lineTo(centerX - 5, 40);
+            ctx.lineTo(centerX + 5, 40);
+            ctx.fill();
+
+            // Labels
+            ctx.font = 'bold 14px sans-serif';
+            ctx.fillStyle = '#64748b';
+            ctx.fillText('x', canvas.width - 35, centerY + 22);
+            ctx.fillText('y', centerX + 12, 38);
+
+            // Origin
+            ctx.fillStyle = '#1e293b';
+            ctx.font = 'bold 14px sans-serif';
+            ctx.fillText('O', centerX - 22, centerY + 22);
+
+            // Tick marks
+            ctx.font = '11px monospace';
+            ctx.fillStyle = '#94a3b8';
+            for (let i = -8; i <= 8; i++) {
+                if (i === 0) continue;
+                const tx = centerX + i * scale;
+                ctx.fillText(i.toString(), tx - 5, centerY + 18);
+                const ty = centerY - i * scale;
+                ctx.fillText(i.toString(), centerX - 20, ty + 4);
+            }
+        }
+
+        function drawDistanceLine() {
+            const a = toCanvas(pointA.x, pointA.y);
+            const b = toCanvas(pointB.x, pointB.y);
+
+            // Distance line
+            ctx.strokeStyle = '#a855f7';
+            ctx.lineWidth = 3;
+            ctx.setLineDash([8, 4]);
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Distance label
+            const midX = (a.x + b.x) / 2;
+            const midY = (a.y + b.y) / 2;
+            const dist = Math.sqrt((pointB.x - pointA.x)**2 + (pointB.y - pointA.y)**2);
+
+            ctx.fillStyle = '#a855f7';
+            ctx.font = 'bold 13px sans-serif';
+            ctx.fillText('d = ' + dist.toFixed(2), midX + 10, midY - 10);
+
+            // Right angle projection lines (dashed)
+            ctx.strokeStyle = 'rgba(168, 85, 247, 0.3)';
+            ctx.setLineDash([4, 4]);
+            ctx.lineWidth = 1;
+
+            // Horizontal projection from A to B's y-level
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, a.y);
+            ctx.stroke();
+
+            // Vertical projection
+            ctx.beginPath();
+            ctx.moveTo(b.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Delta labels
+            const dx = pointB.x - pointA.x;
+            const dy = pointB.y - pointA.y;
+
+            ctx.fillStyle = 'rgba(168, 85, 247, 0.7)';
+            ctx.font = '11px sans-serif';
+            ctx.fillText('Δx = ' + dx.toFixed(1), (a.x + b.x) / 2, a.y + (dy > 0 ? 18 : -8));
+            ctx.fillText('Δy = ' + dy.toFixed(1), b.x + (dx > 0 ? 8 : -40), (a.y + b.y) / 2);
+        }
+
+        function drawPoint(point, color, label, isA) {
+            const pos = toCanvas(point.x, point.y);
+
+            // Point circle
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(pos.x, pos.y, 8, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Label
+            ctx.fillStyle = color;
+            ctx.font = 'bold 15px sans-serif';
+            const labelX = pos.x + (point.x >= 0 ? 14 : -30);
+            const labelY = pos.y - 14;
+            ctx.fillText(label + '(' + point.x.toFixed(1) + ', ' + point.y.toFixed(1) + ')', labelX, labelY);
+
+            // Coordinate projection lines to axes
+            ctx.strokeStyle = color + '40';
+            ctx.setLineDash([3, 3]);
+            ctx.lineWidth = 1;
+
+            // To x-axis
+            ctx.beginPath();
+            ctx.moveTo(pos.x, pos.y);
+            ctx.lineTo(pos.x, centerY);
+            ctx.stroke();
+
+            // To y-axis
+            ctx.beginPath();
+            ctx.moveTo(pos.x, pos.y);
+            ctx.lineTo(centerX, pos.y);
+            ctx.stroke();
+            ctx.setLineDash([]);
+        }
+
+        function drawSimilarityCircle() {
+            const dist = Math.sqrt((pointB.x - pointA.x)**2 + (pointB.y - pointA.y)**2);
+            const sim = 1 / (1 + dist);
+
+            // Draw a similarity indicator circle
+            const indicatorX = canvas.width - 80;
+            const indicatorY = 80;
+            const indicatorR = 40;
+
+            // Background circle
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(indicatorX, indicatorY, indicatorR, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // Filled arc based on similarity
+            const endAngle = -Math.PI / 2 + (sim * Math.PI * 2);
+            ctx.fillStyle = sim > 0.5 ? 'rgba(34, 197, 94, 0.3)' : sim > 0.2 ? 'rgba(245, 158, 11, 0.3)' : 'rgba(239, 68, 68, 0.3)';
+            ctx.beginPath();
+            ctx.moveTo(indicatorX, indicatorY);
+            ctx.arc(indicatorX, indicatorY, indicatorR, -Math.PI / 2, endAngle);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.strokeStyle = sim > 0.5 ? '#22c55e' : sim > 0.2 ? '#f59e0b' : '#ef4444';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(indicatorX, indicatorY);
+            ctx.arc(indicatorX, indicatorY, indicatorR, -Math.PI / 2, endAngle);
+            ctx.stroke();
+
+            // Center text
+            ctx.fillStyle = '#1e293b';
+            ctx.font = 'bold 14px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText((sim * 100).toFixed(0) + '%', indicatorX, indicatorY + 5);
+            ctx.textAlign = 'left';
+
+            ctx.fillStyle = '#64748b';
+            ctx.font = '11px sans-serif';
+            ctx.fillText('유사도', indicatorX - 15, indicatorY + indicatorR + 18);
+        }
+
+        function render() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawGrid();
+            drawAxes();
+            drawDistanceLine();
+            drawPoint(pointA, '#dc2626', 'A');
+            drawPoint(pointB, '#2563eb', 'B');
+            drawSimilarityCircle();
+            updateCalculations();
+        }
+
+        function updateCalculations() {
+            const dx = pointB.x - pointA.x;
+            const dy = pointB.y - pointA.y;
+            const dist = Math.sqrt(dx*dx + dy*dy);
+            const sim = 1 / (1 + dist);
+
+            const magA = Math.sqrt(pointA.x**2 + pointA.y**2);
+            const magB = Math.sqrt(pointB.x**2 + pointB.y**2);
+
+            // Cosine similarity
+            const dotProduct = pointA.x * pointB.x + pointA.y * pointB.y;
+            const cosSim = dotProduct / (magA * magB);
+
+            // Update inputs
+            document.getElementById('ax').value = pointA.x.toFixed(1);
+            document.getElementById('ay').value = pointA.y.toFixed(1);
+            document.getElementById('bx').value = pointB.x.toFixed(1);
+            document.getElementById('by').value = pointB.y.toFixed(1);
+
+            // Distance
+            document.getElementById('distanceValue').textContent = dist.toFixed(3);
+            document.getElementById('distanceFormula').innerHTML = 
+                '√[(' + pointB.x.toFixed(1) + '−' + pointA.x.toFixed(1) + ')² + (' + 
+                pointB.y.toFixed(1) + '−' + pointA.y.toFixed(1) + ')²]';
+
+            // Similarity
+            document.getElementById('similarityValue').textContent = sim.toFixed(3);
+            document.getElementById('simDist').textContent = dist.toFixed(3);
+            document.getElementById('similarityBar').style.width = (sim * 100) + '%';
+            document.getElementById('similarityBar').textContent = (sim * 100).toFixed(1) + '%';
+
+            // Steps
+            const d2 = dx*dx + dy*dy;
+            document.getElementById('calcSteps').innerHTML = 
+                '<div>① d² = (' + dx.toFixed(1) + ')² + (' + dy.toFixed(1) + ')²</div>' +
+                '<div>② d² = ' + (dx*dx).toFixed(2) + ' + ' + (dy*dy).toFixed(2) + ' = ' + d2.toFixed(2) + '</div>' +
+                '<div>③ d = √' + d2.toFixed(2) + ' = ' + dist.toFixed(3) + '</div>' +
+                '<div>④ similarity = 1/(1+' + dist.toFixed(3) + ') = ' + sim.toFixed(3) + '</div>';
+
+            // Magnitudes
+            document.getElementById('magnitudeA').textContent = magA.toFixed(3);
+            document.getElementById('magnitudeB').textContent = magB.toFixed(3);
+            document.getElementById('diffMagnitude').textContent = dist.toFixed(3);
+
+            // Cosine similarity
+            document.getElementById('cosineSim').textContent = cosSim.toFixed(3);
+        }
+
+        function updateFromInput() {
+            pointA.x = parseFloat(document.getElementById('ax').value) || 0;
+            pointA.y = parseFloat(document.getElementById('ay').value) || 0;
+            pointB.x = parseFloat(document.getElementById('bx').value) || 0;
+            pointB.y = parseFloat(document.getElementById('by').value) || 0;
+            render();
+        }
+
+        function setVectorA(x, y) {
+            pointA.x = x;
+            pointA.y = y;
+            render();
+        }
+
+        function setVectorB(x, y) {
+            pointB.x = x;
+            pointB.y = y;
+            render();
+        }
+
+        function setDimension(dim) {
+            dimension = dim;
+            document.getElementById('btn-2d').classList.toggle('active', dim === 2);
+            document.getElementById('btn-3d').classList.toggle('active', dim === 3);
+            document.getElementById('az-container').classList.toggle('hidden', dim === 2);
+            document.getElementById('bz-container').classList.toggle('hidden', dim === 2);
+            render();
+        }
+
+        // Mouse interaction
+        function getMousePos(e) {
+            const rect = canvas.getBoundingClientRect();
+            return {
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top
+            };
+        }
+
+        function findNearestPoint(pos) {
+            const a = toCanvas(pointA.x, pointA.y);
+            const b = toCanvas(pointB.x, pointB.y);
+
+            const distA = Math.sqrt((pos.x - a.x)**2 + (pos.y - a.y)**2);
+            const distB = Math.sqrt((pos.x - b.x)**2 + (pos.y - b.y)**2);
+
+            if (distA < 20) return 'A';
+            if (distB < 20) return 'B';
+            return null;
+        }
+
+        canvas.addEventListener('mousedown', (e) => {
+            const pos = getMousePos(e);
+            isDragging = findNearestPoint(pos);
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            const pos = getMousePos(e);
+
+            if (isDragging) {
+                const grid = toGrid(pos.x, pos.y);
+                grid.x = Math.round(grid.x * 2) / 2;
+                grid.y = Math.round(grid.y * 2) / 2;
+
+                if (isDragging === 'A') {
+                    pointA.x = grid.x;
+                    pointA.y = grid.y;
+                } else if (isDragging === 'B') {
+                    pointB.x = grid.x;
+                    pointB.y = grid.y;
+                }
+                render();
+            }
+
+            const nearest = findNearestPoint(pos);
+            canvas.style.cursor = nearest ? 'grab' : 'default';
+        });
+
+        canvas.addEventListener('mouseup', () => isDragging = null);
+        canvas.addEventListener('mouseleave', () => isDragging = null);
+
+        // Touch support
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            const pos = {x: touch.clientX - rect.left, y: touch.clientY - rect.top};
+            isDragging = findNearestPoint(pos);
+        }, {passive: false});
+
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            if (!isDragging) return;
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            const pos = {x: touch.clientX - rect.left, y: touch.clientY - rect.top};
+            const grid = toGrid(pos.x, pos.y);
+            grid.x = Math.round(grid.x * 2) / 2;
+            grid.y = Math.round(grid.y * 2) / 2;
+
+            if (isDragging === 'A') {
+                pointA.x = grid.x;
+                pointA.y = grid.y;
+            } else if (isDragging === 'B') {
+                pointB.x = grid.x;
+                pointB.y = grid.y;
+            }
+            render();
+        }, {passive: false});
+
+        canvas.addEventListener('touchend', () => isDragging = null);
+
+        // Initialize
+        render();
+    </script>
+</body>
+</html>

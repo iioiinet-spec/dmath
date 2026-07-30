@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>코사인 유사도(Cosine Similarity) 인터랙티브 강의 자료</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #7c3aed;
+            --vector-a: #ef4444;
+            --vector-b: #3b82f6;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-card-light: #f8fafc;
+            --text-main: #334155;
+            --text-light: #f8fafc;
+            --border-color: #e2e8f0;
+            --accent-green: #10b981;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        header p {
+            color: #94a3b8;
+            font-size: 1.05rem;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(96, 165, 250, 0.2);
+            color: #60a5fa;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        @media (min-width: 900px) {
+            .grid-2 {
+                grid-template-columns: 1.2fr 0.8fr;
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border-color);
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 10px;
+        }
+
+        /* Canvas & Visualizer */
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            height: 420px;
+            background: #0f172a;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* Controls */
+        .control-panel {
+            margin-top: 16px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .vector-control {
+            background: #f8fafc;
+            padding: 14px;
+            border-radius: 10px;
+            border-left: 4px solid var(--border-color);
+        }
+
+        .vector-control.vec-a { border-left-color: var(--vector-a); }
+        .vector-control.vec-b { border-left-color: var(--vector-b); }
+
+        .vector-control h4 {
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .slider-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+            font-size: 0.85rem;
+        }
+
+        .slider-group label {
+            width: 30px;
+            font-weight: bold;
+        }
+
+        .slider-group input[type="range"] {
+            flex: 1;
+            accent-color: var(--primary);
+        }
+
+        .slider-group span {
+            width: 30px;
+            text-align: right;
+            font-family: monospace;
+            font-weight: bold;
+        }
+
+        /* Preset Buttons */
+        .preset-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .btn {
+            background: #e2e8f0;
+            color: #334155;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: #cbd5e1;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Metrics & Math Panel */
+        .metric-card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-align: center;
+            margin: 8px 0;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .similarity-gauge {
+            height: 12px;
+            background: #e2e8f0;
+            border-radius: 6px;
+            overflow: hidden;
+            margin: 10px 0;
+            position: relative;
+        }
+
+        .similarity-fill {
+            height: 100%;
+            width: 50%;
+            background: linear-gradient(90deg, #ef4444 0%, #f59e0b 50%, #10b981 100%);
+            transition: width 0.3s ease;
+        }
+
+        .math-step {
+            font-size: 0.9rem;
+            background: white;
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin-top: 8px;
+            border: 1px solid #e2e8f0;
+            font-family: monospace;
+            line-height: 1.8;
+        }
+
+        .highlight {
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        /* NLP Text Application Demo */
+        .nlp-demo {
+            margin-top: 24px;
+        }
+
+        .doc-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .doc-box {
+            background: #f8fafc;
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .doc-box label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+        }
+
+        .doc-box input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .freq-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+            font-size: 0.85rem;
+        }
+
+        .freq-table th, .freq-table td {
+            border: 1px solid #e2e8f0;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .freq-table th {
+            background: #f1f5f9;
+        }
+
+        /* Concept Cards */
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .concept-card {
+            background: #f8fafc;
+            padding: 16px;
+            border-radius: 12px;
+            border-top: 4px solid var(--primary);
+        }
+
+        .concept-card h4 {
+            margin-bottom: 8px;
+            color: #0f172a;
+        }
+
+        .quiz-section {
+            margin-top: 24px;
+        }
+
+        .quiz-option {
+            display: block;
+            background: #f8fafc;
+            padding: 12px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quiz-option:hover {
+            background: #e2e8f0;
+        }
+
+        .quiz-option.correct {
+            background: #d1fae5;
+            border-color: #10b981;
+            color: #065f46;
+        }
+
+        .quiz-option.incorrect {
+            background: #fee2e2;
+            border-color: #ef4444;
+            color: #991b1b;
+        }
+
+        .quiz-feedback {
+            margin-top: 10px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Header -->
+    <header>
+        <span class="badge">인터랙티브 AI/NLP 수학 강의 자료</span>
+        <h1>📐 코사인 유사도 (Cosine Similarity) 시뮬레이터</h1>
+        <p>두 벡터의 크기와 상관없이 방향(각도)이 얼마나 일치하는지를 시각적으로 탐구하고 실시간으로 계산해 보세요.</p>
+    </header>
+
+    <!-- Main Simulator Grid -->
+    <div class="grid-2">
+        <!-- Visual Canvas Section -->
+        <div class="card">
+            <div class="card-title">
+                <span>2차원 벡터 공간 시각화</span>
+                <span style="font-size: 0.85rem; font-weight: normal; color: #64748b;">캔버스 조작 또는 슬라이더 이용</span>
+            </div>
+
+            <div class="canvas-container">
+                <canvas id="vectorCanvas"></canvas>
+            </div>
+
+            <div class="control-panel">
+                <div class="vector-control vec-a">
+                    <h4><span>벡터 A (Red)</span> <span id="valA">(4, 2)</span></h4>
+                    <div class="slider-group">
+                        <label>X:</label>
+                        <input type="range" id="sliderAx" min="-5" max="5" step="0.5" value="4">
+                        <span id="dispAx">4</span>
+                    </div>
+                    <div class="slider-group">
+                        <label>Y:</label>
+                        <input type="range" id="sliderAy" min="-5" max="5" step="0.5" value="2">
+                        <span id="dispAy">2</span>
+                    </div>
+                </div>
+
+                <div class="vector-control vec-b">
+                    <h4><span>벡터 B (Blue)</span> <span id="valB">(2, 4)</span></h4>
+                    <div class="slider-group">
+                        <label>X:</label>
+                        <input type="range" id="sliderBx" min="-5" max="5" step="0.5" value="2">
+                        <span id="dispBx">2</span>
+                    </div>
+                    <div class="slider-group">
+                        <label>Y:</label>
+                        <input type="range" id="sliderBy" min="-5" max="5" step="0.5" value="4">
+                        <span id="dispBy">4</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 14px;">
+                <span style="font-size: 0.85rem; font-weight: bold; color: #475569;">주요 상태 프리셋:</span>
+                <div class="preset-buttons">
+                    <button class="btn" onclick="setPreset(4, 2, 2, 1)">같은 방향 (0°)</button>
+                    <button class="btn" onclick="setPreset(4, 0, 0, 4)">직교 (90°)</button>
+                    <button class="btn" onclick="setPreset(3, 3, -3, -3)">반대 방향 (180°)</button>
+                    <button class="btn" onclick="setPreset(2, 4, 4, 2)">대칭 상태 (36.9°)</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Math & Analysis Section -->
+        <div class="card">
+            <div class="card-title">실시간 수식 및 결과 계산</div>
+
+            <div class="metric-card">
+                <div style="text-align: center; font-size: 0.9rem; color: #64748b;">코사인 유사도 (Cosine Similarity)</div>
+                <div class="metric-value" id="cosSimVal">0.8000</div>
+                <div style="text-align: center; font-size: 0.85rem; color: #475569;">
+                    사잇각 (θ): <strong id="angleVal">36.9°</strong>
+                </div>
+                <div class="similarity-gauge">
+                    <div class="similarity-fill" id="simGauge"></div>
+                </div>
+            </div>
+
+            <div style="font-size: 0.9rem; font-weight: bold; margin-bottom: 8px;">단계별 계산 과정:</div>
+
+            <div class="math-step">
+                <strong>1. 두 벡터의 내적 (Dot Product):</strong><br>
+                A · B = (Ax × Bx) + (Ay × By)<br>
+                = <span id="mathDotStep">4×2 + 2×4 = 16.00</span>
+            </div>
+
+            <div class="math-step">
+                <strong>2. 각 벡터의 크기 (Magnitude / Norm):</strong><br>
+                ||A|| = √(Ax² + Ay²) = <span id="mathNormA">√20 ≈ 4.47</span><br>
+                ||B|| = √(Bx² + By²) = <span id="mathNormB">√20 ≈ 4.47</span>
+            </div>
+
+            <div class="math-step">
+                <strong>3. 코사인 유사도 공식 적용:</strong><br>
+                cos(θ) = (A · B) / (||A|| × ||B||)<br>
+                = <span id="mathCalcStep">16.00 / (4.47 × 4.47) = 0.8000</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Practical Application: NLP Text Similarity -->
+    <div class="card nlp-demo">
+        <div class="card-title">
+            <span>📝 실전 응용: 텍스트(문서) 유사도 측정</span>
+            <span class="badge" style="margin: 0;">자연어 처리 (NLP)</span>
+        </div>
+        <p style="font-size: 0.95rem; color: #475569; margin-bottom: 16px;">
+            문서 내 단어의 출현 빈도를 벡터의 차원(Dimension)으로 변환하여 두 문서의 유사성을 비교합니다. 문서 길이는 달라도 주제 방향이 같으면 높게 평가됩니다.
+        </p>
+
+        <div class="doc-inputs">
+            <div class="doc-box">
+                <label>문서 1 (Doc A)</label>
+                <input type="text" id="docAInput" value="사과 바나나 사과 맛있다" oninput="updateTextSim()">
+            </div>
+            <div class="doc-box">
+                <label>문서 2 (Doc B)</label>
+                <input type="text" id="docBInput" value="사과 맛있다 맛있다" oninput="updateTextSim()">
+            </div>
+        </div>
+
+        <table class="freq-table">
+            <thead>
+                <tr id="vocabHeader">
+                    <th>단어 목록</th>
+                    <th>사과</th>
+                    <th>바나나</th>
+                    <th>맛있다</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr id="docARow">
+                    <td>문서 A 빈도 (Vector A)</td>
+                    <td>2</td>
+                    <td>1</td>
+                    <td>1</td>
+                </tr>
+                <tr id="docBRow">
+                    <td>문서 B 빈도 (Vector B)</td>
+                    <td>1</td>
+                    <td>0</td>
+                    <td>2</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="metric-card" style="margin-top: 16px; background: #f0fdf4; border-color: #bbf7d0;">
+            <div style="display: flex; justify-content: space-around; align-items: center;">
+                <div>
+                    <span style="font-size: 0.85rem; color: #166534;">텍스트 코사인 유사도:</span>
+                    <span id="textCosSim" style="font-size: 1.5rem; font-weight: bold; color: #15803d; margin-left: 8px;">0.8165</span>
+                </div>
+                <div style="font-size: 0.9rem; color: #166534;" id="textSimDesc">
+                    두 문서는 매우 유사한 주제를 다루고 있습니다.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Key Concepts Summary -->
+    <div class="card" style="margin-top: 24px;">
+        <div class="card-title">💡 핵심 요약 및 특징</div>
+        <div class="concept-grid">
+            <div class="concept-card">
+                <h4>1. 크기 독립성 (Scale Invariance)</h4>
+                <p style="font-size: 0.88rem; color: #475569;">
+                    벡터의 길이가 길어지거나 스케일이 커져도 방향이 일정하면 유사도는 변하지 않습니다. 길고 짧은 문서 비교에 매우 적합합니다.
+                </p>
+            </div>
+            <div class="concept-card">
+                <h4>2. 값의 범위 (-1 ~ 1)</h4>
+                <p style="font-size: 0.88rem; color: #475569;">
+                    · 1.0 : 두 벡터의 방향이 완벽히 일치 (0°)<br>
+                    · 0.0 : 두 벡터가 서로 직교함 (90°)<br>
+                    · -1.0 : 두 벡터의 방향이 완전 반대 (180°)
+                </p>
+            </div>
+            <div class="concept-card">
+                <h4>3. 유클리드 거리와의 차이</h4>
+                <p style="font-size: 0.88rem; color: #475569;">
+                    유클리드 거리는 두 점 사이의 절대적인 직선 거리를 측정하지만, 코사인 유사도는 사잇각을 측정하여 패턴과 비율의 닮음을 측정합니다.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Knowledge Check Quiz -->
+    <div class="card quiz-section">
+        <div class="card-title">❓ 자가 점검 퀴즈</div>
+        <p style="font-size: 0.95rem; margin-bottom: 12px;">Q. 문서 A의 단어 빈도 벡터가 (2, 2)이고, 문서 B의 단어 빈도 벡터가 (10, 10)입니다. 두 문서의 코사인 유사도는 얼마일까요?</p>
+        
+        <div class="quiz-option" onclick="checkQuiz(this, false)">A) 0.2 (문서 B의 길이가 5배 길므로 유사도가 낮다)</div>
+        <div class="quiz-option" onclick="checkQuiz(this, true)">B) 1.0 (두 벡터의 방향이 완벽히 일치하므로 유사도가 최대다)</div>
+        <div class="quiz-option" onclick="checkQuiz(this, false)">C) 0.5 (중간 정도의 유사도를 보인다)</div>
+        <div class="quiz-option" onclick="checkQuiz(this, false)">D) 0.0 (두 문서 사이에 상관관계가 없다)</div>
+
+        <div id="quizFeedback" class="quiz-feedback"></div>
+    </div>
+
+    <footer>
+        <p>© Seyeong Coding Academy - AI & Discrete Mathematics Educational Materials</p>
+    </footer>
+</div>
+
+<script>
+    // Canvas setup
+    const canvas = document.getElementById('vectorCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Vector state
+    let vecA = { x: 4, y: 2 };
+    let vecB = { x: 2, y: 4 };
+
+    // Resize canvas for high DPR
+    function resizeCanvas() {
+        const rect = canvas.parentElement.getBoundingClientRect();
+        canvas.width = rect.width * window.devicePixelRatio;
+        canvas.height = rect.height * window.devicePixelRatio;
+        ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+        draw();
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+
+    // Controls
+    const sliderAx = document.getElementById('sliderAx');
+    const sliderAy = document.getElementById('sliderAy');
+    const sliderBx = document.getElementById('sliderBx');
+    const sliderBy = document.getElementById('sliderBy');
+
+    [sliderAx, sliderAy, sliderBx, sliderBy].forEach(slider => {
+        slider.addEventListener('input', updateFromSliders);
+    });
+
+    function updateFromSliders() {
+        vecA.x = parseFloat(sliderAx.value);
+        vecA.y = parseFloat(sliderAy.value);
+        vecB.x = parseFloat(sliderBx.value);
+        vecB.y = parseFloat(sliderBy.value);
+
+        document.getElementById('dispAx').textContent = vecA.x;
+        document.getElementById('dispAy').textContent = vecA.y;
+        document.getElementById('dispBx').textContent = vecB.x;
+        document.getElementById('dispBy').textContent = vecB.y;
+
+        document.getElementById('valA').textContent = `(${vecA.x}, ${vecA.y})`;
+        document.getElementById('valB').textContent = `(${vecB.x}, ${vecB.y})`;
+
+        draw();
+    }
+
+    function setPreset(ax, ay, bx, by) {
+        sliderAx.value = ax;
+        sliderAy.value = ay;
+        sliderBx.value = bx;
+        sliderBy.value = by;
+        updateFromSliders();
+    }
+
+    function draw() {
+        const width = canvas.parentElement.clientWidth;
+        const height = canvas.parentElement.clientHeight;
+        const centerX = width / 2;
+        const centerY = height / 2;
+        const scale = 30; // 30px per unit
+
+        ctx.clearRect(0, 0, width, height);
+
+        // Draw Grid
+        ctx.strokeStyle = '#334155';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        for (let x = 0; x < width; x += scale) {
+            ctx.moveTo(x, 0); ctx.lineTo(x, height);
+        }
+        for (let y = 0; y < height; y += scale) {
+            ctx.moveTo(0, y); ctx.lineTo(width, y);
+        }
+        ctx.stroke();
+
+        // Draw Axes
+        ctx.strokeStyle = '#64748b';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(0, centerY); ctx.lineTo(width, centerY); // X axis
+        ctx.moveTo(centerX, 0); ctx.lineTo(centerX, height); // Y axis
+        ctx.stroke();
+
+        // Calculate Metrics
+        const dot = vecA.x * vecB.x + vecA.y * vecB.y;
+        const normA = Math.sqrt(vecA.x * vecA.x + vecA.y * vecA.y);
+        const normB = Math.sqrt(vecB.x * vecB.x + vecB.y * vecB.y);
+        
+        let cosSim = 0;
+        if (normA > 0 && normB > 0) {
+            cosSim = dot / (normA * normB);
+        }
+        // Clamp numerical precision issues
+        cosSim = Math.max(-1, Math.min(1, cosSim));
+        const angleRad = Math.acos(cosSim);
+        const angleDeg = (angleRad * 180 / Math.PI).toFixed(1);
+
+        // Draw Angle Arc
+        if (normA > 0 && normB > 0) {
+            const angleA = Math.atan2(-vecA.y, vecA.x);
+            const angleB = Math.atan2(-vecB.y, vecB.x);
+
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 40, -angleA, -angleB, (angleA > angleB));
+            ctx.strokeStyle = '#f59e0b';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            // Angle text
+            ctx.fillStyle = '#fbbf24';
+            ctx.font = 'bold 13px sans-serif';
+            ctx.fillText(`${angleDeg}°`, centerX + 45 * Math.cos((-angleA - angleB) / 2), centerY + 45 * Math.sin((-angleA - angleB) / 2));
+        }
+
+        // Draw Vector A (Red)
+        drawArrow(centerX, centerY, centerX + vecA.x * scale, centerY - vecA.y * scale, '#ef4444', 'Vector A');
+
+        // Draw Vector B (Blue)
+        drawArrow(centerX, centerY, centerX + vecB.x * scale, centerY - vecB.y * scale, '#3b82f6', 'Vector B');
+
+        // Update Math Panel Text
+        document.getElementById('cosSimVal').textContent = cosSim.toFixed(4);
+        document.getElementById('angleVal').textContent = `${angleDeg}°`;
+
+        // Update Gauge (-1 to 1 mapped to 0% to 100%)
+        const gaugePct = ((cosSim + 1) / 2) * 100;
+        document.getElementById('simGauge').style.width = `${gaugePct}%`;
+
+        document.getElementById('mathDotStep').textContent = `${vecA.x}×${vecB.x} + ${vecA.y}×${vecB.y} = ${dot.toFixed(2)}`;
+        document.getElementById('mathNormA').textContent = `√(${vecA.x}² + ${vecA.y}²) = ${normA.toFixed(2)}`;
+        document.getElementById('mathNormB').textContent = `√(${vecB.x}² + ${vecB.y}²) = ${normB.toFixed(2)}`;
+        document.getElementById('mathCalcStep').textContent = `${dot.toFixed(2)} / (${normA.toFixed(2)} × ${normB.toFixed(2)}) = ${cosSim.toFixed(4)}`;
+    }
+
+    function drawArrow(fromX, fromY, toX, toY, color, label) {
+        const headlen = 10;
+        const dx = toX - fromX;
+        const dy = toY - fromY;
+        const angle = Math.atan2(dy, dx);
+
+        ctx.strokeStyle = color;
+        ctx.fillStyle = color;
+        ctx.lineWidth = 3;
+
+        ctx.beginPath();
+        ctx.moveTo(fromX, fromY);
+        ctx.lineTo(toX, toY);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(toX, toY);
+        ctx.lineTo(toX - headlen * Math.cos(angle - Math.PI / 6), toY - headlen * Math.sin(angle - Math.PI / 6));
+        ctx.lineTo(toX - headlen * Math.cos(angle + Math.PI / 6), toY - headlen * Math.sin(angle + Math.PI / 6));
+        ctx.closePath();
+        ctx.fill();
+
+        // Label
+        ctx.font = 'bold 12px sans-serif';
+        ctx.fillText(label, toX + 8, toY - 8);
+    }
+
+    // NLP Text Similarity Calculation Demo
+    function updateTextSim() {
+        const textA = document.getElementById('docAInput').value.trim();
+        const textB = document.getElementById('docBInput').value.trim();
+
+        const wordsA = textA ? textA.split(/\s+/) : [];
+        const wordsB = textB ? textB.split(/\s+/) : [];
+
+        const vocabSet = new Set([...wordsA, ...wordsB]);
+        const vocab = Array.from(vocabSet);
+
+        if (vocab.length === 0) {
+            document.getElementById('textCosSim').textContent = "0.0000";
+            return;
+        }
+
+        // Build headers
+        const vocabHeader = document.getElementById('vocabHeader');
+        vocabHeader.innerHTML = '<th>단어 목록</th>' + vocab.map(w => `<th>${w}</th>`).join('');
+
+        // Frequencies
+        const freqA = vocab.map(w => wordsA.filter(x => x === w).length);
+        const freqB = vocab.map(w => wordsB.filter(x => x === w).length);
+
+        document.getElementById('docARow').innerHTML = '<td>문서 A 빈도 (Vector A)</td>' + freqA.map(f => `<td>${f}</td>`).join('');
+        document.getElementById('docBRow').innerHTML = '<td>문서 B 빈도 (Vector B)</td>' + freqB.map(f => `<td>${f}</td>`).join('');
+
+        // Calculate Similarity
+        let dot = 0;
+        let normA = 0;
+        let normB = 0;
+
+        for (let i = 0; i < vocab.length; i++) {
+            dot += freqA[i] * freqB[i];
+            normA += freqA[i] * freqA[i];
+            normB += freqB[i] * freqB[i];
+        }
+
+        normA = Math.sqrt(normA);
+        normB = Math.sqrt(normB);
+
+        let sim = (normA > 0 && normB > 0) ? (dot / (normA * normB)) : 0;
+        document.getElementById('textCosSim').textContent = sim.toFixed(4);
+
+        const desc = document.getElementById('textSimDesc');
+        if (sim >= 0.8) {
+            desc.textContent = "두 문서는 매우 높은 주제 연관성을 가지고 있습니다.";
+        } else if (sim >= 0.4) {
+            desc.textContent = "두 문서는 부분적으로 공통 단어 및 주제를 공유합니다.";
+        } else {
+            desc.textContent = "두 문서 간의 의미적/단어적 연관성이 낮습니다.";
+        }
+    }
+
+    // Quiz logic
+    function checkQuiz(element, isCorrect) {
+        const options = document.querySelectorAll('.quiz-option');
+        options.forEach(opt => opt.classList.remove('correct', 'incorrect'));
+
+        const feedback = document.getElementById('quizFeedback');
+        if (isCorrect) {
+            element.classList.add('correct');
+            feedback.style.color = '#059669';
+            feedback.textContent = '🎉 정답입니다! (2, 2)와 (10, 10)은 크기만 5배 다를 뿐 완전히 같은 방향을 가리키므로 사잇각이 0°이며, 코사인 유사도는 1.0이 됩니다.';
+        } else {
+            element.classList.add('incorrect');
+            feedback.style.color = '#dc2626';
+            feedback.textContent = '❌ 다시 생각해 보세요! 코사인 유사도는 벡터의 크기(길이)에 영향을 받지 않고 오직 "방향(각도)"만 측정합니다.';
+        }
+    }
+
+    // Initialize
+    setTimeout(() => {
+        resizeCanvas();
+        updateTextSim();
+    }, 100);
+</script>
+
+</body>
+</html>
