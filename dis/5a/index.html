@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>사고력 집합론 5제 · 교사용 정답 및 해설</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+<style>
+:root{
+  --bg:#EFF1EF;--paper:#FFFFFF;--ink:#171B21;--ink-2:#545C69;--line:#D8DBD7;
+  --teal:#1A6E72;--rose:#B4405E;--olive:#6C7B2E;--slate:#3A5480;--plum:#7A4A7E;
+  --ac:var(--teal);
+  --f-disp:'Gowun Batang','Pretendard Variable',Pretendard,serif;
+  --f-body:'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif;
+  --f-mono:'D2Coding','JetBrains Mono',Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);line-height:1.78;-webkit-font-smoothing:antialiased}
+.wrap{max-width:880px;margin:0 auto;padding:0 20px}
+header{background:var(--ink);color:#fff;padding:44px 0 34px}
+header .kicker{font-family:var(--f-mono);font-size:12px;letter-spacing:.24em;color:#9BB3B4;margin:0 0 12px}
+header h1{font-family:var(--f-disp);font-weight:700;font-size:clamp(26px,5.2vw,38px);margin:0 0 10px;line-height:1.28}
+header p{color:#B5BDC5;margin:0 0 18px;max-width:620px;font-size:15px}
+.hmeta{display:flex;flex-wrap:wrap;gap:8px}
+.hmeta span{font-family:var(--f-mono);font-size:11.5px;border:1px solid #363E48;border-radius:4px;padding:5px 11px;color:#C3CBD3}
+.hmeta span b{color:#fff}
+nav.toc{position:sticky;top:0;z-index:40;background:rgba(239,241,239,.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.tocrow{display:flex;gap:5px;overflow-x:auto;padding:10px 0;scrollbar-width:none}
+.tocrow::-webkit-scrollbar{display:none}
+.tocbtn{flex:0 0 auto;border:1px solid var(--line);background:var(--paper);color:var(--ink-2);cursor:pointer;
+  font-size:13.4px;font-weight:600;padding:7px 14px;border-radius:5px;white-space:nowrap;font-family:var(--f-body)}
+.tocbtn:hover{border-color:var(--ink-2);color:var(--ink)}
+.tocbtn.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.tocbtn:focus-visible{outline:2px solid var(--olive);outline-offset:2px}
+.set{display:none;padding:36px 0 70px;animation:fade .3s ease}
+.set.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.sethead{border-left:5px solid var(--ac);padding-left:18px;margin-bottom:24px}
+.sethead .no{font-family:var(--f-mono);font-size:12px;letter-spacing:.2em;color:var(--ac);margin:0}
+.sethead h2{font-family:var(--f-disp);font-weight:700;font-size:clamp(22px,4.4vw,30px);margin:5px 0 8px;line-height:1.3}
+.sethead .core{font-size:14px;color:var(--ink-2);margin:0}
+.sethead .core b{color:var(--ink)}
+.keybox{background:var(--paper);border:1px solid var(--line);border-left:4px solid var(--ac);border-radius:0 6px 6px 0;padding:16px 20px;margin-bottom:22px}
+.keybox h3{font-family:var(--f-disp);font-weight:700;font-size:15.5px;margin:0 0 8px;color:var(--ac)}
+.keybox p{margin:0;font-size:14.6px;color:var(--ink-2)}
+.a{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:20px 22px;margin-bottom:16px}
+.ah{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.ano{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.1em;color:#fff;background:var(--ac);border-radius:4px;padding:3px 10px}
+.ans{font-family:var(--f-disp);font-weight:700;font-size:17px;color:var(--teal)}
+.a p{margin:0 0 11px;font-size:15.2px}
+.a p:last-child{margin-bottom:0}
+.a ul,.a ol{margin:0 0 11px;padding-left:22px;font-size:15px}
+.a li{margin-bottom:6px}
+.calc{font-family:var(--f-mono);font-size:13.3px;background:#F4F5F3;border:1px solid var(--line);border-radius:5px;
+  padding:12px 15px;margin:0 0 12px;white-space:pre-wrap;line-height:1.9;overflow-x:auto}
+.calc b{color:var(--rose)}
+.proof{border-left:3px solid var(--teal);background:#EFF6F5;border-radius:0 5px 5px 0;padding:13px 17px;margin:0 0 12px;font-size:14.8px}
+.proof b{color:var(--teal)}
+.talk{background:#FBF3F5;border:1px solid #E7D0D6;border-radius:6px;padding:17px 20px;margin-top:14px}
+.talk h4{font-family:var(--f-disp);font-weight:700;font-size:15px;margin:0 0 10px;color:var(--rose)}
+.talk .tq{font-weight:700;font-size:14.6px;color:#7C2D42;margin:14px 0 5px}
+.talk .tq:first-of-type{margin-top:0}
+.talk .ta{font-size:14.4px;color:#48303A;margin:0 0 6px}
+.talk .ta:last-child{margin-bottom:0}
+.talk em{font-style:normal;color:#96354C;font-weight:700}
+.rubric{margin-top:16px;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.rubric .rh{background:#F4F5F3;padding:9px 16px;font-size:13px;font-weight:700;color:var(--ink-2);border-bottom:1px solid var(--line)}
+table.rb{width:100%;border-collapse:collapse;font-size:13.6px}
+table.rb th,table.rb td{border-bottom:1px solid var(--line);padding:9px 14px;text-align:left;vertical-align:top}
+table.rb th{background:#FAFBFA;font-weight:700;width:112px;color:var(--ink)}
+table.rb tr:last-child td,table.rb tr:last-child th{border-bottom:0}
+.misc{background:#FBF9EC;border:1px solid #E5E0C4;border-radius:6px;padding:15px 19px;margin-top:16px;font-size:14.4px}
+.misc h4{font-family:var(--f-disp);font-weight:700;font-size:14.5px;margin:0 0 8px;color:var(--olive)}
+.misc ul{margin:0;padding-left:20px}
+.misc li{margin-bottom:6px;color:#5E6329}
+.misc li:last-child{margin-bottom:0}
+.verify{background:#111820;color:#C5D3D4;border-radius:6px;padding:16px 19px;margin-top:16px;
+  font-family:var(--f-mono);font-size:12.5px;line-height:1.85;white-space:pre-wrap;overflow-x:auto}
+.verify .vh{color:#6EE7B7;font-weight:700;display:block;margin-bottom:7px}
+.verify em{color:#FBBF24;font-style:normal}
+.src{font-size:12.8px;color:var(--ink-2);border-top:1px solid var(--line);padding-top:14px;margin-top:24px}
+.src b{color:var(--ink)}
+.prm{display:flex;justify-content:space-between;gap:10px;margin-top:30px}
+.prm button{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:5px;padding:11px 20px;
+  font-size:14px;font-weight:600;cursor:pointer;font-family:var(--f-body)}
+.prm button:hover{border-color:var(--ac);color:var(--ac)}
+.prm button:disabled{opacity:.35;cursor:default}
+footer{border-top:1px solid var(--line);padding:26px 0 60px;color:var(--ink-2);font-size:13px;text-align:center}
+table.dt{width:100%;border-collapse:collapse;font-family:var(--f-mono);font-size:13px;margin:0 0 12px}
+table.dt th,table.dt td{border:1px solid var(--line);padding:6px 9px;text-align:center}
+table.dt th{background:#F1F3F1;font-weight:600}
+td.hl{background:#FBF7E6;color:var(--olive);font-weight:700}
+.tbscroll{overflow-x:auto}
+svg{max-width:100%;height:auto;display:block;margin:0 auto}
+.fig{background:#FAFBFA;border:1px solid var(--line);border-radius:6px;padding:16px;margin:0 0 14px}
+.fig figcaption{font-size:12.8px;color:var(--ink-2);text-align:center;margin-top:9px}
+@media print{
+  nav.toc,.prm{display:none}
+  .set{display:block !important;page-break-after:always}
+  body{background:#fff}
+  header{background:#fff;color:#000;border-bottom:2px solid #000}
+  header h1,header p,.hmeta span{color:#000}
+  .verify{background:#F4F5F3;color:#000}
+}
+@media (prefers-reduced-motion: reduce){*{animation-duration:.001ms !important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <p class="kicker">TEACHER'S EDITION · ANSWERS &amp; COMMENTARY</p>
+    <h1>사고력 집합론 5제 — 정답과 해설</h1>
+    <p>각 문항의 정답, 학생이 도달해야 할 논증, 흔한 오답과 그 원인, 토론 진행 시 던질 되물음, 그리고 Python으로 전수 검증한 결과를 함께 싣습니다.</p>
+    <div class="hmeta">
+      <span>세트 <b>5</b></span><span>문항 <b>25</b></span><span>루브릭 <b>세트별 3단계</b></span><span>정답 검증 <b>Python 전수</b></span>
+    </div>
+  </div>
+</header>
+
+<nav class="toc">
+  <div class="wrap tocrow">
+    <button class="tocbtn on" data-s="s1">01 · 겹치는 부분 세기</button>
+    <button class="tocbtn" data-s="s2">02 · 부분집합의 개수</button>
+    <button class="tocbtn" data-s="s3">03 · 비둘기집 원리</button>
+    <button class="tocbtn" data-s="s4">04 · 무한 호텔</button>
+    <button class="tocbtn" data-s="s5">05 · 이발사의 역설</button>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<!-- ============ SET 1 ============ -->
+<section class="set on" id="s1" data-ac="#1A6E72">
+  <div class="sethead">
+    <p class="no">SET 01 · ANSWERS</p>
+    <h2>둘 다 좋아하는 사람을 두 번 세지 않으려면</h2>
+    <p class="core">핵심 아이디어 — <b>중복을 세고 되돌리기</b>. 무작정 더하면 겹치는 부분이 두 번 세어지므로, 그만큼 정확히 빼 줍니다.</p>
+  </div>
+
+  <div class="keybox">
+    <h3>지도 요령</h3>
+    <p>학생 대부분이 22 + 18 = 40을 보고 "딱 맞네!"라고 반응합니다. 이 <b>우연의 일치</b>가 좋은 함정입니다. 벤 다이어그램을 그려 놓고 <b>"9명은 어느 원에 있나요?"</b>를 물어 손가락으로 짚게 하세요.</p>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">1-1</span><span class="ans">정답 · 9명</span></div>
+    <div class="calc">축구만 = 22 − 9 = 13
+농구만 = 18 − 9 = 9
+둘 다  = 9
+적어도 하나 = 13 + 9 + 9 = <b>31</b>
+둘 다 아님 = 40 − 31 = <b>9</b>
+
+검산 : 13 + 9 + 9 + 9 = 40 = 전체 ✓</div>
+    <div class="fig">
+      <svg viewBox="0 0 520 270" role="img" aria-label="두 집합 벤 다이어그램">
+        <rect x="20" y="20" width="480" height="230" fill="#FAFBFA" stroke="#D8DBD7" stroke-width="1.5" rx="6"/>
+        <circle cx="210" cy="140" r="100" fill="rgba(26,110,114,.20)" stroke="#1A6E72" stroke-width="2"/>
+        <circle cx="310" cy="140" r="100" fill="rgba(180,64,94,.20)" stroke="#B4405E" stroke-width="2"/>
+        <text x="152" y="148" text-anchor="middle" font-size="24" font-weight="700" fill="#1A6E72">13</text>
+        <text x="152" y="112" text-anchor="middle" font-size="13" fill="#1A6E72">축구만</text>
+        <text x="260" y="148" text-anchor="middle" font-size="24" font-weight="700" fill="#171B21">9</text>
+        <text x="260" y="112" text-anchor="middle" font-size="12.5" fill="#171B21">둘 다</text>
+        <text x="368" y="148" text-anchor="middle" font-size="24" font-weight="700" fill="#B4405E">9</text>
+        <text x="368" y="112" text-anchor="middle" font-size="13" fill="#B4405E">농구만</text>
+        <text x="470" y="235" text-anchor="end" font-size="22" font-weight="700" fill="#545C69">9</text>
+        <text x="470" y="212" text-anchor="end" font-size="12.5" fill="#545C69">둘 다 아님</text>
+        <text x="470" y="45" text-anchor="end" font-size="13" fill="#545C69">전체 40명</text>
+      </svg>
+      <figcaption>네 영역의 합이 전체와 같은지가 가장 좋은 검산법</figcaption>
+    </div>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">1-2</span><span class="ans">정답 · 22 + 18 − 9 = 31</span></div>
+    <div class="proof">
+      <b>왜 빼야 하는가</b> — "둘 다"인 9명은 축구 22명 안에도 있고 농구 18명 안에도 있습니다. 그러므로 22 + 18에서 그 9명은 <b>2번</b> 세어졌습니다. 우리는 1번만 세고 싶으므로 <b>1번 빼</b> 줍니다.<br><br>
+      |A ∪ B| = |A| + |B| − |A ∩ B|
+    </div>
+    <p>"두 번 세었으니 한 번 뺀다"는 문장을 학생이 스스로 말하게 하는 것이 이 문항의 전부입니다. 공식을 외우게 하지 마세요.</p>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">1-3</span><span class="ans">정답 · 88명 (어느 것도 아닌 사람 12명)</span></div>
+    <div class="calc">|A∪B∪C| = 58 + 45 + 32 − 22 − 15 − 18 + 8 = <b>88</b>
+어느 것도 아님 = 100 − 88 = <b>12</b>
+
+7개 영역 (안쪽부터 바깥으로 채우는 순서)
+  셋 다            = 8
+  라면·떡볶이만    = 22 − 8 = 14
+  떡볶이·김밥만    = 15 − 8 = 7
+  김밥·라면만      = 18 − 8 = 10
+  라면만           = 58 − 22 − 18 + 8 = 26
+  떡볶이만         = 45 − 22 − 15 + 8 = 16
+  김밥만           = 32 − 15 − 18 + 8 = 7
+
+검산 : 8 + 14 + 7 + 10 + 26 + 16 + 7 = <b>88</b> ✓
+       88 + 12 = 100 = 전체 ✓</div>
+    <p><b>반드시 가운데부터</b> 채우게 하세요. 바깥부터 채우려 하면 거의 모든 학생이 틀립니다.</p>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">1-4</span><span class="ans">토론 정리</span></div>
+    <div class="talk">
+      <h4>예상 답과 되물음</h4>
+      <p class="tq">① 더하고 → 빼고 → 다시 더하는 이유</p>
+      <p class="ta">셋 다인 사람이 각 단계에서 몇 번 세어지는지 따라가면 보입니다.</p>
+      <div class="tbscroll">
+        <table class="dt">
+          <tr><th>영역</th><th>|A|+|B|+|C|</th><th>−(교집합 3개)</th><th>+|A∩B∩C|</th><th>최종</th></tr>
+          <tr><td>한 개만</td><td>1</td><td>0</td><td>0</td><td class="hl">1</td></tr>
+          <tr><td>두 개</td><td>2</td><td>−1</td><td>0</td><td class="hl">1</td></tr>
+          <tr><td>셋 다</td><td>3</td><td>−3</td><td>+1</td><td class="hl">1</td></tr>
+        </table>
+      </div>
+      <p class="ta">모든 영역이 정확히 <b>1번씩</b> 세어지도록 조절한 것이 포함배제입니다. → 되물음: <em>"마지막에 +1을 안 하면 셋 다인 사람은 몇 번 세어지나요?"</em> (0번, 즉 통째로 빠집니다)</p>
+      <p class="tq">② 축구 20, 농구 15, 둘 다 18</p>
+      <p class="ta"><b>불가능합니다.</b> 교집합은 두 집합 어느 쪽보다도 클 수 없습니다(A∩B ⊆ A, A∩B ⊆ B). 그런데 18 &gt; 15입니다. 검산 규칙: <b>|A∩B| ≤ min(|A|, |B|)</b>, 그리고 <b>|A∪B| ≤ 전체</b>. → 되물음: <em>"조사 결과가 잘못됐다는 걸 계산 전에 알아채는 방법이 있을까요?"</em></p>
+      <p class="tq">③ 두 표현은 다르다</p>
+      <p class="ta">"라면도 떡볶이도 안 좋아함" = (A∪B)의 여집합 = <b>두 원 바깥만</b>. "둘 다 좋아하지는 않음" = (A∩B)의 여집합 = <b>겹치는 부분만 빼고 나머지 전부</b>. 라면만 좋아하는 사람은 뒤쪽에는 포함되지만 앞쪽에는 포함되지 않습니다.</p>
+      <p class="ta">이것이 <b>드 모르간 법칙</b>입니다: (A∪B)ᶜ = Aᶜ ∩ Bᶜ, (A∩B)ᶜ = Aᶜ ∪ Bᶜ. 일상어에서도 "않다"가 어디에 붙느냐로 뜻이 완전히 달라집니다.</p>
+      <p class="tq">④ 집합 4개</p>
+      <p class="ta"><b>원 4개로는 불가능합니다.</b> 원 4개로는 최대 14개 영역만 만들 수 있는데, 필요한 영역은 2⁴ = 16개입니다. 그래서 4개 이상에서는 <b>타원</b>이나 다른 도형을 씁니다(벤 자신이 타원 4개짜리를 제안했습니다). → 되물음: <em>"직접 원 4개를 그려 보고 어떤 영역이 빠지는지 찾아볼까요?"</em></p>
+    </div>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">1-5</span><span class="ans">확인 결과 · 드 모르간 법칙</span></div>
+    <div class="proof">
+      <b>(A ∪ B)ᶜ = Aᶜ ∩ Bᶜ</b> — "A도 B도 아님" = "A가 아니고 <b>그리고</b> B도 아님"<br>
+      <b>(A ∩ B)ᶜ = Aᶜ ∪ Bᶜ</b> — "둘 다는 아님" = "A가 아니거나 <b>또는</b> B가 아님"<br><br>
+      여집합을 취하면 <b>∪와 ∩이 서로 바뀐다</b>는 것이 핵심입니다.
+    </div>
+    <div class="misc">
+      <h4>흔한 오답과 원인</h4>
+      <ul>
+        <li><b>22 + 18 = 40이므로 전원</b> — 겹침을 세지 않은 경우입니다. 가장 흔하고 이 세트가 노리는 오답입니다.</li>
+        <li><b>둘 다 아닌 사람을 0명으로</b> — 위와 같은 원인입니다. 네 영역 합 검산을 습관화시키세요.</li>
+        <li><b>세 집합에서 마지막 +8을 빠뜨림</b> — 80이 나옵니다. 셋 다인 사람이 0번 세어졌음을 표로 보여 주세요.</li>
+        <li><b>"둘 다 아님"과 "둘 다는 아님"을 같게 봄</b> — 국어와 수학이 만나는 지점입니다. 반드시 칠해서 비교시키세요.</li>
+      </ul>
+    </div>
+    <div class="rubric">
+      <div class="rh">평가 루브릭</div>
+      <table class="rb">
+        <tr><th>상</th><td>겹침이 두 번 세어짐을 설명하고 네 영역 합으로 검산한다. 세 집합에서 +|A∩B∩C|의 이유를 세어짐 횟수 표로 설명하고, 드 모르간 두 식을 구분한다.</td></tr>
+        <tr><th>중</th><td>공식을 적용해 답을 구하나, 왜 빼고 다시 더하는지 설명하지 못한다.</td></tr>
+        <tr><th>하</th><td>겹치는 부분을 고려하지 않고 단순히 더한다.</td></tr>
+      </table>
+    </div>
+    <div class="verify"><span class="vh">Python 검증 결과</span>두 집합 : 40명 중 축구 22 · 농구 18 · 둘 다 9
+  적어도 하나 <em>31</em>, 둘 다 아님 <em>9</em>, 네 영역 합 <em>40</em> = 전체 ✓
+  실제 집합으로 구성해 |A∩B|=9, |A∪B|=31 재확인
+세 집합 : |A∪B∪C| = <em>88</em>, 어느 것도 아님 <em>12</em>
+  7개 영역 [26, 16, 7, 14, 7, 10, 8] 합 = <em>88</em> ✓ (모두 0 이상)
+포함배제(3집합) 공식 : 무작위 집합 <em>2000</em>회 전수 일치
+드 모르간 두 법칙 : 무작위 집합 <em>2000</em>회 전수 일치</div>
+    <p class="src"><b>출처</b> — 원으로 논리를 나타내는 방법은 <b>레온하르트 오일러</b>가 1768년 『독일 공주에게 보내는 편지』에서 널리 알렸고, 오늘날 형태는 <b>존 벤</b>이 1880년 논문에서 정리했습니다. 드 모르간 법칙은 <b>오거스터스 드 모르간</b>(1806–1871)의 이름을 딴 것입니다.</p>
+  </div>
+</section>
+
+<!-- ============ SET 2 ============ -->
+<section class="set" id="s2" data-ac="#6C7B2E">
+  <div class="sethead">
+    <p class="no">SET 02 · ANSWERS</p>
+    <h2>토핑 6가지로 만들 수 있는 피자는 몇 종류</h2>
+    <p class="core">핵심 아이디어 — <b>선택을 쪼개어 곱하기</b>. 각 원소마다 "넣는다/안 넣는다" 두 갈래가 독립이므로 2를 n번 곱합니다.</p>
+  </div>
+
+  <div class="keybox">
+    <h3>지도 요령</h3>
+    <p>반드시 <b>토핑 2개, 3개로 줄여 전부 적게</b> 하세요. 3개에서 8개가 나오는 것을 손으로 확인한 학생만이 2ⁿ을 자기 것으로 만듭니다. 그리고 <b>공집합(아무것도 안 넣기)</b>을 빠뜨리는지 반드시 확인하세요.</p>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">2-1</span><span class="ans">정답 · 64종류</span></div>
+    <div class="calc">토핑 0개 → 1가지  (∅)
+토핑 1개 → 2가지  (∅, {A})
+토핑 2개 → 4가지  (∅, {A}, {B}, {A,B})
+토핑 3개 → 8가지  (∅, {A},{B},{C}, {A,B},{B,C},{C,A}, {A,B,C})
+토핑 4개 → 16 · 5개 → 32 · <b>6개 → 64</b>
+
+하나 늘 때마다 정확히 <b>2배</b></div>
+    <p>2배가 되는 이유를 여기서 미리 짚어 주면 2-2가 쉬워집니다. "새 토핑을 안 넣은 것(기존 그대로) + 넣은 것(기존에 하나 추가)" 두 뭉치가 되기 때문입니다.</p>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">2-2</span><span class="ans">정답 · 2ⁿ</span></div>
+    <div class="proof">
+      <b>곱의 법칙으로</b> — 토핑 하나하나에 대해 "넣는다 / 안 넣는다" <b>2가지</b> 선택이 있고, 각 선택은 서로 <b>영향을 주지 않습니다</b>. 그러므로<br>
+      2 × 2 × … × 2 (n번) = <b>2ⁿ</b><br><br>
+      <b>이진수로 보면</b> — 각 부분집합에 n자리 0/1 번호표를 붙일 수 있습니다. 1은 "넣음", 0은 "안 넣음". n자리 이진수는 000…0부터 111…1까지 정확히 2ⁿ개이고, 부분집합과 <b>일대일 대응</b>합니다.
+    </div>
+    <div class="calc">토핑 3개 {버섯, 피망, 치즈} 의 번호표
+  000 → ∅              100 → {버섯}
+  010 → {피망}          110 → {버섯, 피망}
+  001 → {치즈}          101 → {버섯, 치즈}
+  011 → {피망, 치즈}     111 → {버섯, 피망, 치즈}
+→ 3자리 이진수 8개와 정확히 짝이 맞음</div>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">2-3</span><span class="ans">정답 · 20가지</span></div>
+    <div class="tbscroll">
+      <table class="dt">
+        <tr><th>원소 수</th><th>0개</th><th>1개</th><th>2개</th><th>3개</th><th>4개</th><th>5개</th><th>6개</th><th>합계</th></tr>
+        <tr><th>0</th><td>1</td><td></td><td></td><td></td><td></td><td></td><td></td><td>1</td></tr>
+        <tr><th>1</th><td>1</td><td>1</td><td></td><td></td><td></td><td></td><td></td><td>2</td></tr>
+        <tr><th>2</th><td>1</td><td>2</td><td>1</td><td></td><td></td><td></td><td></td><td>4</td></tr>
+        <tr><th>3</th><td>1</td><td>3</td><td>3</td><td>1</td><td></td><td></td><td></td><td>8</td></tr>
+        <tr><th>4</th><td>1</td><td>4</td><td>6</td><td>4</td><td>1</td><td></td><td></td><td>16</td></tr>
+        <tr><th>5</th><td>1</td><td>5</td><td>10</td><td>10</td><td>5</td><td>1</td><td></td><td>32</td></tr>
+        <tr><th>6</th><td>1</td><td>6</td><td>15</td><td class="hl">20</td><td>15</td><td>6</td><td>1</td><td>64</td></tr>
+      </table>
+    </div>
+    <p>이것이 <b>파스칼의 삼각형</b>입니다. 각 줄의 합이 2ⁿ이 되는 것도 함께 확인시키세요. "부분집합을 크기별로 나눠 세면 결국 전체가 된다"는 당연한 사실이 아름다운 항등식이 됩니다.</p>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">2-4</span><span class="ans">토론 정리</span></div>
+    <div class="talk">
+      <h4>예상 답과 되물음</h4>
+      <p class="tq">① 공집합도 세어야 하나</p>
+      <p class="ta">수학적으로 공집합은 <b>당연히 부분집합</b>이고, 2ⁿ에 반드시 포함됩니다. 다만 "피자 가게에서 팔 수 있는 메뉴"라면 아무것도 안 올린 피자를 뺄 수도 있습니다(63가지). 즉 <b>수학의 답과 현실 문제의 답이 다를 수 있고</b>, 그것은 문제 조건을 어떻게 읽느냐의 문제입니다. → 되물음: <em>"문제에 '적어도 하나는 넣어야 한다'가 있었나요?"</em></p>
+      <p class="tq">② 치즈가 반드시 들어간 피자</p>
+      <p class="ta"><b>32가지 = 2⁵</b>입니다. 치즈는 이미 결정되었으므로, 나머지 5개 토핑에 대해서만 자유롭게 선택하면 됩니다. 절반이 되는 이유는 전체가 "치즈 있음 / 치즈 없음" 두 뭉치로 정확히 반씩 갈리기 때문입니다. → 되물음: <em>"치즈가 반드시 <b>없는</b> 피자도 32가지겠네요?"</em></p>
+      <p class="tq">③ 공집합의 부분집합과 멱집합</p>
+      <p class="ta">공집합의 부분집합은 <b>1개</b>(자기 자신뿐)입니다. 2⁰ = 1과 맞습니다. 그러므로 공집합의 멱집합은 <b>{∅}</b>이고, 이것은 <b>원소가 1개인 집합</b>이지 공집합이 아닙니다. "빈 상자"와 "빈 상자가 들어 있는 상자"는 다릅니다. → 되물음: <em>"∅ 과 {∅} 의 원소 개수는 각각 몇 개인가요?"</em> (0개와 1개)</p>
+      <p class="tq">④ 토핑 하나에 2배가 되는 이유</p>
+      <p class="ta">새 토핑 X를 추가하면, 모든 부분집합은 <b>X를 안 넣은 것</b>(기존 목록 그대로)과 <b>X를 넣은 것</b>(기존 각각에 X를 더한 것)으로 나뉩니다. 두 뭉치의 개수가 같고 겹치지 않으므로 정확히 2배입니다. 이것이 곧 <b>귀납적 증명</b>입니다.</p>
+    </div>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">2-5</span><span class="ans">정답 · 원소 8개 / 진부분집합 255개</span></div>
+    <div class="calc">2ⁿ = 256
+2¹ = 2, 2² = 4, 2³ = 8, 2⁴ = 16, 2⁵ = 32, 2⁶ = 64, 2⁷ = 128, 2⁸ = <b>256</b>
+→ n = <b>8</b>
+
+진부분집합 = 자기 자신을 제외한 부분집합
+  256 − 1 = <b>255</b>
+(공집합은 진부분집합에 포함됨에 유의)</div>
+    <div class="misc">
+      <h4>흔한 오답과 원인</h4>
+      <ul>
+        <li><b>63가지</b> — 공집합을 뺀 경우입니다. 틀렸다기보다 <b>조건 해석의 차이</b>이므로, 왜 그렇게 생각했는지 먼저 물어보세요.</li>
+        <li><b>6 × 6 = 36 또는 6! = 720</b> — 순서를 세거나 곱하는 대상을 잘못 잡은 경우입니다. "토핑마다 몇 가지 선택?"으로 되돌리세요.</li>
+        <li><b>2 × 6 = 12</b> — 곱의 법칙을 덧셈처럼 쓴 경우입니다. 3개짜리를 손으로 8개 적어 보게 하면 즉시 교정됩니다.</li>
+        <li><b>진부분집합을 254개로</b> — 공집합까지 뺀 경우입니다. 진부분집합의 정의를 확인시키세요.</li>
+      </ul>
+    </div>
+    <div class="rubric">
+      <div class="rh">평가 루브릭</div>
+      <table class="rb">
+        <tr><th>상</th><td>2ⁿ을 곱의 법칙 또는 이진수 대응으로 설명하고, 특정 원소를 포함하는 부분집합 수를 세지 않고 답한다. 공집합과 {∅}의 차이를 구분한다.</td></tr>
+        <tr><th>중</th><td>작은 경우를 직접 세어 2ⁿ 규칙을 찾아내나, 왜 그런지 설명하지 못한다.</td></tr>
+        <tr><th>하</th><td>부분집합을 빠짐없이 나열하지 못하거나 공집합을 인식하지 못한다.</td></tr>
+      </table>
+    </div>
+    <div class="verify"><span class="vh">Python 전수 검증</span>부분집합 개수 vs 2ⁿ : n = 0~8 <em>전부 일치</em>
+  1, 2, 4, 8, 16, 32, 64, 128, 256
+원소 5개 크기별 개수 : <em>[1, 5, 10, 10, 5, 1]</em> 합 = <em>32</em> = 2⁵
+특정 원소를 포함하는 부분집합(n=5) : <em>16</em> = 2⁴
+토핑 6종 : 전체 <em>64</em> · 적어도 하나 <em>63</em> · 정확히 3개 <em>20</em>
+원소 2개 집합의 멱집합의 멱집합 : 2^(2²) = <em>16</em></div>
+    <p class="src"><b>출처</b> — 멱집합의 크기가 2ⁿ이라는 사실은 집합론의 기본입니다. <b>게오르크 칸토어</b>는 이를 무한집합으로 확장해 "어떤 집합보다 그 멱집합이 항상 더 크다"는 <b>칸토어의 정리</b>(1891)를 증명했고, 이로부터 무한에도 여러 크기가 있음이 밝혀졌습니다.</p>
+  </div>
+</section>
+
+<!-- ============ SET 3 ============ -->
+<section class="set" id="s3" data-ac="#B4405E">
+  <div class="sethead">
+    <p class="no">SET 03 · ANSWERS</p>
+    <h2>서울에 머리카락 수가 똑같은 사람이 있을까</h2>
+    <p class="core">핵심 아이디어 — <b>존재 증명</b>. 누구인지 전혀 모르면서도 "반드시 있다"를 확실하게 말할 수 있습니다.</p>
+  </div>
+
+  <div class="keybox">
+    <h3>지도 요령</h3>
+    <p>양말 문제에서 <b>"11짝"</b>이라 답하는 학생이 반드시 나옵니다. 틀렸다고 하지 말고 <b>"색이 몇 종류인가요?"</b>만 물으세요. 스스로 3을 말하게 하는 것이 이 세트의 핵심 순간입니다.</p>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">3-1</span><span class="ans">정답 · 3짝</span></div>
+    <div class="proof">
+      <b>최악의 경우로 생각하기</b> — 가장 운이 나쁘면 1번째 검정, 2번째 흰색이 나올 수 있습니다. 하지만 3번째는 검정이든 흰색이든 <b>앞의 두 짝 중 하나와 반드시 같은 색</b>입니다. 색이 2종류뿐이기 때문입니다.<br><br>
+      색이 <i>k</i>종류라면 <b><i>k</i> + 1짝</b>이 필요합니다.
+    </div>
+    <div class="calc">비둘기집 = 색 (2칸)
+비둘기   = 꺼낸 양말
+
+2짝까지는 "검정 1, 흰색 1"로 흩어질 수 있음
+3짝째는 반드시 어느 한 칸이 2개가 됨  → <b>3짝</b>
+
+주의 : 양말이 각각 10짝씩 있다는 것은 <b>답과 무관</b>합니다.
+       중요한 것은 개수가 아니라 <b>색의 종류 수</b>입니다.</div>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">3-2</span><span class="ans">정답 · 2마리 이상 / 25명 → 3명</span></div>
+    <div class="proof">
+      <b>비둘기집 원리</b> — 비둘기 <i>n</i>마리를 <i>m</i>개의 집에 넣고 <i>n</i> &gt; <i>m</i>이면, 어떤 집에는 <b>2마리 이상</b>이 들어간다.<br><br>
+      <b>증명(귀류법)</b> — 만약 모든 집에 1마리 이하만 있다면 전체 비둘기는 많아야 <i>m</i>마리다. 그런데 실제로는 <i>n</i>마리이고 <i>n</i> &gt; <i>m</i>이므로 <b>모순</b>이다. ∎<br><br>
+      <b>일반화</b> — 어떤 집에는 최소 <b>⌈n / m⌉</b>마리가 들어간다.
+    </div>
+    <div class="calc">13명 / 12달 → ⌈13/12⌉ = <b>2</b>명이 같은 달
+ 8명 / 7요일 → ⌈8/7⌉  = <b>2</b>명이 같은 요일
+25명 / 12달 → ⌈25/12⌉ = <b>3</b>명이 같은 달   (25 = 12×2 + 1)
+100명 / 7요일 → ⌈100/7⌉ = <b>15</b>명</div>
+    <p>25명에서 "2명"이라 답하는 학생이 많습니다. 12명씩 두 바퀴를 채우고도 1명이 남는다는 점을 짚어 주세요.</p>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">3-3</span><span class="ans">정답 · 반드시 있음 / 최소 20명</span></div>
+    <div class="calc">비둘기(사람)     = 10,000,000명
+비둘기집(머리카락 수) = 0올 ~ 500,000올 → <b>500,001칸</b>
+
+10,000,000 > 500,001  →  반드시 같은 사람이 존재
+
+최소 몇 명이 같은가?
+  ⌈10,000,000 ÷ 500,001⌉ = ⌈19.99996⌉ = <b>20</b>명</div>
+    <p>0올(대머리)도 하나의 칸이므로 <b>500,000이 아니라 500,001칸</b>입니다. 이 1칸 차이를 짚어 주면 학생들이 경계 조건에 민감해집니다.</p>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">3-4</span><span class="ans">토론 정리</span></div>
+    <div class="talk">
+      <h4>예상 답과 되물음</h4>
+      <p class="tq">① 누구인지 모르는 증명</p>
+      <p class="ta">이런 것을 <b>비구성적 증명(존재 증명)</b>이라 합니다. "있다"는 것만 알고 "무엇인지"는 모릅니다. 그래도 매우 쓸모가 있습니다. 예를 들어 "이 방식으로는 반드시 충돌이 생긴다"를 알면 <b>설계를 바꿔야 한다</b>는 결정을 내릴 수 있습니다(해시 충돌, 데이터 압축의 한계 등). → 되물음: <em>"찾을 수는 없지만 있다는 걸 아는 게 왜 도움이 될까요?"</em></p>
+      <p class="tq">② "검정" 한 켤레는 다르다</p>
+      <p class="ta"><b>12짝</b>이 필요합니다. 최악의 경우 흰색 10짝을 먼저 다 꺼낼 수 있고, 그다음 검정 2짝이 필요하기 때문입니다. "<b>아무거나 같은 색</b>"과 "<b>지정된 색</b>"은 완전히 다른 문제입니다. 앞의 문제에서 양말 개수가 무관했던 것과 대조시키면 효과가 큽니다. → 되물음: <em>"왜 이번엔 양말 개수가 답에 영향을 줄까요?"</em></p>
+      <p class="tq">③ 악수 문제</p>
+      <p class="ta"><b>반드시 있습니다.</b> <i>n</i>명이 모이면 각자의 악수 횟수는 0부터 <i>n</i>−1까지 <i>n</i>가지가 가능해 보입니다. 그런데 <b>0회인 사람과 <i>n</i>−1회인 사람은 동시에 존재할 수 없습니다</b>(모두와 악수한 사람이 있다면 0회인 사람이 있을 수 없으므로). 그래서 실제 칸은 <b><i>n</i>−1개</b>뿐이고, 사람은 <i>n</i>명이므로 비둘기집 원리에 따라 겹칩니다.</p>
+      <p class="ta">Python 전수 확인: 3명·4명·5명 모임의 <b>모든 악수 조합</b>에서 같은 횟수인 두 사람이 항상 존재했습니다.</p>
+      <p class="tq">④ 1~10에서 6개 고르기</p>
+      <p class="ta">각 수를 2로 계속 나눠 <b>홀수 부분</b>을 구합니다. 1~10의 홀수 부분은 <b>1, 3, 5, 7, 9</b> 다섯 가지뿐입니다(예: 8 = 2³×1 → 1, 6 = 2×3 → 3). 6개를 고르면 홀수 부분이 같은 두 수가 반드시 생기고, 그 둘은 2의 거듭제곱만큼만 차이 나므로 <b>한쪽이 다른 쪽을 나눕니다</b>(예: 3과 12).</p>
+      <p class="ta">Python 전수 확인: 210가지 조합 중 나누는 쌍이 없는 경우 <b>0가지</b>.</p>
+    </div>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">3-5</span><span class="ans">정답 · 2명 / 366명</span></div>
+    <div class="calc">500명 / 365일 → ⌈500/365⌉ = ⌈1.37⌉ = <b>2</b>명
+반드시 같은 생일이 생기는 최소 인원 = 365 + 1 = <b>366</b>명
+
+※ 흔한 혼동 — "생일 문제"의 23명은 <b>확률</b> 이야기입니다.
+   23명이면 같은 생일이 있을 확률이 50%를 넘지만,
+   <b>반드시</b> 있으려면 366명이 필요합니다.
+   비둘기집 원리는 확률이 아니라 <b>확실성</b>을 다룹니다.</div>
+    <div class="misc">
+      <h4>흔한 오답과 원인</h4>
+      <ul>
+        <li><b>양말 11짝</b> — 개수와 색깔 종류를 혼동한 대표 오답입니다. "비둘기집이 무엇인가"를 먼저 정하는 습관을 들이세요.</li>
+        <li><b>25명 → 2명</b> — 올림 계산을 놓친 경우입니다. 12명씩 나눠 담아 보게 하세요.</li>
+        <li><b>머리카락 칸을 500,000개로</b> — 0올을 세지 않은 경계 오류입니다.</li>
+        <li><b>"366명" 자리에 23명</b> — 확률(생일 문제)과 확실성(비둘기집)을 섞은 경우입니다. 두 문제의 차이를 분명히 하세요.</li>
+        <li><b>"확률적으로 그럴 것 같다"</b> — 비둘기집 원리는 확률이 아니라 <b>반드시</b>입니다.</li>
+      </ul>
+    </div>
+    <div class="rubric">
+      <div class="rh">평가 루브릭</div>
+      <table class="rb">
+        <tr><th>상</th><td>비둘기와 비둘기집을 스스로 정의하고 귀류법으로 원리를 설명한다. ⌈n/m⌉ 일반형을 쓰고, "아무 색"과 "지정 색"의 차이를 구분한다.</td></tr>
+        <tr><th>중</th><td>원리를 적용해 답을 구하나, 무엇이 비둘기집인지 명확히 설정하지 못하거나 올림 계산에서 실수한다.</td></tr>
+        <tr><th>하</th><td>최악의 경우를 고려하지 못하고 개수와 종류를 혼동한다.</td></tr>
+      </table>
+    </div>
+    <div class="verify"><span class="vh">Python 전수 검증</span>양말 : 색 k종 → 최악의 경우 <em>k+1</em>짝 (k = 2, 3, 5 확인)
+생일·달 : ⌈13/12⌉=<em>2</em>, ⌈25/12⌉=<em>3</em>, ⌈100/7⌉=<em>15</em>, ⌈500/365⌉=<em>2</em>
+머리카락 : 1000만 명 vs 500,001칸 → 최소 <em>20</em>명이 동일
+1~2n에서 n+1개 선택 시 '나누는 쌍' 없는 경우
+  n=3 (1~6에서 4개) : <em>0</em>가지
+  n=4 (1~8에서 5개) : <em>0</em>가지
+  n=5 (1~10에서 6개, 총 210가지) : <em>0</em>가지
+서로소 쌍이 없는 경우도 n=3,4,5 모두 <em>0</em>가지
+악수 문제 : 3·4·5명 모임의 <em>모든</em> 악수 그래프에서
+  악수 횟수가 같은 두 사람 존재 → <em>True</em></div>
+    <p class="src"><b>출처</b> — <b>페터 구스타프 르죈 디리클레</b>가 1834년 정수론 연구에서 사용해 독일어로 "서랍 원칙(Schubfachprinzip)"이라 불렸습니다. 영어권에서 pigeonhole principle로 정착했으며, 지극히 당연해 보이지만 존재를 증명하는 가장 강력한 도구 중 하나입니다.</p>
+  </div>
+</section>
+
+<!-- ============ SET 4 ============ -->
+<section class="set" id="s4" data-ac="#3A5480">
+  <div class="sethead">
+    <p class="no">SET 04 · ANSWERS</p>
+    <h2>방이 무한한 호텔, 만실인데 손님을 더 받을 수 있을까</h2>
+    <p class="core">핵심 아이디어 — <b>일대일대응으로 크기를 재기</b>. 무한에서는 "세어서" 비교할 수 없으므로 <b>짝지어서</b> 비교합니다.</p>
+  </div>
+
+  <div class="keybox">
+    <h3>지도 요령</h3>
+    <p>"방을 옮기라"는 지시가 실제로 <b>모든 손님에게 동시에</b> 내려진다는 점을 강조하세요. 학생들은 종종 "맨 끝 사람은 어디로 가나요?"라고 묻습니다. <b>끝이 없다</b>는 것이 이 문제의 전부이므로, 그 질문이 나오면 수업이 잘 되고 있는 것입니다.</p>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">4-1</span><span class="ans">정답 · n → n+1</span></div>
+    <div class="calc">1번 손님 → 2번 방
+2번 손님 → 3번 방
+3번 손님 → 4번 방
+   ⋮
+n번 손님 → <b>n+1</b>번 방
+
+→ <b>1번 방</b>이 비고, 새 손님이 들어간다
+→ 아무도 쫓겨나지 않는다 (모든 손님에게 갈 방이 있음)
+
+손님 k명이 오면 : n → n+k, 1~k번 방이 빈다</div>
+    <div class="proof"><b>왜 유한 호텔에서는 안 되는가</b> — 방이 100개라면 100번 손님은 101번 방으로 가야 하는데 그런 방이 없습니다. 무한 호텔에는 <b>마지막 방이 없으므로</b> 모두가 갈 곳이 있습니다.</div>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">4-2</span><span class="ans">정답 · 2m − 1번 방</span></div>
+    <div class="calc">기존 손님 : n번 → <b>2n</b>번 방  (짝수 방)
+  1→2, 2→4, 3→6, 4→8, …
+
+비는 방 : 1, 3, 5, 7, … <b>홀수 방 전부</b> (무한히 많음)
+
+새 손님 : m번째 → <b>2m − 1</b>번 방  (홀수 방)
+  1→1, 2→3, 3→5, 4→7, …</div>
+    <div class="proof">
+      <b>배정이 올바른지 확인할 두 가지</b><br>
+      ① <b>겹치지 않는가</b> — 짝수 방과 홀수 방은 절대 겹치지 않습니다.<br>
+      ② <b>빠지는 방이 없는가</b> — 모든 자연수는 짝수이거나 홀수이므로 빈방이 남지 않습니다.<br><br>
+      이 두 조건을 만족하는 짝짓기를 <b>일대일대응</b>이라 하고, 이것이 무한집합의 크기를 비교하는 유일한 방법입니다.
+    </div>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">4-3</span><span class="ans">갈릴레오의 역설 · 개수는 같다</span></div>
+    <div class="calc">n  : 1, 2, 3, 4,  5,  6,  7,  8, …
+n² : 1, 4, 9, 16, 25, 36, 49, 64, …
+→ 빠짐도 겹침도 없는 완벽한 짝짓기 (일대일대응)
+
+그런데 범위 안의 비율은?
+  1~10       제곱수 3개    (30.00%)
+  1~100      제곱수 10개   (10.00%)
+  1~1,000    제곱수 31개   ( 3.10%)
+  1~10,000   제곱수 100개  ( 1.00%)
+  1~1,000,000 제곱수 1000개 ( 0.10%)
+
+<b>비율은 0으로 가는데, 개수(농도)는 자연수와 같다</b></div>
+    <p>이 모순처럼 보이는 상황이 갈릴레오를 멈추게 했습니다. 그는 "무한에는 크다·작다·같다를 쓸 수 없다"고 결론지었고, 250년 뒤 <b>칸토어</b>가 "일대일대응이 되면 같다"로 정의를 다시 세워 해결했습니다.</p>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">4-4</span><span class="ans">토론 정리</span></div>
+    <div class="talk">
+      <h4>예상 답과 되물음</h4>
+      <p class="tq">① "만실"과 "더 못 받는다"</p>
+      <p class="ta">유한 호텔에서는 같은 말이지만, <b>무한 호텔에서는 다릅니다</b>. "모든 방에 손님이 있다"는 참이지만 "새 손님을 받을 수 없다"는 거짓입니다. 우리의 직관은 유한한 경험에서 만들어졌기 때문에 무한에서 어긋납니다. → 되물음: <em>"일상 경험에서 만든 직관이 통하지 않는 다른 예가 있을까요?"</em></p>
+      <p class="tq">② 무한집합의 정의</p>
+      <p class="ta">유한집합에서는 <b>절대 불가능합니다</b>. 원소 5개짜리 집합의 진부분집합은 최대 4개짜리이므로 짝지을 수 없습니다. 그래서 수학자들은 이 성질을 아예 <b>정의</b>로 삼았습니다.</p>
+      <p class="ta"><b>데데킨트의 무한 정의</b> — 자기 자신의 <b>진부분집합과 일대일대응이 되는</b> 집합을 무한집합이라 한다. 역설처럼 보이던 성질이 오히려 무한의 <b>본질</b>이 된 것입니다. → 되물음: <em>"이상해 보이는 성질을 정의로 삼는 게 왜 좋은 선택일까요?"</em></p>
+      <p class="tq">③ 무한 버스가 무한 대</p>
+      <p class="ta">손님마다 (버스 번호, 좌석 번호) 두 숫자가 있습니다. 이 쌍들을 <b>대각선으로 훑으면</b> 1, 2, 3, … 순번을 빠짐없이 붙일 수 있습니다.</p>
+      <div class="tbscroll">
+        <table class="dt">
+          <tr><th>버스＼좌석</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr>
+          <tr><th>1</th><td class="hl">1</td><td class="hl">2</td><td class="hl">4</td><td class="hl">7</td><td class="hl">11</td></tr>
+          <tr><th>2</th><td class="hl">3</td><td class="hl">5</td><td class="hl">8</td><td class="hl">12</td><td class="hl">17</td></tr>
+          <tr><th>3</th><td class="hl">6</td><td class="hl">9</td><td class="hl">13</td><td class="hl">18</td><td class="hl">24</td></tr>
+          <tr><th>4</th><td class="hl">10</td><td class="hl">14</td><td class="hl">19</td><td class="hl">25</td><td class="hl">32</td></tr>
+          <tr><th>5</th><td class="hl">15</td><td class="hl">20</td><td class="hl">26</td><td class="hl">33</td><td class="hl">41</td></tr>
+        </table>
+      </div>
+      <p class="ta">순번을 붙였으니 그 순번대로 홀수 방(또는 새로 비운 방)에 넣으면 됩니다. 이 방법으로 <b>유리수 전체</b>도 자연수와 짝지을 수 있음이 알려져 있습니다.</p>
+      <p class="tq">④ 모든 무한이 같은가</p>
+      <p class="ta"><b>아닙니다.</b> 칸토어는 1891년 <b>대각선 논법</b>으로 실수를 자연수와 짝지을 수 없음을 증명했습니다. 어떤 목록을 만들어도 소수점 아래 <i>k</i>번째 자리를 <i>k</i>번째 수와 다르게 잡으면 <b>목록에 없는 실수</b>가 만들어집니다. 그래서 실수의 무한은 자연수의 무한보다 <b>진짜로 더 큽니다</b>. → 되물음: <em>"세트 2의 '멱집합이 항상 더 크다'와 이어지나요?"</em> (같은 아이디어입니다)</p>
+    </div>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">4-5</span><span class="ans">정답 · 모두 가산무한</span></div>
+    <div class="calc">짝수 전체    : n ↔ 2n        1↔2, 2↔4, 3↔6, …
+홀수 전체    : n ↔ 2n−1      1↔1, 2↔3, 3↔5, …
+3의 배수     : n ↔ 3n        1↔3, 2↔6, 3↔9, …
+정수 전체    : <b>0, 1, −1, 2, −2, 3, −3, …</b> 로 줄 세우기
+   n이 홀수면 (n−1)/2,  n이 짝수면 −n/2
+   1↔0, 2↔−1, 3↔1, 4↔−2, 5↔2, …
+
+→ 네 집합 모두 자연수와 일대일대응 = <b>가산무한</b>
+→ 정수는 자연수의 "2배쯤" 되어 보이지만 크기가 같다</div>
+    <div class="misc">
+      <h4>흔한 오답과 원인</h4>
+      <ul>
+        <li><b>"짝수가 자연수의 절반"</b> — 유한한 범위의 비율을 무한 전체에 그대로 적용한 경우입니다. 갈릴레오의 표를 다시 보게 하세요.</li>
+        <li><b>"맨 끝 손님은 갈 곳이 없다"</b> — 무한에 끝이 있다고 가정한 것입니다. 아주 좋은 질문이므로 칭찬한 뒤 "끝 방의 번호는 몇 번인가요?"로 되물으세요.</li>
+        <li><b>"∞ + 1 = ∞ 니까 당연"</b> — 결론은 맞지만 근거가 없습니다. 무한은 수처럼 계산하는 대상이 아니라 <b>짝짓기로 비교</b>하는 대상입니다.</li>
+        <li><b>"모든 무한은 같다"</b> — 세트 후반의 반전을 놓친 경우입니다. 실수의 예를 반드시 언급하세요.</li>
+        <li><b>정수 줄 세우기에서 "…, −2, −1, 0, 1, 2, …"</b> — 이 배열에는 <b>시작이 없어</b> 1번, 2번을 붙일 수 없습니다. 0부터 번갈아 가야 합니다.</li>
+      </ul>
+    </div>
+    <div class="rubric">
+      <div class="rh">평가 루브릭</div>
+      <table class="rb">
+        <tr><th>상</th><td>짝짓기가 "겹치지 않고 빠지지 않는지" 두 조건으로 검사한다. n→2n 배정을 스스로 만들고, 진부분집합과 크기가 같다는 성질로 무한집합을 특징짓는다.</td></tr>
+        <tr><th>중</th><td>제시된 배정 규칙을 이해하고 적용하나, 스스로 새 배정을 설계하거나 두 조건을 검사하지 못한다.</td></tr>
+        <tr><th>하</th><td>"만실이면 못 받는다"는 유한 직관에서 벗어나지 못한다.</td></tr>
+      </table>
+    </div>
+    <div class="verify"><span class="vh">Python 검증 결과</span>무한 버스 배정 (n → 2n, 새 손님 m → 2m−1)
+  기존 손님 방 : [2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
+  새 손님  방 : [1, 3, 5, 7, 9, 11, 13, 15, 17, 19]
+  교집합 <em>없음</em> · 합치면 1~20 <em>빠짐없이</em> 채움 → 일대일대응 ✓
+갈릴레오 : 1~N 안의 제곱수
+  N=10 → 3개(30.00%) / N=100 → 10개(10.00%)
+  N=1000 → 31개(3.10%) / N=10000 → 100개(1.00%)
+  비율은 0으로 가지만 <em>일대일대응은 성립</em>
+정수 줄 세우기 : [0, 1, -1, 2, -2, 3, -3, 4, -4, 5, -5] <em>중복 없음</em>
+격자점 대각선 나열 : (1,1)(1,2)(2,1)(1,3)(2,2)(3,1)(1,4)…
+  모든 쌍이 <em>정확히 한 번씩</em> 등장 → 가산무한</div>
+    <p class="src"><b>출처</b> — <b>다비트 힐베르트</b>가 1924년 1월 괴팅겐 강의에서 언급했고, 1948년 <b>조지 가모프</b>의 『1, 2, 3 그리고 무한』을 통해 널리 알려졌습니다. 자연수와 제곱수 문제는 <b>갈릴레오 갈릴레이</b>가 1638년 『새로운 두 과학』에서 제기했으며, <b>칸토어</b>가 1874년 이후 일대일대응으로 무한의 크기를 정의해 해결했습니다.</p>
+  </div>
+</section>
+
+<!-- ============ SET 5 ============ -->
+<section class="set" id="s5" data-ac="#7A4A7E">
+  <div class="sethead">
+    <p class="no">SET 05 · ANSWERS</p>
+    <h2>모든 사람의 수염을 깎는 이발사는 자기 수염을 깎을까</h2>
+    <p class="core">핵심 아이디어 — <b>정의가 모순을 낳을 수 있다</b>. 말이 되는 문장처럼 보여도 그런 대상이 존재하지 못할 수 있습니다.</p>
+  </div>
+
+  <div class="keybox">
+    <h3>지도 요령</h3>
+    <p>학생들은 "이발사가 여자면 되잖아요", "옆 마을에 가면 되죠" 같은 <b>탈출구</b>를 찾습니다. 이 반응은 아주 좋습니다. <b>규칙에서 빠져나갈 구멍을 모두 막았을 때</b> 무슨 일이 벌어지는지를 함께 확인하는 것이 목표라고 알려 주세요.</p>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">5-1</span><span class="ans">정답 · 그런 이발사는 존재할 수 없다</span></div>
+    <div class="proof">
+      <b>경우 ① 이발사가 자기 수염을 깎는다면</b><br>
+      → 이발사는 "스스로 깎는 사람"이 된다<br>
+      → 그런데 이발사는 "스스로 깎지 <b>않는</b> 사람<b>만</b>" 깎는다<br>
+      → 그러므로 이발사는 자기 수염을 깎으면 안 된다 &nbsp; <b>✗ 모순</b><br><br>
+      <b>경우 ② 이발사가 자기 수염을 깎지 않는다면</b><br>
+      → 이발사는 "스스로 깎지 않는 사람"이 된다<br>
+      → 그런데 이발사는 그런 사람 <b>전부</b>의 수염을 깎는다<br>
+      → 그러므로 이발사는 자기 수염을 깎아야 한다 &nbsp; <b>✗ 모순</b><br><br>
+      두 경우가 전부인데 둘 다 모순이므로, <b>그런 이발사는 존재할 수 없다.</b>
+    </div>
+    <p>중요한 것은 "이발사가 게으르다"거나 "답을 모른다"가 아니라, <b>규칙 자체가 어떤 사람도 만족시킬 수 없다</b>는 점입니다. 정의에 '만'과 '전부'가 동시에 들어간 것이 원인입니다.</p>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">5-2</span><span class="ans">러셀의 역설 · 대응 관계</span></div>
+    <div class="calc">R = { x | x ∉ x }   "자기 자신을 원소로 갖지 않는 모든 집합"
+
+R ∈ R 이라 하면 → R은 R의 원소이므로 정의상 R ∉ R   <b>✗ 모순</b>
+R ∉ R 이라 하면 → R은 조건을 만족하므로 R ∈ R        <b>✗ 모순</b>
+
+대응 관계
+  이발사              ↔  집합 R
+  마을 사람           ↔  집합들
+  A가 B의 수염을 깎다  ↔  B가 A의 원소이다
+  자기 수염을 깎다     ↔  자기 자신을 원소로 갖다 (x ∈ x)</div>
+    <p>이발사 이야기와 <b>구조가 완전히 같습니다</b>. 다만 이발사는 "그런 사람은 없다"로 쉽게 넘어갈 수 있지만, 집합은 그렇지 않았습니다(5-4 참조).</p>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">5-3</span><span class="ans">정답 · 모순은 2개</span></div>
+    <div class="tbscroll">
+      <table class="dt">
+        <tr><th>문장</th><th>판정</th><th>이유</th></tr>
+        <tr><td>이 문장은 한국어로 쓰였다</td><td>참</td><td>사실과 맞음. 자기지시지만 문제없음</td></tr>
+        <tr><td>이 문장은 다섯 글자다</td><td>거짓</td><td>틀렸을 뿐 모순은 아님</td></tr>
+        <tr><td>이 문장은 거짓이다</td><td class="hl">모순</td><td>참이면 거짓, 거짓이면 참</td></tr>
+        <tr><td>카드 앞·뒷면</td><td class="hl">모순</td><td>두 문장에 걸친 자기지시 고리</td></tr>
+        <tr><td>모든 규칙에는 예외가 있다</td><td>논쟁적</td><td>해석에 따라 갈림</td></tr>
+      </table>
+    </div>
+    <div class="calc">카드 역설 검증
+  앞면 "뒷면의 말은 참"  /  뒷면 "앞면의 말은 거짓"
+
+  앞면이 참 → 뒷면도 참이어야 함
+            → 뒷면 주장대로 앞면은 거짓  <b>✗ 모순</b>
+  앞면이 거짓 → 뒷면은 거짓이어야 함
+            → 뒷면 주장이 틀렸으므로 앞면은 참  <b>✗ 모순</b>
+
+→ 자기지시 고리가 <b>두 문장에 걸쳐</b> 있어도 결과는 같음</div>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">5-4</span><span class="ans">토론 정리</span></div>
+    <div class="talk">
+      <h4>예상 답과 되물음</h4>
+      <p class="tq">① 어떤 자기지시가 모순을 만드는가</p>
+      <p class="ta">자기지시 자체는 문제가 아닙니다. "이 문장은 한국어다"는 아무 탈이 없습니다. 문제는 <b>자기 자신의 참·거짓을 뒤집어서 규정</b>할 때 생깁니다. 즉 <b>자기지시 + 부정</b>이 결합될 때입니다. 두 요소 중 하나만 있으면 안전합니다. → 되물음: <em>"'이 문장은 참이다'는 어떤가요?"</em> (모순은 아니지만 참·거짓을 정할 근거가 없습니다 — 또 다른 종류의 문제)</p>
+      <p class="tq">② 왜 집합은 쉽게 넘어갈 수 없었나</p>
+      <p class="ta">이발사는 <b>있어도 그만 없어도 그만인 이야기 속 인물</b>입니다. 하지만 러셀이 다룬 것은 "조건을 쓰면 그에 맞는 집합이 있다"는 <b>수학의 기본 규칙</b>이었습니다. 이것을 버리면 그 위에 세운 수학 전체가 흔들립니다. 실제로 <b>프레게</b>는 평생의 연구를 담은 책의 인쇄 직전에 러셀의 편지를 받고, 부록에 "내 체계의 토대가 흔들렸다"고 썼습니다. → 되물음: <em>"수학에서 '토대가 흔들린다'는 게 어떤 의미일까요?"</em></p>
+      <p class="tq">③ 규칙을 어떻게 바꿨나</p>
+      <p class="ta">"조건을 쓰면 무엇이든 집합"(무제한 내포)에서 → "<b>이미 존재하는 집합에서</b> 조건에 맞는 것만 골라낸다"(분리 공리)로 바꿨습니다. 이러면 R을 만들려 해도 <b>"어느 집합에서 골라낼 것인가"</b>를 먼저 말해야 합니다. "모든 집합의 집합"은 존재하지 않으므로 R도 만들어지지 않습니다.</p>
+      <p class="ta">이렇게 만들어진 것이 오늘날의 <b>공리적 집합론</b>(체르멜로–프렝켈, ZF)입니다. 역설이 수학을 무너뜨린 것이 아니라 <b>더 튼튼하게 다시 짓게 만든</b> 셈입니다.</p>
+      <p class="tq">④ 백과사전의 목록</p>
+      <p class="ta">"자기 자신을 포함하지 않는 모든 목록의 목록"을 실으면 같은 역설이 생깁니다. 이 목록이 <b>자기를 포함하면</b> 조건에 어긋나 실리면 안 되고, <b>포함하지 않으면</b> 조건을 만족하므로 실려야 합니다. 그래서 이런 항목은 <b>만들 수 없습니다</b>. 정보를 모으는 규칙에도 한계가 있다는 실제 사례입니다.</p>
+    </div>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">5-5</span><span class="ans">역설 만들기 · 공통 뼈대</span></div>
+    <div class="proof">
+      <b>뼈대</b> — "○○하지 <b>않는</b> 모든 것<b>만</b>, 그리고 그런 것 <b>전부</b>를 ○○하는 △△"<br>
+      → 질문 : "△△는 자기 자신을 ○○하는가?"<br>
+      → 예라고 해도 모순, 아니라고 해도 모순
+    </div>
+    <div class="calc">같은 구조의 예시들
+  이발사 : 스스로 면도 안 하는 사람만·전부 면도하는 이발사
+  목록   : 자기를 포함 안 하는 목록만·전부 담은 목록
+  사서   : 자기 이름 없는 명부에만·전부 이름 적는 사서
+  집합 R : 자기를 원소로 안 갖는 집합만·전부 원소로 갖는 집합
+  마을   : 자기 마을에 안 사는 사람만·전부 초대하는 마을 이장
+
+학생이 만들 때 확인할 것
+  ① "않는"(부정)이 들어갔는가
+  ② "만"과 "전부"가 <b>둘 다</b> 있는가   ← 하나라도 빠지면 역설이 안 생김
+  ③ 그 대상이 자기 자신에게도 규칙을 적용받는가</div>
+    <p>③번이 특히 중요합니다. "이발사는 이 마을 사람이 아니다"라고 하면 역설이 사라집니다. 학생들이 이 탈출구를 찾아내면 <b>역설의 조건을 정확히 이해한 것</b>이므로 크게 칭찬해 주세요.</p>
+    <div class="misc">
+      <h4>흔한 오답과 원인</h4>
+      <ul>
+        <li><b>"이발사가 여자다 / 수염이 없다 / 옆 마을에 간다"</b> — 틀린 답이 아니라 <b>조건을 무너뜨리는 것</b>입니다. "규칙이 모두에게 예외 없이 적용된다면?"으로 되돌리세요.</li>
+        <li><b>"답은 반반이다 / 정하기 나름이다"</b> — 두 경우 모두 모순임을 확인하지 않은 경우입니다. 반드시 양쪽을 다 써 보게 하세요.</li>
+        <li><b>"모든 자기지시는 모순"</b> — 5-3의 문장 1, 2가 반례입니다.</li>
+        <li><b>"수학이 틀렸다는 뜻"</b> — 정반대입니다. 역설 덕분에 <b>더 엄밀한 집합론</b>이 만들어졌습니다.</li>
+        <li><b>∅ 과 {∅} 혼동</b> — 세트 2와 이어지는 지점입니다. "자기 자신을 원소로 갖는다"는 개념을 다룰 때 함께 짚어 주세요.</li>
+      </ul>
+    </div>
+    <div class="rubric">
+      <div class="rh">평가 루브릭</div>
+      <table class="rb">
+        <tr><th>상</th><td>두 경우를 모두 따져 모순임을 보이고, 이발사와 집합 R의 대응 관계를 설명한다. 안전한 자기지시와 모순을 낳는 자기지시를 구분하고, 같은 뼈대의 새 역설을 만든다.</td></tr>
+        <tr><th>중</th><td>한 경우의 모순은 찾으나 양쪽을 모두 따지지 못하거나, 집합 표현으로 옮기지 못한다.</td></tr>
+        <tr><th>하</th><td>조건을 바꿔 역설을 회피할 뿐(이발사가 여자다 등), 논리 구조를 분석하지 못한다.</td></tr>
+      </table>
+    </div>
+    <div class="verify"><span class="vh">Python 전수 검증</span>이발사 조건을 만족하는 배정이 존재하는가
+  (0번이 이발사, 각자 자기 면도 여부를 모든 경우로 나열)
+  마을 1명 → 가능한 경우 <em>0</em>가지
+  마을 2명 → 가능한 경우 <em>0</em>가지
+  마을 3명 → 가능한 경우 <em>0</em>가지
+  마을 4명 → 가능한 경우 <em>0</em>가지
+  → 어떤 크기의 마을에서도 <em>존재하지 않음</em>
+카드 역설 : 앞면 참/거짓 두 경우 모두 <em>일관성 없음</em>
+폰 노이만 구성(0=∅, n+1 = n ∪ {n})
+  단계 0~4에서 x ∈ x 성립 여부 → <em>전부 False</em>
+  → 정상적으로 만든 집합은 자기 자신의 원소가 되지 않음</div>
+    <p class="src"><b>출처</b> — <b>버트런드 러셀</b>이 1901년 5~6월에 발견하고 1902년 6월 <b>고틀로프 프레게</b>에게 편지로 알렸습니다. 프레게는 『산술의 기본 법칙』 2권 인쇄 중에 이 편지를 받았습니다. <b>에른스트 체르멜로</b>도 비슷한 시기에 독립적으로 발견했으며, 그가 1908년 제시한 공리계가 오늘날 <b>ZF 집합론</b>의 출발점이 되었습니다.</p>
+  </div>
+</section>
+
+<div class="prm">
+  <button id="prev">← 이전 세트</button>
+  <button id="next">다음 세트 →</button>
+</div>
+
+</main>
+
+<footer>세영코딩연구소 · 사고력 집합론 5제 교사용 정답 및 해설 · 모든 정답은 Python으로 전수 검증되었습니다</footer>
+
+<script>
+(function(){
+  "use strict";
+  var ORDER = ["s1","s2","s3","s4","s5"], cur = 0;
+  var $ = function(id){ return document.getElementById(id); };
+  function show(i){
+    cur = Math.max(0, Math.min(ORDER.length-1, i));
+    var id = ORDER[cur];
+    document.querySelectorAll(".set").forEach(function(s){ s.classList.toggle("on", s.id===id); });
+    document.querySelectorAll(".tocbtn").forEach(function(b){ b.classList.toggle("on", b.dataset.s===id); });
+    document.documentElement.style.setProperty("--ac", $(id).dataset.ac || "#1A6E72");
+    $("prev").disabled = cur===0; $("next").disabled = cur===ORDER.length-1;
+    window.scrollTo({ top:0, behavior:"smooth" });
+  }
+  document.querySelectorAll(".tocbtn").forEach(function(b){
+    b.addEventListener("click", function(){ show(ORDER.indexOf(b.dataset.s)); });
+  });
+  $("prev").addEventListener("click", function(){ show(cur-1); });
+  $("next").addEventListener("click", function(){ show(cur+1); });
+  show(0);
+})();
+</script>
+</body>
+</html>

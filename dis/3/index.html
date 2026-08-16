@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>사고력 조합론 5제 · 학생용 문제집</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+<style>
+:root{
+  --bg:#F1F1F4;--paper:#FFFFFF;--ink:#1B1D26;--ink-2:#585D6E;--line:#DAD9E0;--rule:#C0BFC9;
+  --indigo:#2F3D8C;--coral:#C0472F;--jade:#0F7355;--gold:#A8791A;--wine:#8A3352;
+  --ac:var(--indigo);
+  --f-disp:'Gowun Batang','Pretendard Variable',Pretendard,serif;
+  --f-body:'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif;
+  --f-mono:'D2Coding','JetBrains Mono',Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);line-height:1.75;-webkit-font-smoothing:antialiased;
+  background-image:linear-gradient(rgba(0,0,0,.02) 1px,transparent 1px);background-size:100% 30px}
+.wrap{max-width:840px;margin:0 auto;padding:0 20px}
+header{padding:52px 0 30px;border-bottom:3px double var(--rule)}
+.kicker{font-family:var(--f-mono);font-size:12px;letter-spacing:.24em;color:var(--coral);margin:0 0 12px}
+header h1{font-family:var(--f-disp);font-weight:700;font-size:clamp(30px,6vw,46px);line-height:1.24;margin:0 0 12px;letter-spacing:-.02em}
+header .sub{color:var(--ink-2);margin:0 0 20px;max-width:580px;font-size:15.5px}
+.metarow{display:flex;flex-wrap:wrap;gap:8px}
+.tag{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);background:var(--paper);border-radius:4px;padding:5px 11px;color:var(--ink-2)}
+.tag b{color:var(--ink)}
+.howbox{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:20px 22px;margin:26px 0}
+.howbox h2{font-family:var(--f-disp);font-weight:700;font-size:17px;margin:0 0 12px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media(max-width:700px){.steps{grid-template-columns:1fr 1fr}}
+.steps div{font-size:13.6px;color:var(--ink-2)}
+.steps div b{display:block;font-family:var(--f-mono);font-size:11.5px;color:var(--coral);letter-spacing:.1em;margin-bottom:3px}
+.steps div span{color:var(--ink);font-weight:600;display:block;margin-bottom:2px}
+nav.toc{position:sticky;top:0;z-index:40;background:rgba(241,241,244,.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);margin-bottom:32px}
+.tocrow{display:flex;gap:5px;overflow-x:auto;padding:10px 0;scrollbar-width:none}
+.tocrow::-webkit-scrollbar{display:none}
+.tocbtn{flex:0 0 auto;border:1px solid var(--line);background:var(--paper);color:var(--ink-2);cursor:pointer;
+  font-family:var(--f-body);font-size:13.4px;font-weight:600;padding:7px 14px;border-radius:5px;white-space:nowrap;transition:.15s}
+.tocbtn:hover{border-color:var(--ink-2);color:var(--ink)}
+.tocbtn.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.tocbtn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.set{display:none;padding-bottom:70px;animation:fade .3s ease}
+.set.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+.sethead{border-left:5px solid var(--ac);padding-left:18px;margin-bottom:26px}
+.sethead .no{font-family:var(--f-mono);font-size:12px;letter-spacing:.2em;color:var(--ac);margin:0}
+.sethead h2{font-family:var(--f-disp);font-weight:700;font-size:clamp(23px,4.6vw,32px);margin:5px 0 8px;line-height:1.3}
+.sethead .from{font-size:13.4px;color:var(--ink-2);margin:0}
+.sethead .from em{font-style:normal;color:var(--ink);font-weight:600}
+.badges{display:flex;flex-wrap:wrap;gap:7px;margin:14px 0 0}
+.bd{font-family:var(--f-mono);font-size:11.5px;padding:4px 10px;border-radius:99px;border:1px solid var(--line);background:var(--paper);color:var(--ink-2)}
+.bd.lv{border-color:var(--ac);color:var(--ac)}
+.q{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:22px 24px;margin-bottom:18px}
+.qh{display:flex;align-items:center;gap:11px;margin-bottom:13px;flex-wrap:wrap}
+.qno{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.1em;color:#fff;background:var(--ac);border-radius:4px;padding:3px 10px}
+.qkind{font-size:12.5px;color:var(--ink-2);border:1px dashed var(--line);border-radius:4px;padding:2px 9px}
+.qkind.talk{color:var(--coral);border-color:#E6C9C1}
+.q p{margin:0 0 12px;font-size:15.6px}
+.q p:last-child{margin-bottom:0}
+.q ul,.q ol{margin:0 0 12px;padding-left:22px;font-size:15.4px}
+.q li{margin-bottom:6px}
+.given{background:#FAF9F4;border-left:3px solid var(--gold);border-radius:0 5px 5px 0;padding:12px 16px;margin:0 0 14px;font-size:14.8px}
+.given b{color:var(--gold)}
+.talkbox{background:#FDF4F1;border:1px solid #EBD3CA;border-radius:6px;padding:16px 18px;margin-top:14px}
+.talkbox h4{font-family:var(--f-disp);font-weight:700;font-size:15px;margin:0 0 9px;color:var(--coral)}
+.talkbox ol{margin:0;padding-left:20px;font-size:14.8px}
+.talkbox li{margin-bottom:7px;color:#4C3128}
+.talkbox li:last-child{margin-bottom:0}
+details.hint{margin-top:14px;border-top:1px dashed var(--line);padding-top:12px}
+details.hint summary{cursor:pointer;font-size:13.6px;color:var(--ink-2);font-weight:600;list-style:none;display:inline-flex;gap:7px;align-items:center}
+details.hint summary::-webkit-details-marker{display:none}
+details.hint summary::before{content:"▸";color:var(--ac);transition:.2s}
+details.hint[open] summary::before{transform:rotate(90deg)}
+details.hint .body{font-size:14.4px;color:var(--ink-2);padding:10px 0 0 16px}
+.ansrow{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-top:14px}
+.ansrow label{font-family:var(--f-mono);font-size:12px;color:var(--ink-2)}
+.ansrow input{flex:1;min-width:150px;border:1px solid var(--line);border-radius:5px;padding:9px 12px;
+  font-family:var(--f-body);font-size:15px;background:#FCFCFA;color:var(--ink)}
+.ansrow input:focus{outline:2px solid var(--ac);outline-offset:1px}
+.chk{border:1px solid var(--ac);background:var(--paper);color:var(--ac);border-radius:5px;padding:9px 16px;
+  font-size:13.6px;font-weight:700;cursor:pointer;font-family:var(--f-body)}
+.chk:hover{background:var(--ac);color:#fff}
+.verdict{font-size:13.8px;font-weight:700}
+.verdict.ok{color:var(--jade)}
+.verdict.no{color:var(--coral)}
+textarea.memo{width:100%;border:1px solid var(--line);border-radius:5px;padding:11px 13px;margin-top:12px;
+  font-family:var(--f-body);font-size:14.6px;background:#FCFCFA;color:var(--ink);resize:vertical;line-height:1.7}
+textarea.memo:focus{outline:2px solid var(--ac);outline-offset:1px}
+.lab{background:var(--paper);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-bottom:18px}
+.labbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;background:#F5F5F1;
+  border-bottom:1px solid var(--line);font-family:var(--f-mono);font-size:12px;color:var(--ink-2);flex-wrap:wrap}
+.tools{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.tbtn{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:4px;padding:6px 12px;
+  font-size:12.5px;cursor:pointer;font-family:var(--f-body);font-weight:600}
+.tbtn:hover{border-color:var(--ac);color:var(--ac)}
+.tbtn.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.tbtn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.labin{padding:18px}
+.labfoot{padding:11px 16px;border-top:1px solid var(--line);background:#FAFAF7;font-size:13.4px;color:var(--ink-2)}
+.labfoot b{color:var(--ink)}
+svg{max-width:100%;height:auto;display:block;margin:0 auto;touch-action:manipulation}
+input[type=range]{accent-color:var(--ac)}
+input[type=number]{padding:6px 9px;border:1px solid var(--line);border-radius:4px;font-family:var(--f-mono);background:#FCFCFA;color:var(--ink)}
+input[type=number]:focus{outline:2px solid var(--ac);outline-offset:1px}
+table.dt{width:100%;border-collapse:collapse;font-family:var(--f-mono);font-size:13px}
+table.dt th,table.dt td{border:1px solid var(--line);padding:6px 9px;text-align:center}
+table.dt th{background:#F0F0EC;font-weight:600}
+td.hi{background:#FBF6E4;color:var(--gold);font-weight:700}
+td.ok{background:#E9F3EF;color:var(--jade);font-weight:700}
+td.no{background:#FBEFEC;color:var(--coral);font-weight:700}
+.tbscroll{overflow-x:auto}
+.footnote{font-size:12.6px;color:var(--ink-2);border-top:1px solid var(--line);padding-top:14px;margin-top:26px}
+.footnote b{color:var(--ink)}
+footer{border-top:3px double var(--rule);padding:26px 0 60px;color:var(--ink-2);font-size:13px;text-align:center}
+.prm{display:flex;justify-content:space-between;gap:10px;margin-top:34px}
+.prm button{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:5px;padding:11px 20px;
+  font-size:14px;font-weight:600;cursor:pointer;font-family:var(--f-body)}
+.prm button:hover{border-color:var(--ac);color:var(--ac)}
+.prm button:disabled{opacity:.35;cursor:default}
+/* 하노이 */
+.pegs{display:flex;gap:12px;justify-content:center;align-items:flex-end}
+.peg{flex:1;max-width:180px;height:150px;position:relative;display:flex;flex-direction:column-reverse;
+  align-items:center;cursor:pointer;border-radius:6px;padding-bottom:8px;transition:.15s}
+.peg:hover{background:#F5F5F1}
+.peg.sel{background:#EDF0FB;outline:2px solid var(--ac)}
+.peg::before{content:"";position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:8px;height:120px;background:#C9C6BC;border-radius:4px}
+.peg::after{content:"";position:absolute;bottom:0;left:6%;width:88%;height:8px;background:#A8A498;border-radius:4px}
+.disk{height:19px;border-radius:5px;position:relative;z-index:2;margin-bottom:2px;border:1.5px solid rgba(0,0,0,.18);
+  display:grid;place-items:center;font-family:var(--f-mono);font-size:10.5px;color:#fff;font-weight:700}
+.peglabel{text-align:center;font-family:var(--f-mono);font-size:12px;color:var(--ink-2);margin-top:6px}
+/* 계단 */
+.stairs{display:flex;align-items:flex-end;justify-content:center;gap:3px;min-height:130px}
+.stair{width:28px;background:#E6E5DE;border:1px solid var(--line);border-radius:3px 3px 0 0;position:relative}
+.stair.on{background:var(--ac)}
+.stair .lb{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-family:var(--f-mono);font-size:10.5px;color:var(--ink-2)}
+.pathlist{display:flex;flex-wrap:wrap;gap:6px;margin-top:26px}
+.pathchip{font-family:var(--f-mono);font-size:12.5px;border:1px solid var(--line);border-radius:5px;padding:4px 10px;background:#FAFAF7;color:var(--ink-2)}
+@media print{
+  nav.toc,.prm,.chk,.tbtn{display:none}
+  .set{display:block !important;page-break-after:always}
+  body{background:#fff}
+  details.hint{display:none}
+}
+@media (prefers-reduced-motion: reduce){*{animation-duration:.001ms !important;transition-duration:.001ms !important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <p class="kicker">THINKING COMBINATORICS · WORKBOOK</p>
+    <h1>빠짐없이 겹치지 않게<br>세어 보는 경우의 수 5제</h1>
+    <p class="sub">하나씩 다 세면 지치고, 공식만 외우면 응용이 안 됩니다. 다섯 문제 모두 수학사에 이름을 남긴 고전이며, <b>세는 방법을 스스로 만들어 내는 것</b>이 목표입니다.</p>
+    <div class="metarow">
+      <span class="tag">대상 <b>초등 고학년 ~ 중등</b></span>
+      <span class="tag">세트 <b>5개</b></span>
+      <span class="tag">문항 <b>25개</b> (개별 20 · 토론 5)</span>
+      <span class="tag">권장 <b>세트당 25~35분</b></span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="howbox">
+    <h2>이 문제집을 푸는 방법</h2>
+    <div class="steps">
+      <div><b>STEP 1</b><span>작게 줄여</span>2개, 3개일 때를 손으로 다 세어 봅니다.</div>
+      <div><b>STEP 2</b><span>표로 정리</span>수를 나란히 적어 규칙을 찾습니다.</div>
+      <div><b>STEP 3</b><span>짝과 토론</span>붉은 토론 문제를 서로 설득해 봅니다.</div>
+      <div><b>STEP 4</b><span>이유 쓰기</span>왜 그 규칙이 생기는지 문장으로 씁니다.</div>
+    </div>
+  </div>
+</div>
+
+<nav class="toc">
+  <div class="wrap tocrow">
+    <button class="tocbtn on" data-s="s1">01 · 악수 문제</button>
+    <button class="tocbtn" data-s="s2">02 · 격자 최단 경로</button>
+    <button class="tocbtn" data-s="s3">03 · 하노이 탑</button>
+    <button class="tocbtn" data-s="s4">04 · 계단 오르기</button>
+    <button class="tocbtn" data-s="s5">05 · 체스판 세기</button>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<!-- ============ SET 1 ============ -->
+<section class="set on" id="s1" data-ac="#2F3D8C">
+  <div class="sethead">
+    <p class="no">SET 01</p>
+    <h2>모두가 한 번씩 악수하면 몇 번일까</h2>
+    <p class="from">원전 · <em>악수 문제(Handshake Problem)</em> — 조합 nC2와 삼각수를 잇는 가장 유명한 입문 문제</p>
+    <div class="badges"><span class="bd lv">난이도 ★☆☆</span><span class="bd">조합</span><span class="bd">삼각수</span><span class="bd">중복 세기</span></div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">1-1</span><span class="qkind">탐색</span></div>
+    <div class="given"><b>상황</b> — 모임에 온 사람들이 <b>서로 빠짐없이 한 번씩</b> 악수를 했습니다. 같은 사람끼리 두 번 악수하지는 않습니다.</div>
+    <p>사람이 몇 명일 때 악수가 몇 번인지 아래에서 직접 선을 그어 세어 보세요.</p>
+    <div class="lab">
+      <div class="labbar"><span>handshake.svg</span>
+        <div class="tools">
+          <label style="font-family:var(--f-mono);font-size:12px">사람 수</label>
+          <input id="hsN" type="range" min="2" max="12" value="5" style="width:150px" />
+          <span id="hsV" style="font-family:var(--f-mono);font-weight:700">5</span>
+          <button class="tbtn" id="hsStep">한 명씩 인사하기</button>
+          <button class="tbtn" id="hsAll">전부 보기</button>
+        </div>
+      </div>
+      <div class="labin"><svg id="hsSvg" viewBox="0 0 420 320" role="img" aria-label="악수 그래프"></svg></div>
+      <div class="labfoot" id="hsMsg"></div>
+    </div>
+    <div class="ansrow">
+      <label>10명일 때 악수 횟수</label>
+      <input id="a11" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a11" data-v="45" data-t="맞습니다. 10 × 9 ÷ 2 = 45번입니다.">확인</button>
+      <span class="verdict" id="v11"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">1-2</span><span class="qkind">추론</span></div>
+    <p>왜 나누기 2를 할까요? 두 가지 방법으로 생각해 봅시다.</p>
+    <div class="given">
+      <b>방법 A · 한 사람씩 세기</b><br>
+      한 사람은 자기를 뺀 ___명과 악수합니다. 사람이 <i>n</i>명이니 전부 더하면 <i>n</i> × ___ 입니다.<br>
+      그런데 "철수와 영희의 악수"를 철수 쪽에서도, 영희 쪽에서도 세었으므로 ___번 세었습니다. 그래서 ___로 나눕니다.<br><br>
+      <b>방법 B · 차례로 세기</b><br>
+      첫 번째 사람이 나머지 ___명과 악수합니다. 두 번째 사람은 이미 첫 번째와 했으니 새로 ___명과 합니다. 이렇게 이어 가면<br>
+      (n−1) + (n−2) + … + 2 + 1 이 됩니다.
+    </div>
+    <div class="ansrow">
+      <label>n명일 때 악수 횟수 (식으로)</label>
+      <input id="a12" type="text" placeholder="예: n(n-1)/2" />
+      <button class="chk" data-a="a12" data-v="n(n-1)/2|n(n−1)/2|n*(n-1)/2|(n^2-n)/2" data-t="맞습니다. 이 수를 삼각수라고도 부릅니다.">확인</button>
+      <span class="verdict" id="v12"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">1-3</span><span class="qkind">역산</span></div>
+    <p>악수가 <b>45번</b> 일어났다면 사람은 몇 명이었을까요? 아래 표에서 찾아보세요.</p>
+    <div class="lab">
+      <div class="labbar"><span>triangular-numbers</span><div class="tools"><button class="tbtn" id="t1show">표 채우기</button></div></div>
+      <div class="labin"><div class="tbscroll"><table class="dt" id="t1Table"></table></div></div>
+      <div class="labfoot" id="t1Msg">먼저 직접 계산해 본 뒤 버튼을 누르세요.</div>
+    </div>
+    <div class="ansrow">
+      <label>악수가 45번이면 인원은</label>
+      <input id="a13" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a13" data-v="10" data-t="맞습니다. 10명입니다.">확인</button>
+      <span class="verdict" id="v13"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">1-4</span><span class="qkind talk">토론</span></div>
+    <div class="talkbox">
+      <h4>모둠에서 이야기해 봅시다</h4>
+      <ol>
+        <li>볼록 <b>팔각형</b>에서 두 꼭짓점을 잇는 선분은 모두 몇 개일까요? 그중 <b>대각선</b>은 몇 개인가요? 악수 문제와 무엇이 같고 무엇이 다른지 설명하세요.</li>
+        <li>8개 팀이 <b>리그전</b>(모든 팀이 서로 한 번씩)을 하면 몇 경기일까요? <b>토너먼트</b>(한 번 지면 탈락)라면 몇 경기일까요? 두 답이 크게 다른 이유를 말해 보세요.</li>
+        <li>악수는 <b>두 사람이 함께</b> 하는 일입니다. 만약 "선물을 준다"처럼 <b>방향이 있는</b> 일이라면 답이 어떻게 달라질까요?</li>
+        <li>1 + 2 + 3 + … + 100 을 빨리 더하는 방법을 알고 있나요? 그 방법이 악수 문제와 어떻게 연결되나요?</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">1-5</span><span class="qkind">확장</span></div>
+    <p>우리 반 30명이 모두 서로 한 번씩 악수하면 몇 번일까요? 또, 30명이 서로에게 <b>연하장을 한 장씩 주고받는다면</b>(방향이 있음) 몇 장이 필요할까요?</p>
+    <div class="ansrow">
+      <label>30명의 악수 횟수</label>
+      <input id="a15" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a15" data-v="435" data-t="맞습니다. 30 × 29 ÷ 2 = 435번입니다.">확인</button>
+      <span class="verdict" id="v15"></span>
+    </div>
+    <div class="ansrow">
+      <label>연하장 장수 (방향 있음)</label>
+      <input id="a16" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a16" data-v="870" data-t="맞습니다. 30 × 29 = 870장. 나누기 2를 하지 않습니다.">확인</button>
+      <span class="verdict" id="v16"></span>
+    </div>
+  </div>
+
+  <p class="footnote"><b>출처</b> — 악수 문제는 조합론 입문의 고전으로, 그래프 이론에서 "모든 꼭짓점의 차수 합은 변의 수의 2배"라는 <b>악수 보조정리</b>(handshaking lemma)로 이어집니다. 오일러의 1736년 논문에서 이미 이 아이디어가 쓰였습니다.</p>
+</section>
+
+<!-- ============ SET 2 ============ -->
+<section class="set" id="s2" data-ac="#0F7355">
+  <div class="sethead">
+    <p class="no">SET 02</p>
+    <h2>바둑판 길에서 학교까지 가는 길은 몇 가지</h2>
+    <p class="from">원전 · <em>격자 최단 경로 문제</em> — 파스칼 삼각형이 나타나는 가장 유명한 상황</p>
+    <div class="badges"><span class="bd lv">난이도 ★★☆</span><span class="bd">경로 세기</span><span class="bd">파스칼 삼각형</span><span class="bd">더해 나가기</span></div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">2-1</span><span class="qkind">탐색</span></div>
+    <div class="given"><b>상황</b> — 바둑판처럼 생긴 길이 있습니다. 집(왼쪽 아래)에서 학교(오른쪽 위)까지 가는데, <b>오른쪽과 위쪽으로만</b> 갑니다(돌아가지 않습니다).</div>
+    <p>가는 길은 몇 가지일까요? 아래 격자에서 <b>각 교차점에 수를 채워</b> 보세요.</p>
+    <div class="lab">
+      <div class="labbar"><span>grid-paths.svg</span>
+        <div class="tools">
+          <label style="font-family:var(--f-mono);font-size:12px">격자</label>
+          <input id="gW" type="number" value="3" min="1" max="6" style="width:56px" /> ×
+          <input id="gH" type="number" value="3" min="1" max="6" style="width:56px" />
+          <button class="tbtn" id="gStep">한 줄씩 채우기</button>
+          <button class="tbtn" id="gAll">전부 채우기</button>
+          <button class="tbtn" id="gReset">지우기</button>
+        </div>
+      </div>
+      <div class="labin"><svg id="gridSvg" viewBox="0 0 460 360" role="img" aria-label="격자 경로"></svg></div>
+      <div class="labfoot" id="gMsg">출발점에 1을 쓰고, 각 점에는 왼쪽 수와 아래 수를 더해 적습니다.</div>
+    </div>
+    <div class="ansrow">
+      <label>3×3 격자의 경로 수</label>
+      <input id="a21" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a21" data-v="20" data-t="맞습니다. 20가지입니다.">확인</button>
+      <span class="verdict" id="v21"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">2-2</span><span class="qkind">추론</span></div>
+    <p>왜 <b>왼쪽 수 + 아래 수</b>를 적으면 될까요? 어떤 교차점에 도착하는 방법을 생각해 보세요.</p>
+    <ul>
+      <li>어떤 점에 도착하려면 바로 <b>왼쪽</b>에서 오거나 바로 <b>아래</b>에서 와야 합니다. 다른 방법이 있나요?</li>
+      <li>두 경우가 <b>겹치지</b> 않나요? 왜 그럴까요?</li>
+      <li>그렇다면 그 점까지의 경로 수는 두 수를 어떻게 해야 할까요?</li>
+    </ul>
+    <p>또 다른 방법도 있습니다. 3×3 격자를 가려면 오른쪽으로 3번, 위로 3번, <b>모두 6번</b> 움직입니다. 그 6번 중 <b>어느 3번을 오른쪽으로 할지</b>만 정하면 길이 정해집니다.</p>
+    <div class="ansrow">
+      <label>오른쪽 3번·위 3번을 나열하는 방법 수</label>
+      <input id="a22" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a22" data-v="20" data-t="맞습니다. 6칸 중 3칸을 고르는 방법과 같아 20가지입니다.">확인</button>
+      <span class="verdict" id="v22"></span>
+    </div>
+    <details class="hint"><summary>힌트 보기</summary><div class="body">길 하나를 <b>ㅗㅗㅓㅓ</b> 처럼 글자로 적어 보세요. 예를 들어 오른쪽을 R, 위를 U라 하면 RRRUUU, RURURU, … 이런 식입니다. 이 글자를 나열하는 방법이 곧 길의 개수입니다.</div></details>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">2-3</span><span class="qkind">응용</span></div>
+    <p>길 한가운데에 <b>공사 구간</b>이 생겨 지나갈 수 없게 되었습니다. 이제 길은 몇 가지일까요? 아래에서 교차점을 눌러 막아 보세요.</p>
+    <div class="lab">
+      <div class="labbar"><span>blocked-grid.svg</span>
+        <div class="tools">
+          <button class="tbtn" id="bkReset">막은 곳 지우기</button>
+          <span style="font-family:var(--f-mono);font-size:11.5px">교차점을 클릭하면 막힙니다</span>
+        </div>
+      </div>
+      <div class="labin"><svg id="blockSvg" viewBox="0 0 460 360" role="img" aria-label="공사 구간이 있는 격자"></svg></div>
+      <div class="labfoot" id="bkMsg"></div>
+    </div>
+    <div class="ansrow">
+      <label>4×4에서 점 (2,1)이 막혔을 때 경로 수</label>
+      <input id="a23" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a23" data-v="40" data-t="맞습니다. 전체 70가지에서 그 점을 지나는 30가지를 뺀 40가지입니다.">확인</button>
+      <span class="verdict" id="v23"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">2-4</span><span class="qkind talk">토론</span></div>
+    <div class="talkbox">
+      <h4>모둠에서 이야기해 봅시다</h4>
+      <ol>
+        <li>격자에 적힌 수들을 비스듬히 읽으면 <b>파스칼의 삼각형</b>이 나옵니다. 왜 같은 수가 나올까요? 두 상황에서 "더하기"가 각각 무엇을 뜻하는지 비교하세요.</li>
+        <li>공사 구간이 있을 때, <b>막힌 점을 0으로 두고 다시 채우는 방법</b>과 <b>전체에서 그 점을 지나는 길을 빼는 방법</b> 중 어느 쪽이 편한가요? 막힌 점이 여러 개면 어떨까요?</li>
+        <li>4×4 격자에서 정가운데 점을 <b>반드시 지나는</b> 길은 몇 가지일까요? 전체의 몇 %인지도 구해 보세요.</li>
+        <li>만약 <b>대각선으로도</b> 갈 수 있다면 경로 수가 어떻게 달라질까요? 규칙을 어떻게 고쳐야 할지 이야기해 보세요.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">2-5</span><span class="qkind">도전</span></div>
+    <p>5×5 격자에서 집에서 학교까지 가는 길은 몇 가지일까요? 위 도구로 확인하기 전에 <b>먼저 계산으로</b> 구해 보세요.</p>
+    <div class="ansrow">
+      <label>5×5 격자의 경로 수</label>
+      <input id="a25" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a25" data-v="252" data-t="맞습니다. 10번 중 5번을 고르는 방법으로 252가지입니다.">확인</button>
+      <span class="verdict" id="v25"></span>
+    </div>
+  </div>
+
+  <p class="footnote"><b>출처</b> — 격자 경로 문제는 <b>파스칼의 삼각형</b>(블레즈 파스칼, 1654)이 나타나는 대표적인 상황입니다. 도시 블록을 따라 걷는 거리라는 뜻에서 <b>맨해튼 거리</b>라고도 부릅니다.</p>
+</section>
+
+<!-- ============ SET 3 ============ -->
+<section class="set" id="s3" data-ac="#A8791A">
+  <div class="sethead">
+    <p class="no">SET 03</p>
+    <h2>원반 64개를 옮기면 세상이 끝난다는 탑</h2>
+    <p class="from">원전 · <em>하노이의 탑</em> (에두아르 뤼카, 1883) — 재귀와 점화식의 대표 문제</p>
+    <div class="badges"><span class="bd lv">난이도 ★★★</span><span class="bd">점화식</span><span class="bd">재귀</span><span class="bd">지수 증가</span></div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">3-1</span><span class="qkind">탐색</span></div>
+    <div class="given"><b>규칙</b> — 기둥이 세 개 있고 왼쪽 기둥에 크기가 다른 원반이 쌓여 있습니다. ① 한 번에 <b>맨 위 원반 하나</b>만 옮길 수 있습니다. ② <b>큰 원반을 작은 원반 위에</b> 올릴 수 없습니다. 모든 원반을 오른쪽 기둥으로 옮기세요.</div>
+    <p>원반 3개를 최소 몇 번 만에 옮길 수 있을까요? 직접 해 보세요. (기둥을 눌러 원반을 집고, 다른 기둥을 눌러 놓습니다.)</p>
+    <div class="lab">
+      <div class="labbar"><span>tower-of-hanoi</span>
+        <div class="tools">
+          <label style="font-family:var(--f-mono);font-size:12px">원반</label>
+          <input id="hnN" type="range" min="1" max="6" value="3" style="width:110px" />
+          <span id="hnV" style="font-family:var(--f-mono);font-weight:700">3</span>
+          <button class="tbtn" id="hnReset">처음부터</button>
+          <button class="tbtn" id="hnAuto">최적 해법 보기</button>
+        </div>
+      </div>
+      <div class="labin">
+        <div class="pegs" id="pegs"></div>
+        <div style="display:flex;gap:12px;justify-content:center">
+          <div class="peglabel" style="flex:1;max-width:180px">A</div>
+          <div class="peglabel" style="flex:1;max-width:180px">B</div>
+          <div class="peglabel" style="flex:1;max-width:180px">C</div>
+        </div>
+      </div>
+      <div class="labfoot" id="hnMsg"></div>
+    </div>
+    <div class="ansrow">
+      <label>원반 3개의 최소 이동 횟수</label>
+      <input id="a31" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a31" data-v="7" data-t="맞습니다. 2³ − 1 = 7번입니다.">확인</button>
+      <span class="verdict" id="v31"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">3-2</span><span class="qkind">발견</span></div>
+    <p>원반 개수를 1개부터 늘려 가며 최소 횟수를 표에 적으세요. 어떤 규칙이 보이나요?</p>
+    <div class="lab">
+      <div class="labbar"><span>hanoi-table</span><div class="tools"><button class="tbtn" id="t3show">표 채우기</button></div></div>
+      <div class="labin"><div class="tbscroll"><table class="dt" id="t3Table"></table></div></div>
+      <div class="labfoot" id="t3Msg">먼저 직접 옮겨 보고 채우세요.</div>
+    </div>
+    <div class="ansrow">
+      <label>원반 n개일 때 최소 이동 횟수</label>
+      <input id="a32" type="text" placeholder="n에 대한 식" />
+      <button class="chk" data-a="a32" data-v="2^n-1|2ⁿ-1|2**n-1|2^n−1" data-t="맞습니다. 2ⁿ − 1 입니다.">확인</button>
+      <span class="verdict" id="v32"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">3-3</span><span class="qkind">추론</span></div>
+    <p>왜 <b>두 배 하고 1을 더하는</b> 모양이 될까요? 원반 <i>n</i>개를 옮기는 과정을 세 단계로 나눠 생각해 보세요.</p>
+    <div class="given">
+      <b>1단계</b> — 맨 아래 큰 원반을 옮기려면, 그 위의 원반 ___개를 먼저 <b>가운데 기둥</b>으로 옮겨야 합니다. → ___번<br>
+      <b>2단계</b> — 이제 가장 큰 원반을 목표 기둥으로 옮깁니다. → ___번<br>
+      <b>3단계</b> — 가운데에 있던 ___개를 다시 목표 기둥으로 옮깁니다. → ___번<br><br>
+      따라서 <b>T(n) = ___ × T(n−1) + ___</b>
+    </div>
+    <textarea class="memo" rows="3" placeholder="점화식과 그 이유를 문장으로 적어 보세요."></textarea>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">3-4</span><span class="qkind talk">토론</span></div>
+    <div class="talkbox">
+      <h4>모둠에서 이야기해 봅시다</h4>
+      <ol>
+        <li>전설에 따르면 승려들이 원반 <b>64개</b>를 다 옮기면 세상이 끝난다고 합니다. 1초에 한 번씩 쉬지 않고 옮긴다면 몇 년이 걸릴까요? 아래 계산기로 확인하고, 이 수가 얼마나 큰지 느낌을 말해 보세요.</li>
+        <li>가장 <b>작은 원반</b>은 몇 번 움직일까요? 두 번째로 작은 원반은요? 규칙을 찾아보세요.</li>
+        <li>"큰 원반을 옮기려면 위의 것을 먼저 치워야 한다"는 생각이 <b>같은 문제를 더 작게 만든</b> 것입니다. 이런 방식(재귀)을 쓸 수 있는 다른 상황이 있을까요?</li>
+        <li>기둥이 <b>4개</b>라면 더 빨리 옮길 수 있을까요? 원반 3개를 4기둥에서 직접 해 보고 이야기해 보세요.</li>
+      </ol>
+    </div>
+    <div class="lab" style="margin-top:16px">
+      <div class="labbar"><span>doomsday-calculator</span>
+        <div class="tools">
+          <label style="font-family:var(--f-mono);font-size:12px">원반 수</label>
+          <input id="dmN" type="number" value="64" min="1" max="80" style="width:70px" />
+          <label style="font-family:var(--f-mono);font-size:12px">1번에 걸리는 시간(초)</label>
+          <input id="dmT" type="number" value="1" min="0.001" step="0.1" style="width:74px" />
+          <button class="tbtn" id="dmGo">계산</button>
+        </div>
+      </div>
+      <div class="labin"><div id="dmOut" style="font-family:var(--f-mono);font-size:13.6px;line-height:2"></div></div>
+      <div class="labfoot" id="dmMsg"></div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">3-5</span><span class="qkind">도전</span></div>
+    <p>원반이 <b>10개</b>라면 최소 몇 번일까요? 또, 이동 횟수가 <b>1023번</b>이었다면 원반은 몇 개였을까요?</p>
+    <div class="ansrow">
+      <label>원반 10개 → 최소 이동 횟수</label>
+      <input id="a35" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a35" data-v="1023" data-t="맞습니다. 2¹⁰ − 1 = 1023번입니다.">확인</button>
+      <span class="verdict" id="v35"></span>
+    </div>
+    <div class="ansrow">
+      <label>가장 작은 원반이 움직인 횟수 (n=10)</label>
+      <input id="a36" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a36" data-v="512" data-t="맞습니다. 2⁹ = 512번으로, 전체의 절반이 넘습니다.">확인</button>
+      <span class="verdict" id="v36"></span>
+    </div>
+  </div>
+
+  <p class="footnote"><b>출처</b> — <b>에두아르 뤼카</b>가 1883년 "클라우스 교수"라는 필명으로 발표했습니다(Claus는 Lucas의 철자 바꾸기). 이듬해 드 파르빌이 인도 베나레스 사원의 <b>브라흐마의 탑</b> 전설을 덧붙이면서 유명해졌습니다.</p>
+</section>
+
+<!-- ============ SET 4 ============ -->
+<section class="set" id="s4" data-ac="#8A3352">
+  <div class="sethead">
+    <p class="no">SET 04</p>
+    <h2>계단을 1칸씩 또는 2칸씩 오르는 방법</h2>
+    <p class="from">원전 · <em>피보나치의 토끼 문제</em> (『산반서 Liber Abaci』, 1202) — 같은 수열이 나타나는 여러 얼굴</p>
+    <div class="badges"><span class="bd lv">난이도 ★★☆</span><span class="bd">점화식</span><span class="bd">피보나치</span><span class="bd">경우 나누기</span></div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">4-1</span><span class="qkind">탐색</span></div>
+    <div class="given"><b>상황</b> — 계단을 오르는데 한 번에 <b>1칸</b> 또는 <b>2칸</b>만 오를 수 있습니다. 순서가 다르면 다른 방법으로 셉니다(1+2와 2+1은 다른 방법).</div>
+    <p>계단이 5칸이면 몇 가지 방법이 있을까요? 아래에서 계단 수를 바꿔 가며 <b>모든 방법을 직접 확인</b>하세요.</p>
+    <div class="lab">
+      <div class="labbar"><span>stair-climbing</span>
+        <div class="tools">
+          <label style="font-family:var(--f-mono);font-size:12px">계단 수</label>
+          <input id="stN" type="range" min="1" max="8" value="5" style="width:140px" />
+          <span id="stV" style="font-family:var(--f-mono);font-weight:700">5</span>
+        </div>
+      </div>
+      <div class="labin">
+        <div class="stairs" id="stairs"></div>
+        <div class="pathlist" id="stList"></div>
+      </div>
+      <div class="labfoot" id="stMsg"></div>
+    </div>
+    <div class="ansrow">
+      <label>5칸 계단을 오르는 방법 수</label>
+      <input id="a41" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a41" data-v="8" data-t="맞습니다. 8가지입니다.">확인</button>
+      <span class="verdict" id="v41"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">4-2</span><span class="qkind">추론</span></div>
+    <p>10칸 계단의 방법을 전부 적으려면 너무 많습니다. <b>마지막 한 걸음</b>에 주목해 보세요.</p>
+    <ul>
+      <li>10칸에 도착하는 마지막 걸음은 <b>1칸</b>이거나 <b>2칸</b>입니다. 다른 경우가 있나요?</li>
+      <li>마지막이 1칸이었다면, 그 직전에는 몇 칸에 서 있었나요?</li>
+      <li>마지막이 2칸이었다면, 그 직전에는 몇 칸에 서 있었나요?</li>
+      <li>두 경우가 서로 <b>겹치지</b> 않나요? 왜 그럴까요?</li>
+    </ul>
+    <div class="ansrow">
+      <label>n칸 계단의 방법 수 (점화식으로)</label>
+      <input id="a42" type="text" placeholder="예: f(n)=f(n-1)+f(n-2)" />
+      <button class="chk" data-a="a42" data-v="f(n)=f(n-1)+f(n-2)|f(n-1)+f(n-2)|a(n)=a(n-1)+a(n-2)" data-t="맞습니다. 앞의 두 수를 더하는 피보나치 수열입니다.">확인</button>
+      <span class="verdict" id="v42"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">4-3</span><span class="qkind">연결</span></div>
+    <div class="given"><b>피보나치의 원래 문제</b> (1202) — 갓 태어난 토끼 한 쌍이 있습니다. 토끼는 태어난 지 <b>한 달</b>이 지나면 어른이 되고, 어른 토끼 한 쌍은 <b>매달</b> 새끼 한 쌍을 낳습니다. 토끼는 죽지 않습니다. 1년 뒤 토끼는 몇 쌍일까요?</div>
+    <p>아래에서 달이 지날 때마다 토끼가 어떻게 늘어나는지 확인하고, <b>계단 오르기와 같은 수열</b>인지 비교하세요.</p>
+    <div class="lab">
+      <div class="labbar"><span>fibonacci-rabbits</span>
+        <div class="tools"><button class="tbtn" id="rbStep">한 달 지나기</button><button class="tbtn" id="rbReset">처음부터</button></div>
+      </div>
+      <div class="labin"><div class="tbscroll"><table class="dt" id="rbTable"></table></div></div>
+      <div class="labfoot" id="rbMsg"></div>
+    </div>
+    <div class="ansrow">
+      <label>12개월 뒤 토끼 쌍의 수</label>
+      <input id="a43" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a43" data-v="144" data-t="맞습니다. 144쌍입니다.">확인</button>
+      <span class="verdict" id="v43"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">4-4</span><span class="qkind talk">토론</span></div>
+    <div class="talkbox">
+      <h4>모둠에서 이야기해 봅시다</h4>
+      <ol>
+        <li>계단 오르기와 토끼 번식은 전혀 다른 이야기인데 <b>같은 수열</b>이 나옵니다. 두 상황의 무엇이 같아서 그럴까요? "앞의 두 개를 더한다"가 각각 무엇을 뜻하는지 말해 보세요.</li>
+        <li><b>2 × n 크기</b>의 바닥을 <b>1 × 2 타일</b>로 빈틈없이 덮는 방법도 같은 수열이 됩니다. 왜 그런지 <b>맨 오른쪽 부분</b>을 어떻게 덮는지로 설명해 보세요.</li>
+        <li>한 번에 <b>1칸, 2칸, 3칸</b>까지 오를 수 있다면 수열이 어떻게 바뀔까요? 규칙을 예상하고 직접 세어 확인하세요.</li>
+        <li>피보나치 수를 앞뒤로 나눈 값(1/1, 2/1, 3/2, 5/3, 8/5, …)을 계산해 보세요. 어떤 수에 가까워지나요?</li>
+      </ol>
+    </div>
+    <div class="lab" style="margin-top:16px">
+      <div class="labbar"><span>ratio-and-variants</span>
+        <div class="tools">
+          <button class="tbtn on" id="rvRatio">앞뒤 비율 보기</button>
+          <button class="tbtn" id="rvTri">1·2·3칸 오르기</button>
+        </div>
+      </div>
+      <div class="labin"><div class="tbscroll"><table class="dt" id="rvTable"></table></div></div>
+      <div class="labfoot" id="rvMsg"></div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">4-5</span><span class="qkind">도전</span></div>
+    <p>계단이 <b>10칸</b>이면 오르는 방법은 몇 가지일까요? 또, 방법이 <b>34가지</b>인 계단은 몇 칸일까요?</p>
+    <div class="ansrow">
+      <label>10칸 계단의 방법 수</label>
+      <input id="a45" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a45" data-v="89" data-t="맞습니다. 89가지입니다.">확인</button>
+      <span class="verdict" id="v45"></span>
+    </div>
+    <div class="ansrow">
+      <label>방법이 34가지인 계단</label>
+      <input id="a46" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a46" data-v="8" data-t="맞습니다. 8칸입니다.">확인</button>
+      <span class="verdict" id="v46"></span>
+    </div>
+  </div>
+
+  <p class="footnote"><b>출처</b> — <b>레오나르도 피보나치</b>가 1202년 『산반서(Liber Abaci)』에서 토끼 번식 문제로 소개했습니다. 다만 이 수열은 그보다 훨씬 앞서 <b>인도 수학자 핑갈라</b>(기원전 450년경)가 운율 연구에서 이미 다루었습니다.</p>
+</section>
+
+<!-- ============ SET 5 ============ -->
+<section class="set" id="s5" data-ac="#C0472F">
+  <div class="sethead">
+    <p class="no">SET 05</p>
+    <h2>체스판 속에 정사각형은 정말 64개뿐일까</h2>
+    <p class="from">원전 · <em>체스판 정사각형 세기</em> — 크기별로 나눠 세는 고전 문제 (정답 204개)</p>
+    <div class="badges"><span class="bd lv">난이도 ★★☆</span><span class="bd">경우 나누기</span><span class="bd">제곱수의 합</span><span class="bd">선 고르기</span></div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">5-1</span><span class="qkind">탐색</span></div>
+    <div class="given"><b>상황</b> — 8 × 8 체스판이 있습니다. 이 판 안에서 찾을 수 있는 <b>정사각형</b>은 모두 몇 개일까요? 1 × 1짜리 64개만 세면 될까요?</div>
+    <p>2 × 2, 3 × 3짜리도 정사각형입니다. 아래에서 크기를 바꿔 가며 <b>몇 개씩 들어가는지</b> 세어 보세요.</p>
+    <div class="lab">
+      <div class="labbar"><span>chessboard-squares</span>
+        <div class="tools">
+          <label style="font-family:var(--f-mono);font-size:12px">정사각형 크기</label>
+          <input id="sqK" type="range" min="1" max="8" value="2" style="width:140px" />
+          <span id="sqKV" style="font-family:var(--f-mono);font-weight:700">2</span>
+          <button class="tbtn" id="sqSlide">움직여 보기</button>
+        </div>
+      </div>
+      <div class="labin"><svg id="sqSvg" viewBox="0 0 400 400" role="img" aria-label="체스판 정사각형"></svg></div>
+      <div class="labfoot" id="sqMsg"></div>
+    </div>
+    <div class="ansrow">
+      <label>2×2 정사각형은 몇 개?</label>
+      <input id="a51" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a51" data-v="49" data-t="맞습니다. 가로 7곳 × 세로 7곳 = 49개입니다.">확인</button>
+      <span class="verdict" id="v51"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">5-2</span><span class="qkind">발견</span></div>
+    <p>크기별 개수를 표에 정리하세요. 어떤 수들이 나오나요?</p>
+    <div class="lab">
+      <div class="labbar"><span>square-count-table</span><div class="tools"><button class="tbtn" id="t5show">표 채우기</button></div></div>
+      <div class="labin"><div class="tbscroll"><table class="dt" id="t5Table"></table></div></div>
+      <div class="labfoot" id="t5Msg">직접 세어 본 뒤 버튼을 누르세요.</div>
+    </div>
+    <div class="ansrow">
+      <label>8×8 체스판의 정사각형 총 개수</label>
+      <input id="a52" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a52" data-v="204" data-t="맞습니다. 1+4+9+…+64 = 204개입니다.">확인</button>
+      <span class="verdict" id="v52"></span>
+    </div>
+    <details class="hint"><summary>힌트 보기</summary><div class="body">k × k 정사각형은 <b>왼쪽 위 꼭짓점</b>을 어디에 둘 수 있는지 세면 됩니다. 가로로 몇 자리, 세로로 몇 자리가 가능한가요?</div></details>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">5-3</span><span class="qkind">확장</span></div>
+    <p>이번엔 <b>직사각형</b>을 세어 봅시다(정사각형도 직사각형에 포함합니다). 하나씩 세면 끝이 없습니다. <b>다른 방법</b>을 찾아보세요.</p>
+    <div class="given">
+      <b>생각의 전환</b> — 직사각형 하나를 정하려면 무엇을 정해야 하나요?<br>
+      체스판에는 가로선이 ___개, 세로선이 ___개 있습니다.<br>
+      가로선 중 ___개를 고르고, 세로선 중 ___개를 고르면 직사각형이 <b>하나</b> 정해집니다.
+    </div>
+    <div class="lab">
+      <div class="labbar"><span>rectangle-by-lines</span>
+        <div class="tools"><button class="tbtn" id="rcPick">선 4개 무작위로 고르기</button><button class="tbtn" id="rcReset">지우기</button></div>
+      </div>
+      <div class="labin"><svg id="rcSvg" viewBox="0 0 400 400" role="img" aria-label="선을 골라 만드는 직사각형"></svg></div>
+      <div class="labfoot" id="rcMsg">가로선 2개와 세로선 2개를 고르면 직사각형이 하나 결정됩니다.</div>
+    </div>
+    <div class="ansrow">
+      <label>8×8 체스판의 직사각형 총 개수</label>
+      <input id="a53" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a53" data-v="1296" data-t="맞습니다. 36 × 36 = 1296개입니다.">확인</button>
+      <span class="verdict" id="v53"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">5-4</span><span class="qkind talk">토론</span></div>
+    <div class="talkbox">
+      <h4>모둠에서 이야기해 봅시다</h4>
+      <ol>
+        <li>정사각형을 셀 때는 <b>크기별로 나누어</b> 셌고, 직사각형을 셀 때는 <b>선을 골라</b> 셌습니다. 정사각형도 선을 골라 셀 수 있을까요? 왜 어려운가요?</li>
+        <li>1 + 4 + 9 + … + 64 = 204 입니다. 이 <b>제곱수의 합</b>을 빨리 구하는 공식이 있을까요? n = 8일 때 8 × 9 × 17 ÷ 6을 계산해 보세요.</li>
+        <li>정사각형이 <b>아닌</b> 직사각형은 몇 개일까요? 왜 그렇게 구하는지 설명하세요.</li>
+        <li>체스판 위에 <b>기울어진</b> 정사각형(꼭짓점이 모두 격자점인)도 그릴 수 있습니다. 3 × 3 격자에서 기울어진 것까지 모두 몇 개인지 직접 그려 세어 보세요.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">5-5</span><span class="qkind">도전</span></div>
+    <p><b>10 × 10</b> 격자에서 정사각형과 직사각형은 각각 몇 개일까요? 아래 계산기로 확인하기 전에 먼저 구해 보세요.</p>
+    <div class="lab">
+      <div class="labbar"><span>n-by-n-calculator</span>
+        <div class="tools">
+          <label style="font-family:var(--f-mono);font-size:12px">격자 크기 n</label>
+          <input id="cnN" type="number" value="10" min="1" max="50" style="width:64px" />
+          <button class="tbtn" id="cnGo">계산</button>
+        </div>
+      </div>
+      <div class="labin"><div id="cnOut" style="font-family:var(--f-mono);font-size:13.6px;line-height:2"></div></div>
+      <div class="labfoot" id="cnMsg"></div>
+    </div>
+    <div class="ansrow">
+      <label>10×10의 정사각형 개수</label>
+      <input id="a55" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a55" data-v="385" data-t="맞습니다. 10×11×21÷6 = 385개입니다.">확인</button>
+      <span class="verdict" id="v55"></span>
+    </div>
+    <div class="ansrow">
+      <label>10×10의 직사각형 개수</label>
+      <input id="a56" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a56" data-v="3025" data-t="맞습니다. 55 × 55 = 3025개입니다.">확인</button>
+      <span class="verdict" id="v56"></span>
+    </div>
+  </div>
+
+  <p class="footnote"><b>출처</b> — 격자 속 정사각형·직사각형 세기는 초중등 사고력 수학의 대표 문제입니다. 8 × 8에서 정사각형 <b>204개</b>, 직사각형 <b>1296개</b>이며, 제곱수의 합 공식 n(n+1)(2n+1)/6과 삼각수의 제곱이 각각 답이 됩니다.</p>
+</section>
+
+<div class="prm">
+  <button id="prev">← 이전 세트</button>
+  <button id="next">다음 세트 →</button>
+</div>
+
+</main>
+
+<footer>세영코딩연구소 · 사고력 조합론 5제 학생용 문제집 · 답보다 세는 방법이 중요합니다</footer>
+
+<script>
+(function(){
+  "use strict";
+  var $ = function(id){ return document.getElementById(id); };
+  var NS = "http://www.w3.org/2000/svg";
+  function el(tag, attrs, parent){
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function ce(tag, cls, t){
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (t !== undefined) e.textContent = t;
+    return e;
+  }
+  function clear(n){ while (n.firstChild) n.removeChild(n.firstChild); }
+  function comb(n,k){
+    if (k<0 || k>n) return 0;
+    var r=1;
+    for (var i=0;i<k;i++) r = r*(n-i)/(i+1);
+    return Math.round(r);
+  }
+
+  /* ---------- 탭 ---------- */
+  var ORDER = ["s1","s2","s3","s4","s5"], cur = 0;
+  function show(i){
+    cur = Math.max(0, Math.min(ORDER.length-1, i));
+    var id = ORDER[cur];
+    document.querySelectorAll(".set").forEach(function(s){ s.classList.toggle("on", s.id===id); });
+    document.querySelectorAll(".tocbtn").forEach(function(b){ b.classList.toggle("on", b.dataset.s===id); });
+    document.documentElement.style.setProperty("--ac", $(id).dataset.ac || "#2F3D8C");
+    $("prev").disabled = cur===0; $("next").disabled = cur===ORDER.length-1;
+    window.scrollTo({ top:0, behavior:"smooth" });
+  }
+  document.querySelectorAll(".tocbtn").forEach(function(b){
+    b.addEventListener("click", function(){ show(ORDER.indexOf(b.dataset.s)); });
+  });
+  $("prev").addEventListener("click", function(){ show(cur-1); });
+  $("next").addEventListener("click", function(){ show(cur+1); });
+
+  /* ---------- 채점 ---------- */
+  function norm(s){
+    return String(s).replace(/\s+/g,"").replace(/개$/,"").replace(/명$/,"").replace(/번$/,"")
+      .replace(/가지$/,"").replace(/장$/,"").replace(/칸$/,"").replace(/쌍$/,"").replace(/경기$/,"")
+      .replace(/[.]$/,"").replace(/[,]/g,"").replace(/−/g,"-").replace(/\*/g,"").replace(/×/g,"")
+      .replace(/ⁿ/g,"^n").replace(/²/g,"^2").toLowerCase();
+  }
+  document.querySelectorAll(".chk").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var inp = $(btn.dataset.a), v = $("v"+btn.dataset.a.slice(1));
+      if (!inp || !v) return;
+      var val = norm(inp.value);
+      if (!val){ v.textContent = "답을 먼저 입력하세요"; v.className="verdict"; return; }
+      var ok = btn.dataset.v.split("|").some(function(x){ return norm(x)===val; });
+      v.textContent = ok ? ("정답 — " + btn.dataset.t) : "다시 생각해 보세요";
+      v.className = "verdict " + (ok ? "ok" : "no");
+    });
+  });
+
+  /* ================= SET 1 : 악수 ================= */
+  var HS = { n:5, upto:0 };
+  function drawHS(){
+    var svg = $("hsSvg"); clear(svg);
+    var n = HS.n, cx=210, cy=155, R=115;
+    el("rect",{x:0,y:0,width:420,height:320,fill:"#FBFBF8"},svg);
+    var pts=[];
+    for (var i=0;i<n;i++){
+      var a = -Math.PI/2 + i*2*Math.PI/n;
+      pts.push([cx+R*Math.cos(a), cy+R*Math.sin(a)]);
+    }
+    var drawn=0;
+    for (var i2=0;i2<n;i2++){
+      for (var j=i2+1;j<n;j++){
+        if (HS.upto>0 && i2 >= HS.upto) continue;
+        el("line",{x1:pts[i2][0],y1:pts[i2][1],x2:pts[j][0],y2:pts[j][1],
+                   stroke: i2===HS.upto-1 ? "#C0472F" : "#2F3D8C",
+                   "stroke-width": i2===HS.upto-1 ? "2.2" : "1.3",
+                   opacity: i2===HS.upto-1 ? "1" : ".45"},svg);
+        drawn++;
+      }
+    }
+    for (var k=0;k<n;k++){
+      el("circle",{cx:pts[k][0],cy:pts[k][1],r:14,fill: k<HS.upto ? "#2F3D8C" : "#FFFFFF",
+                   stroke:"#2F3D8C","stroke-width":"2"},svg);
+      var t = el("text",{x:pts[k][0],y:pts[k][1]+4,"text-anchor":"middle","font-size":"12",
+                         "font-weight":"700", fill: k<HS.upto ? "#fff":"#2F3D8C"},svg);
+      t.textContent = String(k+1);
+    }
+    var total = n*(n-1)/2;
+    var msg;
+    if (HS.upto===0) msg = "사람 <b>"+n+"</b>명 · 전체 악수 <b>"+total+"</b>번 · <b>한 명씩 인사하기</b>를 눌러 보세요";
+    else if (HS.upto>=n) msg = "모두 인사 완료 · 그은 선 <b>"+drawn+"</b>개 = "+n+"×"+(n-1)+"÷2 = <b>"+total+"</b>";
+    else msg = HS.upto+"번 사람이 새로 <b>"+(n-HS.upto)+"</b>명과 악수 · 지금까지 <b>"+drawn+"</b>번";
+    $("hsMsg").innerHTML = msg;
+  }
+  $("hsN").addEventListener("input", function(){
+    HS.n = +this.value; $("hsV").textContent = this.value; HS.upto = 0; drawHS();
+  });
+  $("hsStep").addEventListener("click", function(){
+    if (HS.upto < HS.n) HS.upto++;
+    drawHS();
+  });
+  $("hsAll").addEventListener("click", function(){ HS.upto = HS.n; drawHS(); });
+  drawHS();
+
+  function buildT1(show){
+    var t = $("t1Table"); clear(t);
+    var hd = ce("tr");
+    hd.appendChild(ce("th",null,"사람 수 n"));
+    for (var n=2;n<=12;n++) hd.appendChild(ce("th",null,String(n)));
+    t.appendChild(hd);
+    var tr = ce("tr");
+    tr.appendChild(ce("th",null,"악수 횟수"));
+    for (var n2=2;n2<=12;n2++){
+      var v = n2*(n2-1)/2;
+      var cell = ce("td", (show && v===45) ? "hi" : null, show ? String(v) : (n2<=4 ? String(v) : "?"));
+      tr.appendChild(cell);
+    }
+    t.appendChild(tr);
+    var tr2 = ce("tr");
+    tr2.appendChild(ce("th",null,"= 1+2+…"));
+    for (var n3=2;n3<=12;n3++){
+      tr2.appendChild(ce("td", show?"ok":null, show ? ("1~"+(n3-1)+"의 합") : "?"));
+    }
+    t.appendChild(tr2);
+    $("t1Msg").innerHTML = show
+      ? "1, 3, 6, 10, 15, … 은 <b>삼각수</b>입니다. 45가 되는 곳은 <b>n = 10</b>입니다."
+      : "먼저 직접 계산해 본 뒤 버튼을 누르세요.";
+  }
+  var t1s=false;
+  $("t1show").addEventListener("click", function(){
+    t1s=!t1s; this.classList.toggle("on",t1s);
+    this.textContent = t1s ? "다시 가리기" : "표 채우기";
+    buildT1(t1s);
+  });
+  buildT1(false);
+
+  /* ================= SET 2 : 격자 ================= */
+  var GR = { w:3, h:3, step:0, blocked:{} };
+  function pathGrid(w,h,blocked){
+    var g=[];
+    for (var i=0;i<=h;i++){ g.push([]); for (var j=0;j<=w;j++) g[i].push(0); }
+    for (var i2=0;i2<=h;i2++) for (var j2=0;j2<=w;j2++){
+      if (blocked && blocked[j2+","+i2]){ g[i2][j2]=0; continue; }
+      if (i2===0 && j2===0) g[i2][j2]=1;
+      else g[i2][j2] = (i2>0?g[i2-1][j2]:0) + (j2>0?g[i2][j2-1]:0);
+    }
+    return g;
+  }
+  function drawGrid(svgId, w, h, upto, blocked, msgId, clickable){
+    var svg = $(svgId); clear(svg);
+    var pad=48, cell = Math.min(320/Math.max(w,h), 78);
+    var W = w*cell, H = h*cell;
+    var ox = (460-W)/2, oy = 40 + (280-H)/2;
+    el("rect",{x:0,y:0,width:460,height:360,fill:"#FBFBF8"},svg);
+    for (var i=0;i<=h;i++)
+      el("line",{x1:ox,y1:oy+H-i*cell,x2:ox+W,y2:oy+H-i*cell,stroke:"#D6D5CC","stroke-width":"1.5"},svg);
+    for (var j=0;j<=w;j++)
+      el("line",{x1:ox+j*cell,y1:oy,x2:ox+j*cell,y2:oy+H,stroke:"#D6D5CC","stroke-width":"1.5"},svg);
+    var g = pathGrid(w,h,blocked);
+    for (var i2=0;i2<=h;i2++){
+      for (var j2=0;j2<=w;j2++){
+        var x = ox + j2*cell, y = oy + H - i2*cell;
+        var blockedHere = blocked && blocked[j2+","+i2];
+        if (blockedHere){
+          el("circle",{cx:x,cy:y,r:13,fill:"#C0472F"},svg);
+          var xt = el("text",{x:x,y:y+5,"text-anchor":"middle","font-size":"13","font-weight":"700",fill:"#fff"},svg);
+          xt.textContent = "×";
+        } else if (upto === null || (i2+j2) <= upto){
+          el("circle",{cx:x,cy:y,r:14,fill:"#FFFFFF",stroke:"#0F7355","stroke-width":"1.6"},svg);
+          var t = el("text",{x:x,y:y+4.5,"text-anchor":"middle","font-size":"12.5","font-weight":"700",fill:"#0F7355"},svg);
+          t.textContent = String(g[i2][j2]);
+        } else {
+          el("circle",{cx:x,cy:y,r:9,fill:"#EDEDE7",stroke:"#D6D5CC","stroke-width":"1.2"},svg);
+        }
+        if (clickable && !(i2===0&&j2===0) && !(i2===h&&j2===w)){
+          var hit = el("circle",{cx:x,cy:y,r:16,fill:"transparent",style:"cursor:pointer"},svg);
+          (function(jj,ii){
+            hit.addEventListener("click", function(){
+              var k = jj+","+ii;
+              if (GR.blocked[k]) delete GR.blocked[k]; else GR.blocked[k]=1;
+              drawBlock();
+            });
+          })(j2,i2);
+        }
+      }
+    }
+    var s1 = el("text",{x:ox-8,y:oy+H+22,"text-anchor":"middle","font-size":"12.5",fill:"#585D6E"},svg);
+    s1.textContent = "집";
+    var s2 = el("text",{x:ox+W+10,y:oy-10,"text-anchor":"middle","font-size":"12.5",fill:"#585D6E"},svg);
+    s2.textContent = "학교";
+    return g[h][w];
+  }
+  function drawG(){
+    var res = drawGrid("gridSvg", GR.w, GR.h, GR.step===0 ? 0 : (GR.step>=GR.w+GR.h ? null : GR.step), null, null, false);
+    var total = comb(GR.w+GR.h, GR.w);
+    $("gMsg").innerHTML = (GR.step===0
+      ? "출발점에 <b>1</b>을 썼습니다. <b>한 줄씩 채우기</b>를 눌러 보세요."
+      : (GR.step >= GR.w+GR.h
+          ? "완성! 도착점의 수 <b>"+res+"</b> = 경로의 개수 · C("+(GR.w+GR.h)+", "+GR.w+") = <b>"+total+"</b>"
+          : "대각선 "+GR.step+"번째 줄까지 채웠습니다. 각 점 = 왼쪽 + 아래"));
+  }
+  function syncGrid(){
+    GR.w = Math.max(1, Math.min(6, +$("gW").value || 3));
+    GR.h = Math.max(1, Math.min(6, +$("gH").value || 3));
+    GR.step = 0; drawG();
+  }
+  $("gW").addEventListener("input", syncGrid);
+  $("gH").addEventListener("input", syncGrid);
+  $("gStep").addEventListener("click", function(){ if (GR.step < GR.w+GR.h) GR.step++; drawG(); });
+  $("gAll").addEventListener("click", function(){ GR.step = GR.w+GR.h; drawG(); });
+  $("gReset").addEventListener("click", function(){ GR.step = 0; drawG(); });
+  drawG();
+
+  function drawBlock(){
+    var res = drawGrid("blockSvg", 4, 4, null, GR.blocked, null, true);
+    var keys = Object.keys(GR.blocked);
+    $("bkMsg").innerHTML = keys.length
+      ? "막은 곳 <b>"+keys.length+"</b>개 ("+keys.join(" / ")+") · 남은 경로 <b>"+res+"</b>가지 (막기 전 70가지)"
+      : "막힌 곳이 없습니다 · 경로 <b>"+res+"</b>가지 · 교차점을 눌러 막아 보세요";
+  }
+  $("bkReset").addEventListener("click", function(){ GR.blocked = {}; drawBlock(); });
+  drawBlock();
+
+  /* ================= SET 3 : 하노이 ================= */
+  var HN = { n:3, pegs:[[],[],[]], sel:null, moves:0, auto:null };
+  var DCOL = ["#2F3D8C","#0F7355","#A8791A","#C0472F","#8A3352","#4A5568"];
+  function resetHN(){
+    HN.pegs = [[],[],[]];
+    for (var d=HN.n; d>=1; d--) HN.pegs[0].push(d);
+    HN.sel = null; HN.moves = 0;
+    if (HN.auto){ clearInterval(HN.auto); HN.auto = null; }
+    drawHN();
+  }
+  function drawHN(){
+    var box = $("pegs"); clear(box);
+    for (var p=0;p<3;p++){
+      var d = ce("div","peg" + (HN.sel===p ? " sel" : ""));
+      d.dataset.p = String(p);
+      HN.pegs[p].forEach(function(disk){
+        var w = 34 + disk*(120/HN.n);
+        var el2 = ce("div","disk", String(disk));
+        el2.style.width = w + "px";
+        el2.style.background = DCOL[(disk-1) % DCOL.length];
+        d.appendChild(el2);
+      });
+      (function(pi){
+        d.addEventListener("click", function(){ tapPeg(pi); });
+      })(p);
+      box.appendChild(d);
+    }
+    var min = Math.pow(2, HN.n) - 1;
+    var done = HN.pegs[2].length === HN.n;
+    $("hnMsg").innerHTML = done
+      ? "완성! 이동 <b>"+HN.moves+"</b>번 · 최소 이동 횟수는 2<sup>"+HN.n+"</sup> − 1 = <b>"+min+"</b>번"
+      : "원반 <b>"+HN.n+"</b>개 · 이동 <b>"+HN.moves+"</b>번 · 최소 <b>"+min+"</b>번" +
+        (HN.sel!==null ? " · <b>"+["A","B","C"][HN.sel]+"</b> 기둥에서 원반을 집었습니다" : " · 기둥을 눌러 원반을 집으세요");
+  }
+  function tapPeg(p){
+    if (HN.sel === null){
+      if (!HN.pegs[p].length) return;
+      HN.sel = p; drawHN(); return;
+    }
+    if (HN.sel === p){ HN.sel = null; drawHN(); return; }
+    var from = HN.pegs[HN.sel], to = HN.pegs[p];
+    var d = from[from.length-1];
+    if (to.length && to[to.length-1] < d){
+      HN.sel = null; drawHN();
+      $("hnMsg").innerHTML = "<b style='color:#C0472F'>큰 원반을 작은 원반 위에 올릴 수 없습니다.</b> 다시 골라 보세요.";
+      return;
+    }
+    to.push(from.pop());
+    HN.moves++; HN.sel = null; drawHN();
+  }
+  $("hnN").addEventListener("input", function(){
+    HN.n = +this.value; $("hnV").textContent = this.value; resetHN();
+  });
+  $("hnReset").addEventListener("click", resetHN);
+  $("hnAuto").addEventListener("click", function(){
+    resetHN();
+    var seq = [];
+    (function rec(n,a,b,c){
+      if (n===0) return;
+      rec(n-1,a,c,b); seq.push([a,c]); rec(n-1,b,a,c);
+    })(HN.n,0,1,2);
+    var i = 0;
+    HN.auto = setInterval(function(){
+      if (i >= seq.length){ clearInterval(HN.auto); HN.auto=null; drawHN(); return; }
+      var m = seq[i++];
+      HN.pegs[m[1]].push(HN.pegs[m[0]].pop());
+      HN.moves++; drawHN();
+    }, 380);
+  });
+  resetHN();
+
+  function buildT3(show){
+    var t = $("t3Table"); clear(t);
+    var hd = ce("tr");
+    hd.appendChild(ce("th",null,"원반 n"));
+    for (var n=1;n<=10;n++) hd.appendChild(ce("th",null,String(n)));
+    t.appendChild(hd);
+    var tr = ce("tr");
+    tr.appendChild(ce("th",null,"최소 이동"));
+    for (var n2=1;n2<=10;n2++){
+      var v = Math.pow(2,n2)-1;
+      tr.appendChild(ce("td", show?"hi":null, show ? String(v) : (n2<=3 ? String(v) : "?")));
+    }
+    t.appendChild(tr);
+    var tr2 = ce("tr");
+    tr2.appendChild(ce("th",null,"2ⁿ"));
+    for (var n3=1;n3<=10;n3++) tr2.appendChild(ce("td", show?"ok":null, show ? String(Math.pow(2,n3)) : "?"));
+    t.appendChild(tr2);
+    $("t3Msg").innerHTML = show
+      ? "이동 횟수는 항상 <b>2ⁿ보다 1 작습니다</b>. 앞의 값을 두 배 하고 1을 더해도 같습니다."
+      : "먼저 직접 옮겨 보고 채우세요.";
+  }
+  var t3s=false;
+  $("t3show").addEventListener("click", function(){
+    t3s=!t3s; this.classList.toggle("on",t3s);
+    this.textContent = t3s ? "다시 가리기" : "표 채우기";
+    buildT3(t3s);
+  });
+  buildT3(false);
+
+  $("dmGo").addEventListener("click", function(){
+    var n = Math.max(1, Math.min(80, +$("dmN").value || 64));
+    var t = Math.max(0.001, +$("dmT").value || 1);
+    var movesBig = (BigInt(2) ** BigInt(n)) - BigInt(1);      // 정확한 정수
+    var moves = Number(movesBig);
+    var sec = moves * t;
+    var yr = sec / (365.2425*24*3600);
+    function fmt(x){
+      return x < 1e15 ? x.toLocaleString(undefined,{maximumFractionDigits:0}) : x.toExponential(4);
+    }
+    var out = $("dmOut"); clear(out);
+    out.appendChild(ce("div", null, "원반 " + n + "개 → 2^" + n + " − 1 = " +
+      movesBig.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " 번"));
+    out.appendChild(ce("div", null, "한 번에 " + t + "초 → 총 " + fmt(sec) + " 초"));
+    // 연 단위는 BigInt로 나눠 정확히 (t=1일 때)
+    var yrText;
+    if (t === 1){
+      var secPerYearMilli = BigInt(Math.round(365.2425*24*3600*1000));  // 31556952000
+      var yrBig = (movesBig * BigInt(1000)) / secPerYearMilli;
+      yrText = yrBig.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    } else {
+      yrText = fmt(yr);
+    }
+    var d = ce("div", null, "= 약 " + yrText + " 년");
+    d.style.fontWeight = "700"; d.style.color = "#C0472F";
+    out.appendChild(d);
+    var age = 13.8e9;
+    var d2 = ce("div", null, "우주의 나이(약 138억 년)의 " + (yr/age).toFixed(1) + "배");
+    d2.style.color = "#585D6E";
+    out.appendChild(d2);
+    $("dmMsg").innerHTML = n===64
+      ? "원반이 <b>하나</b> 늘 때마다 시간이 <b>두 배</b>가 됩니다. 이것이 지수 증가의 무서움입니다."
+      : "원반 수를 64로 바꿔 전설의 시간을 확인해 보세요.";
+  });
+  $("dmGo").click();
+
+  /* ================= SET 4 : 계단 ================= */
+  function climbCount(n){
+    var dp=[1,1];
+    for (var i=2;i<=n;i++) dp[i]=dp[i-1]+dp[i-2];
+    return dp[n];
+  }
+  function climbEnum(n){
+    var res=[];
+    (function rec(rem, path){
+      if (rem===0){ res.push(path.slice()); return; }
+      if (rem>=1){ path.push(1); rec(rem-1, path); path.pop(); }
+      if (rem>=2){ path.push(2); rec(rem-2, path); path.pop(); }
+    })(n, []);
+    return res;
+  }
+  function drawStairs(){
+    var n = +$("stN").value;
+    $("stV").textContent = n;
+    var box = $("stairs"); clear(box);
+    for (var i=1;i<=n;i++){
+      var d = ce("div","stair on");
+      d.style.height = (18 + i*13) + "px";
+      var lb = ce("span","lb", String(i));
+      d.appendChild(lb);
+      box.appendChild(d);
+    }
+    var list = $("stList"); clear(list);
+    var e = climbEnum(n);
+    e.forEach(function(p){ list.appendChild(ce("span","pathchip", p.join("+"))); });
+    $("stMsg").innerHTML = "계단 <b>"+n+"</b>칸 → 오르는 방법 <b>"+e.length+"</b>가지" +
+      (n>=3 ? "  ("+climbCount(n-1)+" + "+climbCount(n-2)+" = "+climbCount(n)+")" : "");
+  }
+  $("stN").addEventListener("input", drawStairs);
+  drawStairs();
+
+  var RB = { month: 1 };
+  function drawRB(){
+    var t = $("rbTable"); clear(t);
+    var rows = [["개월"],["어린 쌍"],["어른 쌍"],["전체 쌍"]];
+    var young=1, adult=0;
+    for (var m=1;m<=RB.month;m++){
+      rows[0].push(String(m));
+      rows[1].push(String(young));
+      rows[2].push(String(adult));
+      rows[3].push(String(young+adult));
+      var ny = adult, na = adult + young;
+      young = ny; adult = na;
+    }
+    rows.forEach(function(r, ri){
+      var tr = ce("tr");
+      r.forEach(function(v, ci){
+        var cell = ce(ci===0 ? "th" : "td", (ri===3 && ci>0) ? "hi" : null, v);
+        tr.appendChild(cell);
+      });
+      t.appendChild(tr);
+    });
+    var totals = rows[3].slice(1);
+    $("rbMsg").innerHTML = "전체 쌍의 수: <b>" + totals.join(", ") + "</b>" +
+      (RB.month>=12 ? " → 12개월 뒤 <b>144쌍</b> · 계단 오르기 수열과 같습니다" : " · 계속 눌러 보세요");
+  }
+  $("rbStep").addEventListener("click", function(){ if (RB.month<12) RB.month++; drawRB(); });
+  $("rbReset").addEventListener("click", function(){ RB.month=1; drawRB(); });
+  drawRB();
+
+  function drawRV(mode){
+    var t = $("rvTable"); clear(t);
+    if (mode === "ratio"){
+      var f=[1,1];
+      for (var i=2;i<14;i++) f.push(f[i-1]+f[i-2]);
+      var hd = ce("tr"); hd.appendChild(ce("th",null,"피보나치 수"));
+      for (var k=1;k<12;k++) hd.appendChild(ce("th",null,String(f[k])));
+      t.appendChild(hd);
+      var tr = ce("tr"); tr.appendChild(ce("th",null,"앞 수로 나눈 값"));
+      for (var k2=1;k2<12;k2++){
+        var r = f[k2]/f[k2-1];
+        tr.appendChild(ce("td", k2>=8 ? "hi" : null, r.toFixed(6)));
+      }
+      t.appendChild(tr);
+      $("rvMsg").innerHTML = "점점 <b>1.618033…</b> 에 가까워집니다. 이 값을 <b>황금비</b>라고 부릅니다.";
+    } else {
+      var a=[0,1,2,4];
+      for (var i2=4;i2<12;i2++) a.push(a[i2-1]+a[i2-2]+a[i2-3]);
+      var hd2 = ce("tr"); hd2.appendChild(ce("th",null,"계단 수"));
+      for (var k3=1;k3<=10;k3++) hd2.appendChild(ce("th",null,String(k3)));
+      t.appendChild(hd2);
+      var tr2 = ce("tr"); tr2.appendChild(ce("th",null,"1·2칸만"));
+      for (var k4=1;k4<=10;k4++) tr2.appendChild(ce("td",null,String(climbCount(k4))));
+      t.appendChild(tr2);
+      var tr3 = ce("tr"); tr3.appendChild(ce("th",null,"1·2·3칸"));
+      for (var k5=1;k5<=10;k5++) tr3.appendChild(ce("td","hi",String(a[k5])));
+      t.appendChild(tr3);
+      $("rvMsg").innerHTML = "1·2·3칸이면 <b>앞의 세 수</b>를 더합니다 (트리보나치). 1, 2, 4, 7, 13, 24, …";
+    }
+  }
+  $("rvRatio").addEventListener("click", function(){
+    this.classList.add("on"); $("rvTri").classList.remove("on"); drawRV("ratio");
+  });
+  $("rvTri").addEventListener("click", function(){
+    this.classList.add("on"); $("rvRatio").classList.remove("on"); drawRV("tri");
+  });
+  drawRV("ratio");
+
+  /* ================= SET 5 : 체스판 ================= */
+  var SQ = { k:2, pos:0, timer:null };
+  function drawSQ(){
+    var svg = $("sqSvg"); clear(svg);
+    var N=8, cell=44, ox=24, oy=24;
+    el("rect",{x:0,y:0,width:400,height:400,fill:"#FBFBF8"},svg);
+    for (var r=0;r<N;r++) for (var c=0;c<N;c++){
+      el("rect",{x:ox+c*cell,y:oy+r*cell,width:cell,height:cell,
+                 fill:(r+c)%2 ? "#D8D6CC" : "#F4F3EE",stroke:"#C9C7BD","stroke-width":"1"},svg);
+    }
+    var k = SQ.k, spots = (N-k+1)*(N-k+1);
+    var idx = SQ.pos % spots;
+    var rr = Math.floor(idx/(N-k+1)), cc = idx % (N-k+1);
+    el("rect",{x:ox+cc*cell,y:oy+rr*cell,width:k*cell,height:k*cell,
+               fill:"rgba(192,71,47,.22)",stroke:"#C0472F","stroke-width":"3"},svg);
+    $("sqMsg").innerHTML = "<b>"+k+"×"+k+"</b> 정사각형은 왼쪽 위 꼭짓점을 가로 <b>"+(N-k+1)+"</b>곳, 세로 <b>"+(N-k+1)+
+      "</b>곳에 둘 수 있습니다 → <b>"+(N-k+1)+" × "+(N-k+1)+" = "+spots+"</b>개";
+  }
+  $("sqK").addEventListener("input", function(){
+    SQ.k = +this.value; $("sqKV").textContent = this.value; SQ.pos = 0; drawSQ();
+  });
+  $("sqSlide").addEventListener("click", function(){
+    if (SQ.timer){ clearInterval(SQ.timer); SQ.timer=null; this.classList.remove("on"); return; }
+    this.classList.add("on");
+    var self = this;
+    SQ.timer = setInterval(function(){
+      SQ.pos++;
+      var spots = (8-SQ.k+1)*(8-SQ.k+1);
+      if (SQ.pos >= spots){ SQ.pos=0; clearInterval(SQ.timer); SQ.timer=null; self.classList.remove("on"); }
+      drawSQ();
+    }, 220);
+  });
+  drawSQ();
+
+  function buildT5(show){
+    var t = $("t5Table"); clear(t);
+    var hd = ce("tr");
+    hd.appendChild(ce("th",null,"크기"));
+    for (var k=1;k<=8;k++) hd.appendChild(ce("th",null,k+"×"+k));
+    hd.appendChild(ce("th",null,"합계"));
+    t.appendChild(hd);
+    var tr = ce("tr");
+    tr.appendChild(ce("th",null,"개수"));
+    var sum=0;
+    for (var k2=1;k2<=8;k2++){
+      var v=(9-k2)*(9-k2); sum+=v;
+      tr.appendChild(ce("td", show?"hi":null, show ? String(v) : (k2<=2 ? String(v) : "?")));
+    }
+    tr.appendChild(ce("td", show?"ok":null, show ? String(sum) : "?"));
+    t.appendChild(tr);
+    var tr2 = ce("tr");
+    tr2.appendChild(ce("th",null,"= 제곱수"));
+    for (var k3=1;k3<=8;k3++) tr2.appendChild(ce("td",null, show ? (9-k3)+"²" : "?"));
+    tr2.appendChild(ce("td",null, show ? "1²+…+8²" : "?"));
+    t.appendChild(tr2);
+    $("t5Msg").innerHTML = show
+      ? "64, 49, 36, 25, 16, 9, 4, 1 — 모두 <b>제곱수</b>이고 합은 <b>204</b>입니다."
+      : "직접 세어 본 뒤 버튼을 누르세요.";
+  }
+  var t5s=false;
+  $("t5show").addEventListener("click", function(){
+    t5s=!t5s; this.classList.toggle("on",t5s);
+    this.textContent = t5s ? "다시 가리기" : "표 채우기";
+    buildT5(t5s);
+  });
+  buildT5(false);
+
+  var RC = { rows:null, cols:null };
+  function drawRC(){
+    var svg = $("rcSvg"); clear(svg);
+    var N=8, cell=44, ox=24, oy=24;
+    el("rect",{x:0,y:0,width:400,height:400,fill:"#FBFBF8"},svg);
+    el("rect",{x:ox,y:oy,width:N*cell,height:N*cell,fill:"#F4F3EE"},svg);
+    for (var i=0;i<=N;i++){
+      var on = RC.rows && (RC.rows[0]===i || RC.rows[1]===i);
+      el("line",{x1:ox,y1:oy+i*cell,x2:ox+N*cell,y2:oy+i*cell,
+                 stroke: on ? "#C0472F" : "#C9C7BD","stroke-width": on ? "3.5":"1"},svg);
+    }
+    for (var j=0;j<=N;j++){
+      var on2 = RC.cols && (RC.cols[0]===j || RC.cols[1]===j);
+      el("line",{x1:ox+j*cell,y1:oy,x2:ox+j*cell,y2:oy+N*cell,
+                 stroke: on2 ? "#2F3D8C" : "#C9C7BD","stroke-width": on2 ? "3.5":"1"},svg);
+    }
+    if (RC.rows && RC.cols){
+      var x1=ox+Math.min(RC.cols[0],RC.cols[1])*cell, x2=ox+Math.max(RC.cols[0],RC.cols[1])*cell;
+      var y1=oy+Math.min(RC.rows[0],RC.rows[1])*cell, y2=oy+Math.max(RC.rows[0],RC.rows[1])*cell;
+      el("rect",{x:x1,y:y1,width:x2-x1,height:y2-y1,fill:"rgba(168,121,26,.28)",
+                 stroke:"#A8791A","stroke-width":"2.5"},svg);
+      $("rcMsg").innerHTML = "가로선 <b>"+RC.rows.join(", ")+"</b>번과 세로선 <b>"+RC.cols.join(", ")+
+        "</b>번을 골랐더니 직사각형이 하나 만들어졌습니다 · 고르는 방법은 C(9,2) × C(9,2) = <b>36 × 36 = 1296</b>";
+    } else {
+      $("rcMsg").innerHTML = "가로선 2개와 세로선 2개를 고르면 직사각형이 하나 결정됩니다.";
+    }
+  }
+  $("rcPick").addEventListener("click", function(){
+    function pick2(){
+      var a = Math.floor(Math.random()*9), b;
+      do { b = Math.floor(Math.random()*9); } while (b===a);
+      return [Math.min(a,b), Math.max(a,b)];
+    }
+    RC.rows = pick2(); RC.cols = pick2(); drawRC();
+  });
+  $("rcReset").addEventListener("click", function(){ RC.rows=null; RC.cols=null; drawRC(); });
+  drawRC();
+
+  $("cnGo").addEventListener("click", function(){
+    var n = Math.max(1, Math.min(50, +$("cnN").value || 10));
+    var sq = n*(n+1)*(2*n+1)/6;
+    var tri = n*(n+1)/2;
+    var rect = tri*tri;
+    var out = $("cnOut"); clear(out);
+    out.appendChild(ce("div", null, n + "×" + n + " 격자"));
+    out.appendChild(ce("div", null, "정사각형 = 1² + 2² + … + " + n + "² = " + n + "×" + (n+1) + "×" + (2*n+1) + "÷6 = " + sq.toLocaleString()));
+    out.appendChild(ce("div", null, "직사각형 = (1+2+…+" + n + ")² = " + tri + "² = " + rect.toLocaleString()));
+    var d = ce("div", null, "정사각형이 아닌 직사각형 = " + (rect-sq).toLocaleString());
+    d.style.color = "#C0472F"; d.style.fontWeight="700";
+    out.appendChild(d);
+    $("cnMsg").innerHTML = "가로선 " + (n+1) + "개 중 2개, 세로선 " + (n+1) + "개 중 2개를 고르는 방법 = C(" +
+      (n+1) + ",2)² = " + comb(n+1,2) + "² = <b>" + rect.toLocaleString() + "</b>";
+  });
+  $("cnGo").click();
+})();
+</script>
+</body>
+</html>

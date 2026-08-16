@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>사고력 조합론 5제 · 교사용 정답 및 해설</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+<style>
+:root{
+  --bg:#EFEFF2;--paper:#FFFFFF;--ink:#191B23;--ink-2:#535866;--line:#D7D7DE;
+  --indigo:#2F3D8C;--coral:#C0472F;--jade:#0F7355;--gold:#A8791A;--wine:#8A3352;
+  --ac:var(--indigo);
+  --f-disp:'Gowun Batang','Pretendard Variable',Pretendard,serif;
+  --f-body:'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif;
+  --f-mono:'D2Coding','JetBrains Mono',Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);line-height:1.78;-webkit-font-smoothing:antialiased}
+.wrap{max-width:880px;margin:0 auto;padding:0 20px}
+header{background:var(--ink);color:#fff;padding:44px 0 34px}
+header .kicker{font-family:var(--f-mono);font-size:12px;letter-spacing:.24em;color:#9AA5CC;margin:0 0 12px}
+header h1{font-family:var(--f-disp);font-weight:700;font-size:clamp(26px,5.2vw,38px);margin:0 0 10px;line-height:1.28}
+header p{color:#B4BAC8;margin:0 0 18px;max-width:620px;font-size:15px}
+.hmeta{display:flex;flex-wrap:wrap;gap:8px}
+.hmeta span{font-family:var(--f-mono);font-size:11.5px;border:1px solid #383C49;border-radius:4px;padding:5px 11px;color:#C2C7D4}
+.hmeta span b{color:#fff}
+nav.toc{position:sticky;top:0;z-index:40;background:rgba(239,239,242,.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.tocrow{display:flex;gap:5px;overflow-x:auto;padding:10px 0;scrollbar-width:none}
+.tocrow::-webkit-scrollbar{display:none}
+.tocbtn{flex:0 0 auto;border:1px solid var(--line);background:var(--paper);color:var(--ink-2);cursor:pointer;
+  font-size:13.4px;font-weight:600;padding:7px 14px;border-radius:5px;white-space:nowrap;font-family:var(--f-body)}
+.tocbtn:hover{border-color:var(--ink-2);color:var(--ink)}
+.tocbtn.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.tocbtn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.set{display:none;padding:36px 0 70px;animation:fade .3s ease}
+.set.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.sethead{border-left:5px solid var(--ac);padding-left:18px;margin-bottom:24px}
+.sethead .no{font-family:var(--f-mono);font-size:12px;letter-spacing:.2em;color:var(--ac);margin:0}
+.sethead h2{font-family:var(--f-disp);font-weight:700;font-size:clamp(22px,4.4vw,30px);margin:5px 0 8px;line-height:1.3}
+.sethead .core{font-size:14px;color:var(--ink-2);margin:0}
+.sethead .core b{color:var(--ink)}
+.keybox{background:var(--paper);border:1px solid var(--line);border-left:4px solid var(--ac);border-radius:0 6px 6px 0;padding:16px 20px;margin-bottom:22px}
+.keybox h3{font-family:var(--f-disp);font-weight:700;font-size:15.5px;margin:0 0 8px;color:var(--ac)}
+.keybox p{margin:0;font-size:14.6px;color:var(--ink-2)}
+.a{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:20px 22px;margin-bottom:16px}
+.ah{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.ano{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.1em;color:#fff;background:var(--ac);border-radius:4px;padding:3px 10px}
+.ans{font-family:var(--f-disp);font-weight:700;font-size:17px;color:var(--jade)}
+.a p{margin:0 0 11px;font-size:15.2px}
+.a p:last-child{margin-bottom:0}
+.a ul,.a ol{margin:0 0 11px;padding-left:22px;font-size:15px}
+.a li{margin-bottom:6px}
+.calc{font-family:var(--f-mono);font-size:13.3px;background:#F3F3F6;border:1px solid var(--line);border-radius:5px;
+  padding:12px 15px;margin:0 0 12px;white-space:pre-wrap;line-height:1.9;overflow-x:auto}
+.calc b{color:var(--coral)}
+.proof{border-left:3px solid var(--jade);background:#EFF6F3;border-radius:0 5px 5px 0;padding:13px 17px;margin:0 0 12px;font-size:14.8px}
+.proof b{color:var(--jade)}
+.talk{background:#FBF3F1;border:1px solid #E7D2CA;border-radius:6px;padding:17px 20px;margin-top:14px}
+.talk h4{font-family:var(--f-disp);font-weight:700;font-size:15px;margin:0 0 10px;color:var(--coral)}
+.talk .tq{font-weight:700;font-size:14.6px;color:#7C3323;margin:14px 0 5px}
+.talk .tq:first-of-type{margin-top:0}
+.talk .ta{font-size:14.4px;color:#48332C;margin:0 0 6px}
+.talk .ta:last-child{margin-bottom:0}
+.talk em{font-style:normal;color:#963B28;font-weight:700}
+.rubric{margin-top:16px;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.rubric .rh{background:#F3F3F6;padding:9px 16px;font-size:13px;font-weight:700;color:var(--ink-2);border-bottom:1px solid var(--line)}
+table.rb{width:100%;border-collapse:collapse;font-size:13.6px}
+table.rb th,table.rb td{border-bottom:1px solid var(--line);padding:9px 14px;text-align:left;vertical-align:top}
+table.rb th{background:#FAFAFC;font-weight:700;width:112px;color:var(--ink)}
+table.rb tr:last-child td,table.rb tr:last-child th{border-bottom:0}
+.misc{background:#FBF8EC;border:1px solid #E6DFC4;border-radius:6px;padding:15px 19px;margin-top:16px;font-size:14.4px}
+.misc h4{font-family:var(--f-disp);font-weight:700;font-size:14.5px;margin:0 0 8px;color:var(--gold)}
+.misc ul{margin:0;padding-left:20px}
+.misc li{margin-bottom:6px;color:#5E5323}
+.misc li:last-child{margin-bottom:0}
+.verify{background:#12151D;color:#C5C9D6;border-radius:6px;padding:16px 19px;margin-top:16px;
+  font-family:var(--f-mono);font-size:12.5px;line-height:1.85;white-space:pre-wrap;overflow-x:auto}
+.verify .vh{color:#6EE7B7;font-weight:700;display:block;margin-bottom:7px}
+.verify em{color:#FBBF24;font-style:normal}
+.src{font-size:12.8px;color:var(--ink-2);border-top:1px solid var(--line);padding-top:14px;margin-top:24px}
+.src b{color:var(--ink)}
+.prm{display:flex;justify-content:space-between;gap:10px;margin-top:30px}
+.prm button{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:5px;padding:11px 20px;
+  font-size:14px;font-weight:600;cursor:pointer;font-family:var(--f-body)}
+.prm button:hover{border-color:var(--ac);color:var(--ac)}
+.prm button:disabled{opacity:.35;cursor:default}
+footer{border-top:1px solid var(--line);padding:26px 0 60px;color:var(--ink-2);font-size:13px;text-align:center}
+table.dt{width:100%;border-collapse:collapse;font-family:var(--f-mono);font-size:13px;margin:0 0 12px}
+table.dt th,table.dt td{border:1px solid var(--line);padding:6px 9px;text-align:center}
+table.dt th{background:#F1F1F4;font-weight:600}
+td.hl{background:#FBF7E6;color:var(--gold);font-weight:700}
+td.gd{background:#EFF6F3;color:var(--jade);font-weight:700}
+.tbscroll{overflow-x:auto}
+svg{max-width:100%;height:auto;display:block;margin:0 auto}
+.fig{background:#FAFAFC;border:1px solid var(--line);border-radius:6px;padding:16px;margin:0 0 14px}
+.fig figcaption{font-size:12.8px;color:var(--ink-2);text-align:center;margin-top:9px}
+@media print{
+  nav.toc,.prm{display:none}
+  .set{display:block !important;page-break-after:always}
+  body{background:#fff}
+  header{background:#fff;color:#000;border-bottom:2px solid #000}
+  header h1,header p,.hmeta span{color:#000}
+  .verify{background:#F3F3F6;color:#000}
+}
+@media (prefers-reduced-motion: reduce){*{animation-duration:.001ms !important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <p class="kicker">TEACHER'S EDITION · ANSWERS &amp; COMMENTARY</p>
+    <h1>사고력 조합론 5제 — 정답과 해설</h1>
+    <p>각 문항의 정답, 학생이 도달해야 할 논증, 흔한 오답과 그 원인, 토론 진행 시 던질 되물음, 그리고 Python으로 전수 검증한 결과를 함께 싣습니다.</p>
+    <div class="hmeta">
+      <span>세트 <b>5</b></span><span>문항 <b>25</b></span><span>루브릭 <b>세트별 3단계</b></span><span>정답 검증 <b>Python 전수</b></span>
+    </div>
+  </div>
+</header>
+
+<nav class="toc">
+  <div class="wrap tocrow">
+    <button class="tocbtn on" data-s="s1">01 · 악수 문제</button>
+    <button class="tocbtn" data-s="s2">02 · 격자 최단 경로</button>
+    <button class="tocbtn" data-s="s3">03 · 하노이 탑</button>
+    <button class="tocbtn" data-s="s4">04 · 계단 오르기</button>
+    <button class="tocbtn" data-s="s5">05 · 체스판 세기</button>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<!-- ============ SET 1 ============ -->
+<section class="set on" id="s1" data-ac="#2F3D8C">
+  <div class="sethead">
+    <p class="no">SET 01 · ANSWERS</p>
+    <h2>모두가 한 번씩 악수하면 몇 번일까</h2>
+    <p class="core">핵심 아이디어 — <b>두 번 센 것을 되돌리기</b>. 사람 수 × 상대 수로 세면 악수 하나를 양쪽에서 두 번 세게 되므로 2로 나눕니다.</p>
+  </div>
+
+  <div class="keybox">
+    <h3>지도 요령</h3>
+    <p>10명을 바로 시키면 선이 45개라 손이 지칩니다. <b>4명, 5명부터</b> 그리게 하세요. 그리고 <b>"방금 그은 선을 누구와 누구의 악수라고 부를까?"</b>를 물어 한 선이 두 사람 몫이라는 감각을 만들어 주세요.</p>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">1-1</span><span class="ans">정답 · 45번</span></div>
+    <div class="calc">사람 수 n |  2   3   4   5   6   7   8   9  <b>10</b>  11  12
+악수 횟수 |  1   3   6  10  15  21  28  36  <b>45</b>  55  66
+
+10 × 9 ÷ 2 = <b>45</b></div>
+    <p>1, 3, 6, 10, 15 … 는 <b>삼각수</b>입니다. 앞의 수에 2, 3, 4, 5 …를 차례로 더한 값이라는 점을 학생이 먼저 발견하면 1-2가 쉬워집니다.</p>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">1-2</span><span class="ans">정답 · n(n−1)/2</span></div>
+    <div class="proof">
+      <b>방법 A · 한 사람씩 세기</b><br>
+      한 사람은 자기를 뺀 <b>n−1</b>명과 악수합니다. 사람이 n명이므로 모두 더하면 <b>n(n−1)</b>입니다.<br>
+      그런데 "철수–영희"의 악수를 철수 몫으로도, 영희 몫으로도 세었으므로 모든 악수가 <b>2번씩</b> 세어졌습니다. 그래서 <b>2로 나눕니다</b>.<br><br>
+      <b>방법 B · 차례로 세기</b><br>
+      1번은 나머지 n−1명과, 2번은 (1번과는 이미 했으므로) 새로 n−2명과, 3번은 n−3명과 … 이렇게 이어 가면<br>
+      (n−1) + (n−2) + … + 2 + 1 = <b>n(n−1)/2</b>
+    </div>
+    <p>두 방법이 같은 답을 준다는 것을 확인시키면, 1 + 2 + … + (n−1)의 합 공식을 <b>세는 방식의 차이</b>로 이해하게 됩니다.</p>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">1-3</span><span class="ans">정답 · 10명</span></div>
+    <div class="calc">n(n−1)/2 = 45
+n(n−1) = 90
+연속한 두 수의 곱이 90 → 9 × 10
+→ n = <b>10</b>
+
+(표에서 45를 찾아도 되고, 90에 가까운 제곱수 √90 ≈ 9.5 부근을 확인해도 됩니다)</div>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">1-4</span><span class="ans">토론 정리</span></div>
+    <div class="talk">
+      <h4>예상 답과 되물음</h4>
+      <p class="tq">① 팔각형의 선분과 대각선</p>
+      <p class="ta">두 꼭짓점을 잇는 선분은 <b>28개</b>(8×7÷2)로 악수 문제와 <b>완전히 같습니다</b>. 다만 그중 <b>8개는 변</b>이므로 대각선은 <b>20개</b>입니다. 일반적으로 n(n−3)/2입니다. → 되물음: <em>"악수 문제에는 왜 '변'에 해당하는 게 없을까요?"</em> (모든 쌍이 동등하기 때문)</p>
+      <p class="tq">② 리그전과 토너먼트</p>
+      <p class="ta">리그전은 <b>28경기</b>(모든 쌍), 토너먼트는 <b>7경기</b>입니다. 토너먼트가 훨씬 적은 이유는 <b>한 경기마다 정확히 한 팀이 탈락</b>하기 때문입니다. 8팀 중 우승 1팀을 남기려면 7팀을 떨어뜨려야 하므로 7경기입니다. 이것은 세는 대상을 <b>경기가 아니라 탈락자</b>로 바꾼 아름다운 발상입니다. → 되물음: <em>"100팀이면 몇 경기일까요?"</em> (99경기, 즉시 답할 수 있어야 합니다)</p>
+      <p class="tq">③ 방향이 있는 경우</p>
+      <p class="ta">2로 나누지 <b>않습니다</b>. "철수→영희"와 "영희→철수"가 서로 다른 일이기 때문입니다. 그러므로 <b>n(n−1)</b>이 됩니다. 악수의 2배입니다. → 되물음: <em>"어떤 상황이 '방향이 있는' 경우일까요?"</em> (편지, 전화 걸기, 이기고 짐 등)</p>
+      <p class="tq">④ 1 + 2 + … + 100</p>
+      <p class="ta">가우스의 방법(1+100, 2+99, … 짝을 50개 만들어 101×50 = 5050)과 정확히 같은 구조입니다. 1부터 n−1까지의 합이 곧 악수 횟수이므로, <b>악수 문제를 풀면 삼각수 공식을 증명한 셈</b>입니다. 1+2+…+100 = 101명의 악수 횟수 = 101×100÷2 = 5050.</p>
+    </div>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">1-5</span><span class="ans">정답 · 435번 / 870장</span></div>
+    <div class="calc">악수  : 30 × 29 ÷ 2 = <b>435</b>번   (방향 없음 → 2로 나눔)
+연하장 : 30 × 29 = <b>870</b>장       (방향 있음 → 나누지 않음)
+
+두 답은 정확히 <b>2배</b> 관계</div>
+    <div class="misc">
+      <h4>흔한 오답과 원인</h4>
+      <ul>
+        <li><b>10 × 10 = 100 또는 10 × 9 = 90</b> — 중복을 되돌리지 않은 경우입니다. 4명으로 줄여 실제로 6개를 그려 보게 하세요.</li>
+        <li><b>자기 자신과도 악수한다고 셈</b> — n×n으로 계산합니다. "자기와 악수하나요?"를 물으면 즉시 교정됩니다.</li>
+        <li><b>토너먼트를 28경기로</b> — 리그전과 혼동한 경우입니다. 대진표를 직접 그려 보게 하세요.</li>
+        <li><b>연하장도 2로 나눔</b> — 방향의 유무를 구분하지 못한 경우입니다. 이 세트의 핵심 구분점입니다.</li>
+      </ul>
+    </div>
+    <div class="rubric">
+      <div class="rh">평가 루브릭</div>
+      <table class="rb">
+        <tr><th>상</th><td>2로 나누는 이유를 "한 악수를 두 번 셌다"로 설명하고, 두 가지 세는 방법을 모두 제시한다. 방향이 있는 경우와 없는 경우를 구분한다.</td></tr>
+        <tr><th>중</th><td>작은 경우를 세어 규칙과 공식을 찾으나, 왜 2로 나누는지 설명하지 못한다.</td></tr>
+        <tr><th>하</th><td>중복을 고려하지 않고 n×n 또는 n×(n−1)로 답한다.</td></tr>
+      </table>
+    </div>
+    <div class="verify"><span class="vh">Python 전수 검증</span>실제 조합 나열 vs n(n−1)/2 vs 1+2+…+(n−1) : n = 2~12 <em>전부 일치</em>
+  1, 3, 6, 10, 15, 21, 28, 36, <em>45</em>, 55, 66
+악수 45번 → 인원 <em>[10]</em> (2~99 전수 탐색)
+볼록 n각형 대각선 = n(n−3)/2 : 5각형 5개, 6각형 9개, 8각형 <em>20</em>개, 12각형 54개
+리그전 8팀 = <em>28</em>경기 / 토너먼트 8팀 = <em>7</em>경기
+악수 횟수의 총합 = 악수 수 × 2 : n = 2~8 <em>확인</em>
+30명 : 악수 <em>435</em> / 방향 있는 경우 <em>870</em></div>
+    <p class="src"><b>출처</b> — 악수 문제는 조합론 입문의 고전으로, 그래프 이론의 <b>악수 보조정리</b>(모든 꼭짓점 차수의 합 = 변의 수 × 2)로 이어집니다. 이 아이디어는 오일러의 1736년 논문에서 이미 사용되었습니다.</p>
+  </div>
+</section>
+
+<!-- ============ SET 2 ============ -->
+<section class="set" id="s2" data-ac="#0F7355">
+  <div class="sethead">
+    <p class="no">SET 02 · ANSWERS</p>
+    <h2>바둑판 길에서 학교까지 가는 길은 몇 가지</h2>
+    <p class="core">핵심 아이디어 — <b>마지막 한 걸음으로 경우 나누기</b>. 어떤 점에 오는 방법은 왼쪽에서 오는 경우와 아래에서 오는 경우로 정확히 갈립니다.</p>
+  </div>
+
+  <div class="keybox">
+    <h3>지도 요령</h3>
+    <p>학생들은 길을 하나하나 그리려다 반드시 <b>빠뜨리거나 중복</b>합니다. 그 실패를 충분히 겪게 한 뒤 "각 교차점에 그 점까지 오는 방법의 수를 적어 보자"고 안내하세요. <b>세는 대상을 길에서 점으로 바꾸는 것</b>이 이 세트의 전부입니다.</p>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">2-1</span><span class="ans">정답 · 20가지</span></div>
+    <div class="calc">3×3 격자의 각 교차점에 적히는 수 (아래가 출발점)
+
+  1   4  10  <b>20</b>   ← 학교
+  1   3   6  10
+  1   2   3   4
+  1   1   1   1
+  ↑ 집
+
+규칙 : 각 점 = 왼쪽 수 + 아래 수
+       맨 아래 줄과 맨 왼쪽 줄은 길이 하나뿐이므로 모두 1</div>
+    <div class="fig">
+      <svg viewBox="0 0 420 300" role="img" aria-label="3x3 격자 경로 수">
+        <rect x="0" y="0" width="420" height="300" fill="#FAFAFC"/>
+        <g stroke="#D7D7DE" stroke-width="1.5">
+          <line x1="90" y1="60" x2="330" y2="60"/><line x1="90" y1="130" x2="330" y2="130"/>
+          <line x1="90" y1="200" x2="330" y2="200"/><line x1="90" y1="255" x2="330" y2="255"/>
+          <line x1="90" y1="60" x2="90" y2="255"/><line x1="170" y1="60" x2="170" y2="255"/>
+          <line x1="250" y1="60" x2="250" y2="255"/><line x1="330" y1="60" x2="330" y2="255"/>
+        </g>
+        <g font-size="13" font-weight="700" text-anchor="middle" font-family="monospace">
+          <circle cx="90" cy="255" r="15" fill="#fff" stroke="#0F7355" stroke-width="1.6"/><text x="90" y="260" fill="#0F7355">1</text>
+          <circle cx="170" cy="255" r="15" fill="#fff" stroke="#0F7355" stroke-width="1.6"/><text x="170" y="260" fill="#0F7355">1</text>
+          <circle cx="250" cy="255" r="15" fill="#fff" stroke="#0F7355" stroke-width="1.6"/><text x="250" y="260" fill="#0F7355">1</text>
+          <circle cx="330" cy="255" r="15" fill="#fff" stroke="#0F7355" stroke-width="1.6"/><text x="330" y="260" fill="#0F7355">1</text>
+          <circle cx="90" cy="200" r="15" fill="#fff" stroke="#0F7355" stroke-width="1.6"/><text x="90" y="205" fill="#0F7355">1</text>
+          <circle cx="170" cy="200" r="15" fill="#fff" stroke="#0F7355" stroke-width="1.6"/><text x="170" y="205" fill="#0F7355">2</text>
+          <circle cx="250" cy="200" r="15" fill="#fff" stroke="#0F7355" stroke-width="1.6"/><text x="250" y="205" fill="#0F7355">3</text>
+          <circle cx="330" cy="200" r="15" fill="#fff" stroke="#0F7355" stroke-width="1.6"/><text x="330" y="205" fill="#0F7355">4</text>
+          <circle cx="90" cy="130" r="15" fill="#fff" stroke="#0F7355" stroke-width="1.6"/><text x="90" y="135" fill="#0F7355">1</text>
+          <circle cx="170" cy="130" r="15" fill="#fff" stroke="#0F7355" stroke-width="1.6"/><text x="170" y="135" fill="#0F7355">3</text>
+          <circle cx="250" cy="130" r="15" fill="#fff" stroke="#0F7355" stroke-width="1.6"/><text x="250" y="135" fill="#0F7355">6</text>
+          <circle cx="330" cy="130" r="15" fill="#fff" stroke="#0F7355" stroke-width="1.6"/><text x="330" y="135" fill="#0F7355">10</text>
+          <circle cx="90" cy="60" r="15" fill="#fff" stroke="#0F7355" stroke-width="1.6"/><text x="90" y="65" fill="#0F7355">1</text>
+          <circle cx="170" cy="60" r="15" fill="#fff" stroke="#0F7355" stroke-width="1.6"/><text x="170" y="65" fill="#0F7355">4</text>
+          <circle cx="250" cy="60" r="15" fill="#fff" stroke="#0F7355" stroke-width="1.6"/><text x="250" y="65" fill="#0F7355">10</text>
+          <circle cx="330" cy="60" r="17" fill="#0F7355"/><text x="330" y="65" fill="#fff">20</text>
+        </g>
+        <text x="90" y="288" text-anchor="middle" font-size="12.5" fill="#535866">집</text>
+        <text x="352" y="42" font-size="12.5" fill="#535866">학교</text>
+      </svg>
+      <figcaption>비스듬히 읽으면 1, 1 / 1, 2, 1 / 1, 3, 3, 1 — 파스칼의 삼각형</figcaption>
+    </div>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">2-2</span><span class="ans">정답 · 20가지 (6칸 중 3칸 고르기)</span></div>
+    <div class="proof">
+      <b>왜 왼쪽 + 아래인가</b> — 어떤 점에 도착하려면 <b>직전에 있던 곳</b>은 바로 왼쪽이거나 바로 아래뿐입니다(오른쪽·위로만 가므로). 두 경우는 <b>겹치지 않고</b>(직전 위치가 다름), <b>빠짐도 없습니다</b>(다른 도착 방법이 없음). 그러므로 두 수를 <b>더하면</b> 됩니다.<br><br>
+      <b>다른 방법 · 글자 나열</b> — 3×3 격자를 가려면 오른쪽 R을 3번, 위 U를 3번, 모두 6번 움직입니다. 길 하나는 RRRUUU, RURURU처럼 <b>R 3개와 U 3개를 나열한 글자</b>와 정확히 일대일 대응합니다. 6자리 중 <b>어디에 R을 놓을지 3자리를 고르면</b> 나머지는 자동으로 U이므로, C(6, 3) = <b>20</b>가지입니다.
+    </div>
+    <div class="calc">일반적으로 w × h 격자의 경로 수 = C(w + h, w)
+
+  1×1 → C(2,1) = 2      2×2 → C(4,2) = 6
+  2×3 → C(5,2) = 10     3×3 → C(6,3) = <b>20</b>
+  3×5 → C(8,3) = 56     4×4 → C(8,4) = 70
+  5×5 → C(10,5) = <b>252</b></div>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">2-3</span><span class="ans">정답 · 40가지</span></div>
+    <div class="calc">방법 1 · 막힌 점을 0으로 두고 다시 채우기
+  그 점에는 0을 적고 나머지는 평소대로 더해 나감 → 도착점 <b>40</b>
+
+방법 2 · 전체에서 그 점을 지나는 길 빼기
+  전체 경로              = C(8,4) = 70
+  (2,1)을 지나는 경로     = [집→(2,1)] × [(2,1)→학교]
+                        = C(3,1) × C(5,2) = 3 × 10 = 30
+  답 = 70 − 30 = <b>40</b></div>
+    <div class="proof"><b>왜 곱하는가</b> — 특정 점을 지나는 길은 "앞 구간의 길"과 "뒤 구간의 길"을 <b>자유롭게 짝지어</b> 만듭니다. 앞 3가지 각각에 뒤 10가지가 붙으므로 3 × 10 = 30입니다. 이것이 <b>곱의 법칙</b>입니다.</div>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">2-4</span><span class="ans">토론 정리</span></div>
+    <div class="talk">
+      <h4>예상 답과 되물음</h4>
+      <p class="tq">① 왜 파스칼의 삼각형이 나오는가</p>
+      <p class="ta">두 상황 모두 <b>"바로 위 두 수를 더한다"</b>는 같은 규칙을 씁니다. 격자에서는 "이 점에 오는 방법 = 왼쪽에서 오기 + 아래에서 오기"이고, 파스칼 삼각형에서는 "n개 중 k개 고르기 = 첫 번째를 고르는 경우 + 안 고르는 경우"입니다. <b>둘 다 마지막 하나로 경우를 나눈 것</b>이므로 같은 수가 나옵니다. → 되물음: <em>"격자의 어느 방향으로 읽어야 파스칼 삼각형이 보이나요?"</em> (대각선 방향)</p>
+      <p class="tq">② 채우기 vs 빼기</p>
+      <p class="ta">막힌 점이 <b>1개</b>면 빼기가 빠릅니다. 그러나 <b>2개 이상</b>이면 "둘 다 지나는 길"을 이중으로 빼게 되어 포함배제가 필요해집니다. 반면 <b>0으로 두고 채우는 방법</b>은 막힌 점이 몇 개든 절차가 똑같습니다. → 되물음: <em>"막힌 점이 3개면 빼기로 하면 몇 개의 항이 필요할까요?"</em></p>
+      <p class="tq">③ 정가운데를 지나는 길</p>
+      <p class="ta">4×4에서 (2,2)를 지나는 길은 C(4,2) × C(4,2) = 6 × 6 = <b>36가지</b>입니다. 전체 70가지 중 <b>약 51.4%</b>입니다. 절반이 조금 넘는다는 점이 흥미롭습니다.</p>
+      <p class="tq">④ 대각선 이동 허용</p>
+      <p class="ta">각 점 = <b>왼쪽 + 아래 + 왼쪽아래</b>가 됩니다. 3×3이면 20이 아니라 <b>63</b>이 나오고, 이 수들을 <b>델라노이 수</b>라고 부릅니다(1, 3, 13, 63, 321, …). 규칙 하나만 바뀌어도 수가 훨씬 빨리 커진다는 점을 확인시키세요.</p>
+    </div>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">2-5</span><span class="ans">정답 · 252가지</span></div>
+    <div class="calc">5×5 격자 → 오른쪽 5번, 위 5번, 모두 10번 이동
+  C(10, 5) = 10×9×8×7×6 ÷ (5×4×3×2×1) = 30240 ÷ 120 = <b>252</b></div>
+    <div class="misc">
+      <h4>흔한 오답과 원인</h4>
+      <ul>
+        <li><b>길을 하나씩 그리다 개수를 틀림</b> — 3×3만 되어도 20가지라 손으로는 반드시 실수합니다. 이 실패가 오히려 좋은 동기가 됩니다.</li>
+        <li><b>3×3 격자를 점 3×3으로 오해</b> — 칸이 3×3이면 <b>점은 4×4</b>입니다. 그림에서 점을 세어 보게 하세요.</li>
+        <li><b>왼쪽 수 × 아래 수</b> — 더하기와 곱하기를 혼동한 경우입니다. "겹치지 않는 두 경우로 나눴으니 더한다"를 확인시키세요.</li>
+        <li><b>C(6,3) 대신 6×3 또는 6!</b> — 순서를 세거나 고르는 대상을 잘못 잡은 것입니다. RRRUUU 글자 나열로 되돌리세요.</li>
+      </ul>
+    </div>
+    <div class="rubric">
+      <div class="rh">평가 루브릭</div>
+      <table class="rb">
+        <tr><th>상</th><td>각 점에 수를 채우는 방법을 "왼쪽에서 오기 + 아래에서 오기"로 논증하고, 글자 나열(C(w+h, w))로도 같은 답을 얻는다. 막힌 점을 두 가지 방법으로 처리한다.</td></tr>
+        <tr><th>중</th><td>채우기 규칙을 적용해 답을 구하나, 왜 더하는지 또는 조합과의 연결을 설명하지 못한다.</td></tr>
+        <tr><th>하</th><td>길을 하나씩 그려 세려 하고 빠뜨리거나 중복한다.</td></tr>
+      </table>
+    </div>
+    <div class="verify"><span class="vh">Python 전수 검증 (동적계획 vs 조합식)</span>격자 경로 수 : 실제 계산 vs C(w+h, w)
+  1×1=<em>2</em> · 2×2=<em>6</em> · 3×3=<em>20</em> · 2×3=<em>10</em>
+  4×4=<em>70</em> · 3×5=<em>56</em> · 5×5=<em>252</em>   전부 일치
+격자에 적히는 수 = 파스칼 삼각형
+  [1,1,1,1,1] / [1,2,3,4,5] / [1,3,6,10,15] / [1,4,10,20,35] / [1,5,15,35,70]
+(2,2) 경유 경로 = C(4,2)×C(4,2) = <em>36</em> (전체 70의 51.4%)
+(2,1)이 막힌 4×4 = <em>40</em>  (70 − 3×10 = 40, 두 방법 일치)
+대각선 허용(델라노이 수) : 1×1=3, 2×2=<em>13</em>, 3×3=<em>63</em>, 4×4=321</div>
+    <p class="src"><b>출처</b> — 격자 경로 문제는 <b>파스칼의 삼각형</b>(블레즈 파스칼, 『산술 삼각형론』 1654)이 나타나는 대표적 상황입니다. 도시 블록을 따라 걷는다는 뜻에서 <b>맨해튼 거리</b>라고도 부르며, 대각선을 허용한 경우의 수는 <b>델라노이 수</b>로 알려져 있습니다.</p>
+  </div>
+</section>
+
+<!-- ============ SET 3 ============ -->
+<section class="set" id="s3" data-ac="#A8791A">
+  <div class="sethead">
+    <p class="no">SET 03 · ANSWERS</p>
+    <h2>원반 64개를 옮기면 세상이 끝난다는 탑</h2>
+    <p class="core">핵심 아이디어 — <b>같은 문제를 더 작게 만들기</b>. n개를 옮기는 문제가 n−1개를 옮기는 문제 두 번으로 쪼개집니다.</p>
+  </div>
+
+  <div class="keybox">
+    <h3>지도 요령</h3>
+    <p>원반 <b>3개</b>로 충분히 헤매게 하세요. 그리고 <b>"가장 큰 원반을 옮기려면 그 직전에 판이 어떤 모습이어야 하나요?"</b>를 물으면, 학생 스스로 "위의 것들이 전부 가운데 기둥에 있어야 한다"고 말합니다. 그 순간이 재귀를 발견하는 순간입니다.</p>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">3-1</span><span class="ans">정답 · 7번</span></div>
+    <div class="calc">원반 3개 최적 해법 (A → C)
+   1. 원반1 : A → C
+   2. 원반2 : A → B
+   3. 원반1 : C → B
+   4. 원반3 : A → C     ← 가장 큰 원반이 한 번에 이동
+   5. 원반1 : B → A
+   6. 원반2 : B → C
+   7. 원반1 : A → C
+
+총 <b>7</b>번 = 2³ − 1</div>
+    <p>4번 이동을 기준으로 앞의 3번과 뒤의 3번이 <b>대칭</b>이라는 점을 짚어 주세요. 이것이 3-3의 점화식으로 그대로 이어집니다.</p>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">3-2</span><span class="ans">정답 · 2ⁿ − 1</span></div>
+    <div class="tbscroll">
+      <table class="dt">
+        <tr><th>원반 n</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th></tr>
+        <tr><th>최소 이동</th><td class="hl">1</td><td class="hl">3</td><td class="hl">7</td><td class="hl">15</td><td class="hl">31</td><td class="hl">63</td><td class="hl">127</td><td class="hl">255</td><td class="hl">511</td><td class="hl">1023</td></tr>
+        <tr><th>2ⁿ</th><td>2</td><td>4</td><td>8</td><td>16</td><td>32</td><td>64</td><td>128</td><td>256</td><td>512</td><td>1024</td></tr>
+      </table>
+    </div>
+    <p>학생들이 가장 먼저 발견하는 것은 "<b>두 배 하고 1을 더한다</b>"입니다. 그다음 "2ⁿ보다 1 작다"를 알아챕니다. 두 표현이 같음을 확인시키세요.</p>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">3-3</span><span class="ans">정답 · T(n) = 2 × T(n−1) + 1</span></div>
+    <div class="proof">
+      <b>1단계</b> — 맨 아래 큰 원반을 옮기려면 그 위의 <b>n−1</b>개를 먼저 <b>가운데 기둥</b>으로 옮겨야 합니다. → <b>T(n−1)</b>번<br>
+      <b>2단계</b> — 이제 가장 큰 원반을 목표 기둥으로 옮깁니다. → <b>1</b>번<br>
+      <b>3단계</b> — 가운데에 있던 <b>n−1</b>개를 다시 목표 기둥으로 옮깁니다. → <b>T(n−1)</b>번<br><br>
+      따라서 <b>T(n) = 2 · T(n−1) + 1</b>, T(1) = 1
+    </div>
+    <div class="calc">펼쳐서 일반식 구하기
+  T(n) = 2T(n−1) + 1
+       = 2(2T(n−2) + 1) + 1 = 4T(n−2) + 2 + 1
+       = 8T(n−3) + 4 + 2 + 1
+       = …
+       = 2ⁿ⁻¹·T(1) + 2ⁿ⁻² + … + 2 + 1
+       = 2ⁿ⁻¹ + 2ⁿ⁻² + … + 2 + 1
+       = <b>2ⁿ − 1</b>
+
+  (양변에 1을 더하면 T(n)+1 = 2(T(n−1)+1) 이므로
+   T(n)+1 이 2배씩 커져 2ⁿ 이 됨 — 더 간결한 풀이)</div>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">3-4</span><span class="ans">토론 정리</span></div>
+    <div class="talk">
+      <h4>예상 답과 되물음</h4>
+      <p class="tq">① 원반 64개의 시간</p>
+      <p class="ta">2⁶⁴ − 1 = <b>18,446,744,073,709,551,615</b>번입니다. 1초에 한 번씩이면 <b>약 5845억 년</b>(584,554,049,253년)이 걸립니다. 우주의 나이(약 138억 년)의 <b>42배</b>가 넘습니다. → 되물음: <em>"원반을 하나 줄여 63개로 하면 시간이 얼마나 줄까요?"</em> (정확히 절반. 그래도 2900억 년)</p>
+      <p class="tq">② 원반별 이동 횟수</p>
+      <p class="ta">가장 작은 원반이 가장 많이 움직입니다. n = 4일 때 원반 1번은 <b>8회</b>, 2번은 4회, 3번은 2회, 4번은 <b>1회</b>입니다. 일반적으로 k번째로 작은 원반은 <b>2ⁿ⁻ᵏ</b>번 움직입니다. 합하면 8+4+2+1 = 15 = 2⁴−1로 맞아떨어집니다. 가장 작은 원반 하나가 <b>전체의 절반 이상</b>을 차지한다는 점이 인상적입니다.</p>
+      <p class="tq">③ 재귀를 쓸 수 있는 다른 상황</p>
+      <p class="ta">"큰 문제를 같은 모양의 작은 문제로 바꾸는" 구조는 매우 흔합니다. 예: 정렬(반으로 나눠 각각 정렬), 미로 찾기, 러시아 인형, 폴더 안의 폴더 세기, 세트 2의 격자 경로(마지막 한 걸음으로 나누기), 세트 4의 계단 오르기. → 되물음: <em>"세트 2와 세트 4에서도 같은 생각을 썼는데 눈치챘나요?"</em></p>
+      <p class="tq">④ 기둥이 4개라면</p>
+      <p class="ta">더 빨라집니다. 원반 3개는 3기둥에서 7번이지만 4기둥에서는 <b>5번</b>이면 됩니다. 일반적인 최소 횟수는 <b>프레임–스튜어트 알고리즘</b>으로 계산되며(n=10, 4기둥이면 49번), 이것이 최적이라는 증명은 <b>2014년에야</b> 완성되었습니다. 규칙 하나가 바뀌면 문제의 난이도가 완전히 달라진다는 좋은 예입니다.</p>
+    </div>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">3-5</span><span class="ans">정답 · 1023번 / 512번</span></div>
+    <div class="calc">원반 10개 : 2¹⁰ − 1 = 1024 − 1 = <b>1023</b>번
+
+가장 작은 원반의 이동 횟수 (n = 10)
+  2ⁿ⁻¹ = 2⁹ = <b>512</b>번
+  전체 1023번 중 512번 → <b>절반이 넘음</b>
+
+이동 횟수가 1023이면 → 2ⁿ = 1024 → n = <b>10</b>개</div>
+    <div class="misc">
+      <h4>흔한 오답과 원인</h4>
+      <ul>
+        <li><b>원반 3개를 8번으로</b> — 2ⁿ으로 착각한 경우입니다. 직접 옮겨 7번임을 확인시키세요.</li>
+        <li><b>n × 2 또는 n²</b> — 작은 값(n=2에서 3, n=3에서 7)이 우연히 비슷해 보여 생기는 오답입니다. n=4까지 확인하면 갈립니다.</li>
+        <li><b>"원반이 2배면 시간도 2배"</b> — 지수 증가를 선형으로 오해한 것입니다. 원반이 <b>하나</b> 늘 때 2배임을 강조하세요.</li>
+        <li><b>큰 원반을 여러 번 옮기려 함</b> — 최적 해법에서 <b>가장 큰 원반은 딱 한 번</b>만 움직입니다. 이 사실을 스스로 확인하면 점화식이 자연스럽게 보입니다.</li>
+      </ul>
+    </div>
+    <div class="rubric">
+      <div class="rh">평가 루브릭</div>
+      <table class="rb">
+        <tr><th>상</th><td>점화식 T(n) = 2T(n−1) + 1을 세 단계 논증으로 유도하고 2ⁿ−1로 정리한다. 원반별 이동 횟수와 지수 증가의 의미를 설명한다.</td></tr>
+        <tr><th>중</th><td>표에서 규칙(2배 + 1, 또는 2ⁿ−1)을 찾아내나, 왜 그런 구조가 생기는지 설명하지 못한다.</td></tr>
+        <tr><th>하</th><td>규칙을 지키며 원반을 옮기지 못하거나, 최소 횟수를 찾지 못한다.</td></tr>
+      </table>
+    </div>
+    <div class="verify"><span class="vh">Python 검증 (재귀 시뮬레이션 + 규칙 위반 검사)</span>실제 이동 횟수 vs 2ⁿ−1 : n = 1~12 <em>전부 일치</em>
+  1, 3, 7, 15, 31, 63, 127, 255, 511, <em>1023</em>, 2047, 4095
+규칙 검사 (맨 위 원반만 이동 / 큰 원반을 작은 원반 위에 금지)
+  n = 1~10 : <em>위반 0회</em>, 최종 상태 모두 C기둥에 정렬 완료
+원반별 이동 횟수 (n=4) : 원반1 <em>8</em>회, 원반2 4회, 원반3 2회, 원반4 <em>1</em>회
+  = 2^(4−k) · 합계 15 = 2⁴−1
+점화식 T(n) = 2T(n−1)+1 로 계산한 값도 2ⁿ−1과 <em>일치</em>
+전설의 64개 : <em>18,446,744,073,709,551,615</em>번
+  1초당 1회 → <em>584,554,049,253</em>년 (문헌값과 일치)</div>
+    <p class="src"><b>출처</b> — <b>에두아르 뤼카</b>(1842–1891)가 1883년 "클라우스 교수(N. Claus)"라는 필명으로 발표했습니다(Claus는 Lucas의 철자를 바꾼 것). 이듬해 앙리 드 파르빌이 인도 베나레스 사원의 <b>브라흐마의 탑</b> 전설을 덧붙이며 널리 알려졌습니다.</p>
+  </div>
+</section>
+
+<!-- ============ SET 4 ============ -->
+<section class="set" id="s4" data-ac="#8A3352">
+  <div class="sethead">
+    <p class="no">SET 04 · ANSWERS</p>
+    <h2>계단을 1칸씩 또는 2칸씩 오르는 방법</h2>
+    <p class="core">핵심 아이디어 — <b>마지막 한 걸음으로 경우 나누기</b>. 전혀 다른 세 이야기가 같은 점화식으로 모입니다.</p>
+  </div>
+
+  <div class="keybox">
+    <h3>지도 요령</h3>
+    <p>5칸까지는 전부 적게 하고, 6칸부터는 "다 적기 힘들지?"를 확인시킨 뒤 <b>마지막 걸음</b>에 주목하게 하세요. 세트 2(격자)와 <b>완전히 같은 발상</b>이므로, 두 세트를 이어서 다루면 학생들이 스스로 연결을 발견합니다.</p>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">4-1</span><span class="ans">정답 · 8가지</span></div>
+    <div class="calc">5칸 계단을 오르는 8가지 방법
+  1+1+1+1+1      2+1+1+1
+  1+1+1+2        2+1+2
+  1+1+2+1        2+2+1
+  1+2+1+1
+  1+2+2
+
+계단 수 |  1   2   3   4   <b>5</b>   6   7   8   9  10
+방법 수 |  1   2   3   5   <b>8</b>  13  21  34  55  89</div>
+    <p>1, 2, 3, 5, 8 … 을 보고 학생들이 "앞의 두 개를 더했다"를 발견하면 4-2로 넘어갑니다.</p>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">4-2</span><span class="ans">정답 · f(n) = f(n−1) + f(n−2)</span></div>
+    <div class="proof">
+      <b>마지막 한 걸음으로 나누기</b> — n칸에 도착하는 마지막 걸음은 <b>1칸</b>이거나 <b>2칸</b>, 둘 중 하나뿐입니다.<br><br>
+      · 마지막이 <b>1칸</b>이었다면 → 직전에는 <b>n−1</b>칸에 있었음 → f(n−1)가지<br>
+      · 마지막이 <b>2칸</b>이었다면 → 직전에는 <b>n−2</b>칸에 있었음 → f(n−2)가지<br><br>
+      두 경우는 <b>겹치지 않고</b>(마지막 걸음의 크기가 다름) <b>빠짐도 없으므로</b>(다른 경우가 없음), 더하면 됩니다.<br>
+      <b>f(n) = f(n−1) + f(n−2)</b>, f(1) = 1, f(2) = 2
+    </div>
+    <p>"겹치지 않는가"를 반드시 확인시키세요. 여기서 <b>첫 걸음</b>이 아니라 <b>마지막 걸음</b>으로 나누는 이유(직전 위치가 명확해짐)도 짚어 주면 좋습니다.</p>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">4-3</span><span class="ans">정답 · 144쌍</span></div>
+    <div class="tbscroll">
+      <table class="dt">
+        <tr><th>개월</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th></tr>
+        <tr><th>어린 쌍</th><td>1</td><td>0</td><td>1</td><td>1</td><td>2</td><td>3</td><td>5</td><td>8</td><td>13</td><td>21</td><td>34</td><td>55</td></tr>
+        <tr><th>어른 쌍</th><td>0</td><td>1</td><td>1</td><td>2</td><td>3</td><td>5</td><td>8</td><td>13</td><td>21</td><td>34</td><td>55</td><td>89</td></tr>
+        <tr><th>전체 쌍</th><td class="hl">1</td><td class="hl">1</td><td class="hl">2</td><td class="hl">3</td><td class="hl">5</td><td class="hl">8</td><td class="hl">13</td><td class="hl">21</td><td class="hl">34</td><td class="hl">55</td><td class="hl">89</td><td class="hl">144</td></tr>
+      </table>
+    </div>
+    <div class="proof"><b>왜 같은 수열인가</b> — 이번 달의 토끼는 <b>지난달에 있던 토끼 전부</b>(죽지 않으므로)에 <b>지지난달 토끼 수만큼의 새끼</b>(그때 있던 토끼가 지금은 모두 어른이므로)를 더한 것입니다. 즉 F(n) = F(n−1) + F(n−2)로, 계단 오르기와 <b>같은 구조</b>입니다.</div>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">4-4</span><span class="ans">토론 정리</span></div>
+    <div class="talk">
+      <h4>예상 답과 되물음</h4>
+      <p class="tq">① 왜 같은 수열이 나오는가</p>
+      <p class="ta">두 상황 모두 <b>"현재 상태가 바로 앞 두 상태로만 결정된다"</b>는 성질을 갖습니다. 계단에서는 "마지막 걸음이 1칸 또는 2칸", 토끼에서는 "기존 토끼 + 두 달 전 토끼가 낳은 새끼"입니다. 이야기는 달라도 <b>수학적 뼈대가 같으면 답도 같습니다</b>. → 되물음: <em>"이야기가 달라도 답이 같다는 게 수학에서 왜 중요할까요?"</em></p>
+      <p class="tq">② 2 × n 타일 덮기</p>
+      <p class="ta">역시 같은 수열입니다. 맨 오른쪽을 어떻게 덮는지로 나눕니다. <b>세로 타일 1개</b>로 덮으면 나머지는 2×(n−1), <b>가로 타일 2개</b>를 위아래로 놓으면 나머지는 2×(n−2)입니다. 다른 경우는 없고 겹치지도 않으므로 f(n) = f(n−1) + f(n−2)입니다. (2×1부터 1, 2, 3, 5, 8, …)</p>
+      <p class="tq">③ 1·2·3칸까지 오르면</p>
+      <p class="ta">마지막 걸음이 세 가지가 되므로 <b>앞의 세 수를 더합니다</b>. 1, 2, 4, 7, 13, 24, 44, 81, … 이것을 <b>트리보나치 수열</b>이라 합니다. 3칸까지 되면 4번째에서 8이 아니라 7이 나온다는 점을 확인시키세요(2ⁿ이 아님).</p>
+      <p class="tq">④ 앞뒤 비율</p>
+      <p class="ta">1, 2, 1.5, 1.666…, 1.6, 1.625, 1.6153…처럼 위아래로 흔들리며 <b>1.618033…</b>에 가까워집니다. 이것이 <b>황금비</b> φ = (1+√5)/2입니다. 정오각형의 대각선과 변의 비, 해바라기 씨앗 배열 등에서 같은 수가 나타납니다. → 되물음: <em>"왜 하필 이 수에 가까워질까요?"</em> (x² = x + 1의 해)</p>
+    </div>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">4-5</span><span class="ans">정답 · 89가지 / 8칸</span></div>
+    <div class="calc">계단 수 |  1   2   3   4   5   6   7   <b>8</b>   9  <b>10</b>
+방법 수 |  1   2   3   5   8  13  21  <b>34</b>  55  <b>89</b>
+
+10칸 → <b>89</b>가지
+방법이 34가지 → <b>8</b>칸</div>
+    <div class="misc">
+      <h4>흔한 오답과 원인</h4>
+      <ul>
+        <li><b>1+2와 2+1을 같은 방법으로 셈</b> — 문제에 "순서가 다르면 다른 방법"이라고 명시했습니다. 3칸에서 2가지가 나오면 이 오류입니다.</li>
+        <li><b>2ⁿ으로 착각</b> — 1, 2, 4가 될 것 같지만 3칸에서 <b>3가지</b>입니다. 직접 나열시키면 즉시 교정됩니다.</li>
+        <li><b>f(n) = f(n−1) + f(n−2) 에서 f(2) = 1로 시작</b> — 계단 2칸은 (1+1)과 (2) 두 가지이므로 <b>f(2) = 2</b>입니다. 출발값을 잘못 잡으면 전체가 한 칸씩 밀립니다.</li>
+        <li><b>"첫 걸음"으로 나누려다 헷갈림</b> — 첫 걸음으로 나눠도 답은 같지만, 마지막 걸음이 더 명확합니다.</li>
+      </ul>
+    </div>
+    <div class="rubric">
+      <div class="rh">평가 루브릭</div>
+      <table class="rb">
+        <tr><th>상</th><td>마지막 걸음으로 경우를 나누고 "겹치지 않고 빠짐없음"을 확인해 점화식을 세운다. 토끼·타일 문제가 같은 구조임을 설명하고, 3칸 확장의 규칙을 예측한다.</td></tr>
+        <tr><th>중</th><td>수열의 규칙(앞 두 수의 합)을 찾아내나, 왜 그런지 경우 나누기로 설명하지 못한다.</td></tr>
+        <tr><th>하</th><td>순서를 구분하지 못하거나 작은 경우를 빠짐없이 나열하지 못한다.</td></tr>
+      </table>
+    </div>
+    <div class="verify"><span class="vh">Python 전수 검증 (동적계획 vs 완전탐색)</span>계단 오르는 방법 수 : n = 1~12 <em>전부 일치</em>
+  1, 2, 3, 5, <em>8</em>, 13, 21, <em>34</em>, 55, <em>89</em>, 144, 233
+5칸의 8가지를 실제로 나열해 개수 확인 : <em>8</em>가지
+토끼 번식 시뮬레이션 (1~12개월)
+  1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, <em>144</em>  → 계단 수열과 동일
+2×n 타일 덮기 : 1, 2, 3, 5, 8, 13, 21, 34, 55, 89 → <em>완전히 같음</em>
+1·2·3칸 오르기(트리보나치) : 1, 2, 4, <em>7</em>, 13, 24, 44, 81, 149, 274
+  앞의 세 수의 합인지 전 구간 <em>확인 완료</em></div>
+    <p class="src"><b>출처</b> — <b>레오나르도 피보나치</b>가 1202년 『산반서(Liber Abaci)』에서 토끼 번식 문제로 소개했습니다. 다만 이 수열은 그보다 훨씬 앞서 인도 수학자 <b>핑갈라</b>(기원전 450년경)가 운율(짧은 음과 긴 음의 배열)을 연구하며 이미 다루었습니다 — 이는 계단 오르기와 정확히 같은 문제입니다.</p>
+  </div>
+</section>
+
+<!-- ============ SET 5 ============ -->
+<section class="set" id="s5" data-ac="#C0472F">
+  <div class="sethead">
+    <p class="no">SET 05 · ANSWERS</p>
+    <h2>체스판 속에 정사각형은 정말 64개뿐일까</h2>
+    <p class="core">핵심 아이디어 — <b>세는 기준을 바꾸기</b>. 정사각형은 크기별로, 직사각형은 선을 고르는 방식으로 세면 단번에 해결됩니다.</p>
+  </div>
+
+  <div class="keybox">
+    <h3>지도 요령</h3>
+    <p>"64개"라는 답이 먼저 나오는 것이 정상입니다. 그때 <b>2×2 정사각형을 하나 손으로 짚어</b> 주세요. "어? 이것도 정사각형이네"라는 반응이 나오는 순간 문제가 시작됩니다. 처음부터 정답을 알려 주면 이 세트의 재미가 사라집니다.</p>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">5-1</span><span class="ans">정답 · 49개</span></div>
+    <div class="proof">
+      <b>왼쪽 위 꼭짓점을 세기</b> — 2×2 정사각형은 <b>왼쪽 위 꼭짓점의 위치</b>만 정하면 결정됩니다. 8×8 판에서 그 꼭짓점은 가로로 <b>7</b>곳, 세로로 <b>7</b>곳에 놓을 수 있습니다(오른쪽·아래로 1칸의 여유가 필요하므로).<br>
+      → 7 × 7 = <b>49</b>개
+    </div>
+    <div class="calc">일반적으로 8×8 판에서 k×k 정사각형의 개수
+  = (8 − k + 1) × (8 − k + 1) = (9 − k)²</div>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">5-2</span><span class="ans">정답 · 204개</span></div>
+    <div class="tbscroll">
+      <table class="dt">
+        <tr><th>크기</th><th>1×1</th><th>2×2</th><th>3×3</th><th>4×4</th><th>5×5</th><th>6×6</th><th>7×7</th><th>8×8</th><th>합계</th></tr>
+        <tr><th>개수</th><td>64</td><td>49</td><td>36</td><td>25</td><td>16</td><td>9</td><td>4</td><td>1</td><td class="hl">204</td></tr>
+        <tr><th>= 제곱수</th><td>8²</td><td>7²</td><td>6²</td><td>5²</td><td>4²</td><td>3²</td><td>2²</td><td>1²</td><td>1²+…+8²</td></tr>
+      </table>
+    </div>
+    <div class="calc">1² + 2² + 3² + 4² + 5² + 6² + 7² + 8²
+= 1 + 4 + 9 + 16 + 25 + 36 + 49 + 64
+= <b>204</b>
+
+제곱수의 합 공식 : n(n+1)(2n+1)/6
+  n = 8 → 8 × 9 × 17 ÷ 6 = 1224 ÷ 6 = <b>204</b> ✓</div>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">5-3</span><span class="ans">정답 · 1296개</span></div>
+    <div class="proof">
+      <b>생각의 전환</b> — 직사각형 하나를 정하려면 <b>위·아래 가로선 2개</b>와 <b>왼쪽·오른쪽 세로선 2개</b>를 정하면 됩니다. 반대로 선 4개를 고르면 직사각형이 <b>정확히 하나</b> 만들어집니다(일대일 대응).<br><br>
+      8×8 체스판에는 가로선이 <b>9</b>개, 세로선이 <b>9</b>개 있습니다.<br>
+      → C(9, 2) × C(9, 2) = 36 × 36 = <b>1296</b>개
+    </div>
+    <div class="calc">C(9,2) = 9 × 8 ÷ 2 = 36
+36 × 36 = <b>1296</b>
+
+다른 표현 : (1 + 2 + … + 8)² = 36² = 1296
+  (가로로 고를 수 있는 폭의 가짓수를 모두 더한 것과 같음)</div>
+    <p>정사각형은 크기별로, 직사각형은 선 고르기로 — <b>세는 기준을 상황에 맞게 바꾸는 것</b>이 이 세트의 교훈입니다.</p>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">5-4</span><span class="ans">토론 정리</span></div>
+    <div class="talk">
+      <h4>예상 답과 되물음</h4>
+      <p class="tq">① 정사각형도 선으로 셀 수 있나</p>
+      <p class="ta">어렵습니다. 직사각형은 가로 2개·세로 2개를 <b>독립적으로</b> 고를 수 있지만, 정사각형은 <b>가로 간격과 세로 간격이 같아야</b> 한다는 조건이 붙어 두 선택이 얽힙니다. 그래서 조건이 자유로운 직사각형은 곱셈으로, 조건이 얽힌 정사각형은 크기별로 나누어 셉니다. → 되물음: <em>"두 선택이 서로 영향을 주지 않을 때만 곱할 수 있다는 걸 다른 문제에서도 봤나요?"</em> (세트 2의 경유 경로)</p>
+      <p class="tq">② 제곱수의 합 공식</p>
+      <p class="ta"><b>n(n+1)(2n+1)/6</b>입니다. n = 8이면 8 × 9 × 17 ÷ 6 = <b>204</b>로 표의 합과 일치합니다. n = 10이면 10 × 11 × 21 ÷ 6 = 385입니다. 세트 1의 삼각수 공식 n(n+1)/2와 나란히 놓고 비교하면 좋습니다.</p>
+      <p class="tq">③ 정사각형이 아닌 직사각형</p>
+      <p class="ta">1296 − 204 = <b>1092개</b>입니다. 정사각형이 직사각형에 <b>포함</b>되므로 전체에서 빼면 됩니다. 학생들이 "정사각형은 직사각형인가?"를 묻는다면 아주 좋은 질문입니다 — 네 각이 직각이면 직사각형이므로 <b>정사각형은 직사각형의 특별한 경우</b>입니다.</p>
+      <p class="tq">④ 기울어진 정사각형</p>
+      <p class="ta">꼭짓점이 모두 격자점인 <b>기울어진</b> 정사각형도 있습니다. 예를 들어 2×2 격자 안에는 똑바른 것 4개 + 45도 기울어진 것 1개 = <b>5개</b>가 아니라, 1×1 네 개와 2×2 하나, 그리고 기울어진 하나까지 <b>6개</b>입니다. 8×8 격자 전체에서는 <b>540개</b>가 됩니다. 규칙을 조금만 넓혀도 답이 크게 달라진다는 좋은 예입니다.</p>
+    </div>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">5-5</span><span class="ans">정답 · 385개 / 3025개</span></div>
+    <div class="calc">10 × 10 격자
+
+정사각형 = 1² + 2² + … + 10²
+        = 10 × 11 × 21 ÷ 6 = 2310 ÷ 6 = <b>385</b>
+
+직사각형 = C(11,2) × C(11,2) = 55 × 55 = <b>3025</b>
+        = (1 + 2 + … + 10)² = 55²
+
+정사각형이 아닌 직사각형 = 3025 − 385 = 2640</div>
+    <div class="misc">
+      <h4>흔한 오답과 원인</h4>
+      <ul>
+        <li><b>64개</b> — 1×1만 센 경우입니다. 이 세트가 노리는 대표 오답이므로 틀렸다고 하지 말고 2×2를 손으로 짚어 주세요.</li>
+        <li><b>2×2 정사각형을 16개로</b> — 겹치지 않게만 놓았습니다. "겹쳐도 되나요?"를 물어보게 하고, 문제에서는 <b>겹쳐도 각각 다른 정사각형</b>임을 확인시키세요.</li>
+        <li><b>가로선을 8개로 셈</b> — 칸이 8개면 <b>선은 9개</b>입니다. 그림에서 직접 세어 보게 하세요.</li>
+        <li><b>직사각형을 크기별로 세려다 포기</b> — 방향이 틀린 것은 아니지만 64가지 크기를 모두 세야 합니다. 선 고르기로 전환시키세요.</li>
+        <li><b>정사각형을 직사각형에서 제외</b> — 문제 조건을 확인시키세요. 여기서는 포함합니다.</li>
+      </ul>
+    </div>
+    <div class="rubric">
+      <div class="rh">평가 루브릭</div>
+      <table class="rb">
+        <tr><th>상</th><td>크기별로 나누어 (9−k)²로 세고 제곱수의 합으로 정리한다. 직사각형은 선 4개 고르기로 전환해 C(9,2)²로 구하고, 두 방법을 왜 다르게 쓰는지 설명한다.</td></tr>
+        <tr><th>중</th><td>크기별로 세어 204를 구하나, 직사각형에서 선 고르기로 전환하지 못하고 하나씩 세려 한다.</td></tr>
+        <tr><th>하</th><td>1×1만 세어 64로 답하거나, 겹치는 정사각형을 인식하지 못한다.</td></tr>
+      </table>
+    </div>
+    <div class="verify"><span class="vh">Python 완전탐색 vs 공식</span>정사각형 : 모든 위치를 직접 세기 vs Σk²   (n = 1~8 전부 일치)
+  1, 5, 14, 30, 55, 91, 140, <em>204</em>
+직사각형 : 모든 (가로2, 세로2) 조합 직접 세기 vs (n(n+1)/2)²
+  1, 9, 36, 100, 225, 441, 784, <em>1296</em>
+8×8 크기별 정사각형 : 64, 49, 36, 25, 16, 9, 4, 1 → 합 <em>204</em>
+제곱수 합 공식 n(n+1)(2n+1)/6 : n = 8 → <em>204</em>, n = 10 → <em>385</em>
+C(9,2)² = 36² = <em>1296</em> · 정사각형이 아닌 직사각형 = <em>1092</em>
+10×10 : 정사각형 <em>385</em> / 직사각형 <em>3025</em>
+기울어진 것 포함(8×8) : <em>540</em>개</div>
+    <p class="src"><b>출처</b> — 격자 속 정사각형·직사각형 세기는 초중등 사고력 수학의 대표 문제입니다. 8×8 체스판에서 정사각형 <b>204개</b>, 직사각형 <b>1296개</b>이며, 각각 <b>제곱수의 합</b>과 <b>삼각수의 제곱</b>이 답이 된다는 점이 이 문제의 아름다움입니다.</p>
+  </div>
+</section>
+
+<div class="prm">
+  <button id="prev">← 이전 세트</button>
+  <button id="next">다음 세트 →</button>
+</div>
+
+</main>
+
+<footer>세영코딩연구소 · 사고력 조합론 5제 교사용 정답 및 해설 · 모든 정답은 Python으로 전수 검증되었습니다</footer>
+
+<script>
+(function(){
+  "use strict";
+  var ORDER = ["s1","s2","s3","s4","s5"], cur = 0;
+  var $ = function(id){ return document.getElementById(id); };
+  function show(i){
+    cur = Math.max(0, Math.min(ORDER.length-1, i));
+    var id = ORDER[cur];
+    document.querySelectorAll(".set").forEach(function(s){ s.classList.toggle("on", s.id===id); });
+    document.querySelectorAll(".tocbtn").forEach(function(b){ b.classList.toggle("on", b.dataset.s===id); });
+    document.documentElement.style.setProperty("--ac", $(id).dataset.ac || "#2F3D8C");
+    $("prev").disabled = cur===0; $("next").disabled = cur===ORDER.length-1;
+    window.scrollTo({ top:0, behavior:"smooth" });
+  }
+  document.querySelectorAll(".tocbtn").forEach(function(b){
+    b.addEventListener("click", function(){ show(ORDER.indexOf(b.dataset.s)); });
+  });
+  $("prev").addEventListener("click", function(){ show(cur-1); });
+  $("next").addEventListener("click", function(){ show(cur+1); });
+  show(0);
+})();
+</script>
+</body>
+</html>
