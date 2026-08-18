@@ -1,0 +1,1585 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>사고력 논리퍼즐과 게임이론 5제 · 학생용 문제집</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+<style>
+:root{
+  --bg:#F2F1EE;--paper:#FFFFFF;--ink:#1A1C21;--ink-2:#555A64;--line:#DAD8D2;--rule:#C0BEB7;
+  --ocean:#1E5F74;--flame:#B2452C;--vine:#4C6B2F;--dusk:#5B4A7D;--sand:#96731A;
+  --ac:var(--ocean);
+  --f-disp:'Gowun Batang','Pretendard Variable',Pretendard,serif;
+  --f-body:'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif;
+  --f-mono:'D2Coding','JetBrains Mono',Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);line-height:1.75;-webkit-font-smoothing:antialiased;
+  background-image:linear-gradient(rgba(0,0,0,.02) 1px,transparent 1px);background-size:100% 30px}
+.wrap{max-width:840px;margin:0 auto;padding:0 20px}
+header{padding:52px 0 30px;border-bottom:3px double var(--rule)}
+.kicker{font-family:var(--f-mono);font-size:12px;letter-spacing:.24em;color:var(--flame);margin:0 0 12px}
+header h1{font-family:var(--f-disp);font-weight:700;font-size:clamp(30px,6vw,46px);line-height:1.24;margin:0 0 12px;letter-spacing:-.02em}
+header .sub{color:var(--ink-2);margin:0 0 20px;max-width:580px;font-size:15.5px}
+.metarow{display:flex;flex-wrap:wrap;gap:8px}
+.tag{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);background:var(--paper);border-radius:4px;padding:5px 11px;color:var(--ink-2)}
+.tag b{color:var(--ink)}
+.howbox{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:20px 22px;margin:26px 0}
+.howbox h2{font-family:var(--f-disp);font-weight:700;font-size:17px;margin:0 0 12px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media(max-width:700px){.steps{grid-template-columns:1fr 1fr}}
+.steps div{font-size:13.6px;color:var(--ink-2)}
+.steps div b{display:block;font-family:var(--f-mono);font-size:11.5px;color:var(--flame);letter-spacing:.1em;margin-bottom:3px}
+.steps div span{color:var(--ink);font-weight:600;display:block;margin-bottom:2px}
+nav.toc{position:sticky;top:0;z-index:40;background:rgba(242,241,238,.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);margin-bottom:32px}
+.tocrow{display:flex;gap:5px;overflow-x:auto;padding:10px 0;scrollbar-width:none}
+.tocrow::-webkit-scrollbar{display:none}
+.tocbtn{flex:0 0 auto;border:1px solid var(--line);background:var(--paper);color:var(--ink-2);cursor:pointer;
+  font-family:var(--f-body);font-size:13.4px;font-weight:600;padding:7px 14px;border-radius:5px;white-space:nowrap;transition:.15s}
+.tocbtn:hover{border-color:var(--ink-2);color:var(--ink)}
+.tocbtn.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.tocbtn:focus-visible{outline:2px solid var(--sand);outline-offset:2px}
+.set{display:none;padding-bottom:70px;animation:fade .3s ease}
+.set.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+.sethead{border-left:5px solid var(--ac);padding-left:18px;margin-bottom:26px}
+.sethead .no{font-family:var(--f-mono);font-size:12px;letter-spacing:.2em;color:var(--ac);margin:0}
+.sethead h2{font-family:var(--f-disp);font-weight:700;font-size:clamp(23px,4.6vw,32px);margin:5px 0 8px;line-height:1.3}
+.sethead .from{font-size:13.4px;color:var(--ink-2);margin:0}
+.sethead .from em{font-style:normal;color:var(--ink);font-weight:600}
+.badges{display:flex;flex-wrap:wrap;gap:7px;margin:14px 0 0}
+.bd{font-family:var(--f-mono);font-size:11.5px;padding:4px 10px;border-radius:99px;border:1px solid var(--line);background:var(--paper);color:var(--ink-2)}
+.bd.lv{border-color:var(--ac);color:var(--ac)}
+.q{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:22px 24px;margin-bottom:18px}
+.qh{display:flex;align-items:center;gap:11px;margin-bottom:13px;flex-wrap:wrap}
+.qno{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.1em;color:#fff;background:var(--ac);border-radius:4px;padding:3px 10px}
+.qkind{font-size:12.5px;color:var(--ink-2);border:1px dashed var(--line);border-radius:4px;padding:2px 9px}
+.qkind.talk{color:var(--flame);border-color:#E3C8C0}
+.q p{margin:0 0 12px;font-size:15.6px}
+.q p:last-child{margin-bottom:0}
+.q ul,.q ol{margin:0 0 12px;padding-left:22px;font-size:15.4px}
+.q li{margin-bottom:6px}
+.given{background:#FAF9F4;border-left:3px solid var(--sand);border-radius:0 5px 5px 0;padding:12px 16px;margin:0 0 14px;font-size:14.8px}
+.given b{color:var(--sand)}
+.talkbox{background:#FCF4F1;border:1px solid #E9D2C9;border-radius:6px;padding:16px 18px;margin-top:14px}
+.talkbox h4{font-family:var(--f-disp);font-weight:700;font-size:15px;margin:0 0 9px;color:var(--flame)}
+.talkbox ol{margin:0;padding-left:20px;font-size:14.8px}
+.talkbox li{margin-bottom:7px;color:#4A3027}
+.talkbox li:last-child{margin-bottom:0}
+details.hint{margin-top:14px;border-top:1px dashed var(--line);padding-top:12px}
+details.hint summary{cursor:pointer;font-size:13.6px;color:var(--ink-2);font-weight:600;list-style:none;display:inline-flex;gap:7px;align-items:center}
+details.hint summary::-webkit-details-marker{display:none}
+details.hint summary::before{content:"▸";color:var(--ac);transition:.2s}
+details.hint[open] summary::before{transform:rotate(90deg)}
+details.hint .body{font-size:14.4px;color:var(--ink-2);padding:10px 0 0 16px}
+.ansrow{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-top:14px}
+.ansrow label{font-family:var(--f-mono);font-size:12px;color:var(--ink-2)}
+.ansrow input{flex:1;min-width:150px;border:1px solid var(--line);border-radius:5px;padding:9px 12px;
+  font-family:var(--f-body);font-size:15px;background:#FCFCFA;color:var(--ink)}
+.ansrow input:focus{outline:2px solid var(--ac);outline-offset:1px}
+.chk{border:1px solid var(--ac);background:var(--paper);color:var(--ac);border-radius:5px;padding:9px 16px;
+  font-size:13.6px;font-weight:700;cursor:pointer;font-family:var(--f-body)}
+.chk:hover{background:var(--ac);color:#fff}
+.verdict{font-size:13.8px;font-weight:700}
+.verdict.ok{color:var(--vine)}
+.verdict.no{color:var(--flame)}
+textarea.memo{width:100%;border:1px solid var(--line);border-radius:5px;padding:11px 13px;margin-top:12px;
+  font-family:var(--f-body);font-size:14.6px;background:#FCFCFA;color:var(--ink);resize:vertical;line-height:1.7}
+textarea.memo:focus{outline:2px solid var(--ac);outline-offset:1px}
+.lab{background:var(--paper);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-bottom:18px}
+.labbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;background:#F6F5F1;
+  border-bottom:1px solid var(--line);font-family:var(--f-mono);font-size:12px;color:var(--ink-2);flex-wrap:wrap}
+.tools{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.tbtn{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:4px;padding:6px 12px;
+  font-size:12.5px;cursor:pointer;font-family:var(--f-body);font-weight:600}
+.tbtn:hover{border-color:var(--ac);color:var(--ac)}
+.tbtn.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.tbtn:focus-visible{outline:2px solid var(--sand);outline-offset:2px}
+.tbtn:disabled{opacity:.4;cursor:default}
+.labin{padding:18px}
+.labfoot{padding:11px 16px;border-top:1px solid var(--line);background:#FAFAF6;font-size:13.4px;color:var(--ink-2)}
+.labfoot b{color:var(--ink)}
+input[type=range]{accent-color:var(--ac)}
+input[type=number]{padding:6px 9px;border:1px solid var(--line);border-radius:4px;font-family:var(--f-mono);background:#FCFCFA;color:var(--ink)}
+table.dt{width:100%;border-collapse:collapse;font-family:var(--f-mono);font-size:13px}
+table.dt th,table.dt td{border:1px solid var(--line);padding:6px 9px;text-align:center}
+table.dt th{background:#F1F0EC;font-weight:600}
+td.hi{background:#FBF7E4;color:var(--sand);font-weight:700}
+td.ok{background:#EEF3E9;color:var(--vine);font-weight:700}
+td.no{background:#FBEEEA;color:var(--flame);font-weight:700}
+.tbscroll{overflow-x:auto}
+/* 강 건너기 */
+.river{display:flex;align-items:stretch;gap:0;border:1px solid var(--line);border-radius:8px;overflow:hidden;min-height:150px}
+.bank{flex:1;padding:12px;background:#F3F1E9}
+.water{width:86px;background:linear-gradient(180deg,#BEE0EA,#8FC6D8);position:relative;display:grid;place-items:center}
+.boat{font-size:28px;transition:transform .35s}
+.boat.right{transform:translateY(0)}
+.bank h5{margin:0 0 8px;font-family:var(--f-mono);font-size:11.5px;color:var(--ink-2);text-align:center}
+.things{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.thing{border:1px solid var(--line);border-radius:8px;padding:6px 10px;background:#fff;font-size:14px;cursor:pointer;transition:.15s}
+.thing:hover{border-color:var(--ac)}
+.thing.sel{background:var(--ac);color:#fff;border-color:var(--ac)}
+.thing.dead{background:#FBEEEA;border-color:#E3C8C0}
+/* 뺏기 게임 */
+.stones{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin-bottom:12px}
+.stone{width:22px;height:22px;border-radius:50%;background:var(--ocean);transition:.2s}
+.stone.gone{background:#E4E2DC}
+.piles{display:flex;gap:26px;justify-content:center;flex-wrap:wrap}
+.pile{text-align:center}
+.pile .pn{font-family:var(--f-mono);font-size:11.5px;color:var(--ink-2);margin-bottom:6px}
+.pile .col{display:flex;flex-direction:column-reverse;gap:4px;align-items:center;min-height:110px}
+.pile .st{width:26px;height:12px;border-radius:3px;background:var(--dusk);cursor:pointer;transition:.15s}
+.pile .st:hover{background:var(--flame)}
+.pile .st.mark{background:var(--flame)}
+/* 몬티홀 */
+.doors{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.door{width:96px;height:140px;border:3px solid var(--line);border-radius:8px 8px 4px 4px;background:linear-gradient(180deg,#C7A87C,#A98A5E);
+  display:grid;place-items:center;font-size:34px;cursor:pointer;transition:.2s;position:relative;color:#fff;font-family:var(--f-disp)}
+.door:hover{border-color:var(--ac);transform:translateY(-3px)}
+.door.pick{border-color:var(--flame);box-shadow:0 0 0 3px rgba(178,69,44,.2)}
+.door.open{background:#EFEDE6;color:var(--ink)}
+.door .lb{position:absolute;bottom:6px;left:0;right:0;font-family:var(--f-mono);font-size:11px;text-align:center}
+/* 죄수의 딜레마 */
+.payoff{display:grid;grid-template-columns:auto 1fr 1fr;gap:0;font-family:var(--f-mono);font-size:13.4px}
+.payoff div{border:1px solid var(--line);padding:12px 10px;text-align:center}
+.payoff .hd{background:#F1F0EC;font-weight:700}
+.payoff .cell{cursor:pointer;transition:.15s}
+.payoff .cell:hover{background:#F6F5F1}
+.payoff .cell.on{background:#EEF3E9;border-color:var(--vine)}
+.payoff .cell.eq{background:#FBEEEA;border-color:var(--flame)}
+/* 격자 퍼즐 */
+.grid5{display:grid;grid-template-columns:auto repeat(5,1fr);gap:0;font-family:var(--f-mono);font-size:12.5px}
+.grid5 div{border:1px solid var(--line);padding:7px 4px;text-align:center;min-height:32px}
+.grid5 .hd{background:#F1F0EC;font-weight:700}
+.grid5 .cell{cursor:pointer}
+.grid5 .cell:hover{background:#F6F5F1}
+.grid5 .cell.on{background:var(--ac);color:#fff}
+.clues{display:grid;gap:5px;font-size:13.8px}
+.clues div{padding:5px 10px;border-left:3px solid var(--line);background:#FAFAF6;cursor:pointer}
+.clues div:hover{border-color:var(--ac)}
+.clues div.used{border-color:var(--vine);background:#EEF3E9;color:var(--ink-2);text-decoration:line-through}
+.footnote{font-size:12.6px;color:var(--ink-2);border-top:1px solid var(--line);padding-top:14px;margin-top:26px}
+.footnote b{color:var(--ink)}
+footer{border-top:3px double var(--rule);padding:26px 0 60px;color:var(--ink-2);font-size:13px;text-align:center}
+.prm{display:flex;justify-content:space-between;gap:10px;margin-top:34px}
+.prm button{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:5px;padding:11px 20px;
+  font-size:14px;font-weight:600;cursor:pointer;font-family:var(--f-body)}
+.prm button:hover{border-color:var(--ac);color:var(--ac)}
+.prm button:disabled{opacity:.35;cursor:default}
+@media print{
+  nav.toc,.prm,.chk,.tbtn{display:none}
+  .set{display:block !important;page-break-after:always}
+  body{background:#fff}
+  details.hint{display:none}
+}
+@media (prefers-reduced-motion: reduce){*{animation-duration:.001ms !important;transition-duration:.001ms !important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <p class="kicker">LOGIC PUZZLES &amp; GAME THEORY · WORKBOOK</p>
+    <h1>이기는 방법에는<br>이유가 있다</h1>
+    <p class="sub">운이 아니라 <b>계산</b>으로 이기는 게임들이 있습니다. 다섯 문제 모두 1200년 전부터 오늘까지 이어진 고전이며, 마지막에는 <b>모두가 합리적인데도 모두가 손해 보는</b> 상황까지 다룹니다.</p>
+    <div class="metarow">
+      <span class="tag">대상 <b>초등 고학년 ~ 중등</b></span>
+      <span class="tag">세트 <b>5개</b></span>
+      <span class="tag">문항 <b>25개</b> (개별 20 · 토론 5)</span>
+      <span class="tag">권장 <b>세트당 25~35분</b></span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="howbox">
+    <h2>이 문제집을 푸는 방법</h2>
+    <div class="steps">
+      <div><b>STEP 1</b><span>직접 해 보기</span>먼저 감으로 여러 번 시도해 봅니다.</div>
+      <div><b>STEP 2</b><span>거꾸로 생각</span>"내가 지는 상태"부터 찾습니다.</div>
+      <div><b>STEP 3</b><span>짝과 대결·토론</span>붉은 토론 문제를 서로 설득해 봅니다.</div>
+      <div><b>STEP 4</b><span>전략 쓰기</span>"언제나 이렇게 하면 이긴다"를 문장으로.</div>
+    </div>
+  </div>
+</div>
+
+<nav class="toc">
+  <div class="wrap tocrow">
+    <button class="tocbtn on" data-s="s1">01 · 강 건너기</button>
+    <button class="tocbtn" data-s="s2">02 · 필승 전략</button>
+    <button class="tocbtn" data-s="s3">03 · 몬티 홀</button>
+    <button class="tocbtn" data-s="s4">04 · 죄수의 딜레마</button>
+    <button class="tocbtn" data-s="s5">05 · 다섯 집 수수께끼</button>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<!-- ============ SET 1 ============ -->
+<section class="set on" id="s1" data-ac="#1E5F74">
+  <div class="sethead">
+    <p class="no">SET 01</p>
+    <h2>늑대와 염소와 양배추를 무사히 건너게 하려면</h2>
+    <p class="from">원전 · <em>강 건너기 문제</em> — 알퀸 『청년의 마음을 단련하는 문제집』(799년경), 기록에 남은 가장 오래된 논리퍼즐 중 하나</p>
+    <div class="badges"><span class="bd lv">난이도 ★★☆</span><span class="bd">상태 탐색</span><span class="bd">되돌아가기</span><span class="bd">최단 해</span></div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">1-1</span><span class="qkind">탐색</span></div>
+    <div class="given"><b>상황</b> — 농부가 <b>늑대</b>, <b>염소</b>, <b>양배추</b>를 데리고 강을 건너려 합니다. 배에는 농부와 <b>하나</b>만 탈 수 있습니다. 농부가 없으면 <b>늑대는 염소를</b>, <b>염소는 양배추를</b> 먹습니다.</div>
+    <p>모두 무사히 건너려면 어떻게 해야 할까요? 아래에서 직접 배를 움직여 보세요.</p>
+    <div class="lab">
+      <div class="labbar"><span>river-crossing</span>
+        <div class="tools">
+          <button class="tbtn" id="rvGo">건너가기 / 돌아오기</button>
+          <button class="tbtn" id="rvUndo">한 수 취소</button>
+          <button class="tbtn" id="rvReset">처음부터</button>
+        </div>
+      </div>
+      <div class="labin">
+        <div class="river">
+          <div class="bank"><h5>출발 쪽</h5><div class="things" id="bankL"></div></div>
+          <div class="water"><span class="boat" id="boat">🚣</span></div>
+          <div class="bank"><h5>건넌 쪽</h5><div class="things" id="bankR"></div></div>
+        </div>
+        <p style="font-family:var(--f-mono);font-size:12.5px;color:var(--ink-2);margin:12px 0 0;text-align:center" id="rvLog"></p>
+      </div>
+      <div class="labfoot" id="rvMsg">배에 태울 것을 눌러 고른 뒤 <b>건너가기</b>를 누르세요. 아무것도 안 고르면 혼자 건넙니다.</div>
+    </div>
+    <div class="ansrow">
+      <label>최소 몇 번 건너야 하나</label>
+      <input id="a11" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a11" data-v="7" data-t="맞습니다. 7번입니다.">확인</button>
+      <span class="verdict" id="v11"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">1-2</span><span class="qkind">추론</span></div>
+    <p>맨 처음에 무엇을 태워야 할까요? 세 가지를 모두 따져 보세요.</p>
+    <ul>
+      <li><b>늑대</b>를 먼저 태우면 → 남는 것은 염소와 양배추 → 어떻게 되나요?</li>
+      <li><b>양배추</b>를 먼저 태우면 → 남는 것은 늑대와 염소 → 어떻게 되나요?</li>
+      <li><b>염소</b>를 먼저 태우면 → 남는 것은 늑대와 양배추 → 괜찮나요?</li>
+    </ul>
+    <div class="ansrow">
+      <label>첫 번째로 태워야 하는 것</label>
+      <input id="a12" type="text" placeholder="한 단어로" />
+      <button class="chk" data-a="a12" data-v="염소|양" data-t="맞습니다. 염소만이 유일한 선택입니다.">확인</button>
+      <span class="verdict" id="v12"></span>
+    </div>
+    <details class="hint"><summary>중요한 발견</summary><div class="body">이 퍼즐의 핵심은 <b>염소를 다시 데리고 돌아오는</b> 수입니다. "건너간 것을 되돌린다"는 생각을 하지 못하면 절대 풀리지 않습니다.</div></details>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">1-3</span><span class="qkind">분석</span></div>
+    <p>가능한 배치는 모두 몇 가지이고, 그중 <b>안전한 배치</b>는 몇 가지일까요? 아래에서 전부 확인하세요.</p>
+    <div class="lab">
+      <div class="labbar"><span>state-space</span><div class="tools"><button class="tbtn" id="stShow">모든 배치 보기</button></div></div>
+      <div class="labin"><div class="tbscroll"><table class="dt" id="stTable"></table></div></div>
+      <div class="labfoot" id="stMsg">농부·늑대·염소·양배추가 각각 어느 쪽에 있는지로 배치가 정해집니다.</div>
+    </div>
+    <div class="ansrow">
+      <label>안전한 배치의 개수</label>
+      <input id="a13" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a13" data-v="10" data-t="맞습니다. 16가지 중 10가지가 안전합니다.">확인</button>
+      <span class="verdict" id="v13"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">1-4</span><span class="qkind talk">토론</span></div>
+    <div class="talkbox">
+      <h4>모둠에서 이야기해 봅시다</h4>
+      <ol>
+        <li>7번짜리 해답은 <b>몇 가지</b>가 있을까요? 서로 다른 방법을 찾아보고, 두 방법이 어떤 관계인지 이야기해 보세요.</li>
+        <li>이 퍼즐에서 가장 <b>생각하기 어려운 수</b>는 몇 번째인가요? 왜 그 수가 어려울까요?</li>
+        <li>규칙을 바꿔 봅시다. 배에 <b>두 개</b>를 실을 수 있다면 몇 번이면 될까요? 반대로 늑대가 양배추도 먹는다면 어떻게 될까요?</li>
+        <li>이런 문제를 컴퓨터로 풀게 하려면 무엇을 알려 줘야 할까요? <b>"배치"와 "움직임"</b>을 어떻게 표현하면 좋을까요?</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">1-5</span><span class="qkind">확장</span></div>
+    <p>다른 강 건너기 문제도 풀어 보세요. 규칙이 바뀌면 답이 어떻게 달라지는지 확인합니다.</p>
+    <div class="lab">
+      <div class="labbar"><span>variants</span><div class="tools" id="vrTools"></div></div>
+      <div class="labin"><div id="vrOut" style="font-size:14.8px;line-height:1.95"></div></div>
+      <div class="labfoot" id="vrMsg"></div>
+    </div>
+    <textarea class="memo" rows="2" placeholder="규칙이 바뀌면 왜 답이 달라지는지 적어 보세요."></textarea>
+  </div>
+
+  <p class="footnote"><b>출처</b> — 799년경 프랑크 왕국의 학자 <b>알퀸</b>이 샤를마뉴 대제를 위해 엮은 『청년의 마음을 단련하는 문제집(Propositiones ad Acuendos Juvenes)』에 실린 50문제 중 하나입니다. 1200년이 지난 지금도 그대로 쓰이는 퍼즐입니다.</p>
+</section>
+
+<!-- ============ SET 2 ============ -->
+<section class="set" id="s2" data-ac="#5B4A7D">
+  <div class="sethead">
+    <p class="no">SET 02</p>
+    <h2>먼저 시작하면 반드시 이기는 게임</h2>
+    <p class="from">원전 · <em>바셰의 뺏기 게임</em>(1612) + <em>님(Nim) 게임</em> — 부통이 1901년 완전한 필승법을 증명</p>
+    <div class="badges"><span class="bd lv">난이도 ★★★</span><span class="bd">필승 전략</span><span class="bd">거꾸로 생각하기</span><span class="bd">이진법</span></div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">2-1</span><span class="qkind">탐색</span></div>
+    <div class="given"><b>규칙</b> — 돌 <b>21개</b>가 있습니다. 두 사람이 번갈아 <b>1개, 2개, 3개</b> 중 원하는 만큼 가져갑니다. <b>마지막 돌을 가져가는 사람이 이깁니다.</b></div>
+    <p>컴퓨터와 대결해 보세요. 몇 번 해 보면 무언가 규칙이 보일 것입니다.</p>
+    <div class="lab">
+      <div class="labbar"><span>take-away-game</span>
+        <div class="tools">
+          <label style="font-family:var(--f-mono);font-size:12px">돌 개수</label>
+          <input id="tgN" type="number" value="21" min="1" max="40" style="width:64px" />
+          <button class="tbtn" id="tgNew">새 게임</button>
+          <button class="tbtn" id="tgHint">힌트 켜기</button>
+        </div>
+      </div>
+      <div class="labin">
+        <div class="stones" id="tgStones"></div>
+        <div style="display:flex;gap:8px;justify-content:center;margin-top:10px">
+          <button class="tbtn" data-take="1">1개 가져가기</button>
+          <button class="tbtn" data-take="2">2개</button>
+          <button class="tbtn" data-take="3">3개</button>
+        </div>
+      </div>
+      <div class="labfoot" id="tgMsg"></div>
+    </div>
+    <div class="ansrow">
+      <label>21개일 때 선공은 처음에 몇 개를 가져가야 하나</label>
+      <input id="a21" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a21" data-v="1" data-t="맞습니다. 1개를 가져가 20개(4의 배수)를 남깁니다.">확인</button>
+      <span class="verdict" id="v21"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">2-2</span><span class="qkind">추론</span></div>
+    <p><b>거꾸로</b> 생각해 봅시다. 내 차례에 돌이 몇 개 남아 있으면 <b>지는</b> 걸까요?</p>
+    <ul>
+      <li>돌이 <b>1, 2, 3개</b> 남으면? → 전부 가져가면 이깁니다.</li>
+      <li>돌이 <b>4개</b> 남으면? → 몇 개를 가져가도 상대에게 1~3개가 남습니다. 그럼 상대가 이깁니다.</li>
+      <li>돌이 <b>5, 6, 7개</b> 남으면? → 상대에게 4개를 남길 수 있으므로 이깁니다.</li>
+      <li>돌이 <b>8개</b> 남으면? → 어떻게 해도 상대에게 5~7개를 남기게 됩니다.</li>
+    </ul>
+    <div class="lab">
+      <div class="labbar"><span>win-lose-table</span><div class="tools"><button class="tbtn" id="wlShow">승패 표 채우기</button></div></div>
+      <div class="labin"><div class="tbscroll"><table class="dt" id="wlTable"></table></div></div>
+      <div class="labfoot" id="wlMsg">먼저 직접 채워 본 뒤 버튼을 누르세요.</div>
+    </div>
+    <div class="ansrow">
+      <label>내 차례에 지는 개수는 무엇의 배수?</label>
+      <input id="a22" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a22" data-v="4" data-t="맞습니다. 4의 배수를 상대에게 남기면 반드시 이깁니다.">확인</button>
+      <span class="verdict" id="v22"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">2-3</span><span class="qkind">확장</span></div>
+    <div class="given"><b>님 게임</b> — 이번엔 돌 무더기가 <b>여러 개</b>입니다. 자기 차례에 <b>한 무더기</b>에서 원하는 만큼 가져갑니다(최소 1개). 마지막 돌을 가져가면 이깁니다.</div>
+    <p>(1, 2, 3)으로 시작하면 누가 이길까요? 직접 해 보고, 이진법 힌트도 켜 보세요.</p>
+    <div class="lab">
+      <div class="labbar"><span>nim-game</span>
+        <div class="tools">
+          <button class="tbtn" id="nmP1">(1,2,3)</button>
+          <button class="tbtn" id="nmP2">(3,4,5)</button>
+          <button class="tbtn" id="nmP3">(1,3,5,7)</button>
+          <button class="tbtn" id="nmXor">이진법 힌트</button>
+        </div>
+      </div>
+      <div class="labin">
+        <div class="piles" id="nmPiles"></div>
+        <div id="nmXorBox" style="font-family:var(--f-mono);font-size:13px;margin-top:16px;display:none"></div>
+      </div>
+      <div class="labfoot" id="nmMsg">돌을 누르면 그 돌부터 위쪽이 모두 사라집니다.</div>
+    </div>
+    <div class="ansrow">
+      <label>(1,2,3)에서는 누가 이기나</label>
+      <input id="a23" type="text" placeholder="선공 / 후공" />
+      <button class="chk" data-a="a23" data-v="후공|나중|두번째" data-t="맞습니다. XOR이 0이므로 선공이 집니다.">확인</button>
+      <span class="verdict" id="v23"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">2-4</span><span class="qkind talk">토론</span></div>
+    <div class="talkbox">
+      <h4>모둠에서 이야기해 봅시다</h4>
+      <ol>
+        <li>규칙을 바꿔 <b>최대 5개</b>까지 가져갈 수 있다면 필승 전략이 어떻게 바뀔까요? 최대 <i>k</i>개라면 일반적으로 어떻게 될까요?</li>
+        <li>이번엔 <b>마지막 돌을 가져가면 지는</b> 규칙(31 게임)으로 바꿔 봅시다. 전략이 어떻게 달라지나요? 어디가 똑같고 어디가 다른가요?</li>
+        <li>님 게임에서 각 무더기를 <b>이진수</b>로 쓰고 자릿수별로 개수를 세어 보세요. 선공이 지는 배치들의 공통점이 보이나요?</li>
+        <li>이런 게임은 <b>운이 전혀 없습니다.</b> 그런데도 사람들이 재미있어하는 이유는 무엇일까요? 상대가 전략을 모른다면 어떻게 될까요?</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">2-5</span><span class="qkind">도전</span></div>
+    <p>돌이 <b>100개</b>이고 한 번에 1~4개를 가져갈 수 있습니다(마지막을 가져가면 승). 선공이 이기려면 처음에 몇 개를 가져가야 할까요?</p>
+    <div class="lab">
+      <div class="labbar"><span>general-strategy</span>
+        <div class="tools">
+          <label style="font-family:var(--f-mono);font-size:12px">돌</label><input id="gsN" type="number" value="100" min="1" max="999" style="width:70px" />
+          <label style="font-family:var(--f-mono);font-size:12px">최대</label><input id="gsK" type="number" value="4" min="1" max="9" style="width:56px" />
+          <button class="tbtn" id="gsGo">계산</button>
+        </div>
+      </div>
+      <div class="labin"><div id="gsOut" style="font-family:var(--f-mono);font-size:13.6px;line-height:1.9"></div></div>
+      <div class="labfoot" id="gsMsg"></div>
+    </div>
+    <div class="ansrow">
+      <label>100개·최대 4개일 때 첫 수</label>
+      <input id="a25" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a25" data-v="0|없음|없다|질수밖에" data-t="맞습니다! 100은 5의 배수라 선공이 집니다. 이기는 첫 수가 없습니다.">확인</button>
+      <span class="verdict" id="v25"></span>
+    </div>
+    <details class="hint"><summary>함정 주의</summary><div class="body">최대 4개면 <b>5의 배수</b>를 남겨야 이깁니다. 그런데 100은 이미 5의 배수입니다. 이 경우 선공은 어떻게 될까요?</div></details>
+  </div>
+
+  <p class="footnote"><b>출처</b> — 뺏기 게임은 <b>바셰</b>가 1612년 『재미있고 즐거운 문제들』에 실었고, 여러 무더기를 다루는 <b>님</b>은 <b>찰스 부통</b>이 1901년 논문에서 이진법 XOR로 완전한 필승법을 증명했습니다. 조합 게임 이론의 출발점입니다.</p>
+</section>
+
+<!-- ============ SET 3 ============ -->
+<section class="set" id="s3" data-ac="#B2452C">
+  <div class="sethead">
+    <p class="no">SET 03</p>
+    <h2>문을 바꾸는 게 정말 유리할까</h2>
+    <p class="from">원전 · <em>몬티 홀 문제</em> — 1990년 마릴린 보스 사반트의 칼럼으로 세계적 논쟁을 일으킨 확률 문제</p>
+    <div class="badges"><span class="bd lv">난이도 ★★★</span><span class="bd">조건부 확률</span><span class="bd">직관 깨기</span><span class="bd">숨은 조건</span></div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">3-1</span><span class="qkind">탐색</span></div>
+    <div class="given"><b>상황</b> — 문 세 개 중 하나 뒤에는 <b>자동차</b>, 나머지 둘 뒤에는 <b>염소</b>가 있습니다. 당신이 문 하나를 고르면, <b>어디에 무엇이 있는지 아는</b> 사회자가 남은 두 문 중 <b>염소가 있는 문</b>을 하나 열어 줍니다. 그리고 묻습니다. <b>"선택을 바꾸시겠습니까?"</b></div>
+    <p>바꾸는 게 유리할까요, 그대로가 유리할까요? 아래에서 직접 여러 번 해 보고 <b>기록</b>을 확인하세요.</p>
+    <div class="lab">
+      <div class="labbar"><span>monty-hall</span>
+        <div class="tools">
+          <button class="tbtn" id="mhNew">새 게임</button>
+          <button class="tbtn" id="mhReset">기록 지우기</button>
+        </div>
+      </div>
+      <div class="labin">
+        <div class="doors" id="mhDoors"></div>
+        <div style="display:flex;gap:8px;justify-content:center;margin-top:14px" id="mhChoice"></div>
+        <div class="tbscroll" style="margin-top:16px"><table class="dt" id="mhTable"></table></div>
+      </div>
+      <div class="labfoot" id="mhMsg">문을 하나 골라 보세요.</div>
+    </div>
+    <div class="ansrow">
+      <label>바꿨을 때 이길 확률</label>
+      <input id="a31" type="text" placeholder="분수로 (예: 2/3)" />
+      <button class="chk" data-a="a31" data-v="2/3|3분의2|66.7%|약67%" data-t="맞습니다. 바꾸면 2/3, 유지하면 1/3입니다.">확인</button>
+      <span class="verdict" id="v31"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">3-2</span><span class="qkind">추론</span></div>
+    <p>왜 그럴까요? <b>처음 선택</b>에만 집중해 보세요.</p>
+    <ul>
+      <li>처음에 <b>자동차</b>를 골랐을 확률은? → 이때 바꾸면 어떻게 되나요?</li>
+      <li>처음에 <b>염소</b>를 골랐을 확률은? → 이때 사회자는 <b>남은 염소</b> 문을 열 수밖에 없습니다. 그럼 바꾸면?</li>
+      <li>두 경우를 합치면 바꿔서 이길 확률은 얼마인가요?</li>
+    </ul>
+    <div class="lab">
+      <div class="labbar"><span>three-cases</span><div class="tools"><button class="tbtn" id="tcShow">세 경우 모두 보기</button></div></div>
+      <div class="labin"><div class="tbscroll"><table class="dt" id="tcTable"></table></div></div>
+      <div class="labfoot" id="tcMsg">처음 선택을 1번 문으로 고정하고 자동차 위치만 바꿔 봅니다.</div>
+    </div>
+    <details class="hint"><summary>이해를 돕는 생각</summary><div class="body">처음 선택은 <b>1/3</b>의 확률로 맞습니다. 그렇다면 "내가 안 고른 두 문"에 자동차가 있을 확률은 <b>2/3</b>입니다. 사회자가 그중 <b>염소 문 하나를 치워 줬을 뿐</b>이므로, 그 2/3이 남은 한 문에 <b>몰립니다</b>.</div></details>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">3-3</span><span class="qkind">확장</span></div>
+    <p>문이 <b>100개</b>라면 어떨까요? 당신이 하나를 고르면 사회자가 <b>98개</b>의 염소 문을 열어 줍니다. 이제 바꾸시겠습니까?</p>
+    <div class="lab">
+      <div class="labbar"><span>n-doors</span>
+        <div class="tools">
+          <label style="font-family:var(--f-mono);font-size:12px">문 개수</label>
+          <input id="ndN" type="range" min="3" max="100" value="3" style="width:170px" />
+          <span id="ndV" style="font-family:var(--f-mono);font-weight:700">3</span>
+        </div>
+      </div>
+      <div class="labin"><div id="ndOut" style="font-family:var(--f-mono);font-size:14px;line-height:2;text-align:center"></div></div>
+      <div class="labfoot" id="ndMsg"></div>
+    </div>
+    <div class="ansrow">
+      <label>문 100개일 때 바꾸면 이길 확률</label>
+      <input id="a33" type="text" placeholder="분수로" />
+      <button class="chk" data-a="a33" data-v="99/100|99%|100분의99" data-t="맞습니다. 99/100입니다. 이렇게 보면 바꾸는 게 유리함이 분명해집니다.">확인</button>
+      <span class="verdict" id="v33"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">3-4</span><span class="qkind talk">토론</span></div>
+    <div class="talkbox">
+      <h4>모둠에서 이야기해 봅시다</h4>
+      <ol>
+        <li>1990년 사반트가 "바꾸세요"라고 답하자 <b>수학 박사 1000명을 포함해 1만 통</b>의 항의 편지가 왔습니다. 왜 이렇게 많은 사람이 틀렸을까요? 우리 직관은 무엇을 착각하나요?</li>
+        <li><b>가장 중요한 조건</b>이 하나 있습니다. 사회자가 <b>어디에 자동차가 있는지 알고서</b> 일부러 염소 문을 연다는 것입니다. 만약 사회자도 모르고 <b>아무 문이나 열었는데 우연히 염소</b>가 나왔다면 확률이 달라질까요?</li>
+        <li>"문이 두 개 남았으니 50 대 50"이라는 생각은 어디가 잘못되었나요? 남은 문이 두 개라고 확률이 반반이 되는 것은 아니라는 걸 어떻게 설명할까요?</li>
+        <li>이 문제를 친구에게 설명한다면 어떤 방법이 가장 잘 통할까요? (표 만들기 / 100개 문 / 직접 100번 해 보기 중에서)</li>
+      </ol>
+    </div>
+    <div class="lab" style="margin-top:16px">
+      <div class="labbar"><span>host-knows-or-not</span>
+        <div class="tools">
+          <button class="tbtn on" id="hkKnow">사회자가 안다</button>
+          <button class="tbtn" id="hkRandom">사회자도 모른다</button>
+        </div>
+      </div>
+      <div class="labin"><div class="tbscroll"><table class="dt" id="hkTable"></table></div></div>
+      <div class="labfoot" id="hkMsg"></div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">3-5</span><span class="qkind">실험</span></div>
+    <p>직접 <b>1000번</b> 시뮬레이션해 보고, 이론값과 비교하세요.</p>
+    <div class="lab">
+      <div class="labbar"><span>simulation</span>
+        <div class="tools">
+          <label style="font-family:var(--f-mono);font-size:12px">횟수</label>
+          <input id="smN" type="number" value="1000" min="10" max="100000" style="width:90px" />
+          <button class="tbtn" id="smGo">실행</button>
+        </div>
+      </div>
+      <div class="labin"><div id="smOut" style="font-family:var(--f-mono);font-size:13.6px;line-height:2"></div></div>
+      <div class="labfoot" id="smMsg"></div>
+    </div>
+    <textarea class="memo" rows="2" placeholder="실험 결과와 이론값을 비교해 적어 보세요."></textarea>
+  </div>
+
+  <p class="footnote"><b>출처</b> — 미국 TV쇼 <i>Let's Make a Deal</i>의 진행자 <b>몬티 홀</b>의 이름을 땄습니다. 1990년 9월 <b>마릴린 보스 사반트</b>가 『퍼레이드』지 칼럼에서 "바꾸는 것이 유리하다"고 답해 큰 논쟁이 일었고, 결국 그가 옳았음이 밝혀졌습니다.</p>
+</section>
+
+<!-- ============ SET 4 ============ -->
+<section class="set" id="s4" data-ac="#4C6B2F">
+  <div class="sethead">
+    <p class="no">SET 04</p>
+    <h2>둘 다 똑똑하게 굴었는데 둘 다 손해를 봤다</h2>
+    <p class="from">원전 · <em>죄수의 딜레마</em> — 1950년 플러드와 드레셔가 고안하고 터커가 이름 붙인 게임이론의 대표 문제</p>
+    <div class="badges"><span class="bd lv">난이도 ★★☆</span><span class="bd">보수 행렬</span><span class="bd">우월 전략</span><span class="bd">협력과 배신</span></div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">4-1</span><span class="qkind">탐색</span></div>
+    <div class="given"><b>상황</b> — 두 사람이 <b>따로 떨어져</b> 조사를 받습니다. 서로 의논할 수 없습니다.<br>
+      · 둘 다 <b>침묵</b>하면 → 각각 <b>1년</b><br>
+      · 한 명만 <b>자백</b>하면 → 자백한 사람 <b>0년</b>, 침묵한 사람 <b>10년</b><br>
+      · 둘 다 <b>자백</b>하면 → 각각 <b>5년</b></div>
+    <p>당신이라면 어떻게 하시겠습니까? 아래 표에서 칸을 눌러 각 경우의 결과를 확인하세요.</p>
+    <div class="lab">
+      <div class="labbar"><span>payoff-matrix</span>
+        <div class="tools">
+          <button class="tbtn" id="pmC">상대가 침묵한다면</button>
+          <button class="tbtn" id="pmD">상대가 자백한다면</button>
+          <button class="tbtn" id="pmEq">균형 표시</button>
+        </div>
+      </div>
+      <div class="labin">
+        <div class="payoff" id="pmGrid"></div>
+        <div id="pmOut" style="margin-top:14px;font-size:14.8px;line-height:1.9"></div>
+      </div>
+      <div class="labfoot" id="pmMsg">숫자는 형량(년)입니다. 적을수록 좋습니다.</div>
+    </div>
+    <div class="ansrow">
+      <label>상대가 무엇을 하든 나에게 유리한 선택</label>
+      <input id="a41" type="text" placeholder="침묵 / 자백" />
+      <button class="chk" data-a="a41" data-v="자백|배신" data-t="맞습니다. 상대가 무엇을 하든 자백이 유리합니다. 이것을 우월 전략이라 합니다.">확인</button>
+      <span class="verdict" id="v41"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">4-2</span><span class="qkind">추론</span></div>
+    <p>둘 다 똑똑하게 자기에게 유리한 선택을 하면 어떻게 될까요?</p>
+    <ul>
+      <li>두 사람 모두 <b>자백</b>을 선택합니다. 결과는 각자 몇 년인가요?</li>
+      <li>만약 둘 다 <b>침묵</b>했다면 각자 몇 년이었을까요?</li>
+      <li>둘 다 더 좋아지는 방법이 있는데도 왜 그렇게 되지 않을까요?</li>
+    </ul>
+    <div class="given"><b>딜레마</b> — 각자에게 <b>합리적인</b> 선택이 모여, <b>모두에게 나쁜</b> 결과가 나옵니다. 이것이 이 문제가 유명한 이유입니다.</div>
+    <div class="ansrow">
+      <label>둘 다 자백하면 각자 몇 년</label>
+      <input id="a42" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a42" data-v="5" data-t="맞습니다. 둘 다 침묵했다면 1년이었을 텐데 5년이 됩니다.">확인</button>
+      <span class="verdict" id="v42"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">4-3</span><span class="qkind">확장</span></div>
+    <p>이 게임을 <b>한 번만</b> 하는 게 아니라 <b>여러 번 반복</b>한다면 어떻게 될까요? 여러 전략을 대결시켜 보세요.</p>
+    <div class="lab">
+      <div class="labbar"><span>repeated-game</span>
+        <div class="tools">
+          <label style="font-family:var(--f-mono);font-size:12px">횟수</label>
+          <input id="rgN" type="number" value="200" min="1" max="500" style="width:70px" />
+          <button class="tbtn" id="rgGo">전략 대결</button>
+        </div>
+      </div>
+      <div class="labin"><div class="tbscroll"><table class="dt" id="rgTable"></table></div></div>
+      <div class="labfoot" id="rgMsg">점수는 높을수록 좋습니다 (둘 다 협력 3점, 배신 성공 5점, 당함 0점, 둘 다 배신 1점).</div>
+    </div>
+    <div class="ansrow">
+      <label>200회 반복에서 총점이 가장 높은 전략</label>
+      <input id="a43" type="text" placeholder="전략 이름" />
+      <button class="chk" data-a="a43" data-v="팃포탯|앙심|팃포탯,앙심" data-t="맞습니다. 팃포탯과 앙심이 공동 1위입니다. '항상 배신'이 오히려 꼴찌입니다.">확인</button>
+      <span class="verdict" id="v43"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">4-4</span><span class="qkind talk">토론</span></div>
+    <div class="talkbox">
+      <h4>모둠에서 이야기해 봅시다</h4>
+      <ol>
+        <li><b>한 번만</b> 하는 게임에서는 배신이 유리한데, <b>반복</b>하면 협력하는 전략이 이깁니다. 무엇이 달라졌기 때문일까요? "다음에 또 만난다"는 사실이 왜 중요한가요?</li>
+        <li><b>팃포탯</b>(처음엔 협력, 그다음부터는 상대가 한 대로 따라 하기)이 강한 이유는 무엇일까요? 이 전략의 <b>네 가지 성질</b>(먼저 배신 안 함 / 보복함 / 용서함 / 단순함)을 찾아보세요.</li>
+        <li>우리 주변에서 죄수의 딜레마와 같은 구조를 찾아보세요. 예: 교실 청소, 조별 과제, 새치기, 환경 문제. 각각 무엇이 "협력"이고 무엇이 "배신"인가요?</li>
+        <li>딜레마를 <b>벗어나는 방법</b>은 무엇일까요? 서로 약속하기, 규칙 만들기, 평판 남기기, 반복해서 만나기 중 어느 것이 효과적일까요?</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">4-5</span><span class="qkind">적용</span></div>
+    <p>우리 반 상황으로 바꿔 봅시다. <b>모둠 과제</b>에서 "열심히 하기"와 "묻어가기" 중 고른다면 보수 표가 어떻게 될까요? 직접 채워 보세요.</p>
+    <div class="lab">
+      <div class="labbar"><span>make-your-own</span><div class="tools"><button class="tbtn" id="myShow">예시 보기</button></div></div>
+      <div class="labin"><div id="myOut" style="font-size:14.6px;line-height:1.95"></div></div>
+      <div class="labfoot" id="myMsg">직접 만들어 본 뒤 예시와 비교해 보세요.</div>
+    </div>
+    <textarea class="memo" rows="3" placeholder="내가 만든 상황과 보수 표: "></textarea>
+  </div>
+
+  <p class="footnote"><b>출처</b> — 1950년 랜드연구소의 <b>메릴 플러드</b>와 <b>멜빈 드레셔</b>가 실험으로 고안했고, <b>앨버트 터커</b>가 죄수 이야기로 각색해 이름을 붙였습니다. 1980년 <b>로버트 액설로드</b>의 반복 게임 대회에서 <b>팃포탯</b>이 우승하며 협력의 조건에 대한 연구가 크게 발전했습니다.</p>
+</section>
+
+<!-- ============ SET 5 ============ -->
+<section class="set" id="s5" data-ac="#96731A">
+  <div class="sethead">
+    <p class="no">SET 05</p>
+    <h2>다섯 집 수수께끼 — 물고기는 누가 기르는가</h2>
+    <p class="from">원전 · <em>제브라 퍼즐 / 아인슈타인의 수수께끼</em> — 논리 격자 퍼즐의 대표작 (1962년 『Life International』)</p>
+    <div class="badges"><span class="bd lv">난이도 ★★★</span><span class="bd">논리 격자</span><span class="bd">단서 조합</span><span class="bd">유일성</span></div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">5-1</span><span class="qkind">탐색</span></div>
+    <div class="given"><b>상황</b> — 다섯 채의 집이 나란히 있습니다. 각 집은 <b>색</b>이 다르고, 사는 사람의 <b>나라</b>가 다르고, 마시는 <b>음료</b>가 다르고, 기르는 <b>동물</b>이 다르고, 좋아하는 <b>과목</b>이 다릅니다. 아래 15개 단서로 <b>물고기를 기르는 사람의 나라</b>를 알아내세요.</div>
+    <p>단서를 하나씩 눌러 표에 표시하며 채워 나가세요. 확실한 것부터 채우는 것이 요령입니다.</p>
+    <div class="lab">
+      <div class="labbar"><span>five-houses-puzzle</span>
+        <div class="tools">
+          <button class="tbtn" id="zbCheck">내 표 채점</button>
+          <button class="tbtn" id="zbClear">표 지우기</button>
+          <button class="tbtn" id="zbStep">한 칸 힌트</button>
+        </div>
+      </div>
+      <div class="labin">
+        <div class="clues" id="zbClues" style="margin-bottom:16px"></div>
+        <div class="tbscroll"><div class="grid5" id="zbGrid"></div></div>
+      </div>
+      <div class="labfoot" id="zbMsg">칸을 눌러 채워 보세요. 같은 줄에는 같은 것이 두 번 올 수 없습니다.</div>
+    </div>
+    <div class="ansrow">
+      <label>물고기를 기르는 사람의 나라</label>
+      <input id="a51" type="text" placeholder="나라 이름" />
+      <button class="chk" data-a="a51" data-v="프랑스" data-t="맞습니다! 프랑스 사람이 5번 집에서 물고기를 기릅니다.">확인</button>
+      <span class="verdict" id="v51"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">5-2</span><span class="qkind">전략</span></div>
+    <p>어떤 단서부터 써야 할까요? 단서를 <b>확실한 것</b>과 <b>관계만 알려 주는 것</b>으로 나눠 보세요.</p>
+    <ul>
+      <li><b>위치를 바로 정해 주는 단서</b>는 무엇인가요? (예: "가운데 집은 우유")</li>
+      <li><b>두 가지를 묶어 주는 단서</b>는? (예: "한국인은 빨간 집")</li>
+      <li><b>"옆집"만 알려 주는 단서</b>는 왜 나중에 쓰는 게 좋을까요?</li>
+    </ul>
+    <div class="ansrow">
+      <label>위치를 바로 알려 주는 단서 번호 두 개</label>
+      <input id="a52" type="text" placeholder="예: 3,7" />
+      <button class="chk" data-a="a52" data-v="8,9|9,8" data-t="맞습니다. 8번(가운데=우유)과 9번(영국인=첫째 집)이 위치를 확정해 줍니다.">확인</button>
+      <span class="verdict" id="v52"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">5-3</span><span class="qkind">추론</span></div>
+    <p>단서 <b>9번</b>(영국인은 첫째 집)과 <b>14번</b>(영국인은 파란집 옆)을 함께 보면 무엇을 알 수 있나요? 그다음 <b>4번</b>(초록집은 하얀집 바로 오른쪽)을 쓰면 색이 거의 정해집니다.</p>
+    <div class="lab">
+      <div class="labbar"><span>deduction-steps</span><div class="tools"><button class="tbtn" id="dsStep">한 단계씩 보기</button><button class="tbtn" id="dsReset">처음부터</button></div></div>
+      <div class="labin"><div id="dsOut" style="font-size:14.6px;line-height:2"></div></div>
+      <div class="labfoot" id="dsMsg">추론 과정을 한 단계씩 따라가 보세요.</div>
+    </div>
+    <div class="ansrow">
+      <label>2번 집의 색</label>
+      <input id="a53" type="text" placeholder="색 이름" />
+      <button class="chk" data-a="a53" data-v="파랑|파란색|파랑색" data-t="맞습니다. 영국인이 1번 집이고 파란집 옆이므로 2번이 파랑입니다.">확인</button>
+      <span class="verdict" id="v53"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">5-4</span><span class="qkind talk">토론</span></div>
+    <div class="talkbox">
+      <h4>모둠에서 이야기해 봅시다</h4>
+      <ol>
+        <li>이 퍼즐의 답은 <b>단 하나</b>입니다. 답이 하나뿐이라는 것을 어떻게 확인할 수 있을까요? 하나를 찾은 것과 <b>그것뿐임을 아는 것</b>은 어떻게 다른가요?</li>
+        <li>단서 하나를 <b>빼면</b> 어떻게 될까요? 답이 여러 개가 될까요, 아니면 그대로일까요? 아래 도구로 확인해 보세요.</li>
+        <li>이 문제를 <b>모든 경우를 다 해 보는</b> 방법으로 풀면 몇 가지를 확인해야 할까요? (5개 항목 각각 5!가지) 사람이 그렇게 풀 수 있을까요?</li>
+        <li>"아인슈타인이 만들었고 세계 인구의 2%만 푼다"는 말이 흔히 붙어 있습니다. 이런 주장은 믿을 만할까요? 어떻게 확인해 볼 수 있을까요?</li>
+      </ol>
+    </div>
+    <div class="lab" style="margin-top:16px">
+      <div class="labbar"><span>remove-a-clue</span>
+        <div class="tools">
+          <label style="font-family:var(--f-mono);font-size:12px">뺄 단서</label>
+          <select id="rcSel" style="padding:5px 8px;border:1px solid var(--line);border-radius:4px;font-family:var(--f-mono)"></select>
+          <button class="tbtn" id="rcGo">해의 개수 확인</button>
+        </div>
+      </div>
+      <div class="labin"><div id="rcOut" style="font-family:var(--f-mono);font-size:13.4px;line-height:1.9"></div></div>
+      <div class="labfoot" id="rcMsg"></div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">5-5</span><span class="qkind">완성</span></div>
+    <p>완성된 표를 확인하고, 다음 질문에도 답해 보세요.</p>
+    <div class="ansrow">
+      <label>물을 마시는 사람의 나라</label>
+      <input id="a55" type="text" placeholder="나라 이름" />
+      <button class="chk" data-a="a55" data-v="영국" data-t="맞습니다. 영국 사람이 1번 집에서 물을 마십니다.">확인</button>
+      <span class="verdict" id="v55"></span>
+    </div>
+    <div class="ansrow">
+      <label>고양이를 기르는 사람이 좋아하는 과목</label>
+      <input id="a56" type="text" placeholder="과목 이름" />
+      <button class="chk" data-a="a56" data-v="수학" data-t="맞습니다. 1번 집 영국 사람이 고양이를 기르고 수학을 좋아합니다.">확인</button>
+      <span class="verdict" id="v56"></span>
+    </div>
+  </div>
+
+  <p class="footnote"><b>출처</b> — 1962년 <b>『Life International』</b>에 실린 것이 가장 오래된 기록입니다. 원래는 얼룩말과 담배가 등장해 <b>제브라 퍼즐</b>이라 불렸습니다. "아인슈타인이 만들었다"거나 "2%만 푼다"는 이야기는 <b>근거가 없는 속설</b>입니다.</p>
+</section>
+
+<div class="prm">
+  <button id="prev">← 이전 세트</button>
+  <button id="next">다음 세트 →</button>
+</div>
+
+</main>
+
+<footer>세영코딩연구소 · 사고력 논리퍼즐과 게임이론 5제 학생용 문제집 · 이기는 데는 이유가 있습니다</footer>
+
+<script>
+(function(){
+  "use strict";
+  var $ = function(id){ return document.getElementById(id); };
+  function ce(tag, cls, t){
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (t !== undefined) e.textContent = t;
+    return e;
+  }
+  function clear(n){ while (n.firstChild) n.removeChild(n.firstChild); }
+
+  /* ---------- 탭 ---------- */
+  var ORDER = ["s1","s2","s3","s4","s5"], cur = 0;
+  function show(i){
+    cur = Math.max(0, Math.min(ORDER.length-1, i));
+    var id = ORDER[cur];
+    document.querySelectorAll(".set").forEach(function(s){ s.classList.toggle("on", s.id===id); });
+    document.querySelectorAll(".tocbtn").forEach(function(b){ b.classList.toggle("on", b.dataset.s===id); });
+    document.documentElement.style.setProperty("--ac", $(id).dataset.ac || "#1E5F74");
+    $("prev").disabled = cur===0; $("next").disabled = cur===ORDER.length-1;
+    window.scrollTo({ top:0, behavior:"smooth" });
+  }
+  document.querySelectorAll(".tocbtn").forEach(function(b){
+    b.addEventListener("click", function(){ show(ORDER.indexOf(b.dataset.s)); });
+  });
+  $("prev").addEventListener("click", function(){ show(cur-1); });
+  $("next").addEventListener("click", function(){ show(cur+1); });
+
+  /* ---------- 채점 ---------- */
+  function norm(s){
+    return String(s).replace(/\s+/g,"").replace(/개$/,"").replace(/번$/,"").replace(/년$/,"")
+      .replace(/[.]$/,"").replace(/사람$/,"").replace(/인$/,"").replace(/의배수$/,"")
+      .replace(/[가-힣]*집$/,function(m){ return m; }).toLowerCase();
+  }
+  document.querySelectorAll(".chk").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var inp = $(btn.dataset.a), v = $("v"+btn.dataset.a.slice(1));
+      if (!inp || !v) return;
+      var val = norm(inp.value);
+      if (!val){ v.textContent = "답을 먼저 입력하세요"; v.className="verdict"; return; }
+      var ok = btn.dataset.v.split("|").some(function(x){ return norm(x)===val; });
+      v.textContent = ok ? ("정답 — " + btn.dataset.t) : "다시 생각해 보세요";
+      v.className = "verdict " + (ok ? "ok" : "no");
+    });
+  });
+
+  /* ================= SET 1 : 강 건너기 ================= */
+  var NAMES = ["농부","늑대","염소","양배추"];
+  var ICON = {"농부":"👨‍🌾","늑대":"🐺","염소":"🐐","양배추":"🥬"};
+  var RV = { pos:[0,0,0,0], sel:null, hist:[], log:[] };
+  function rvSafe(p){
+    if (p[2]===p[1] && p[0]!==p[2]) return false;
+    if (p[2]===p[3] && p[0]!==p[2]) return false;
+    return true;
+  }
+  function drawRV(){
+    var L = $("bankL"), R = $("bankR");
+    clear(L); clear(R);
+    var danger = !rvSafe(RV.pos);
+    for (var i=0;i<4;i++){
+      var d = ce("div","thing", ICON[NAMES[i]] + " " + NAMES[i]);
+      if (i>0 && RV.sel===i) d.classList.add("sel");
+      if (danger && i>0) d.classList.add("dead");
+      (function(idx){
+        d.addEventListener("click", function(){
+          if (idx===0) return;
+          if (RV.pos[idx]!==RV.pos[0]) return;
+          RV.sel = (RV.sel===idx) ? null : idx;
+          drawRV();
+        });
+      })(i);
+      (RV.pos[i]===0 ? L : R).appendChild(d);
+    }
+    $("boat").style.transform = "translateX(" + (RV.pos[0]===0 ? "-14px" : "14px") + ")";
+    $("rvLog").textContent = RV.log.length ? RV.log.join("  →  ") : "";
+    var done = RV.pos.every(function(x){ return x===1; });
+    $("rvMsg").innerHTML = done
+      ? "<b style='color:var(--vine)'>모두 무사히 건넜습니다!</b> 총 <b>" + RV.log.length + "</b>번 · 최소 횟수는 7번입니다."
+      : (danger
+          ? "<b style='color:var(--flame)'>이런! 농부가 없는 쪽에서 사고가 났습니다.</b> 한 수 취소를 눌러 되돌리세요."
+          : "배에 태울 것을 눌러 고른 뒤 <b>건너가기</b>를 누르세요 · 지금까지 <b>" + RV.log.length + "</b>번");
+  }
+  $("rvGo").addEventListener("click", function(){
+    if (RV.sel!==null && RV.pos[RV.sel]!==RV.pos[0]) RV.sel=null;
+    RV.hist.push({pos:RV.pos.slice(), log:RV.log.slice()});
+    var np = RV.pos.slice();
+    np[0] = 1-np[0];
+    var label = "혼자";
+    if (RV.sel!==null){ np[RV.sel] = np[0]; label = NAMES[RV.sel]; }
+    RV.pos = np; RV.sel = null;
+    RV.log.push(label);
+    drawRV();
+  });
+  $("rvUndo").addEventListener("click", function(){
+    var h = RV.hist.pop();
+    if (!h) return;
+    RV.pos = h.pos; RV.log = h.log; RV.sel=null; drawRV();
+  });
+  $("rvReset").addEventListener("click", function(){
+    RV.pos=[0,0,0,0]; RV.sel=null; RV.hist=[]; RV.log=[]; drawRV();
+  });
+  drawRV();
+
+  function drawST(show){
+    var t = $("stTable"); clear(t);
+    var hd = ce("tr");
+    ["농부","늑대","염소","양배추","안전한가","이유"].forEach(function(h){ hd.appendChild(ce("th",null,h)); });
+    t.appendChild(hd);
+    var safeCnt=0;
+    for (var m=0;m<16;m++){
+      var p=[];
+      for (var i=0;i<4;i++) p.push((m>>(3-i)) & 1);
+      var ok = rvSafe(p);
+      if (ok) safeCnt++;
+      var tr = ce("tr");
+      p.forEach(function(v){ tr.appendChild(ce("td",null, v===0 ? "출발" : "건넘")); });
+      tr.appendChild(ce("td", show ? (ok?"ok":"no") : null, show ? (ok?"안전":"위험") : "?"));
+      var why = "";
+      if (!ok){
+        if (p[2]===p[1] && p[0]!==p[2]) why = "늑대가 염소를";
+        else why = "염소가 양배추를";
+      }
+      tr.appendChild(ce("td",null, show ? why : "?"));
+      t.appendChild(tr);
+    }
+    $("stMsg").innerHTML = show
+      ? "전체 <b>16</b>가지 배치 중 안전한 것은 <b>" + safeCnt + "</b>가지입니다. 퍼즐은 이 10가지 사이만 오갈 수 있습니다."
+      : "농부·늑대·염소·양배추가 각각 어느 쪽에 있는지로 배치가 정해집니다.";
+  }
+  var stS=false;
+  $("stShow").addEventListener("click", function(){
+    stS=!stS; this.classList.toggle("on",stS);
+    this.textContent = stS ? "다시 가리기" : "모든 배치 보기";
+    drawST(stS);
+  });
+  drawST(false);
+
+  var VARIANTS = [
+    { n:"기본 (배에 1개)", d:"늑대·염소·양배추, 배에는 농부와 하나만",
+      a:"최소 <b>7번</b>. 첫 수는 반드시 염소이고, 7번짜리 해가 <b>2가지</b> 있습니다(늑대 먼저 / 양배추 먼저)." },
+    { n:"배에 2개 실을 수 있다면", d:"농부와 두 개까지 실을 수 있음",
+      a:"최소 <b>3번</b>. 염소와 늑대를 함께 데려가 늑대를 내려놓고, 염소를 데리고 돌아와 양배추와 함께 건너면 됩니다." },
+    { n:"늑대가 양배추도 먹는다면", d:"늑대는 염소와 양배추를 모두 먹음",
+      a:"여전히 <b>7번</b>에 가능합니다. 염소를 먼저 옮기는 전략은 그대로이고, 늑대와 양배추를 함께 두지 않도록 순서만 조정하면 됩니다." },
+    { n:"셋 다 서로 먹는다면", d:"어떤 둘도 함께 둘 수 없음",
+      a:"<b>불가능합니다.</b> 농부가 하나만 데려갈 수 있는데, 남는 둘은 반드시 함께 있게 되기 때문입니다." }
+  ];
+  (function(){
+    var box = $("vrTools");
+    VARIANTS.forEach(function(v,i){
+      var b = ce("button","tbtn"+(i===0?" on":""), v.n);
+      b.addEventListener("click", function(){
+        box.querySelectorAll(".tbtn").forEach(function(x){ x.classList.remove("on"); });
+        b.classList.add("on"); drawVR(i);
+      });
+      box.appendChild(b);
+    });
+  })();
+  function drawVR(i){
+    var v = VARIANTS[i], out = $("vrOut"); clear(out);
+    var d1 = ce("div", null, v.d);
+    d1.style.cssText = "color:var(--ink-2);margin-bottom:8px";
+    out.appendChild(d1);
+    var d2 = ce("div");
+    d2.innerHTML = v.a;
+    out.appendChild(d2);
+    $("vrMsg").innerHTML = "규칙이 조금만 바뀌어도 <b>답이 크게 달라집니다</b>.";
+  }
+  drawVR(0);
+
+  /* ================= SET 2 : 필승 전략 ================= */
+  var TG = { total:21, left:21, turn:"me", hint:false, over:false };
+  function drawTG(){
+    var box = $("tgStones"); clear(box);
+    for (var i=0;i<TG.total;i++){
+      var d = ce("div","stone" + (i < TG.total-TG.left ? " gone" : ""));
+      box.appendChild(d);
+    }
+    var lose = TG.left % 4 === 0;
+    var msg;
+    if (TG.over) msg = TG.turn==="me"
+      ? "<b style='color:var(--flame)'>컴퓨터가 마지막 돌을 가져갔습니다. 졌습니다.</b>"
+      : "<b style='color:var(--vine)'>마지막 돌을 가져갔습니다. 이겼습니다!</b>";
+    else {
+      msg = "남은 돌 <b>" + TG.left + "</b>개 · 당신 차례";
+      if (TG.hint) msg += lose
+        ? " · <b style='color:var(--flame)'>지금은 4의 배수 — 어떻게 해도 불리합니다</b>"
+        : " · <b style='color:var(--vine)'>" + (TG.left%4) + "개를 가져가 " + (TG.left - TG.left%4) + "개를 남기세요</b>";
+    }
+    $("tgMsg").innerHTML = msg;
+    document.querySelectorAll("[data-take]").forEach(function(b){
+      b.disabled = TG.over || (+b.dataset.take > TG.left);
+    });
+  }
+  function cpuMove(){
+    if (TG.left<=0) return;
+    var take = TG.left % 4;
+    if (take===0) take = 1;                   // 질 자리면 아무거나
+    take = Math.min(take, TG.left);
+    TG.left -= take;
+    if (TG.left===0){ TG.over=true; TG.turn="me"; }
+  }
+  document.querySelectorAll("[data-take]").forEach(function(b){
+    b.addEventListener("click", function(){
+      if (TG.over) return;
+      var t = +b.dataset.take;
+      if (t > TG.left) return;
+      TG.left -= t;
+      if (TG.left===0){ TG.over=true; TG.turn="cpu"; drawTG(); return; }
+      cpuMove();
+      drawTG();
+    });
+  });
+  $("tgNew").addEventListener("click", function(){
+    TG.total = Math.max(1, Math.min(40, +$("tgN").value || 21));
+    TG.left = TG.total; TG.over=false; TG.turn="me"; drawTG();
+  });
+  $("tgHint").addEventListener("click", function(){
+    TG.hint = !TG.hint; this.classList.toggle("on", TG.hint);
+    this.textContent = TG.hint ? "힌트 끄기" : "힌트 켜기";
+    drawTG();
+  });
+  drawTG();
+
+  function drawWL(show){
+    var t = $("wlTable"); clear(t);
+    var hd = ce("tr");
+    hd.appendChild(ce("th",null,"남은 돌"));
+    for (var n=0;n<=16;n++) hd.appendChild(ce("th",null,String(n)));
+    t.appendChild(hd);
+    var tr = ce("tr");
+    tr.appendChild(ce("th",null,"내 차례면"));
+    for (var n2=0;n2<=16;n2++){
+      var lose = n2%4===0;
+      tr.appendChild(ce("td", show ? (lose?"no":"ok") : null,
+        show ? (lose ? "패" : "승") : (n2<=4 ? (lose?"패":"승") : "?")));
+    }
+    t.appendChild(tr);
+    $("wlMsg").innerHTML = show
+      ? "<b>4의 배수</b>일 때만 지고, 나머지는 모두 이깁니다. 상대에게 4의 배수를 남기는 것이 필승 전략입니다."
+      : "먼저 직접 채워 본 뒤 버튼을 누르세요.";
+  }
+  var wlS=false;
+  $("wlShow").addEventListener("click", function(){
+    wlS=!wlS; this.classList.toggle("on",wlS);
+    this.textContent = wlS ? "다시 가리기" : "승패 표 채우기";
+    drawWL(wlS);
+  });
+  drawWL(false);
+
+  var NM = { piles:[1,2,3], xorOn:false, over:false };
+  function nimXor(p){ var x=0; p.forEach(function(v){ x^=v; }); return x; }
+  function drawNM(){
+    var box = $("nmPiles"); clear(box);
+    NM.piles.forEach(function(v,pi){
+      var d = ce("div","pile");
+      d.appendChild(ce("div","pn","무더기 " + (pi+1) + " (" + v + ")"));
+      var col = ce("div","col");
+      for (var i=0;i<v;i++){
+        var s = ce("div","st");
+        (function(idx){
+          s.addEventListener("click", function(){
+            if (NM.over) return;
+            NM.piles[pi] = idx;             // 이 돌부터 위쪽 제거
+            if (NM.piles.reduce(function(a,b){return a+b;},0)===0){
+              NM.over=true; drawNM();
+              $("nmMsg").innerHTML = "<b style='color:var(--vine)'>마지막 돌을 가져갔습니다. 이겼습니다!</b>";
+              return;
+            }
+            cpuNim();
+            drawNM();
+          });
+        })(i);
+        col.appendChild(s);
+      }
+      d.appendChild(col);
+      box.appendChild(d);
+    });
+    var x = nimXor(NM.piles);
+    var xb = $("nmXorBox");
+    if (NM.xorOn){
+      xb.style.display="block";
+      clear(xb);
+      var w = Math.max(1, Math.max.apply(null, NM.piles).toString(2).length);
+      NM.piles.forEach(function(v,i){
+        xb.appendChild(ce("div", null, "무더기 " + (i+1) + " : " + String(v).padStart(2," ") +
+          "  =  " + v.toString(2).padStart(w,"0")));
+      });
+      var d2 = ce("div", null, "XOR 합       =  " + x.toString(2).padStart(w,"0") + "  (" + x + ")");
+      d2.style.cssText = "margin-top:6px;font-weight:700;color:" + (x===0 ? "var(--flame)" : "var(--vine)");
+      xb.appendChild(d2);
+      var d3 = ce("div", null, x===0 ? "→ 지금 차례인 사람이 진다" : "→ 지금 차례인 사람이 이긴다");
+      d3.style.color = "var(--ink-2)";
+      xb.appendChild(d3);
+    } else xb.style.display="none";
+    if (!NM.over){
+      $("nmMsg").innerHTML = "무더기 " + NM.piles.join(", ") + " · XOR = <b>" + x + "</b> · " +
+        (x===0 ? "지금 차례가 <b style='color:var(--flame)'>불리</b>" : "지금 차례가 <b style='color:var(--vine)'>유리</b>");
+    }
+  }
+  function cpuNim(){
+    var x = nimXor(NM.piles);
+    if (x!==0){
+      for (var i=0;i<NM.piles.length;i++){
+        var target = NM.piles[i] ^ x;
+        if (target < NM.piles[i]){ NM.piles[i]=target; break; }
+      }
+    } else {
+      for (var j=0;j<NM.piles.length;j++){
+        if (NM.piles[j]>0){ NM.piles[j]--; break; }
+      }
+    }
+    if (NM.piles.reduce(function(a,b){return a+b;},0)===0){
+      NM.over=true;
+      setTimeout(function(){
+        $("nmMsg").innerHTML = "<b style='color:var(--flame)'>컴퓨터가 마지막 돌을 가져갔습니다.</b> XOR을 0으로 만드는 전략을 썼습니다.";
+      }, 10);
+    }
+  }
+  function newNim(p){ NM.piles = p.slice(); NM.over=false; drawNM(); }
+  $("nmP1").addEventListener("click", function(){ newNim([1,2,3]); });
+  $("nmP2").addEventListener("click", function(){ newNim([3,4,5]); });
+  $("nmP3").addEventListener("click", function(){ newNim([1,3,5,7]); });
+  $("nmXor").addEventListener("click", function(){
+    NM.xorOn=!NM.xorOn; this.classList.toggle("on",NM.xorOn); drawNM();
+  });
+  drawNM();
+
+  $("gsGo").addEventListener("click", function(){
+    var n = Math.max(1, Math.min(999, +$("gsN").value || 100));
+    var k = Math.max(1, Math.min(9, +$("gsK").value || 4));
+    var m = k+1, r = n % m;
+    var out = $("gsOut"); clear(out);
+    out.appendChild(ce("div", null, "돌 " + n + "개, 한 번에 1~" + k + "개"));
+    out.appendChild(ce("div", null, "지는 자리 = " + m + "의 배수 (" + m + ", " + 2*m + ", " + 3*m + ", …)"));
+    out.appendChild(ce("div", null, n + " ÷ " + m + " = " + Math.floor(n/m) + " … " + r));
+    var d = ce("div");
+    if (r===0){
+      d.textContent = "→ " + n + "은 " + m + "의 배수이므로 선공이 진다 (이기는 첫 수가 없음)";
+      d.style.color = "var(--flame)";
+    } else {
+      d.textContent = "→ 처음에 " + r + "개를 가져가 " + (n-r) + "개를 남기면 선공 승리";
+      d.style.color = "var(--vine)";
+    }
+    d.style.fontWeight = "700";
+    out.appendChild(d);
+    $("gsMsg").innerHTML = "최대 <i>k</i>개씩 가져갈 때는 <b>(k+1)의 배수</b>를 상대에게 남기면 이깁니다.";
+  });
+  $("gsGo").click();
+
+  /* ================= SET 3 : 몬티 홀 ================= */
+  var MH = { car:0, pick:null, opened:null, stage:0, stay:{w:0,n:0}, sw:{w:0,n:0} };
+  function newMH(){
+    MH.car = Math.floor(Math.random()*3);
+    MH.pick=null; MH.opened=null; MH.stage=0;
+    drawMH();
+  }
+  function drawMH(){
+    var box = $("mhDoors"); clear(box);
+    for (var i=0;i<3;i++){
+      var d = ce("div","door");
+      var opened = (MH.opened===i) || MH.stage===2;
+      if (opened){
+        d.classList.add("open");
+        d.textContent = (i===MH.car) ? "🚗" : "🐐";
+      } else d.textContent = String(i+1);
+      if (MH.pick===i) d.classList.add("pick");
+      var lb = ce("div","lb", MH.pick===i ? "내 선택" : "");
+      d.appendChild(lb);
+      (function(idx){
+        d.addEventListener("click", function(){
+          if (MH.stage!==0) return;
+          MH.pick = idx;
+          var opts=[];
+          for (var k=0;k<3;k++) if (k!==idx && k!==MH.car) opts.push(k);
+          MH.opened = opts[Math.floor(Math.random()*opts.length)];
+          MH.stage = 1;
+          drawMH();
+        });
+      })(i);
+      box.appendChild(d);
+    }
+    var ch = $("mhChoice"); clear(ch);
+    if (MH.stage===1){
+      var other;
+      for (var k2=0;k2<3;k2++) if (k2!==MH.pick && k2!==MH.opened) other=k2;
+      var b1 = ce("button","tbtn","그대로 " + (MH.pick+1) + "번 유지");
+      b1.addEventListener("click", function(){ decide(false, other); });
+      var b2 = ce("button","tbtn", other+1 + "번으로 바꾸기");
+      b2.addEventListener("click", function(){ decide(true, other); });
+      ch.appendChild(b1); ch.appendChild(b2);
+      $("mhMsg").innerHTML = "사회자가 <b>" + (MH.opened+1) + "번</b> 문을 열어 염소를 보여 줬습니다. 바꾸시겠습니까?";
+    } else if (MH.stage===0){
+      $("mhMsg").textContent = "문을 하나 골라 보세요.";
+    }
+    drawMHTable();
+  }
+  function decide(switched, other){
+    var finalPick = switched ? other : MH.pick;
+    var win = (finalPick===MH.car);
+    var rec = switched ? MH.sw : MH.stay;
+    rec.n++; if (win) rec.w++;
+    MH.stage = 2;
+    drawMH();
+    $("mhMsg").innerHTML = (win ? "<b style='color:var(--vine)'>자동차를 얻었습니다!</b> " : "<b style='color:var(--flame)'>염소였습니다.</b> ") +
+      (switched ? "바꾸기" : "유지") + " 선택 · <b>새 게임</b>을 눌러 계속해 보세요";
+  }
+  function drawMHTable(){
+    var t = $("mhTable"); clear(t);
+    var hd = ce("tr");
+    ["전략","시도","성공","성공률","이론값"].forEach(function(h){ hd.appendChild(ce("th",null,h)); });
+    t.appendChild(hd);
+    [["유지",MH.stay,"1/3 ≈ 33%"],["바꾸기",MH.sw,"2/3 ≈ 67%"]].forEach(function(r){
+      var tr = ce("tr");
+      tr.appendChild(ce("td",null,r[0]));
+      tr.appendChild(ce("td",null,String(r[1].n)));
+      tr.appendChild(ce("td",null,String(r[1].w)));
+      tr.appendChild(ce("td", r[1].n?"hi":null, r[1].n ? (r[1].w/r[1].n*100).toFixed(1)+"%" : "-"));
+      tr.appendChild(ce("td",null,r[2]));
+      t.appendChild(tr);
+    });
+  }
+  $("mhNew").addEventListener("click", newMH);
+  $("mhReset").addEventListener("click", function(){
+    MH.stay={w:0,n:0}; MH.sw={w:0,n:0}; newMH();
+  });
+  newMH();
+
+  function drawTC(show){
+    var t = $("tcTable"); clear(t);
+    var hd = ce("tr");
+    ["자동차 위치","내 선택","사회자가 여는 문","유지하면","바꾸면"].forEach(function(h){ hd.appendChild(ce("th",null,h)); });
+    t.appendChild(hd);
+    var stayW=0, swW=0;
+    for (var car=0;car<3;car++){
+      var tr = ce("tr");
+      tr.appendChild(ce("td",null,(car+1)+"번"));
+      tr.appendChild(ce("td",null,"1번"));
+      var opens=[];
+      for (var k=0;k<3;k++) if (k!==0 && k!==car) opens.push(k+1);
+      tr.appendChild(ce("td",null, opens.join(" 또는 ")+"번"));
+      var stayWin = (car===0);
+      if (stayWin) stayW++; else swW++;
+      tr.appendChild(ce("td", show ? (stayWin?"ok":"no") : null, show ? (stayWin?"자동차 ✓":"염소 ✗") : "?"));
+      tr.appendChild(ce("td", show ? (!stayWin?"ok":"no") : null, show ? (!stayWin?"자동차 ✓":"염소 ✗") : "?"));
+      t.appendChild(tr);
+    }
+    $("tcMsg").innerHTML = show
+      ? "세 경우 중 <b>유지</b>가 이기는 것은 1가지, <b>바꾸기</b>가 이기는 것은 <b>2가지</b>입니다 → 1/3 대 2/3"
+      : "처음 선택을 1번 문으로 고정하고 자동차 위치만 바꿔 봅니다.";
+  }
+  var tcS=false;
+  $("tcShow").addEventListener("click", function(){
+    tcS=!tcS; this.classList.toggle("on",tcS);
+    this.textContent = tcS ? "다시 가리기" : "세 경우 모두 보기";
+    drawTC(tcS);
+  });
+  drawTC(false);
+
+  function gcd(a,b){ while(b){ var t=a%b; a=b; b=t; } return a; }
+  function drawND(){
+    var n = +$("ndN").value;
+    $("ndV").textContent = n;
+    var g = gcd(n-1, n);
+    var out = $("ndOut"); clear(out);
+    out.appendChild(ce("div", null, "문 " + n + "개 중 하나 선택 → 사회자가 염소 문 " + (n-2) + "개를 열어 줌"));
+    var d1 = ce("div", null, "유지하면 이길 확률 : 1/" + n + " = " + (100/n).toFixed(2) + "%");
+    d1.style.color = "var(--flame)";
+    out.appendChild(d1);
+    var d2 = ce("div", null, "바꾸면 이길 확률   : " + (n-1) + "/" + n + " = " + ((n-1)/n*100).toFixed(2) + "%");
+    d2.style.cssText = "color:var(--vine);font-weight:700";
+    out.appendChild(d2);
+    $("ndMsg").innerHTML = n>=20
+      ? "문이 많아질수록 <b>바꾸는 것이 압도적으로 유리</b>합니다. 처음에 맞혔을 확률이 그만큼 낮기 때문입니다."
+      : "문 개수를 100까지 올려 보세요. 왜 바꿔야 하는지 훨씬 분명해집니다.";
+  }
+  $("ndN").addEventListener("input", drawND);
+  drawND();
+
+  function drawHK(mode){
+    var t = $("hkTable"); clear(t);
+    var hd = ce("tr");
+    ["상황","유지 승","바꾸기 승","합계","유지 확률","바꾸기 확률"].forEach(function(h){ hd.appendChild(ce("th",null,h)); });
+    t.appendChild(hd);
+    var tr = ce("tr");
+    if (mode==="know"){
+      tr.appendChild(ce("td",null,"사회자가 알고 염소 문을 연다"));
+      tr.appendChild(ce("td",null,"3"));
+      tr.appendChild(ce("td",null,"6"));
+      tr.appendChild(ce("td",null,"9"));
+      tr.appendChild(ce("td","no","1/3"));
+      tr.appendChild(ce("td","ok","2/3"));
+      $("hkMsg").innerHTML = "사회자가 <b>알고서</b> 반드시 염소 문을 열면 바꾸기가 <b>2배</b> 유리합니다.";
+    } else {
+      tr.appendChild(ce("td",null,"사회자도 모르고 열었는데 우연히 염소"));
+      tr.appendChild(ce("td",null,"6"));
+      tr.appendChild(ce("td",null,"6"));
+      tr.appendChild(ce("td",null,"12"));
+      tr.appendChild(ce("td","hi","1/2"));
+      tr.appendChild(ce("td","hi","1/2"));
+      $("hkMsg").innerHTML = "이 경우에는 <b>50 대 50</b>! 사회자가 '알고 있다'는 조건이 이 문제의 <b>핵심</b>입니다.";
+    }
+    t.appendChild(tr);
+  }
+  $("hkKnow").addEventListener("click", function(){
+    this.classList.add("on"); $("hkRandom").classList.remove("on"); drawHK("know");
+  });
+  $("hkRandom").addEventListener("click", function(){
+    this.classList.add("on"); $("hkKnow").classList.remove("on"); drawHK("random");
+  });
+  drawHK("know");
+
+  $("smGo").addEventListener("click", function(){
+    var N = Math.max(10, Math.min(100000, +$("smN").value || 1000));
+    var s=0, w=0;
+    for (var i=0;i<N;i++){
+      var car = Math.floor(Math.random()*3);
+      var pick = Math.floor(Math.random()*3);
+      var opts=[];
+      for (var k=0;k<3;k++) if (k!==pick && k!==car) opts.push(k);
+      var opened = opts[Math.floor(Math.random()*opts.length)];
+      var other;
+      for (var j=0;j<3;j++) if (j!==pick && j!==opened) other=j;
+      if (pick===car) s++;
+      if (other===car) w++;
+    }
+    var out = $("smOut"); clear(out);
+    out.appendChild(ce("div", null, N.toLocaleString() + "회 시뮬레이션"));
+    out.appendChild(ce("div", null, "유지   : " + s.toLocaleString() + "회 성공 (" + (s/N*100).toFixed(2) + "%)  이론 33.33%"));
+    var d = ce("div", null, "바꾸기 : " + w.toLocaleString() + "회 성공 (" + (w/N*100).toFixed(2) + "%)  이론 66.67%");
+    d.style.cssText = "color:var(--vine);font-weight:700";
+    out.appendChild(d);
+    $("smMsg").innerHTML = "횟수를 늘릴수록 이론값 <b>1/3</b>과 <b>2/3</b>에 가까워집니다.";
+  });
+  $("smGo").click();
+
+  /* ================= SET 4 : 죄수의 딜레마 ================= */
+  var PAY = { CC:[1,1], CD:[10,0], DC:[0,10], DD:[5,5] };
+  var pmMode = null;
+  function drawPM(){
+    var g = $("pmGrid"); clear(g);
+    g.appendChild(ce("div","hd",""));
+    g.appendChild(ce("div","hd","상대 침묵"));
+    g.appendChild(ce("div","hd","상대 자백"));
+    [["나 침묵",["CC","CD"]],["나 자백",["DC","DD"]]].forEach(function(row){
+      g.appendChild(ce("div","hd",row[0]));
+      row[1].forEach(function(key){
+        var v = PAY[key];
+        var d = ce("div","cell", "나 " + v[0] + "년 / 상대 " + v[1] + "년");
+        if (pmMode==="C" && (key==="CC"||key==="DC")) d.classList.add("on");
+        if (pmMode==="D" && (key==="CD"||key==="DD")) d.classList.add("on");
+        if (pmMode==="EQ" && key==="DD") d.classList.add("eq");
+        g.appendChild(d);
+      });
+    });
+    var out = $("pmOut"); clear(out);
+    if (pmMode==="C"){
+      out.innerHTML = "상대가 <b>침묵</b>할 때 → 나도 침묵하면 <b>1년</b>, 자백하면 <b>0년</b><br>" +
+        "<b style='color:var(--flame)'>→ 자백이 유리</b>";
+    } else if (pmMode==="D"){
+      out.innerHTML = "상대가 <b>자백</b>할 때 → 나도 침묵하면 <b>10년</b>, 자백하면 <b>5년</b><br>" +
+        "<b style='color:var(--flame)'>→ 자백이 유리</b>";
+    } else if (pmMode==="EQ"){
+      out.innerHTML = "두 사람 모두 자백 → 각자 <b>5년</b> (아무도 혼자 바꿔서 이득을 볼 수 없음)<br>" +
+        "그런데 둘 다 침묵했다면 각자 <b>1년</b>이었습니다.<br>" +
+        "<b style='color:var(--flame)'>→ 합리적인 선택이 모두를 더 나쁘게 만든다</b>";
+    }
+    $("pmMsg").innerHTML = pmMode
+      ? "버튼을 바꿔 가며 두 경우를 모두 확인하세요."
+      : "숫자는 형량(년)입니다. 적을수록 좋습니다.";
+  }
+  $("pmC").addEventListener("click", function(){ pmMode="C"; drawPM(); });
+  $("pmD").addEventListener("click", function(){ pmMode="D"; drawPM(); });
+  $("pmEq").addEventListener("click", function(){ pmMode="EQ"; drawPM(); });
+  drawPM();
+
+  var SCORE = { CC:[3,3], CD:[0,5], DC:[5,0], DD:[1,1] };
+  var STRATS = {
+    "항상 협력": function(me,op){ return "C"; },
+    "항상 배신": function(me,op){ return "D"; },
+    "팃포탯":   function(me,op){ return op.length ? op[op.length-1] : "C"; },
+    "앙심":     function(me,op){ return op.indexOf("D")>=0 ? "D" : "C"; }
+  };
+  function playPD(f1,f2,rounds){
+    var h1=[],h2=[],a=0,b=0;
+    for (var r=0;r<rounds;r++){
+      var m1=f1(h1,h2), m2=f2(h2,h1);
+      var s = SCORE[m1+m2];
+      a+=s[0]; b+=s[1]; h1.push(m1); h2.push(m2);
+    }
+    return [a,b];
+  }
+  $("rgGo").addEventListener("click", function(){
+    var R = Math.max(1, Math.min(500, +$("rgN").value || 200));
+    var names = Object.keys(STRATS);
+    var t = $("rgTable"); clear(t);
+    var hd = ce("tr");
+    hd.appendChild(ce("th",null,"전략 \\ 상대"));
+    names.forEach(function(n){ hd.appendChild(ce("th",null,n)); });
+    hd.appendChild(ce("th",null,"총점"));
+    t.appendChild(hd);
+    var tot={};
+    names.forEach(function(n1){
+      var tr = ce("tr");
+      tr.appendChild(ce("th",null,n1));
+      var sum=0;
+      names.forEach(function(n2){
+        var r = playPD(STRATS[n1], STRATS[n2], R);
+        sum += r[0];
+        tr.appendChild(ce("td",null,String(r[0])));
+      });
+      tot[n1]=sum;
+      tr.appendChild(ce("td","hi",String(sum)));
+      t.appendChild(tr);
+    });
+    var best = Object.keys(tot).sort(function(a,b){ return tot[b]-tot[a]; });
+    $("rgMsg").innerHTML = "총점 순위 : <b>" + best.map(function(n){ return n+"("+tot[n]+")"; }).join(" &gt; ") +
+      "</b><br>먼저 배신하지 않는 전략이 오히려 총점이 높습니다.";
+  });
+  $("rgGo").click();
+
+  $("myShow").addEventListener("click", function(){
+    var out = $("myOut"); clear(out);
+    out.innerHTML =
+      "<b>모둠 과제 버전</b> (점수는 높을수록 좋음)<br>" +
+      "· 둘 다 열심히 → 좋은 결과 + 실력 향상 : 각자 <b>3점</b><br>" +
+      "· 나만 묻어감 → 같은 점수인데 나는 편함 : 나 <b>5점</b>, 친구 <b>0점</b><br>" +
+      "· 둘 다 묻어감 → 과제 망함 : 각자 <b>1점</b><br><br>" +
+      "구조가 죄수의 딜레마와 <b>완전히 같습니다.</b> 그래서 조별 과제에서 무임승차가 생깁니다.<br>" +
+      "<b>해결책</b>은? 역할을 나눠 적기, 중간 점검, 서로 평가하기 — 모두 <b>반복 게임</b>으로 만드는 방법입니다.";
+    $("myMsg").innerHTML = "우리 주변에는 이런 구조가 매우 많습니다.";
+  });
+
+  /* ================= SET 5 : 다섯 집 ================= */
+  var CATS = [
+    { n:"색",   items:["노랑","파랑","빨강","하양","초록"] },
+    { n:"나라", items:["영국","중국","한국","일본","프랑스"] },
+    { n:"음료", items:["물","차","우유","주스","커피"] },
+    { n:"동물", items:["고양이","말","새","개","물고기"] },
+    { n:"과목", items:["수학","미술","과학","음악","체육"] }
+  ];
+  var ANSWER = [
+    ["노랑","파랑","빨강","하양","초록"],
+    ["영국","중국","한국","일본","프랑스"],
+    ["물","차","우유","주스","커피"],
+    ["고양이","말","새","개","물고기"],
+    ["수학","미술","과학","음악","체육"]
+  ];
+  var CLUES = [
+    "1. 한국인은 빨간 집에 산다",
+    "2. 일본인은 개를 기른다",
+    "3. 중국인은 차를 마신다",
+    "4. 초록집은 하얀집 바로 오른쪽에 있다",
+    "5. 초록집 사람은 커피를 마신다",
+    "6. 과학을 좋아하는 사람은 새를 기른다",
+    "7. 노란집 사람은 수학을 좋아한다",
+    "8. 가운데 집 사람은 우유를 마신다",
+    "9. 영국인은 첫째 집에 산다",
+    "10. 미술을 좋아하는 사람은 고양이 기르는 사람 옆집이다",
+    "11. 말을 기르는 사람은 수학 좋아하는 사람 옆집이다",
+    "12. 음악을 좋아하는 사람은 주스를 마신다",
+    "13. 프랑스인은 체육을 좋아한다",
+    "14. 영국인은 파란집 옆에 산다",
+    "15. 미술을 좋아하는 사람은 물 마시는 사람 옆집이다"
+  ];
+  var ZB = { grid: [[],[],[],[],[]], used:{} };
+  function initZB(){
+    for (var r=0;r<5;r++){ ZB.grid[r]=["","","","",""]; }
+    ZB.used={};
+    drawClues(); drawZB();
+  }
+  function drawClues(){
+    var box = $("zbClues"); clear(box);
+    CLUES.forEach(function(c,i){
+      var d = ce("div", ZB.used[i] ? "used" : "", c);
+      d.addEventListener("click", function(){
+        ZB.used[i] = !ZB.used[i]; drawClues();
+      });
+      box.appendChild(d);
+    });
+  }
+  function drawZB(){
+    var g = $("zbGrid"); clear(g);
+    g.appendChild(ce("div","hd","항목"));
+    for (var i=1;i<=5;i++) g.appendChild(ce("div","hd", i+"번 집"));
+    CATS.forEach(function(cat, r){
+      g.appendChild(ce("div","hd", cat.n));
+      for (var c=0;c<5;c++){
+        var d = ce("div","cell", ZB.grid[r][c] || "?");
+        if (ZB.grid[r][c]) d.classList.add("on");
+        (function(rr,cc){
+          d.addEventListener("click", function(){
+            var items = CATS[rr].items;
+            var cur = ZB.grid[rr][cc];
+            var idx = items.indexOf(cur);
+            var next = (idx+1 >= items.length) ? "" : items[idx+1];
+            ZB.grid[rr][cc] = next;
+            drawZB();
+          });
+        })(r,c);
+        g.appendChild(d);
+      }
+    });
+  }
+  $("zbClear").addEventListener("click", initZB);
+  $("zbCheck").addEventListener("click", function(){
+    var filled=0, right=0;
+    for (var r=0;r<5;r++) for (var c=0;c<5;c++){
+      if (ZB.grid[r][c]){ filled++; if (ZB.grid[r][c]===ANSWER[r][c]) right++; }
+    }
+    $("zbMsg").innerHTML = filled===0
+      ? "아직 아무것도 채우지 않았습니다."
+      : "채운 칸 <b>" + filled + "</b>/25 · 맞은 칸 <b>" + right + "</b>개" +
+        (right===25 ? " — <b style='color:var(--vine)'>완벽합니다!</b>" : "");
+  });
+  $("zbStep").addEventListener("click", function(){
+    for (var r=0;r<5;r++) for (var c=0;c<5;c++){
+      if (ZB.grid[r][c] !== ANSWER[r][c]){
+        ZB.grid[r][c] = ANSWER[r][c];
+        drawZB();
+        $("zbMsg").innerHTML = "힌트: <b>" + (c+1) + "번 집</b>의 " + CATS[r].n + "은 <b>" + ANSWER[r][c] + "</b>입니다.";
+        return;
+      }
+    }
+    $("zbMsg").innerHTML = "이미 표가 모두 완성되었습니다.";
+  });
+  initZB();
+
+  var DS_STEPS = [
+    "단서 <b>9</b> : 영국인은 <b>1번 집</b>에 산다.",
+    "단서 <b>14</b> : 영국인은 파란집 옆 → 1번이 파랑일 수 없으므로 <b>2번 집이 파랑</b>.",
+    "단서 <b>8</b> : <b>3번 집은 우유</b>.",
+    "단서 <b>4</b> : 초록집은 하얀집 바로 오른쪽 → (4,5) 또는 (3,4). 단서 <b>5</b>(초록=커피)와 3번이 우유이므로 <b>4번 하양, 5번 초록</b>.",
+    "남은 색은 빨강·노랑 → 1번 또는 3번. 단서 <b>1</b>(한국인=빨강)인데 1번은 영국인이므로 <b>3번이 빨강, 1번이 노랑</b>.",
+    "단서 <b>7</b> : 노란집(1번) 사람은 <b>수학</b>을 좋아한다.",
+    "단서 <b>11</b> : 말은 수학 옆집 → <b>2번 집이 말</b>.",
+    "단서 <b>5</b> : 5번(초록)은 커피. 단서 <b>3</b>(중국인=차)에서 2번이 차 → <b>2번이 중국인</b>. 남은 물·주스는 1번·4번.",
+    "단서 <b>15</b> : 미술은 물 옆집. 단서 <b>12</b>(음악=주스) 등을 함께 쓰면 <b>1번이 물, 4번이 주스</b>.",
+    "단서 <b>12</b> : 주스 마시는 <b>4번이 음악</b>. 단서 <b>10</b>(미술~고양이 옆)에서 <b>2번이 미술</b>, <b>1번이 고양이</b>.",
+    "단서 <b>6</b> : 과학=새. 남은 과학은 3번 → <b>3번이 새</b>. 단서 <b>13</b>(프랑스=체육) → <b>5번이 프랑스, 체육</b>.",
+    "단서 <b>2</b> : 일본인은 개 → 남은 4번이 <b>일본인, 개</b>. 3번이 <b>한국인</b>. 남은 <b>5번이 물고기</b>!"
+  ];
+  var DS = { step:0 };
+  function drawDS(){
+    var out = $("dsOut"); clear(out);
+    for (var i=0;i<DS.step;i++){
+      var d = ce("div");
+      d.innerHTML = (i+1) + ". " + DS_STEPS[i];
+      d.style.cssText = "padding:5px 0;border-bottom:1px dashed var(--line)";
+      if (i===DS.step-1) d.style.background = "#FBF7E4";
+      out.appendChild(d);
+    }
+    if (DS.step===0) out.appendChild(ce("div", null, "한 단계씩 보기를 눌러 추론 과정을 따라가세요."));
+    $("dsMsg").innerHTML = DS.step>=DS_STEPS.length
+      ? "완성! <b>물고기는 5번 집 프랑스 사람</b>이 기릅니다."
+      : "단계 " + DS.step + " / " + DS_STEPS.length;
+  }
+  $("dsStep").addEventListener("click", function(){
+    if (DS.step < DS_STEPS.length) DS.step++;
+    drawDS();
+  });
+  $("dsReset").addEventListener("click", function(){ DS.step=0; drawDS(); });
+  drawDS();
+
+  var REMOVE_RESULT = {
+    0:8, 1:8, 2:3, 3:8, 4:4, 5:10, 6:5, 7:3, 8:17, 9:2, 10:2, 11:7, 12:6, 13:6, 14:1
+  };
+  (function(){
+    var sel = $("rcSel");
+    CLUES.forEach(function(c,i){
+      var o = ce("option", null, c.split(".")[0] + "번");
+      o.value = String(i);
+      sel.appendChild(o);
+    });
+  })();
+  $("rcGo").addEventListener("click", function(){
+    var i = +$("rcSel").value;
+    var cnt = REMOVE_RESULT[i];
+    var out = $("rcOut"); clear(out);
+    out.appendChild(ce("div", null, "제거한 단서 : " + CLUES[i]));
+    var d = ce("div", null, "남은 14개 단서만으로 가능한 해 : " + cnt + "개");
+    d.style.cssText = "font-weight:700;color:" + (cnt>1 ? "var(--flame)" : "var(--vine)");
+    out.appendChild(d);
+    out.appendChild(ce("div", null, cnt>1
+      ? "→ 답이 하나로 정해지지 않는다. 이 단서는 <반드시 필요>"
+      : "→ 여전히 답이 하나! 이 단서는 <없어도 되는 잉여 단서>"));
+    $("rcMsg").innerHTML = cnt>1
+      ? "단서를 빼면 답이 여러 개가 됩니다. 그래서 그 단서가 필요합니다."
+      : "<b>놀라운 발견!</b> 15번 단서는 빼도 답이 하나입니다. 모든 단서가 꼭 필요한 것은 아닙니다.";
+  });
+  $("rcGo").click();
+})();
+</script>
+</body>
+</html>
