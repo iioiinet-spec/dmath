@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>사고력 논리퍼즐과 게임이론 5제 · 교사용 정답 및 해설</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+<style>
+:root{
+  --bg:#EFEEEB;--paper:#FFFFFF;--ink:#181A1F;--ink-2:#515660;--line:#D6D4CE;
+  --ocean:#1E5F74;--flame:#B2452C;--vine:#4C6B2F;--dusk:#5B4A7D;--sand:#96731A;
+  --ac:var(--ocean);
+  --f-disp:'Gowun Batang','Pretendard Variable',Pretendard,serif;
+  --f-body:'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif;
+  --f-mono:'D2Coding','JetBrains Mono',Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);line-height:1.78;-webkit-font-smoothing:antialiased}
+.wrap{max-width:880px;margin:0 auto;padding:0 20px}
+header{background:var(--ink);color:#fff;padding:44px 0 34px}
+header .kicker{font-family:var(--f-mono);font-size:12px;letter-spacing:.24em;color:#8FB3BE;margin:0 0 12px}
+header h1{font-family:var(--f-disp);font-weight:700;font-size:clamp(26px,5.2vw,38px);margin:0 0 10px;line-height:1.28}
+header p{color:#B3B9C2;margin:0 0 18px;max-width:620px;font-size:15px}
+.hmeta{display:flex;flex-wrap:wrap;gap:8px}
+.hmeta span{font-family:var(--f-mono);font-size:11.5px;border:1px solid #363A43;border-radius:4px;padding:5px 11px;color:#C0C5CE}
+.hmeta span b{color:#fff}
+nav.toc{position:sticky;top:0;z-index:40;background:rgba(239,238,235,.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.tocrow{display:flex;gap:5px;overflow-x:auto;padding:10px 0;scrollbar-width:none}
+.tocrow::-webkit-scrollbar{display:none}
+.tocbtn{flex:0 0 auto;border:1px solid var(--line);background:var(--paper);color:var(--ink-2);cursor:pointer;
+  font-size:13.4px;font-weight:600;padding:7px 14px;border-radius:5px;white-space:nowrap;font-family:var(--f-body)}
+.tocbtn:hover{border-color:var(--ink-2);color:var(--ink)}
+.tocbtn.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.tocbtn:focus-visible{outline:2px solid var(--sand);outline-offset:2px}
+.set{display:none;padding:36px 0 70px;animation:fade .3s ease}
+.set.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.sethead{border-left:5px solid var(--ac);padding-left:18px;margin-bottom:24px}
+.sethead .no{font-family:var(--f-mono);font-size:12px;letter-spacing:.2em;color:var(--ac);margin:0}
+.sethead h2{font-family:var(--f-disp);font-weight:700;font-size:clamp(22px,4.4vw,30px);margin:5px 0 8px;line-height:1.3}
+.sethead .core{font-size:14px;color:var(--ink-2);margin:0}
+.sethead .core b{color:var(--ink)}
+.keybox{background:var(--paper);border:1px solid var(--line);border-left:4px solid var(--ac);border-radius:0 6px 6px 0;padding:16px 20px;margin-bottom:22px}
+.keybox h3{font-family:var(--f-disp);font-weight:700;font-size:15.5px;margin:0 0 8px;color:var(--ac)}
+.keybox p{margin:0;font-size:14.6px;color:var(--ink-2)}
+.a{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:20px 22px;margin-bottom:16px}
+.ah{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.ano{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.1em;color:#fff;background:var(--ac);border-radius:4px;padding:3px 10px}
+.ans{font-family:var(--f-disp);font-weight:700;font-size:17px;color:var(--vine)}
+.a p{margin:0 0 11px;font-size:15.2px}
+.a p:last-child{margin-bottom:0}
+.a ul,.a ol{margin:0 0 11px;padding-left:22px;font-size:15px}
+.a li{margin-bottom:6px}
+.calc{font-family:var(--f-mono);font-size:13.3px;background:#F3F2EF;border:1px solid var(--line);border-radius:5px;
+  padding:12px 15px;margin:0 0 12px;white-space:pre-wrap;line-height:1.9;overflow-x:auto}
+.calc b{color:var(--flame)}
+.proof{border-left:3px solid var(--vine);background:#EEF3E9;border-radius:0 5px 5px 0;padding:13px 17px;margin:0 0 12px;font-size:14.8px}
+.proof b{color:var(--vine)}
+.talk{background:#FBF3F0;border:1px solid #E7D0C8;border-radius:6px;padding:17px 20px;margin-top:14px}
+.talk h4{font-family:var(--f-disp);font-weight:700;font-size:15px;margin:0 0 10px;color:var(--flame)}
+.talk .tq{font-weight:700;font-size:14.6px;color:#7C3323;margin:14px 0 5px}
+.talk .tq:first-of-type{margin-top:0}
+.talk .ta{font-size:14.4px;color:#48332C;margin:0 0 6px}
+.talk .ta:last-child{margin-bottom:0}
+.talk em{font-style:normal;color:#963B28;font-weight:700}
+.rubric{margin-top:16px;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.rubric .rh{background:#F3F2EF;padding:9px 16px;font-size:13px;font-weight:700;color:var(--ink-2);border-bottom:1px solid var(--line)}
+table.rb{width:100%;border-collapse:collapse;font-size:13.6px}
+table.rb th,table.rb td{border-bottom:1px solid var(--line);padding:9px 14px;text-align:left;vertical-align:top}
+table.rb th{background:#FAFAF8;font-weight:700;width:112px;color:var(--ink)}
+table.rb tr:last-child td,table.rb tr:last-child th{border-bottom:0}
+.misc{background:#FBF8EC;border:1px solid #E5DFC3;border-radius:6px;padding:15px 19px;margin-top:16px;font-size:14.4px}
+.misc h4{font-family:var(--f-disp);font-weight:700;font-size:14.5px;margin:0 0 8px;color:var(--sand)}
+.misc ul{margin:0;padding-left:20px}
+.misc li{margin-bottom:6px;color:#5D5323}
+.misc li:last-child{margin-bottom:0}
+.verify{background:#111519;color:#C4C9D0;border-radius:6px;padding:16px 19px;margin-top:16px;
+  font-family:var(--f-mono);font-size:12.5px;line-height:1.85;white-space:pre-wrap;overflow-x:auto}
+.verify .vh{color:#6EE7B7;font-weight:700;display:block;margin-bottom:7px}
+.verify em{color:#FBBF24;font-style:normal}
+.src{font-size:12.8px;color:var(--ink-2);border-top:1px solid var(--line);padding-top:14px;margin-top:24px}
+.src b{color:var(--ink)}
+.prm{display:flex;justify-content:space-between;gap:10px;margin-top:30px}
+.prm button{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:5px;padding:11px 20px;
+  font-size:14px;font-weight:600;cursor:pointer;font-family:var(--f-body)}
+.prm button:hover{border-color:var(--ac);color:var(--ac)}
+.prm button:disabled{opacity:.35;cursor:default}
+footer{border-top:1px solid var(--line);padding:26px 0 60px;color:var(--ink-2);font-size:13px;text-align:center}
+table.dt{width:100%;border-collapse:collapse;font-family:var(--f-mono);font-size:13px;margin:0 0 12px}
+table.dt th,table.dt td{border:1px solid var(--line);padding:6px 9px;text-align:center}
+table.dt th{background:#F1F0EC;font-weight:600}
+td.hl{background:#FBF7E4;color:var(--sand);font-weight:700}
+td.gd{background:#EEF3E9;color:var(--vine);font-weight:700}
+td.bd{background:#FBEEEA;color:var(--flame);font-weight:700}
+.tbscroll{overflow-x:auto}
+@media print{
+  nav.toc,.prm{display:none}
+  .set{display:block !important;page-break-after:always}
+  body{background:#fff}
+  header{background:#fff;color:#000;border-bottom:2px solid #000}
+  header h1,header p,.hmeta span{color:#000}
+  .verify{background:#F3F2EF;color:#000}
+}
+@media (prefers-reduced-motion: reduce){*{animation-duration:.001ms !important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <p class="kicker">TEACHER'S EDITION · ANSWERS &amp; COMMENTARY</p>
+    <h1>사고력 논리퍼즐과 게임이론 5제 — 정답과 해설</h1>
+    <p>각 문항의 정답, 학생이 도달해야 할 논증, 흔한 오답과 그 원인, 토론 진행 시 던질 되물음, 그리고 Python으로 전수 검증한 결과를 함께 싣습니다.</p>
+    <div class="hmeta">
+      <span>세트 <b>5</b></span><span>문항 <b>25</b></span><span>루브릭 <b>세트별 3단계</b></span><span>정답 검증 <b>Python 전수</b></span>
+    </div>
+  </div>
+</header>
+
+<nav class="toc">
+  <div class="wrap tocrow">
+    <button class="tocbtn on" data-s="s1">01 · 강 건너기</button>
+    <button class="tocbtn" data-s="s2">02 · 필승 전략</button>
+    <button class="tocbtn" data-s="s3">03 · 몬티 홀</button>
+    <button class="tocbtn" data-s="s4">04 · 죄수의 딜레마</button>
+    <button class="tocbtn" data-s="s5">05 · 다섯 집 수수께끼</button>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<!-- ============ SET 1 ============ -->
+<section class="set on" id="s1" data-ac="#1E5F74">
+  <div class="sethead">
+    <p class="no">SET 01 · ANSWERS</p>
+    <h2>늑대와 염소와 양배추를 무사히 건너게 하려면</h2>
+    <p class="core">핵심 아이디어 — <b>되돌아가기</b>. "한 번 건넌 것은 그대로 둔다"는 고정관념을 깨야 풀립니다.</p>
+  </div>
+
+  <div class="keybox">
+    <h3>지도 요령</h3>
+    <p>학생들은 <b>염소를 다시 데리고 돌아오는 수</b>를 좀처럼 떠올리지 못합니다. 막히면 답을 주지 말고 <b>"건너간 것을 다시 데려올 수도 있나요?"</b>만 물어보세요. 그 한 마디로 대부분 풀어냅니다.</p>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">1-1</span><span class="ans">정답 · 7번</span></div>
+    <div class="calc">최단 해 (7번)
+   1. <b>염소</b>를 태우고 건넘        (남은 쪽: 늑대·양배추 → 안전)
+   2. 혼자 돌아옴
+   3. <b>늑대</b>를 태우고 건넘
+   4. <b>염소</b>를 다시 태우고 돌아옴   ← 이 수가 핵심!
+   5. <b>양배추</b>를 태우고 건넘       (남은 쪽: 염소 혼자)
+   6. 혼자 돌아옴
+   7. <b>염소</b>를 태우고 건넘 → 완료
+
+또 하나의 7번 해 (3·5번만 바뀜)
+   염소 → 혼자 → <b>양배추</b> → 염소 → <b>늑대</b> → 혼자 → 염소</div>
+    <p>4번 수에서 학생들이 놀랍니다. "왜 애써 건넌 걸 다시 가져와?"라는 반응이 나오면 수업이 잘 되고 있는 것입니다.</p>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">1-2</span><span class="ans">정답 · 염소</span></div>
+    <div class="proof">
+      · <b>늑대</b>를 먼저 태우면 → 염소와 양배추가 남음 → <b>염소가 양배추를 먹음</b> ✗<br>
+      · <b>양배추</b>를 먼저 태우면 → 늑대와 염소가 남음 → <b>늑대가 염소를 먹음</b> ✗<br>
+      · <b>염소</b>를 먼저 태우면 → 늑대와 양배추가 남음 → <b>아무 일 없음</b> ✓<br><br>
+      그러므로 첫 수는 <b>염소</b>뿐입니다. 선택의 여지가 없습니다.
+    </div>
+    <p>염소가 <b>양쪽 모두와 문제를 일으키는</b> 유일한 대상이라는 점을 짚어 주세요. 그래서 염소가 계속 배를 타고 오가게 됩니다.</p>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">1-3</span><span class="ans">정답 · 10가지</span></div>
+    <div class="calc">전체 배치 = 2⁴ = <b>16</b>가지 (넷이 각각 어느 쪽에 있는가)
+
+위험한 배치 <b>6</b>가지
+  · 농부 없는 쪽에 늑대와 염소가 함께 → 4가지
+  · 농부 없는 쪽에 염소와 양배추가 함께 → 4가지
+  · 두 조건이 동시에 걸리는 경우 2가지를 중복 제거
+  → 4 + 4 − 2 = <b>6</b>
+
+안전한 배치 = 16 − 6 = <b>10</b>가지</div>
+    <p>포함배제가 여기서도 쓰인다는 점을 짚으면 앞 단원(집합론)과 자연스럽게 연결됩니다.</p>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">1-4</span><span class="ans">토론 정리</span></div>
+    <div class="talk">
+      <h4>예상 답과 되물음</h4>
+      <p class="tq">① 7번짜리 해는 몇 가지인가</p>
+      <p class="ta"><b>정확히 2가지</b>입니다. 첫 수(염소)와 마지막 수는 고정되어 있고, 3번째 수에서 <b>늑대냐 양배추냐</b>만 갈립니다. 두 해는 늑대와 양배추의 역할을 맞바꾼 <b>대칭</b> 관계입니다. → 되물음: <em>"두 방법이 완전히 다른 아이디어인가요, 같은 아이디어인가요?"</em></p>
+      <p class="tq">② 가장 어려운 수</p>
+      <p class="ta"><b>4번째 수(염소를 다시 데려오기)</b>입니다. 우리는 문제를 풀 때 "진전"만 생각하는데, 이 문제는 <b>일시적으로 후퇴</b>해야 풀립니다. 이런 구조는 퍼즐뿐 아니라 실제 문제 해결에서도 자주 나타납니다.</p>
+      <p class="tq">③ 규칙을 바꾸면</p>
+      <p class="ta">배에 <b>2개</b>를 실을 수 있으면 <b>3번</b>이면 됩니다(염소+늑대 → 염소 데리고 복귀 → 염소+양배추). 늑대가 <b>양배추도 먹는다면</b> 여전히 7번에 가능합니다. 그러나 <b>셋 다 서로 먹는다면 불가능</b>합니다. 하나만 데려갈 수 있는데 남는 둘이 반드시 충돌하기 때문입니다. → 되물음: <em>"불가능하다는 걸 어떻게 확신할 수 있나요?"</em></p>
+      <p class="tq">④ 컴퓨터로 풀게 하려면</p>
+      <p class="ta"><b>배치(상태)</b>를 네 개의 0/1로, <b>움직임</b>을 "농부 쪽을 뒤집고 필요하면 하나를 함께 뒤집기"로 표현하면 됩니다. 그러면 컴퓨터는 <b>안전한 10개 상태를 잇는 지도</b>에서 최단 경로를 찾으면 됩니다. 실제로 이 검증도 그 방식(너비 우선 탐색)으로 했습니다.</p>
+      <p class="ta">앞 단원의 <b>쾨니히스베르크 다리</b>와 마찬가지로, 문제를 <b>점과 선</b>으로 바꾸는 순간 컴퓨터가 풀 수 있게 됩니다.</p>
+    </div>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">1-5</span><span class="ans">변형 문제 정답</span></div>
+    <div class="tbscroll">
+      <table class="dt">
+        <tr><th>규칙</th><th>최소 횟수</th><th>비고</th></tr>
+        <tr><td>기본 (배에 1개)</td><td class="hl">7번</td><td>해가 2가지</td></tr>
+        <tr><td>배에 2개까지</td><td class="gd">3번</td><td>염소+늑대 → 염소 복귀 → 염소+양배추</td></tr>
+        <tr><td>늑대가 양배추도 먹음</td><td class="hl">7번</td><td>순서만 조정하면 가능</td></tr>
+        <tr><td>셋 다 서로 먹음</td><td class="bd">불가능</td><td>남는 둘이 반드시 충돌</td></tr>
+      </table>
+    </div>
+    <div class="misc">
+      <h4>흔한 오답과 원인</h4>
+      <ul>
+        <li><b>늑대를 먼저 태움</b> — "가장 위험한 것부터 옮기자"는 직관 때문입니다. 남는 쪽을 확인하는 습관을 들이세요.</li>
+        <li><b>되돌아가는 수를 생각하지 못함</b> — 가장 근본적인 막힘입니다. 5~6수에서 반드시 벽에 부딪힙니다.</li>
+        <li><b>"농부도 하나로 세어 배에 못 탄다"</b> — 문제를 잘못 읽은 경우입니다. 농부는 항상 배에 탑니다.</li>
+        <li><b>9번 이상으로 건넘</b> — 답은 맞았지만 최소가 아닙니다. 불필요하게 되돌아온 곳을 찾게 하세요.</li>
+      </ul>
+    </div>
+    <div class="rubric">
+      <div class="rh">평가 루브릭</div>
+      <table class="rb">
+        <tr><th>상</th><td>7번 해를 찾고 첫 수가 염소일 수밖에 없는 이유를 세 경우로 논증한다. 되돌아오는 수의 필요성을 설명하고, 규칙 변형에 따른 답의 변화를 예측한다.</td></tr>
+        <tr><th>중</th><td>시행착오로 해를 찾아내나, 첫 수의 필연성이나 되돌아오는 수의 역할을 설명하지 못한다.</td></tr>
+        <tr><th>하</th><td>되돌아오는 수를 시도하지 못해 해를 찾지 못한다.</td></tr>
+      </table>
+    </div>
+    <div class="verify"><span class="vh">Python 검증 (너비 우선 탐색 + 전수 열거)</span>최단 경로 : <em>7</em>회
+  염소 → 혼자 → 늑대 → 염소 → 양배추 → 혼자 → 염소
+전체 상태 <em>16</em>개 중 안전한 상태 <em>10</em>개 (위험 6개)
+길이 7인 서로 다른 해 : <em>2</em>가지
+  ① 염소 → 혼자 → <em>늑대</em> → 염소 → <em>양배추</em> → 혼자 → 염소
+  ② 염소 → 혼자 → <em>양배추</em> → 염소 → <em>늑대</em> → 혼자 → 염소
+첫 수로 가능한 것 : <em>{'염소'}</em> — 다른 선택지 없음</div>
+    <p class="src"><b>출처</b> — 799년경 <b>알퀸</b>이 샤를마뉴 대제를 위해 엮은 『청년의 마음을 단련하는 문제집(Propositiones ad Acuendos Juvenes)』의 50문제 중 하나입니다. 기록에 남은 가장 오래된 논리퍼즐 모음집입니다.</p>
+  </div>
+</section>
+
+<!-- ============ SET 2 ============ -->
+<section class="set" id="s2" data-ac="#5B4A7D">
+  <div class="sethead">
+    <p class="no">SET 02 · ANSWERS</p>
+    <h2>먼저 시작하면 반드시 이기는 게임</h2>
+    <p class="core">핵심 아이디어 — <b>끝에서 거꾸로</b>. "내가 지는 자리"를 먼저 찾고, 상대를 그 자리로 밀어 넣습니다.</p>
+  </div>
+
+  <div class="keybox">
+    <h3>지도 요령</h3>
+    <p>학생끼리 <b>먼저 여러 판 대결</b>하게 하세요. 이길 때와 질 때의 차이를 몸으로 느낀 뒤에 표를 그려야 의미가 있습니다. <b>"돌이 4개 남으면 어떻게 되나요?"</b>가 결정적인 질문입니다.</p>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">2-1</span><span class="ans">정답 · 1개</span></div>
+    <div class="calc">21개에서 시작 → 21 ÷ 4 = 5 … <b>1</b>
+  처음에 <b>1개</b>를 가져가 <b>20개</b>(4의 배수)를 남긴다
+
+이후 전략 : 상대가 k개를 가져가면 나는 <b>4−k</b>개를 가져간다
+  상대 1개 → 나 3개 (합 4)
+  상대 2개 → 나 2개 (합 4)
+  상대 3개 → 나 1개 (합 4)
+  → 한 바퀴마다 정확히 4개씩 줄어 20 → 16 → 12 → 8 → 4 → 0
+  → 마지막 돌은 항상 내가 가져감</div>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">2-2</span><span class="ans">정답 · 4의 배수</span></div>
+    <div class="tbscroll">
+      <table class="dt">
+        <tr><th>남은 돌</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th></tr>
+        <tr><th>내 차례면</th><td class="bd">패</td><td class="gd">승</td><td class="gd">승</td><td class="gd">승</td><td class="bd">패</td><td class="gd">승</td><td class="gd">승</td><td class="gd">승</td><td class="bd">패</td><td class="gd">승</td><td class="gd">승</td><td class="gd">승</td><td class="bd">패</td></tr>
+      </table>
+    </div>
+    <div class="proof">
+      <b>거꾸로 따지기</b><br>
+      · 0개 → 가져갈 게 없으니 <b>직전 사람이 마지막을 가져감</b> → 나는 패<br>
+      · 1~3개 → 전부 가져가면 승<br>
+      · 4개 → 1~3개를 가져가면 상대에게 3~1개가 남음 → 상대가 승 → 나는 <b>패</b><br>
+      · 5~7개 → 상대에게 4개를 남길 수 있음 → 승<br>
+      · 8개 → 무엇을 해도 상대에게 5~7개 → 상대가 승 → 나는 <b>패</b><br><br>
+      패배 지점이 <b>0, 4, 8, 12, …</b> 로 반복됩니다. 상대에게 <b>4의 배수</b>를 넘기는 것이 필승 전략입니다.
+    </div>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">2-3</span><span class="ans">정답 · 후공 승리</span></div>
+    <div class="calc">님 게임 (1, 2, 3) — 이진수로 쓰고 XOR
+
+  무더기 1 :  1  =  <b>001</b>
+  무더기 2 :  2  =  <b>010</b>
+  무더기 3 :  3  =  <b>011</b>
+  ─────────────────────
+  XOR 합          =  <b>000</b>  (= 0)
+
+XOR = 0 → 지금 차례인 사람(선공)이 <b>진다</b>
+
+왜? 어떤 수를 둬도 XOR이 0이 아니게 되고,
+상대는 다시 0으로 되돌릴 수 있기 때문. (6가지 수 모두 확인 완료)
+
+반대로 (3, 4, 5)는
+  3 = 011, 4 = 100, 5 = 101  →  XOR = <b>010</b> (= 2) ≠ 0 → 선공 승리
+  이기는 수 : 1번 무더기에서 <b>2개</b> 제거 → (1, 4, 5) → XOR = 0</div>
+    <div class="proof"><b>부통의 정리</b>(1901) — 모든 무더기의 XOR이 <b>0이면 지금 차례가 패배</b>, <b>0이 아니면 승리</b>입니다. 이기는 방법은 항상 <b>XOR을 0으로 만드는</b> 수를 두는 것입니다.</div>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">2-4</span><span class="ans">토론 정리</span></div>
+    <div class="talk">
+      <h4>예상 답과 되물음</h4>
+      <p class="tq">① 최대 k개까지 가져갈 수 있다면</p>
+      <p class="ta"><b>(k+1)의 배수</b>를 상대에게 남기면 이깁니다. 최대 2개면 3의 배수, 최대 4개면 5의 배수입니다. 이유는 같습니다 — 상대가 k개를 가져가면 나는 <b>(k+1)−k</b>개를 가져가 한 바퀴에 정확히 k+1개씩 줄이면 되기 때문입니다.</p>
+      <p class="ta">전수 확인: 최대 2개 → 패배 지점 0, 3, 6, 9, 12 / 최대 5개 → 0, 6, 12, 18, 24. → 되물음: <em>"왜 하필 k+1일까요? 한 바퀴에 몇 개가 줄어드나요?"</em></p>
+      <p class="tq">② 마지막을 가져가면 지는 규칙</p>
+      <p class="ta">전략이 <b>한 칸 밀립니다</b>. 이제는 상대에게 <b>1개를 남기는 것</b>이 목표이므로, "4로 나눠 <b>1이 남는</b> 수"를 상대에게 넘겨야 합니다. 선공이 지는 지점은 1, 5, 9, 13, 17, 21입니다.</p>
+      <p class="ta">이런 뒤집힌 규칙을 <b>미제르(misère) 게임</b>이라 부릅니다. 구조는 같고 목표 지점만 이동한다는 점이 핵심입니다. → 되물음: <em>"21개로 시작하면 이번엔 누가 이기나요?"</em> (21 = 4×5+1이므로 <b>선공이 집니다</b>)</p>
+      <p class="tq">③ 이진수의 공통점</p>
+      <p class="ta">선공이 지는 배치는 <b>각 자릿수마다 1의 개수가 짝수</b>입니다. 예를 들어 (1,2,3) = 001, 010, 011에서 1의 자리에 1이 두 개, 2의 자리에 1이 두 개 — 모두 짝수입니다. 이것이 곧 XOR = 0입니다.</p>
+      <p class="ta">"짝을 이룬다"는 발상은 앞 단원의 <b>도미노 색칠</b>이나 <b>약수의 짝짓기</b>와 같은 아이디어입니다. → 되물음: <em>"짝이 맞으면 왜 불리할까요?"</em> (상대가 항상 짝을 복원할 수 있기 때문)</p>
+      <p class="tq">④ 운이 없는 게임의 재미</p>
+      <p class="ta">이런 게임을 <b>완전 정보 게임</b>이라 하며, 이론상 승패가 처음부터 정해져 있습니다. 그런데도 재미있는 이유는 <b>사람이 최적수를 모두 계산하지 못하기</b> 때문입니다. 바둑과 체스도 같은 부류입니다.</p>
+      <p class="ta">전략을 아는 사람이 <b>지는 자리</b>에서 시작하면 어떻게 해야 할까요? 최선은 <b>상대가 실수하기를 기다리는 것</b>입니다. 그래서 일부러 복잡한 수를 두기도 합니다.</p>
+    </div>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">2-5</span><span class="ans">정답 · 이기는 첫 수가 없다 (선공 패배)</span></div>
+    <div class="calc">돌 100개, 한 번에 1~4개
+  지는 자리 = <b>5</b>의 배수 (5, 10, 15, …)
+  100 ÷ 5 = 20 … <b>0</b>
+
+  → 100은 이미 5의 배수 → <b>선공이 진다</b>
+  → 무엇을 가져가도 상대에게 5의 배수를 남길 수 없음
+
+이 문제는 "첫 수를 구하라"는 물음 자체가 <b>함정</b>입니다.
+답이 없다는 것을 알아내는 것이 정답입니다.</div>
+    <div class="misc">
+      <h4>흔한 오답과 원인</h4>
+      <ul>
+        <li><b>"많이 가져가는 게 유리"</b> — 초반에 흔한 오해입니다. 4개 남았을 때를 보여 주면 바로 깨집니다.</li>
+        <li><b>21개에서 3개를 가져감</b> — 18을 남기는데 18은 4의 배수가 아닙니다. 나머지 계산을 짚어 주세요.</li>
+        <li><b>100개 문제에 "5개"라고 답함</b> — 최대 4개까지만 가져갈 수 있습니다. 조건을 다시 읽히세요.</li>
+        <li><b>100개 문제에 억지로 숫자를 답함</b> — "이기는 수가 없다"는 것도 답이라는 점을 세트 1(불가능)과 연결하세요.</li>
+        <li><b>님에서 무더기 개수만 봄</b> — 개수가 아니라 <b>이진수 자릿수별 짝</b>이 중요합니다.</li>
+      </ul>
+    </div>
+    <div class="rubric">
+      <div class="rh">평가 루브릭</div>
+      <table class="rb">
+        <tr><th>상</th><td>패배 지점을 거꾸로 찾아 4의 배수 규칙을 도출하고 이유를 설명한다. 최대 k개, 미제르 규칙으로 일반화하며, 님에서 XOR = 0의 의미를 이진수로 설명한다.</td></tr>
+        <tr><th>중</th><td>4의 배수 규칙을 찾아 적용하나, 왜 그런지 또는 규칙 변형 시의 답을 설명하지 못한다.</td></tr>
+        <tr><th>하</th><td>감으로 두며 승패 지점을 표로 정리하지 못한다.</td></tr>
+      </table>
+    </div>
+    <div class="verify"><span class="vh">Python 전수 검증 (완전탐색 vs 공식)</span>1~3개씩, 마지막 가져가면 승
+  선공 패배 지점 : <em>[0, 4, 8, 12, 16, 20, 24]</em> = 4의 배수
+  21개 → 선공 <em>승리</em> (1개 가져가 20 남김)
+최대 k개 일반화
+  k=2 → 패배 지점 3의 배수 / k=3 → 4의 배수
+  k=4 → 5의 배수 / k=5 → 6의 배수   <em>모두 일치</em>
+미제르(마지막 가져가면 패)
+  선공 패배 지점 : <em>[1, 5, 9, 13, 17, 21]</em> = 4로 나눠 1 남는 수
+님 게임 : 완전탐색 vs XOR 판정
+  0~4 범위 3무더기 <em>125가지 전수 검사 → 불일치 0건</em>
+  (1,2,3) XOR=0 → 패배 · (3,4,5) XOR=2 → 승리
+  (1,2,3)에서 가능한 6가지 수 모두 XOR ≠ 0 <em>확인</em>
+  (3,4,5)의 이기는 수 : 1번 더미에서 <em>2개</em> 제거 → (1,4,5)</div>
+    <p class="src"><b>출처</b> — 뺏기 게임은 <b>클로드 가스파르 바셰</b>가 1612년 『재미있고 즐거운 문제들』에 실었습니다. 여러 무더기를 다루는 <b>님</b>은 <b>찰스 부통</b>이 1901년 논문에서 이진법 XOR로 완전한 필승법을 증명했으며, 이것이 <b>조합 게임 이론</b>의 출발점이 되었습니다.</p>
+  </div>
+</section>
+
+<!-- ============ SET 3 ============ -->
+<section class="set" id="s3" data-ac="#B2452C">
+  <div class="sethead">
+    <p class="no">SET 03 · ANSWERS</p>
+    <h2>문을 바꾸는 게 정말 유리할까</h2>
+    <p class="core">핵심 아이디어 — <b>정보가 어디서 왔는가</b>. 사회자가 <b>알고서</b> 문을 연다는 조건이 확률을 바꿉니다.</p>
+  </div>
+
+  <div class="keybox">
+    <h3>지도 요령</h3>
+    <p>먼저 <b>손을 들어 투표</b>시키세요. 대부분 "50 대 50"이라고 답합니다. 그 상태에서 표를 만들게 하면 스스로 무너집니다. 설득이 잘 안 되면 <b>문 100개 버전</b>을 꺼내세요 — 가장 효과적인 설명입니다.</p>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">3-1</span><span class="ans">정답 · 2/3 (바꾸기), 1/3 (유지)</span></div>
+    <div class="calc">전수 계산 (자동차 위치 3 × 처음 선택 3, 사회자 규칙 반영)
+  유지 승률   = <b>1/3</b> ≈ 33.33%
+  바꾸기 승률 = <b>2/3</b> ≈ 66.67%
+
+몬테카를로 200,000회
+  유지 33.29%  바꾸기 66.71%   → 이론값과 일치</div>
+    <p>학생들이 직접 20~30번 해 보면 대략 2:1의 차이가 눈에 보입니다. 횟수가 적으면 흔들리므로, <b>여러 학생의 기록을 합치게</b> 하면 좋습니다.</p>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">3-2</span><span class="ans">세 경우로 보는 증명</span></div>
+    <div class="tbscroll">
+      <table class="dt">
+        <tr><th>자동차</th><th>내 선택</th><th>사회자가 여는 문</th><th>유지하면</th><th>바꾸면</th></tr>
+        <tr><td>1번</td><td>1번</td><td>2 또는 3번</td><td class="gd">자동차 ✓</td><td class="bd">염소 ✗</td></tr>
+        <tr><td>2번</td><td>1번</td><td>3번 (강제)</td><td class="bd">염소 ✗</td><td class="gd">자동차 ✓</td></tr>
+        <tr><td>3번</td><td>1번</td><td>2번 (강제)</td><td class="bd">염소 ✗</td><td class="gd">자동차 ✓</td></tr>
+      </table>
+    </div>
+    <div class="proof">
+      <b>핵심</b> — 처음에 <b>염소</b>를 골랐다면(확률 2/3) 사회자는 <b>남은 염소 문을 열 수밖에 없고</b>, 그러면 남은 문은 반드시 자동차입니다. 즉 <b>처음에 틀렸을 때 바꾸면 반드시 이깁니다</b>.<br><br>
+      처음에 맞힐 확률 = 1/3 → 유지가 이길 확률 = <b>1/3</b><br>
+      처음에 틀릴 확률 = 2/3 → 바꾸면 이길 확률 = <b>2/3</b>
+    </div>
+    <p>2번과 3번 줄에서 사회자에게 <b>선택의 여지가 없다</b>는 점이 결정적입니다. 여기서 정보가 새어 나옵니다.</p>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">3-3</span><span class="ans">정답 · 99/100</span></div>
+    <div class="calc">문이 n개, 사회자가 염소 문 (n−2)개를 열어 줄 때
+  유지   : 1/n
+  바꾸기 : (n−1)/n
+
+  문 3개   → 유지 1/3 (33.33%)  · 바꾸기 2/3 (66.67%)
+  문 4개   → 유지 1/4 (25.00%)  · 바꾸기 3/4 (75.00%)
+  문 10개  → 유지 1/10 (10.00%) · 바꾸기 9/10 (90.00%)
+  문 100개 → 유지 1/100 (1.00%) · 바꾸기 <b>99/100 (99.00%)</b></div>
+    <p>문 100개 버전이 가장 강력한 설명입니다. "내가 처음에 1%의 확률로 맞혔을까, 아니면 남은 저 문일까?"를 물으면 대부분 즉시 이해합니다.</p>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">3-4</span><span class="ans">토론 정리</span></div>
+    <div class="talk">
+      <h4>예상 답과 되물음</h4>
+      <p class="tq">① 왜 그렇게 많은 사람이 틀렸나</p>
+      <p class="ta">우리 직관은 <b>"선택지가 둘이면 반반"</b>이라고 자동으로 계산합니다. 그러나 확률은 선택지의 <b>개수</b>가 아니라 <b>그 상황에 이르는 경로</b>로 정해집니다. 두 문이 남았지만 <b>거기까지 오는 길의 수</b>가 다릅니다.</p>
+      <p class="ta">1990년 사반트의 칼럼에는 <b>1만 통</b>의 항의가 쏟아졌고 그중 상당수가 박사 학위자였습니다. <b>전문가도 직관에 속는다</b>는 좋은 사례입니다. → 되물음: <em>"똑똑한 사람들이 왜 더 강하게 확신했을까요?"</em></p>
+      <p class="tq">② 사회자가 모른다면 (가장 중요)</p>
+      <p class="ta"><b>확률이 달라집니다. 이때는 50 대 50입니다.</b></p>
+      <p class="ta">사회자가 무작위로 열면 <b>자동차가 나올 수도</b> 있습니다. 그런 경우를 제외하고 "우연히 염소가 나온" 경우만 모으면, 유지 6/12 = <b>1/2</b>, 바꾸기 6/12 = <b>1/2</b>가 됩니다.</p>
+      <p class="ta">즉 이 문제의 정답을 만드는 것은 문의 개수가 아니라 <b>"사회자가 알고서 반드시 염소 문을 연다"</b>는 규칙입니다. 문제를 낼 때 이 조건을 빼먹으면 답이 달라집니다. → 되물음: <em>"조건 하나가 답을 바꾼다면, 문제를 읽을 때 무엇을 확인해야 할까요?"</em></p>
+      <p class="tq">③ "두 개 남았으니 반반"의 오류</p>
+      <p class="ta">경우의 수가 둘이라고 확률이 같은 것은 아닙니다. "내일 비가 온다 / 안 온다"도 두 가지지만 반반이 아닙니다. 확률은 <b>경우의 가짓수</b>가 아니라 <b>각 경우가 일어나는 정도</b>로 정해집니다.</p>
+      <p class="ta">여기서는 <b>처음 선택의 1/3이 끝까지 변하지 않는다</b>는 점이 핵심입니다. 사회자는 내 문에 대해서는 아무 정보도 주지 않았습니다.</p>
+      <p class="tq">④ 어떤 설명이 잘 통하나</p>
+      <p class="ta">경험적으로 <b>문 100개</b> 설명이 가장 효과적이고, 그다음이 <b>표 만들기</b>입니다. <b>직접 100번 해 보기</b>는 시간이 걸리지만 <b>의심하는 학생을 설득하는 데는 가장 확실</b>합니다. 셋을 순서대로 쓰는 것이 좋습니다.</p>
+    </div>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">3-5</span><span class="ans">시뮬레이션 결과</span></div>
+    <div class="calc">20,000회 실행 예시
+  유지   : 6,717회 성공 (33.59%)   이론 33.33%
+  바꾸기 : 13,283회 성공 (66.42%)  이론 66.67%
+
+200,000회 (Python)
+  유지 33.29%  ·  바꾸기 66.71%
+
+→ 횟수를 늘릴수록 이론값에 가까워짐 (큰 수의 법칙)</div>
+    <div class="misc">
+      <h4>흔한 오답과 원인</h4>
+      <ul>
+        <li><b>"50 대 50"</b> — 가장 흔한 오답입니다. 남은 선택지 개수로 확률을 판단한 것입니다.</li>
+        <li><b>"바꾸든 말든 똑같다"</b> — 위와 같은 원인입니다. 세 경우 표를 직접 채우게 하세요.</li>
+        <li><b>사회자 조건을 놓침</b> — 사회자가 무작위로 열었다면 실제로 50 대 50입니다. 틀린 게 아니라 <b>다른 문제</b>를 푼 것이므로, 조건의 중요성을 짚어 주세요.</li>
+        <li><b>적은 횟수의 실험으로 반박</b> — 10번 해서 유지가 이겼다고 이론이 틀린 것은 아닙니다. 표본 크기를 늘리게 하세요.</li>
+      </ul>
+    </div>
+    <div class="rubric">
+      <div class="rh">평가 루브릭</div>
+      <table class="rb">
+        <tr><th>상</th><td>세 경우를 나열해 1/3 대 2/3을 논증하고, "처음에 틀렸을 때 바꾸면 반드시 이긴다"로 설명한다. 사회자가 안다는 조건의 역할까지 지적한다.</td></tr>
+        <tr><th>중</th><td>바꾸는 것이 유리함을 실험이나 표로 확인하나, 왜 2/3인지 설명하지 못한다.</td></tr>
+        <tr><th>하</th><td>"둘 중 하나이므로 반반"이라는 직관에서 벗어나지 못한다.</td></tr>
+      </table>
+    </div>
+    <div class="verify"><span class="vh">Python 검증 (전수 계산 + 몬테카를로)</span>전수 계산 (자동차 3 × 선택 3, 사회자 규칙 반영)
+  유지 승률   = <em>1/3</em>
+  바꾸기 승률 = <em>2/3</em>
+몬테카를로 200,000회 : 유지 <em>33.29%</em> · 바꾸기 <em>66.71%</em>
+문 n개일 때 : 3개 <em>2/3</em> · 4개 <em>3/4</em> · 10개 <em>9/10</em> · 100개 <em>99/100</em>
+[중요] 사회자가 무작위로 열어 우연히 염소가 나온 경우
+  유지 6/12 = <em>1/2</em> , 바꾸기 6/12 = <em>1/2</em>
+  → 사회자가 '알고 있다'는 조건이 없으면 <em>50 대 50</em></div>
+    <p class="src"><b>출처</b> — 미국 TV쇼 <i>Let's Make a Deal</i>의 진행자 <b>몬티 홀</b>의 이름을 땄습니다. 1990년 9월 <b>마릴린 보스 사반트</b>가 『퍼레이드』 칼럼에서 "바꾸라"고 답해 큰 논쟁이 일었고, 결국 그가 옳았음이 밝혀졌습니다.</p>
+  </div>
+</section>
+
+<!-- ============ SET 4 ============ -->
+<section class="set" id="s4" data-ac="#4C6B2F">
+  <div class="sethead">
+    <p class="no">SET 04 · ANSWERS</p>
+    <h2>둘 다 똑똑하게 굴었는데 둘 다 손해를 봤다</h2>
+    <p class="core">핵심 아이디어 — <b>개인의 합리성 ≠ 전체의 최선</b>. 각자 최선을 다했는데 모두가 나빠지는 구조가 존재합니다.</p>
+  </div>
+
+  <div class="keybox">
+    <h3>지도 요령</h3>
+    <p>먼저 <b>실제로 게임을 시켜 보세요</b>. 짝을 지어 종이에 침묵/자백을 적게 하면 대부분 자백이 나옵니다. 그 뒤 <b>"둘 다 침묵했으면 더 좋았을 텐데 왜 안 됐을까?"</b>를 물으면 딜레마의 본질에 바로 닿습니다.</p>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">4-1</span><span class="ans">정답 · 자백 (우월 전략)</span></div>
+    <div class="tbscroll">
+      <table class="dt">
+        <tr><th>나 \ 상대</th><th>상대 침묵</th><th>상대 자백</th></tr>
+        <tr><th>나 침묵</th><td>나 1년 / 상대 1년</td><td>나 10년 / 상대 0년</td></tr>
+        <tr><th>나 자백</th><td class="gd">나 0년 / 상대 10년</td><td class="bd">나 5년 / 상대 5년</td></tr>
+      </table>
+    </div>
+    <div class="proof">
+      <b>상대가 침묵할 때</b> — 나도 침묵 1년 vs 자백 <b>0년</b> → 자백이 유리<br>
+      <b>상대가 자백할 때</b> — 나도 침묵 10년 vs 자백 <b>5년</b> → 자백이 유리<br><br>
+      상대가 무엇을 하든 <b>자백이 항상 낫습니다</b>. 이런 선택을 <b>우월 전략</b>이라 합니다.
+    </div>
+    <p>"상대의 선택을 몰라도 내 최선이 정해진다"는 점이 이 문제의 무서운 부분입니다.</p>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">4-2</span><span class="ans">정답 · 각자 5년</span></div>
+    <div class="calc">둘 다 합리적으로 자백 → <b>(자백, 자백)</b> → 각자 <b>5년</b>
+그런데 둘 다 침묵했다면    → <b>(침묵, 침묵)</b> → 각자 <b>1년</b>
+
+  두 사람 모두에게 (침묵, 침묵)이 더 좋은데도
+  아무도 혼자서는 침묵으로 바꿀 수 없다.
+  (혼자 침묵하면 0년 → 10년으로 나빠지므로)
+
+이렇게 <b>아무도 혼자 바꿔서 이득을 볼 수 없는 상태</b>를 <b>내시 균형</b>이라 하고,
+여기서는 (자백, 자백) 하나뿐임이 전수 검사로 확인되었다.</div>
+    <div class="proof"><b>딜레마의 정의</b> — 개인에게 <b>합리적인</b> 선택이 모여 <b>모두에게 더 나쁜</b> 결과를 만듭니다. 누구도 잘못하지 않았는데 결과가 나쁩니다.</div>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">4-3</span><span class="ans">정답 · 팃포탯과 앙심 (공동 1위, 1999점)</span></div>
+    <div class="tbscroll">
+      <table class="dt">
+        <tr><th>전략 \ 상대</th><th>항상 협력</th><th>항상 배신</th><th>팃포탯</th><th>앙심</th><th>총점</th></tr>
+        <tr><th>항상 협력</th><td>600</td><td>0</td><td>600</td><td>600</td><td>1800</td></tr>
+        <tr><th>항상 배신</th><td>1000</td><td>200</td><td>204</td><td>204</td><td class="bd">1608</td></tr>
+        <tr><th>팃포탯</th><td>600</td><td>199</td><td>600</td><td>600</td><td class="gd">1999</td></tr>
+        <tr><th>앙심</th><td>600</td><td>199</td><td>600</td><td>600</td><td class="gd">1999</td></tr>
+      </table>
+    </div>
+    <div class="proof">
+      <b>흥미로운 사실</b> — <b>항상 배신</b>은 <b>개별 대결에서 한 번도 지지 않습니다</b>(모든 칸에서 상대보다 점수가 높거나 같음). 그런데 <b>총점은 꼴찌</b>입니다.<br><br>
+      이유는 배신이 <b>상대의 협력을 파괴</b>해 판 전체를 작게 만들기 때문입니다. 협력하는 상대끼리는 매 회 3+3 = 6점을 나눠 갖지만, 서로 배신하면 1+1 = 2점뿐입니다.
+    </div>
+    <p>"이기는 것"과 "점수를 많이 얻는 것"이 다르다는 점을 강조하세요. 액설로드 대회의 핵심 교훈입니다.</p>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">4-4</span><span class="ans">토론 정리</span></div>
+    <div class="talk">
+      <h4>예상 답과 되물음</h4>
+      <p class="tq">① 한 번과 반복의 차이</p>
+      <p class="ta"><b>미래</b>가 생겼기 때문입니다. 한 번만 만나면 배신의 대가를 치를 일이 없지만, 반복하면 <b>오늘의 배신이 내일 돌아옵니다</b>. 팃포탯 상대로 배신하면 그다음부터 계속 1점씩만 받게 됩니다.</p>
+      <p class="ta">실제로 팃포탯 vs 항상배신은 <b>199 대 204</b>로, 팃포탯이 첫 회에만 당하고 이후로는 똑같이 1점씩 받습니다. 5점 차이는 <b>첫 회 손해뿐</b>입니다. → 되물음: <em>"마지막 회라는 걸 서로 안다면 어떻게 될까요?"</em> (마지막엔 배신이 유리해지고, 그 논리가 거꾸로 번져 갑니다)</p>
+      <p class="tq">② 팃포탯이 강한 이유</p>
+      <p class="ta">액설로드가 정리한 네 가지 성질입니다.</p>
+      <p class="ta">· <b>먼저 배신하지 않는다</b>(신사적) — 협력하는 상대와 최대 점수를 나눔<br>
+      · <b>보복한다</b> — 당하면 바로 갚아 이용당하지 않음<br>
+      · <b>용서한다</b> — 상대가 돌아오면 바로 협력 재개<br>
+      · <b>단순하다</b> — 상대가 내 전략을 쉽게 파악해 협력하기 쉬움</p>
+      <p class="ta"><b>앙심</b>은 한 번 배신당하면 영원히 보복하므로 <b>용서</b>가 없습니다. 이 실험에서는 동점이지만, 실수가 섞이는 현실에서는 팃포탯이 훨씬 유리합니다. → 되물음: <em>"실수로 한 번 배신했다면 두 전략의 결과가 어떻게 달라질까요?"</em></p>
+      <p class="tq">③ 주변의 같은 구조</p>
+      <p class="ta">· <b>교실 청소</b> — 모두 열심히 vs 모두 대충<br>
+      · <b>조별 과제</b> — 무임승차가 대표적<br>
+      · <b>새치기·줄서기</b> — 모두 지키면 빠르지만 혼자 어기면 이득<br>
+      · <b>환경 문제</b> — 각 나라가 배출을 줄이면 모두 이득이지만 혼자 줄이면 손해<br><br>
+      공통점은 <b>"혼자 협력하면 손해, 모두 배신하면 다 같이 나쁨"</b>입니다.</p>
+      <p class="tq">④ 딜레마를 벗어나는 방법</p>
+      <p class="ta">모두 <b>게임의 구조 자체를 바꾸는</b> 방법입니다.</p>
+      <p class="ta">· <b>반복해서 만나기</b> — 미래의 보복을 가능하게 함 (가장 강력)<br>
+      · <b>평판 남기기</b> — 배신하면 다른 사람과의 게임에도 영향<br>
+      · <b>규칙과 벌칙</b> — 배신의 보수를 낮춰 아예 우월 전략이 아니게 만듦<br>
+      · <b>약속하기</b> — 강제력이 없으면 효과가 약함<br><br>
+      조별 과제에서 <b>중간 점검과 상호 평가</b>를 넣는 것이 곧 "반복 게임으로 바꾸기"입니다.</p>
+    </div>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">4-5</span><span class="ans">모둠 과제 버전 예시</span></div>
+    <div class="tbscroll">
+      <table class="dt">
+        <tr><th>나 \ 친구</th><th>친구 열심히</th><th>친구 묻어감</th></tr>
+        <tr><th>나 열심히</th><td>3점 / 3점 (좋은 결과)</td><td>0점 / 5점 (나만 고생)</td></tr>
+        <tr><th>나 묻어감</th><td class="gd">5점 / 0점 (나만 편함)</td><td class="bd">1점 / 1점 (과제 망함)</td></tr>
+      </table>
+    </div>
+    <p>죄수의 딜레마와 <b>구조가 완전히 같습니다</b>. 그래서 조별 과제에 무임승차가 생기는 것이 <b>개인의 인성 문제가 아니라 구조의 문제</b>일 수 있다는 점을 짚어 주면 토론이 깊어집니다.</p>
+    <div class="misc">
+      <h4>흔한 오답과 원인</h4>
+      <ul>
+        <li><b>"당연히 침묵해야지, 의리가 있으니까"</b> — 좋은 반응입니다. 다만 <b>계산상으로는 자백이 유리</b>하다는 것과, 그럼에도 협력이 나타나는 이유(반복·평판)를 구분해 다루세요.</li>
+        <li><b>보수 표에서 큰 숫자를 좋은 것으로 읽음</b> — 형량은 <b>적을수록 좋습니다</b>. 표 상단에 반드시 명시하세요.</li>
+        <li><b>"항상 배신이 최고 전략"</b> — 개별 대결만 보면 그렇게 보입니다. <b>총점</b>을 보게 하세요.</li>
+        <li><b>반복 게임에서도 1회 결론을 그대로 적용</b> — 조건이 달라졌음을 짚어 주세요.</li>
+      </ul>
+    </div>
+    <div class="rubric">
+      <div class="rh">평가 루브릭</div>
+      <table class="rb">
+        <tr><th>상</th><td>두 경우를 따져 우월 전략을 찾고, (자백,자백)이 균형이면서도 모두에게 나쁜 이유를 설명한다. 반복 게임에서 협력이 유리해지는 조건을 미래의 보복으로 설명한다.</td></tr>
+        <tr><th>중</th><td>보수 표를 읽고 자백이 유리함을 확인하나, 딜레마의 구조나 반복 시의 변화를 설명하지 못한다.</td></tr>
+        <tr><th>하</th><td>보수 표를 잘못 읽거나 상황을 감정적으로만 판단한다.</td></tr>
+      </table>
+    </div>
+    <div class="verify"><span class="vh">Python 검증 (내시 균형 전수 + 반복 게임 시뮬레이션)</span>우월 전략 확인
+  상대 침묵 시 : 자백 0년 &lt; 침묵 1년   → 자백 유리
+  상대 자백 시 : 자백 5년 &lt; 침묵 10년  → 자백 유리
+내시 균형 전수 탐색 : <em>[(자백, 자백)]</em> 하나뿐
+  (침묵,침묵) 각자 1년 &lt; (자백,자백) 각자 5년 → <em>모두에게 더 나쁨</em>
+반복 게임 200회 총점
+  팃포탯 <em>1999</em> · 앙심 <em>1999</em> · 항상협력 1800 · 항상배신 <em>1608</em>
+  팃포탯 vs 항상배신 : <em>199 대 204</em> (첫 회만 손해, 이후 동률)
+  팃포탯 vs 팃포탯   : <em>600 대 600</em> (200회 내내 협력)</div>
+    <p class="src"><b>출처</b> — 1950년 랜드연구소의 <b>메릴 플러드</b>와 <b>멜빈 드레셔</b>가 실험으로 고안했고, <b>앨버트 터커</b>가 죄수 이야기로 각색했습니다. 1980년 <b>로버트 액설로드</b>의 반복 게임 대회에서 가장 단순한 전략인 <b>팃포탯</b>이 우승해 큰 반향을 일으켰습니다.</p>
+  </div>
+</section>
+
+<!-- ============ SET 5 ============ -->
+<section class="set" id="s5" data-ac="#96731A">
+  <div class="sethead">
+    <p class="no">SET 05 · ANSWERS</p>
+    <h2>다섯 집 수수께끼 — 물고기는 누가 기르는가</h2>
+    <p class="core">핵심 아이디어 — <b>확정 단서부터</b>. 위치를 못 박는 단서로 뼈대를 세우고, 관계 단서로 살을 붙입니다.</p>
+  </div>
+
+  <div class="keybox">
+    <h3>지도 요령</h3>
+    <p>학생들은 1번 단서부터 순서대로 쓰려다 헤맵니다. <b>"어떤 단서가 위치를 바로 알려 주나요?"</b>를 먼저 물어 8번과 9번을 찾게 하세요. 뼈대가 서면 나머지는 빠르게 풀립니다. 40~50분이 걸리는 큰 과제이므로 모둠 활동으로 권합니다.</p>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">5-1</span><span class="ans">정답 · 프랑스</span></div>
+    <div class="tbscroll">
+      <table class="dt">
+        <tr><th>집</th><th>1번</th><th>2번</th><th>3번</th><th>4번</th><th>5번</th></tr>
+        <tr><th>색</th><td>노랑</td><td>파랑</td><td>빨강</td><td>하양</td><td>초록</td></tr>
+        <tr><th>나라</th><td>영국</td><td>중국</td><td>한국</td><td>일본</td><td class="hl">프랑스</td></tr>
+        <tr><th>음료</th><td class="gd">물</td><td>차</td><td>우유</td><td>주스</td><td>커피</td></tr>
+        <tr><th>동물</th><td>고양이</td><td>말</td><td>새</td><td>개</td><td class="hl">물고기</td></tr>
+        <tr><th>과목</th><td>수학</td><td>미술</td><td>과학</td><td>음악</td><td>체육</td></tr>
+      </table>
+    </div>
+    <p><b>물고기 → 프랑스</b>, <b>물 → 영국</b>, <b>고양이 → 수학</b>입니다. 이 표가 15개 단서를 모두 만족하는 <b>유일한</b> 답임이 전수 탐색으로 확인되었습니다.</p>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">5-2</span><span class="ans">정답 · 8번과 9번</span></div>
+    <div class="proof">
+      <b>단서의 세 종류</b><br>
+      · <b>위치 확정형</b> (8번 가운데=우유, 9번 영국인=1번 집) → <b>가장 먼저</b><br>
+      · <b>속성 연결형</b> (1번 한국인=빨강, 5번 초록=커피 등) → 위치가 정해지면 연쇄적으로 확정<br>
+      · <b>이웃 관계형</b> (10, 11, 14, 15번) → 후보가 여러 개라 <b>나중에</b> 쓰는 것이 효율적<br><br>
+      다만 <b>14번(영국인은 파란집 옆)</b>은 9번과 결합하면 즉시 위치를 확정하므로 예외적으로 일찍 씁니다.
+    </div>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">5-3</span><span class="ans">정답 · 파랑</span></div>
+    <div class="calc">추론의 시작 (색깔 뼈대 세우기)
+
+① 단서 9 : 영국인 = <b>1번 집</b>
+② 단서 14 : 영국인은 파란집 옆
+     1번이 파랑이면 자기 자신 옆이 되어 모순 → <b>2번이 파랑</b>
+③ 단서 8 : <b>3번이 우유</b>
+④ 단서 4 : 초록은 하양 바로 오른쪽 → (하양,초록) = (3,4) 또는 (4,5)
+     단서 5 : 초록집은 커피. 그런데 3번은 우유이므로 초록은 3번이 아니다
+     → (하양, 초록) = <b>(4번, 5번)</b>
+⑤ 남은 색 빨강·노랑은 1번·3번
+     단서 1 : 한국인 = 빨강. 1번은 영국인이므로 1번은 빨강이 아니다
+     → <b>3번 빨강, 1번 노랑</b>
+
+색이 모두 확정 : 노랑 · 파랑 · 빨강 · 하양 · 초록</div>
+    <p>여기까지 오면 나머지는 도미노처럼 풀립니다. 문제집의 <b>단계별 보기</b> 도구에 12단계 전 과정이 담겨 있습니다.</p>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">5-4</span><span class="ans">토론 정리</span></div>
+    <div class="talk">
+      <h4>예상 답과 되물음</h4>
+      <p class="tq">① 답이 하나뿐임을 어떻게 아나</p>
+      <p class="ta">하나를 <b>찾는 것</b>과 그것<b>뿐임을 아는 것</b>은 다릅니다. 유일성을 보이려면 ① 모든 경우를 검사하거나, ② 각 단계에서 <b>선택의 여지가 없었음</b>을 보여야 합니다.</p>
+      <p class="ta">5-3의 추론이 후자입니다. 매 단계에서 "이것 말고는 불가능"을 확인했으므로 답이 하나임이 따라옵니다. 앞 단원의 <b>강 건너기 첫 수</b>와 같은 논법입니다. → 되물음: <em>"우리가 푼 과정에서 '선택'을 한 적이 있나요?"</em></p>
+      <p class="tq">② 단서를 빼면 (놀라운 발견)</p>
+      <p class="ta">대부분의 단서는 빼면 답이 <b>여러 개</b>가 됩니다. 특히 9번(영국인=1번 집)을 빼면 <b>17개</b>로 늘어납니다.</p>
+      <p class="ta">그런데 <b>15번(미술은 물 옆집)</b>은 빼도 답이 <b>여전히 하나</b>입니다! 즉 이 단서는 <b>없어도 되는 잉여 단서</b>입니다. 문제를 만든 사람도 몰랐을 수 있습니다.</p>
+      <p class="ta">이것은 학생들이 매우 좋아하는 발견입니다. <b>"주어진 정보를 다 써야 한다"는 법은 없다</b>는 교훈이기도 합니다. → 되물음: <em>"시험 문제에서 안 쓰는 조건이 있으면 불안한가요? 왜 그럴까요?"</em></p>
+      <p class="tq">③ 모든 경우를 다 해 본다면</p>
+      <p class="ta">5개 항목이 각각 5! = 120가지이므로 <b>120⁵ = 약 249억 가지</b>입니다. 사람이 하나씩 확인하는 것은 불가능합니다. 컴퓨터도 그냥 다 해 보면 오래 걸려서, <b>단계마다 가지치기</b>를 해야 빨라집니다(이 검증도 그렇게 했습니다).</p>
+      <p class="ta">사람이 푸는 방식(단서로 후보를 좁히기)이 사실은 <b>컴퓨터의 가지치기와 같은 아이디어</b>입니다.</p>
+      <p class="tq">④ "아인슈타인이 만들었다"는 주장</p>
+      <p class="ta"><b>근거가 없습니다.</b> 가장 오래된 기록은 1962년 『Life International』이고 아인슈타인은 1955년에 세상을 떠났습니다. "2%만 푼다"는 수치도 출처가 없습니다.</p>
+      <p class="ta">유명한 사람의 이름을 붙이면 그럴듯해 보이는 현상은 흔합니다. <b>출처를 확인하는 습관</b>을 이야기하기 좋은 소재입니다. → 되물음: <em>"이런 주장을 어떻게 확인해 볼 수 있을까요?"</em></p>
+    </div>
+  </div>
+
+  <div class="a">
+    <div class="ah"><span class="ano">5-5</span><span class="ans">정답 · 물=영국 / 고양이=수학</span></div>
+    <div class="calc">완성된 표에서 읽어내기
+  물을 마시는 사람      → <b>1번 집 영국인</b>
+  고양이를 기르는 사람  → 1번 집 → 좋아하는 과목 <b>수학</b>
+  물고기를 기르는 사람  → <b>5번 집 프랑스인</b>
+
+원전(제브라 퍼즐)에서도 같은 구조로
+  "물을 마시는 사람"과 "얼룩말을 기르는 사람"을 묻습니다.</div>
+    <div class="misc">
+      <h4>흔한 오답과 원인</h4>
+      <ul>
+        <li><b>1번 단서부터 순서대로 적용</b> — 가장 흔한 시행착오입니다. 8·9번을 먼저 쓰게 안내하세요.</li>
+        <li><b>"바로 오른쪽"을 "오른쪽 어딘가"로 읽음</b> — 단서 4의 해석 오류로 답이 전혀 달라집니다.</li>
+        <li><b>"옆집"을 한 방향으로만 봄</b> — 옆집은 <b>양쪽 모두</b>입니다.</li>
+        <li><b>추측으로 채우고 검산하지 않음</b> — 반드시 15개 단서를 모두 대조하게 하세요.</li>
+        <li><b>중간에 모순이 나면 처음부터 다시 시작</b> — 모순이 난 지점의 <b>선택</b>만 되돌리면 됩니다(되추적).</li>
+      </ul>
+    </div>
+    <div class="rubric">
+      <div class="rh">평가 루브릭</div>
+      <table class="rb">
+        <tr><th>상</th><td>확정 단서로 뼈대를 세우고 관계 단서로 좁혀 가는 전략을 세운다. 각 단계에서 선택의 여지가 없음을 보여 유일성을 논증하고, 잉여 단서의 존재를 확인한다.</td></tr>
+        <tr><th>중</th><td>표를 완성하나 순서 전략 없이 시행착오에 의존하며, 유일성을 설명하지 못한다.</td></tr>
+        <tr><th>하</th><td>단서 해석에서 오류가 있거나 표를 완성하지 못한다.</td></tr>
+      </table>
+    </div>
+    <div class="verify"><span class="vh">Python 전수 탐색 (단계별 가지치기)</span>15개 단서를 모두 만족하는 해 : <em>1개</em> (유일)
+  1 노랑·영국·물·고양이·수학    2 파랑·중국·차·말·미술
+  3 빨강·한국·우유·새·과학      4 하양·일본·주스·개·음악
+  5 초록·프랑스·커피·<em>물고기</em>·체육
+  → 물고기 = <em>프랑스</em> · 물 = <em>영국</em>
+각 단서를 하나씩 빼고 해의 개수 확인
+  1번 제거 → 8개    2번 → 8개    3번 → 3개    4번 → 8개
+  5번 → 4개         6번 → 10개   7번 → 5개    8번 → 3개
+  9번 → <em>17개</em>      10번 → 2개   11번 → 2개   12번 → 7개
+  13번 → 6개        14번 → 6개   15번 → <em>1개</em>
+  ⇒ 14개 단서는 <em>반드시 필요</em>
+  ⇒ 단서 15는 빼도 해가 하나 → <em>잉여 단서</em>임이 밝혀짐</div>
+    <p class="src"><b>출처</b> — 1962년 <b>『Life International』</b>에 실린 것이 가장 오래된 기록으로, 원래는 얼룩말과 담배가 등장해 <b>제브라 퍼즐</b>이라 불렸습니다. "아인슈타인이 만들었다"거나 "세계 인구의 2%만 푼다"는 이야기는 <b>근거 없는 속설</b>입니다.</p>
+  </div>
+</section>
+
+<div class="prm">
+  <button id="prev">← 이전 세트</button>
+  <button id="next">다음 세트 →</button>
+</div>
+
+</main>
+
+<footer>세영코딩연구소 · 사고력 논리퍼즐과 게임이론 5제 교사용 정답 및 해설 · 모든 정답은 Python으로 전수 검증되었습니다</footer>
+
+<script>
+(function(){
+  "use strict";
+  var ORDER = ["s1","s2","s3","s4","s5"], cur = 0;
+  var $ = function(id){ return document.getElementById(id); };
+  function show(i){
+    cur = Math.max(0, Math.min(ORDER.length-1, i));
+    var id = ORDER[cur];
+    document.querySelectorAll(".set").forEach(function(s){ s.classList.toggle("on", s.id===id); });
+    document.querySelectorAll(".tocbtn").forEach(function(b){ b.classList.toggle("on", b.dataset.s===id); });
+    document.documentElement.style.setProperty("--ac", $(id).dataset.ac || "#1E5F74");
+    $("prev").disabled = cur===0; $("next").disabled = cur===ORDER.length-1;
+    window.scrollTo({ top:0, behavior:"smooth" });
+  }
+  document.querySelectorAll(".tocbtn").forEach(function(b){
+    b.addEventListener("click", function(){ show(ORDER.indexOf(b.dataset.s)); });
+  });
+  $("prev").addEventListener("click", function(){ show(cur-1); });
+  $("next").addEventListener("click", function(){ show(cur+1); });
+  show(0);
+})();
+</script>
+</body>
+</html>
