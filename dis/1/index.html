@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>사고력 수와 규칙 5제 · 학생용 문제집</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+<style>
+:root{
+  --bg:#F4F2ED;--paper:#FFFFFF;--ink:#1B1D23;--ink-2:#565B66;--line:#DCD9D1;--rule:#C2BEB4;
+  --deep:#2B4C6F;--rust:#A9502C;--forest:#3D6B4A;--berry:#8E3A5C;--ochre:#8C6A17;
+  --ac:var(--deep);
+  --f-disp:'Gowun Batang','Pretendard Variable',Pretendard,serif;
+  --f-body:'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif;
+  --f-mono:'D2Coding','JetBrains Mono',Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);line-height:1.75;-webkit-font-smoothing:antialiased;
+  background-image:linear-gradient(rgba(0,0,0,.02) 1px,transparent 1px);background-size:100% 30px}
+.wrap{max-width:840px;margin:0 auto;padding:0 20px}
+header{padding:52px 0 30px;border-bottom:3px double var(--rule)}
+.kicker{font-family:var(--f-mono);font-size:12px;letter-spacing:.24em;color:var(--rust);margin:0 0 12px}
+header h1{font-family:var(--f-disp);font-weight:700;font-size:clamp(30px,6vw,46px);line-height:1.24;margin:0 0 12px;letter-spacing:-.02em}
+header .sub{color:var(--ink-2);margin:0 0 20px;max-width:580px;font-size:15.5px}
+.metarow{display:flex;flex-wrap:wrap;gap:8px}
+.tag{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);background:var(--paper);border-radius:4px;padding:5px 11px;color:var(--ink-2)}
+.tag b{color:var(--ink)}
+.howbox{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:20px 22px;margin:26px 0}
+.howbox h2{font-family:var(--f-disp);font-weight:700;font-size:17px;margin:0 0 12px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media(max-width:700px){.steps{grid-template-columns:1fr 1fr}}
+.steps div{font-size:13.6px;color:var(--ink-2)}
+.steps div b{display:block;font-family:var(--f-mono);font-size:11.5px;color:var(--rust);letter-spacing:.1em;margin-bottom:3px}
+.steps div span{color:var(--ink);font-weight:600;display:block;margin-bottom:2px}
+nav.toc{position:sticky;top:0;z-index:40;background:rgba(244,242,237,.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);margin-bottom:32px}
+.tocrow{display:flex;gap:5px;overflow-x:auto;padding:10px 0;scrollbar-width:none}
+.tocrow::-webkit-scrollbar{display:none}
+.tocbtn{flex:0 0 auto;border:1px solid var(--line);background:var(--paper);color:var(--ink-2);cursor:pointer;
+  font-family:var(--f-body);font-size:13.4px;font-weight:600;padding:7px 14px;border-radius:5px;white-space:nowrap;transition:.15s}
+.tocbtn:hover{border-color:var(--ink-2);color:var(--ink)}
+.tocbtn.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.tocbtn:focus-visible{outline:2px solid var(--ochre);outline-offset:2px}
+.set{display:none;padding-bottom:70px;animation:fade .3s ease}
+.set.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+.sethead{border-left:5px solid var(--ac);padding-left:18px;margin-bottom:26px}
+.sethead .no{font-family:var(--f-mono);font-size:12px;letter-spacing:.2em;color:var(--ac);margin:0}
+.sethead h2{font-family:var(--f-disp);font-weight:700;font-size:clamp(23px,4.6vw,32px);margin:5px 0 8px;line-height:1.3}
+.sethead .from{font-size:13.4px;color:var(--ink-2);margin:0}
+.sethead .from em{font-style:normal;color:var(--ink);font-weight:600}
+.badges{display:flex;flex-wrap:wrap;gap:7px;margin:14px 0 0}
+.bd{font-family:var(--f-mono);font-size:11.5px;padding:4px 10px;border-radius:99px;border:1px solid var(--line);background:var(--paper);color:var(--ink-2)}
+.bd.lv{border-color:var(--ac);color:var(--ac)}
+.q{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:22px 24px;margin-bottom:18px}
+.qh{display:flex;align-items:center;gap:11px;margin-bottom:13px;flex-wrap:wrap}
+.qno{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.1em;color:#fff;background:var(--ac);border-radius:4px;padding:3px 10px}
+.qkind{font-size:12.5px;color:var(--ink-2);border:1px dashed var(--line);border-radius:4px;padding:2px 9px}
+.qkind.talk{color:var(--rust);border-color:#E2C9BE}
+.q p{margin:0 0 12px;font-size:15.6px}
+.q p:last-child{margin-bottom:0}
+.q ul,.q ol{margin:0 0 12px;padding-left:22px;font-size:15.4px}
+.q li{margin-bottom:6px}
+.given{background:#FAF8F3;border-left:3px solid var(--ochre);border-radius:0 5px 5px 0;padding:12px 16px;margin:0 0 14px;font-size:14.8px}
+.given b{color:var(--ochre)}
+.talkbox{background:#FCF4F0;border:1px solid #E9D2C7;border-radius:6px;padding:16px 18px;margin-top:14px}
+.talkbox h4{font-family:var(--f-disp);font-weight:700;font-size:15px;margin:0 0 9px;color:var(--rust)}
+.talkbox ol{margin:0;padding-left:20px;font-size:14.8px}
+.talkbox li{margin-bottom:7px;color:#4A3026}
+.talkbox li:last-child{margin-bottom:0}
+details.hint{margin-top:14px;border-top:1px dashed var(--line);padding-top:12px}
+details.hint summary{cursor:pointer;font-size:13.6px;color:var(--ink-2);font-weight:600;list-style:none;display:inline-flex;gap:7px;align-items:center}
+details.hint summary::-webkit-details-marker{display:none}
+details.hint summary::before{content:"▸";color:var(--ac);transition:.2s}
+details.hint[open] summary::before{transform:rotate(90deg)}
+details.hint .body{font-size:14.4px;color:var(--ink-2);padding:10px 0 0 16px}
+.ansrow{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-top:14px}
+.ansrow label{font-family:var(--f-mono);font-size:12px;color:var(--ink-2)}
+.ansrow input{flex:1;min-width:150px;border:1px solid var(--line);border-radius:5px;padding:9px 12px;
+  font-family:var(--f-body);font-size:15px;background:#FCFCFA;color:var(--ink)}
+.ansrow input:focus{outline:2px solid var(--ac);outline-offset:1px}
+.chk{border:1px solid var(--ac);background:var(--paper);color:var(--ac);border-radius:5px;padding:9px 16px;
+  font-size:13.6px;font-weight:700;cursor:pointer;font-family:var(--f-body)}
+.chk:hover{background:var(--ac);color:#fff}
+.verdict{font-size:13.8px;font-weight:700}
+.verdict.ok{color:var(--forest)}
+.verdict.no{color:var(--rust)}
+textarea.memo{width:100%;border:1px solid var(--line);border-radius:5px;padding:11px 13px;margin-top:12px;
+  font-family:var(--f-body);font-size:14.6px;background:#FCFCFA;color:var(--ink);resize:vertical;line-height:1.7}
+textarea.memo:focus{outline:2px solid var(--ac);outline-offset:1px}
+.lab{background:var(--paper);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-bottom:18px}
+.labbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;background:#F6F4EF;
+  border-bottom:1px solid var(--line);font-family:var(--f-mono);font-size:12px;color:var(--ink-2);flex-wrap:wrap}
+.tools{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.tbtn{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:4px;padding:6px 12px;
+  font-size:12.5px;cursor:pointer;font-family:var(--f-body);font-weight:600}
+.tbtn:hover{border-color:var(--ac);color:var(--ac)}
+.tbtn.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.tbtn:focus-visible{outline:2px solid var(--ochre);outline-offset:2px}
+.labin{padding:18px}
+.labfoot{padding:11px 16px;border-top:1px solid var(--line);background:#FAF9F5;font-size:13.4px;color:var(--ink-2)}
+.labfoot b{color:var(--ink)}
+input[type=range]{accent-color:var(--ac)}
+input[type=number]{padding:6px 9px;border:1px solid var(--line);border-radius:4px;font-family:var(--f-mono);background:#FCFCFA;color:var(--ink)}
+table.dt{width:100%;border-collapse:collapse;font-family:var(--f-mono);font-size:13px}
+table.dt th,table.dt td{border:1px solid var(--line);padding:6px 9px;text-align:center}
+table.dt th{background:#F1EFE9;font-weight:600}
+td.hi{background:#FAF5E3;color:var(--ochre);font-weight:700}
+td.ok{background:#EDF3ED;color:var(--forest);font-weight:700}
+td.no{background:#FBEDE8;color:var(--rust);font-weight:700}
+.tbscroll{overflow-x:auto}
+svg{max-width:100%;height:auto;display:block;margin:0 auto}
+/* 가우스 짝짓기 */
+.pairs{display:flex;flex-wrap:wrap;gap:5px;justify-content:center}
+.pairchip{font-family:var(--f-mono);font-size:12.5px;border:1px solid var(--line);border-radius:5px;
+  padding:4px 9px;background:#FAF9F5;transition:.2s}
+.pairchip.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+/* 마방진 */
+.msq{display:grid;gap:5px;justify-content:center;margin:0 auto}
+.mc{width:56px;height:56px;border:2px solid var(--line);border-radius:8px;display:grid;place-items:center;
+  font-family:var(--f-mono);font-size:19px;font-weight:700;background:#FAF9F5;cursor:pointer;transition:.15s}
+.mc:hover{border-color:var(--ac)}
+.mc.fixed{background:#EDF1F6;color:var(--deep);cursor:default}
+.mc.bad{background:#FBEDE8;border-color:var(--rust);color:var(--rust)}
+.mc.good{background:#EDF3ED;border-color:var(--forest);color:var(--forest)}
+.mc.empty{color:#BDBAB2}
+.msums{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:12px;font-family:var(--f-mono);font-size:12px}
+.msums span{border:1px solid var(--line);border-radius:99px;padding:3px 10px;background:#FAF9F5}
+.msums span.ok{background:#EDF3ED;color:var(--forest);border-color:#BFD4BF}
+.msums span.no{background:#FBEDE8;color:var(--rust);border-color:#E2C9BE}
+/* 우박수 그래프 */
+.hail{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;font-family:var(--f-mono);font-size:12px}
+.hn{border:1px solid var(--line);border-radius:4px;padding:3px 7px;background:#FAF9F5}
+.hn.up{background:#FBEDE8;color:var(--rust)}
+.hn.down{background:#EDF1F6;color:var(--deep)}
+.hn.one{background:var(--forest);color:#fff;font-weight:700}
+/* 카프리카 */
+.kstep{display:flex;align-items:center;gap:10px;padding:8px 12px;border:1px solid var(--line);
+  border-radius:7px;margin-bottom:6px;background:#FAF9F5;font-family:var(--f-mono);font-size:14px}
+.kstep .n{width:24px;height:24px;border-radius:50%;background:var(--ac);color:#fff;display:grid;place-items:center;font-size:11.5px;flex:0 0 auto}
+.kstep.final{background:#EDF3ED;border-color:var(--forest);font-weight:700;color:var(--forest)}
+.footnote{font-size:12.6px;color:var(--ink-2);border-top:1px solid var(--line);padding-top:14px;margin-top:26px}
+.footnote b{color:var(--ink)}
+footer{border-top:3px double var(--rule);padding:26px 0 60px;color:var(--ink-2);font-size:13px;text-align:center}
+.prm{display:flex;justify-content:space-between;gap:10px;margin-top:34px}
+.prm button{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:5px;padding:11px 20px;
+  font-size:14px;font-weight:600;cursor:pointer;font-family:var(--f-body)}
+.prm button:hover{border-color:var(--ac);color:var(--ac)}
+.prm button:disabled{opacity:.35;cursor:default}
+@media print{
+  nav.toc,.prm,.chk,.tbtn{display:none}
+  .set{display:block !important;page-break-after:always}
+  body{background:#fff}
+  details.hint{display:none}
+}
+@media (prefers-reduced-motion: reduce){*{animation-duration:.001ms !important;transition-duration:.001ms !important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <p class="kicker">NUMBERS &amp; PATTERNS · WORKBOOK</p>
+    <h1>수는 왜<br>이런 규칙을 따를까</h1>
+    <p class="sub">수를 늘어놓으면 규칙이 보입니다. 그런데 <b>왜</b> 그런 규칙이 생길까요? 다섯 문제 모두 수학사에 이름을 남긴 고전이며, 그중 하나는 <b>아직 아무도 증명하지 못했습니다</b>.</p>
+    <div class="metarow">
+      <span class="tag">대상 <b>초등 고학년 ~ 중등</b></span>
+      <span class="tag">세트 <b>5개</b></span>
+      <span class="tag">문항 <b>25개</b> (개별 20 · 토론 5)</span>
+      <span class="tag">권장 <b>세트당 25~35분</b></span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="howbox">
+    <h2>이 문제집을 푸는 방법</h2>
+    <div class="steps">
+      <div><b>STEP 1</b><span>직접 계산</span>먼저 손으로 몇 개를 계산해 봅니다.</div>
+      <div><b>STEP 2</b><span>규칙 찾기</span>표로 늘어놓고 무엇이 반복되는지 봅니다.</div>
+      <div><b>STEP 3</b><span>짝과 토론</span>붉은 토론 문제를 서로 설득해 봅니다.</div>
+      <div><b>STEP 4</b><span>이유 쓰기</span>"왜 그렇게 되는지"를 문장으로 씁니다.</div>
+    </div>
+  </div>
+</div>
+
+<nav class="toc">
+  <div class="wrap tocrow">
+    <button class="tocbtn on" data-s="s1">01 · 가우스의 덧셈</button>
+    <button class="tocbtn" data-s="s2">02 · 우박수</button>
+    <button class="tocbtn" data-s="s3">03 · 마방진</button>
+    <button class="tocbtn" data-s="s4">04 · 6174의 비밀</button>
+    <button class="tocbtn" data-s="s5">05 · 완전수와 친화수</button>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<!-- ============ SET 1 ============ -->
+<section class="set on" id="s1" data-ac="#2B4C6F">
+  <div class="sethead">
+    <p class="no">SET 01</p>
+    <h2>1부터 100까지를 몇 초 만에 더한 소년</h2>
+    <p class="from">원전 · <em>가우스의 덧셈</em> (1787년경 일화) — 등차수열의 합을 발견한 순간</p>
+    <div class="badges"><span class="bd lv">난이도 ★☆☆</span><span class="bd">등차수열</span><span class="bd">짝짓기</span><span class="bd">일반화</span></div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">1-1</span><span class="qkind">탐색</span></div>
+    <div class="given"><b>일화</b> — 초등학생 가우스의 선생님이 "1부터 100까지 모두 더하라"는 문제를 냈습니다. 학생들이 한참 낑낑대는 동안 가우스는 <b>몇 초 만에</b> 답을 적어 냈습니다. 어떻게 했을까요?</div>
+    <p>아래에서 <b>양 끝에서부터 짝을 지어</b> 보세요. 무엇이 보이나요?</p>
+    <div class="lab">
+      <div class="labbar"><span>gauss-pairing</span>
+        <div class="tools">
+          <button class="tbtn" id="gpStep">한 쌍씩 짝짓기</button>
+          <button class="tbtn" id="gpAll">전부 짝짓기</button>
+          <button class="tbtn" id="gpReset">처음부터</button>
+        </div>
+      </div>
+      <div class="labin">
+        <div class="pairs" id="gpPairs"></div>
+        <div id="gpOut" style="font-family:var(--f-mono);font-size:14px;text-align:center;margin-top:14px"></div>
+      </div>
+      <div class="labfoot" id="gpMsg">1과 100, 2와 99, … 이렇게 짝을 지어 보세요.</div>
+    </div>
+    <div class="ansrow">
+      <label>1부터 100까지의 합</label>
+      <input id="a11" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a11" data-v="5050" data-t="맞습니다. 101 × 50 = 5050 입니다.">확인</button>
+      <span class="verdict" id="v11"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">1-2</span><span class="qkind">추론</span></div>
+    <p>왜 짝을 지으면 편할까요? 빈칸을 채워 보세요.</p>
+    <div class="given">
+      1 + 100 = ___ , &nbsp; 2 + 99 = ___ , &nbsp; 3 + 98 = ___ , &nbsp; …<br>
+      모든 짝의 합이 <b>똑같이</b> ___ 입니다.<br><br>
+      짝은 모두 몇 쌍인가요? 100개를 둘씩 묶었으니 ___ 쌍입니다.<br>
+      따라서 전체 합 = ___ × ___ = ___
+    </div>
+    <p>이제 <b>1부터 n까지</b>의 합을 식으로 나타내 보세요.</p>
+    <div class="ansrow">
+      <label>1 + 2 + … + n = ?</label>
+      <input id="a12" type="text" placeholder="n에 대한 식" />
+      <button class="chk" data-a="a12" data-v="n(n+1)/2|n*(n+1)/2|n(n+1)÷2" data-t="맞습니다. 삼각수라고도 부릅니다.">확인</button>
+      <span class="verdict" id="v12"></span>
+    </div>
+    <details class="hint"><summary>홀수 개일 때는?</summary><div class="body">1부터 <b>9</b>까지처럼 개수가 홀수면 가운데 수 하나가 짝 없이 남습니다. 그래도 공식은 그대로 통할까요? 직접 확인해 보세요. (1+9, 2+8, 3+7, 4+6, 그리고 5)</div></details>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">1-3</span><span class="qkind">확장</span></div>
+    <p>1씩 커지는 수 말고 <b>일정하게 커지는 어떤 수열</b>도 같은 방법이 통할까요? 아래에서 첫항·공차·항수를 바꿔 가며 확인하세요.</p>
+    <div class="lab">
+      <div class="labbar"><span>arithmetic-series</span>
+        <div class="tools">
+          <label style="font-family:var(--f-mono);font-size:12px">첫항</label><input id="asA" type="number" value="3" min="-99" max="99" style="width:62px" />
+          <label style="font-family:var(--f-mono);font-size:12px">공차</label><input id="asD" type="number" value="5" min="-20" max="20" style="width:62px" />
+          <label style="font-family:var(--f-mono);font-size:12px">항수</label><input id="asN" type="number" value="20" min="1" max="100" style="width:62px" />
+          <button class="tbtn" id="asGo">계산</button>
+        </div>
+      </div>
+      <div class="labin"><div id="asOut" style="font-family:var(--f-mono);font-size:13.5px;line-height:1.9"></div></div>
+      <div class="labfoot" id="asMsg"></div>
+    </div>
+    <div class="ansrow">
+      <label>등차수열의 합 공식 (말로)</label>
+      <input id="a13" type="text" placeholder="예: (첫항+끝항)×항수÷2" />
+      <button class="chk" data-a="a13" data-v="(첫항+끝항)×항수÷2|(첫항+끝항)*항수/2|(첫항+끝항)×항수/2" data-t="맞습니다. 짝지은 합 × 짝의 수와 같은 뜻입니다.">확인</button>
+      <span class="verdict" id="v13"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">1-4</span><span class="qkind talk">토론</span></div>
+    <div class="talkbox">
+      <h4>모둠에서 이야기해 봅시다</h4>
+      <ol>
+        <li>가우스의 방법을 <b>그림</b>으로 설명할 수 있을까요? 1개, 2개, 3개… 로 쌓은 계단 두 개를 <b>맞붙이면</b> 어떤 모양이 되나요?</li>
+        <li>처음 n개의 <b>홀수</b>를 더하면 n², 처음 n개의 <b>짝수</b>를 더하면 n(n+1)이 됩니다. 왜 그럴까요? 가우스의 방법으로 설명해 보세요.</li>
+        <li>1부터 100까지 중 <b>3의 배수</b>의 합은 얼마일까요? <b>3 또는 5의 배수</b>의 합은요? 두 번째 문제에서 조심할 점은 무엇인가요?</li>
+        <li>이 일화는 사실일까요? 기록마다 숫자가 조금씩 다릅니다. <b>이야기가 유명해지는 것</b>과 <b>수학이 옳은 것</b>은 어떤 관계가 있을까요?</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">1-5</span><span class="qkind">도전</span></div>
+    <p>다음을 계산해 보세요. 가우스의 방법을 쓰면 금방 됩니다.</p>
+    <ul>
+      <li>1 + 2 + 3 + … + 1000</li>
+      <li>1 + 3 + 5 + … + 99 (홀수만)</li>
+      <li>101 + 102 + … + 200</li>
+    </ul>
+    <div class="ansrow">
+      <label>1부터 1000까지의 합</label>
+      <input id="a15" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a15" data-v="500500" data-t="맞습니다. 1000×1001÷2 = 500500 입니다.">확인</button>
+      <span class="verdict" id="v15"></span>
+    </div>
+    <div class="ansrow">
+      <label>101 + 102 + … + 200</label>
+      <input id="a16" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a16" data-v="15050" data-t="맞습니다. (101+200)×100÷2 = 15050 입니다.">확인</button>
+      <span class="verdict" id="v16"></span>
+    </div>
+  </div>
+
+  <p class="footnote"><b>출처</b> — <b>카를 프리드리히 가우스</b>(1777–1855)의 어린 시절 일화로, 1856년 전기 작가 자르토리우스가 처음 기록했습니다. 문제가 정확히 1~100이었는지는 기록마다 다르지만, <b>짝지어 더하는 방법</b> 자체는 수학적으로 완전히 옳습니다.</p>
+</section>
+
+<!-- ============ SET 2 ============ -->
+<section class="set" id="s2" data-ac="#A9502C">
+  <div class="sethead">
+    <p class="no">SET 02</p>
+    <h2>모든 수는 결국 1이 될까 — 아직 아무도 모른다</h2>
+    <p class="from">원전 · <em>콜라츠 추측</em> (로타르 콜라츠, 1937) — 규칙은 초등학생도 이해하지만 아무도 증명하지 못한 문제</p>
+    <div class="badges"><span class="bd lv">난이도 ★★☆</span><span class="bd">반복 규칙</span><span class="bd">미해결 문제</span><span class="bd">홀짝</span></div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">2-1</span><span class="qkind">탐색</span></div>
+    <div class="given"><b>규칙</b> — 어떤 자연수에서 시작해 다음을 반복합니다.<br>
+      · <b>짝수</b>면 → 2로 나눈다<br>
+      · <b>홀수</b>면 → 3배 하고 1을 더한다<br>
+      1이 나오면 멈춥니다.</div>
+    <p>6에서 시작하면 어떻게 될까요? 아래에서 여러 수를 넣어 보세요. 수가 <b>올라갔다 내려갔다</b> 하는 모습 때문에 <b>우박수</b>라고 부릅니다.</p>
+    <div class="lab">
+      <div class="labbar"><span>hailstone</span>
+        <div class="tools">
+          <label style="font-family:var(--f-mono);font-size:12px">시작 수</label>
+          <input id="hlN" type="number" value="6" min="1" max="100000" style="width:88px" />
+          <button class="tbtn" id="hlGo">실행</button>
+          <button class="tbtn" id="hl27">27로 해 보기</button>
+        </div>
+      </div>
+      <div class="labin">
+        <div class="hail" id="hlSeq"></div>
+        <svg id="hlSvg" viewBox="0 0 640 220" role="img" aria-label="우박수 그래프" style="margin-top:16px"></svg>
+      </div>
+      <div class="labfoot" id="hlMsg"></div>
+    </div>
+    <div class="ansrow">
+      <label>6에서 시작하면 몇 단계 만에 1이 되나</label>
+      <input id="a21" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a21" data-v="8" data-t="맞습니다. 6→3→10→5→16→8→4→2→1 로 8단계입니다.">확인</button>
+      <span class="verdict" id="v21"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">2-2</span><span class="qkind">발견</span></div>
+    <p>1부터 20까지 각각 몇 단계가 걸리는지 표로 만들어 보세요. 규칙이 보이나요?</p>
+    <div class="lab">
+      <div class="labbar"><span>steps-table</span><div class="tools"><button class="tbtn" id="stShow">표 채우기</button></div></div>
+      <div class="labin"><div class="tbscroll"><table class="dt" id="stTable"></table></div></div>
+      <div class="labfoot" id="stMsg">직접 몇 개를 계산해 본 뒤 버튼을 누르세요.</div>
+    </div>
+    <ul>
+      <li><b>2, 4, 8, 16</b>처럼 2의 거듭제곱은 왜 계단을 곧장 내려갈까요?</li>
+      <li><b>27</b>은 작은 수인데도 왜 그렇게 오래 걸릴까요?</li>
+    </ul>
+    <div class="ansrow">
+      <label>27은 몇 단계 만에 1이 되나</label>
+      <input id="a22" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a22" data-v="111" data-t="맞습니다. 111단계이고 도중에 9232까지 올라갑니다.">확인</button>
+      <span class="verdict" id="v22"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">2-3</span><span class="qkind">실험</span></div>
+    <p>범위를 정해 <b>가장 오래 걸리는 수</b>와 <b>가장 높이 올라가는 수</b>를 찾아보세요.</p>
+    <div class="lab">
+      <div class="labbar"><span>record-search</span>
+        <div class="tools">
+          <label style="font-family:var(--f-mono);font-size:12px">1 ~</label>
+          <input id="rsN" type="number" value="1000" min="10" max="100000" style="width:88px" />
+          <button class="tbtn" id="rsGo">기록 찾기</button>
+        </div>
+      </div>
+      <div class="labin"><div id="rsOut" style="font-family:var(--f-mono);font-size:13.5px;line-height:1.9"></div></div>
+      <div class="labfoot" id="rsMsg"></div>
+    </div>
+    <div class="ansrow">
+      <label>1~1000 중 가장 높이 올라가는 수</label>
+      <input id="a23" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a23" data-v="703" data-t="맞습니다. 703은 250,504까지 올라갑니다!">확인</button>
+      <span class="verdict" id="v23"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">2-4</span><span class="qkind talk">토론</span></div>
+    <div class="talkbox">
+      <h4>모둠에서 이야기해 봅시다</h4>
+      <ol>
+        <li>이 규칙은 <b>초등학생도 이해할 만큼 간단</b>합니다. 그런데 "모든 수가 1이 된다"는 것은 <b>아직 아무도 증명하지 못했습니다</b>. 컴퓨터로 엄청나게 큰 수까지 확인했는데도 왜 증명이 아닐까요?</li>
+        <li>1이 되지 않으려면 어떤 일이 벌어져야 할까요? 두 가지 가능성을 생각해 보세요. (끝없이 커진다 / 1을 거치지 않는 다른 고리에 갇힌다)</li>
+        <li>홀수에 3을 곱하고 1을 더하면 <b>반드시 짝수</b>가 됩니다. 왜 그럴까요? 그래서 그다음에는 무슨 일이 일어나나요?</li>
+        <li>규칙을 <b>3n+1 대신 3n−1</b>로 바꾸면 어떻게 될까요? 몇 개 넣어 보고 무엇이 달라지는지 이야기해 보세요.</li>
+      </ol>
+    </div>
+    <div class="lab" style="margin-top:16px">
+      <div class="labbar"><span>rule-variant</span>
+        <div class="tools">
+          <button class="tbtn on" id="rvPlus">3n + 1 (원래)</button>
+          <button class="tbtn" id="rvMinus">3n − 1 (바꾼 규칙)</button>
+          <label style="font-family:var(--f-mono);font-size:12px">시작</label>
+          <input id="rvN" type="number" value="7" min="1" max="999" style="width:70px" />
+          <button class="tbtn" id="rvGo">실행</button>
+        </div>
+      </div>
+      <div class="labin"><div id="rvOut" style="font-family:var(--f-mono);font-size:13px;line-height:1.9;word-break:break-all"></div></div>
+      <div class="labfoot" id="rvMsg"></div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">2-5</span><span class="qkind">정리</span></div>
+    <p>이 문제에 대해 알게 된 것을 정리해 보세요. <b>"확인했다"와 "증명했다"</b>의 차이를 반드시 포함해 쓰세요.</p>
+    <textarea class="memo" rows="3" placeholder="내가 정리한 내용: "></textarea>
+    <div class="ansrow">
+      <label>2의 거듭제곱 64는 몇 단계?</label>
+      <input id="a25" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a25" data-v="6" data-t="맞습니다. 64→32→16→8→4→2→1 로 6단계입니다.">확인</button>
+      <span class="verdict" id="v25"></span>
+    </div>
+  </div>
+
+  <p class="footnote"><b>출처</b> — <b>로타르 콜라츠</b>가 1937년에 제기했습니다. 우박수·3n+1 문제·울람 추측 등 여러 이름으로 불립니다. 에르되시 팔은 <b>"수학은 아직 이런 문제를 다룰 준비가 되어 있지 않다"</b>고 말하며 500달러의 상금을 걸었습니다. 현재 2.36 × 10²¹ 까지 확인되었지만 <b>증명은 없습니다</b>.</p>
+</section>
+
+<!-- ============ SET 3 ============ -->
+<section class="set" id="s3" data-ac="#3D6B4A">
+  <div class="sethead">
+    <p class="no">SET 03</p>
+    <h2>거북이 등에 새겨진 수의 배열</h2>
+    <p class="from">원전 · <em>낙서(洛書) 마방진</em> (중국 하나라 전설) + <em>뒤러의 마방진</em> (1514년 판화 「멜랑콜리아 I」)</p>
+    <div class="badges"><span class="bd lv">난이도 ★★☆</span><span class="bd">합의 배분</span><span class="bd">경우 나누기</span><span class="bd">대칭</span></div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">3-1</span><span class="qkind">탐색</span></div>
+    <div class="given"><b>전설</b> — 중국 하나라의 우왕이 홍수를 다스릴 때, 낙수(洛水)에서 나온 거북이 등에 이상한 무늬가 있었습니다. 그것이 <b>낙서(洛書)</b>, 오늘날의 <b>3×3 마방진</b>입니다.<br><br>
+      <b>규칙</b> — 1부터 9까지를 한 번씩 써서 <b>가로·세로·대각선</b>의 합이 모두 같게 만듭니다.</div>
+    <p>직접 완성해 보세요. 칸을 눌러 숫자를 바꿉니다.</p>
+    <div class="lab">
+      <div class="labbar"><span>magic-square-3</span>
+        <div class="tools">
+          <button class="tbtn" id="m3Hint">가운데 힌트</button>
+          <button class="tbtn" id="m3Show">정답 보기</button>
+          <button class="tbtn" id="m3Clear">지우기</button>
+        </div>
+      </div>
+      <div class="labin">
+        <div class="msq" id="m3Grid" style="grid-template-columns:repeat(3,56px)"></div>
+        <div class="msums" id="m3Sums"></div>
+      </div>
+      <div class="labfoot" id="m3Msg">칸을 누르면 숫자가 1씩 커집니다. 같은 숫자를 두 번 쓸 수 없습니다.</div>
+    </div>
+    <div class="ansrow">
+      <label>가로·세로·대각선의 합</label>
+      <input id="a31" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a31" data-v="15" data-t="맞습니다. 1~9의 합 45를 3줄로 나눠 15입니다.">확인</button>
+      <span class="verdict" id="v31"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">3-2</span><span class="qkind">추론</span></div>
+    <p>합이 왜 <b>15</b>일 수밖에 없을까요? 그리고 가운데 칸에는 왜 <b>5</b>가 와야 할까요?</p>
+    <ul>
+      <li>1부터 9까지를 모두 더하면 ___입니다. 이것을 <b>3줄</b>에 똑같이 나누면 한 줄에 ___씩입니다.</li>
+      <li>가운데 칸은 <b>가로 1줄 + 세로 1줄 + 대각선 2줄</b>, 모두 <b>4줄</b>에 들어갑니다. 다른 칸들은 몇 줄에 들어가나요?</li>
+      <li>가운데를 지나는 네 줄의 합은 15 × 4 = 60입니다. 그런데 이 넷을 더하면 전체 9칸(45)에 가운데가 <b>3번 더</b> 세어집니다. 그러면 가운데는?</li>
+    </ul>
+    <div class="ansrow">
+      <label>가운데 칸의 수 (계산으로)</label>
+      <input id="a32" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a32" data-v="5" data-t="맞습니다. 60 = 45 + 3×가운데 → 가운데 = 5 입니다.">확인</button>
+      <span class="verdict" id="v32"></span>
+    </div>
+    <details class="hint"><summary>모서리에는 어떤 수가?</summary><div class="body">완성된 마방진에서 <b>네 모서리</b>의 수를 보세요. 모두 짝수인가요, 홀수인가요? 왜 그럴지 생각해 보세요.</div></details>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">3-3</span><span class="qkind">확장</span></div>
+    <div class="given"><b>뒤러의 마방진</b> — 독일 화가 <b>알브레히트 뒤러</b>가 1514년 판화 「멜랑콜리아 I」에 그려 넣은 4×4 마방진입니다. 가로·세로·대각선뿐 아니라 <b>놀랄 만큼 많은 곳</b>의 합이 같습니다.</div>
+    <p>아래에서 여러 조합을 눌러 합을 확인해 보세요. 그리고 <b>아래 가운데 두 칸</b>에 주목하세요.</p>
+    <div class="lab">
+      <div class="labbar"><span>durer-square</span>
+        <div class="tools" id="duTools"></div>
+      </div>
+      <div class="labin">
+        <div class="msq" id="duGrid" style="grid-template-columns:repeat(4,56px)"></div>
+        <div id="duOut" style="text-align:center;margin-top:14px;font-family:var(--f-mono);font-size:14px"></div>
+      </div>
+      <div class="labfoot" id="duMsg"></div>
+    </div>
+    <div class="ansrow">
+      <label>4×4 마방진의 합</label>
+      <input id="a33" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a33" data-v="34" data-t="맞습니다. 1~16의 합 136을 4줄로 나눠 34입니다.">확인</button>
+      <span class="verdict" id="v33"></span>
+    </div>
+    <div class="ansrow">
+      <label>아래 가운데 두 칸이 알려 주는 연도</label>
+      <input id="a34" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a34" data-v="1514" data-t="맞습니다. 15와 14가 나란히 있어 제작연도 1514년을 나타냅니다.">확인</button>
+      <span class="verdict" id="v34"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">3-4</span><span class="qkind talk">토론</span></div>
+    <div class="talkbox">
+      <h4>모둠에서 이야기해 봅시다</h4>
+      <ol>
+        <li>3×3 마방진은 몇 가지나 있을까요? 하나를 <b>돌리거나 뒤집어서</b> 만든 것도 다른 것으로 볼까요? 두 관점에서 각각 답해 보세요.</li>
+        <li><b>n×n</b> 마방진의 합은 어떻게 구할까요? 1부터 n²까지의 합을 n줄로 나누면 됩니다. 5×5의 합은 얼마인가요?</li>
+        <li>3×3 마방진에서 <b>1은 왜 모서리에 올 수 없을까요?</b> 1이 모서리에 있다면 그 줄의 나머지 두 수의 합이 14가 되어야 하는데, 그런 짝이 몇 개나 있는지 세어 보세요.</li>
+        <li>2×2 마방진은 만들 수 있을까요? 직접 시도해 보고, 왜 그런지 설명하세요.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">3-5</span><span class="qkind">도전</span></div>
+    <p>1~9 대신 <b>다른 아홉 개의 수</b>로도 마방진을 만들 수 있을까요? 예를 들어 <b>2, 4, 6, …, 18</b>(짝수 아홉 개)로 만들어 보세요.</p>
+    <div class="lab">
+      <div class="labbar"><span>other-numbers</span>
+        <div class="tools" id="onTools"></div>
+      </div>
+      <div class="labin">
+        <div class="msq" id="onGrid" style="grid-template-columns:repeat(3,56px)"></div>
+        <div id="onOut" style="text-align:center;margin-top:12px;font-family:var(--f-mono);font-size:13.5px"></div>
+      </div>
+      <div class="labfoot" id="onMsg"></div>
+    </div>
+    <div class="ansrow">
+      <label>2, 4, 6, …, 18로 만든 마방진의 합</label>
+      <input id="a35" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a35" data-v="30" data-t="맞습니다. 원래 마방진의 각 수를 2배 하면 합도 2배가 됩니다.">확인</button>
+      <span class="verdict" id="v35"></span>
+    </div>
+  </div>
+
+  <p class="footnote"><b>출처</b> — <b>낙서(洛書)</b>는 기원전부터 전해지는 중국 최고(最古)의 마방진 기록입니다. 조선 숙종 때 <b>최석정</b>의 『구수략(九數略)』에도 마방진 연구가 실려 있습니다. <b>뒤러</b>의 4×4 마방진(1514)은 미술 작품 속 수학의 대표 사례입니다.</p>
+</section>
+
+<!-- ============ SET 4 ============ -->
+<section class="set" id="s4" data-ac="#8E3A5C">
+  <div class="sethead">
+    <p class="no">SET 04</p>
+    <h2>어떤 네 자리 수든 결국 6174가 된다</h2>
+    <p class="from">원전 · <em>카프리카 상수</em> (D. R. 카프리카, 1949) — 인도 수학자가 발견한 수의 블랙홀</p>
+    <div class="badges"><span class="bd lv">난이도 ★★☆</span><span class="bd">자릿수 재배열</span><span class="bd">고정점</span><span class="bd">9의 배수</span></div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">4-1</span><span class="qkind">탐색</span></div>
+    <div class="given"><b>카프리카 규칙</b> — 네 자리 수 하나를 고릅니다(모든 자리가 같은 수는 제외). ① 자릿수를 <b>큰 순서</b>로 배열해 큰 수를 만든다 ② <b>작은 순서</b>로 배열해 작은 수를 만든다 ③ <b>큰 수 − 작은 수</b>를 계산한다 ④ 나온 답으로 다시 반복한다.</div>
+    <p>아무 수나 넣어 보세요. 무슨 일이 벌어지나요?</p>
+    <div class="lab">
+      <div class="labbar"><span>kaprekar-routine</span>
+        <div class="tools">
+          <label style="font-family:var(--f-mono);font-size:12px">네 자리 수</label>
+          <input id="kpN" type="number" value="4371" min="0" max="9999" style="width:88px" />
+          <button class="tbtn" id="kpGo">실행</button>
+          <button class="tbtn" id="kpRnd">무작위</button>
+          <button class="tbtn" id="kpMy">내 생일로</button>
+        </div>
+      </div>
+      <div class="labin"><div id="kpOut"></div></div>
+      <div class="labfoot" id="kpMsg">어떤 수를 넣어도 같은 곳에 도착합니다.</div>
+    </div>
+    <div class="ansrow">
+      <label>모든 수가 도착하는 곳</label>
+      <input id="a41" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a41" data-v="6174" data-t="맞습니다. 6174를 카프리카 상수라고 부릅니다.">확인</button>
+      <span class="verdict" id="v41"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">4-2</span><span class="qkind">검증</span></div>
+    <p>정말 <b>모든</b> 네 자리 수가 그럴까요? 몇 단계 안에 도착할까요? 아래에서 전부 확인해 보세요.</p>
+    <div class="lab">
+      <div class="labbar"><span>full-check</span>
+        <div class="tools"><button class="tbtn" id="fcGo">0000~9999 전부 확인</button></div>
+      </div>
+      <div class="labin"><div id="fcOut" style="font-family:var(--f-mono);font-size:13.4px;line-height:1.9">버튼을 눌러 9990개를 모두 확인해 보세요.</div></div>
+      <div class="labfoot" id="fcMsg"></div>
+    </div>
+    <div class="ansrow">
+      <label>최대 몇 단계 만에 도착하나</label>
+      <input id="a42" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a42" data-v="7" data-t="맞습니다. 아무리 오래 걸려도 7단계입니다.">확인</button>
+      <span class="verdict" id="v42"></span>
+    </div>
+    <details class="hint"><summary>제외되는 수</summary><div class="body">1111, 2222처럼 <b>모든 자리가 같은 수</b>는 첫 계산에서 0이 되어 버립니다. 그래서 10개(0000~9999)를 제외한 <b>9990개</b>가 대상입니다.</div></details>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">4-3</span><span class="qkind">추론</span></div>
+    <p>왜 이런 일이 생길까요? 한 가지 <b>중요한 성질</b>을 찾아봅시다. 위 계산에서 나온 수들을 <b>9로 나눠</b> 보세요.</p>
+    <div class="lab">
+      <div class="labbar"><span>why-multiple-of-9</span>
+        <div class="tools">
+          <input id="n9N" type="number" value="5231" min="0" max="9999" style="width:88px" />
+          <button class="tbtn" id="n9Go">확인</button>
+        </div>
+      </div>
+      <div class="labin"><div id="n9Out" style="font-family:var(--f-mono);font-size:13.4px;line-height:1.9"></div></div>
+      <div class="labfoot" id="n9Msg"></div>
+    </div>
+    <div class="given">
+      <b>왜 9의 배수일까?</b><br>
+      자릿수를 <b>재배열</b>해도 <b>자릿수의 합</b>은 변하지 않습니다.<br>
+      앞 단원에서 배웠듯 어떤 수를 9로 나눈 나머지는 <b>자릿수 합</b>을 9로 나눈 나머지와 같습니다.<br>
+      두 수의 나머지가 같으므로, 그 <b>차</b>는 9로 나누어떨어집니다.
+    </div>
+    <div class="ansrow">
+      <label>6174 ÷ 9 = ?</label>
+      <input id="a43" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a43" data-v="686" data-t="맞습니다. 6174 = 9 × 686 입니다.">확인</button>
+      <span class="verdict" id="v43"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">4-4</span><span class="qkind talk">토론</span></div>
+    <div class="talkbox">
+      <h4>모둠에서 이야기해 봅시다</h4>
+      <ol>
+        <li><b>세 자리 수</b>로 같은 규칙을 적용하면 어떻게 될까요? 몇 개 해 보고 도착점을 찾아보세요. 네 자리와 무엇이 같고 무엇이 다른가요?</li>
+        <li><b>두 자리 수</b>는 어떨까요? 도착점이 하나로 정해지나요, 아니면 다른 일이 벌어지나요?</li>
+        <li>6174가 도착점이라는 것은 <b>전부 다 해 봐서</b> 알아냈습니다. 이것은 <b>증명</b>일까요? 앞 세트의 콜라츠 추측과 비교해 보세요. 무엇이 다른가요?</li>
+        <li>이 규칙에서 <b>순서를 바꾸는 것</b>이 왜 중요할까요? 만약 자릿수를 재배열하지 않고 그냥 뺀다면 어떻게 될까요?</li>
+      </ol>
+    </div>
+    <div class="lab" style="margin-top:16px">
+      <div class="labbar"><span>other-digits</span>
+        <div class="tools">
+          <button class="tbtn on" id="dg4">4자리</button>
+          <button class="tbtn" id="dg3">3자리</button>
+          <button class="tbtn" id="dg2">2자리</button>
+        </div>
+      </div>
+      <div class="labin"><div id="dgOut" style="font-family:var(--f-mono);font-size:13.4px;line-height:1.9"></div></div>
+      <div class="labfoot" id="dgMsg"></div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">4-5</span><span class="qkind">도전</span></div>
+    <p><b>2025</b>로 시작하면 몇 단계 만에 6174에 도착할까요? 손으로 계산한 뒤 도구로 확인하세요.</p>
+    <div class="ansrow">
+      <label>2025 → 6174 까지의 단계 수</label>
+      <input id="a45" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a45" data-v="6" data-t="맞습니다. 4995 → 5355 → 1998 → 8082 → 8532 → 6174 로 6단계입니다.">확인</button>
+      <span class="verdict" id="v45"></span>
+    </div>
+    <div class="ansrow">
+      <label>3자리 수의 도착점</label>
+      <input id="a46" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a46" data-v="495" data-t="맞습니다. 세 자리에서는 495로 모입니다.">확인</button>
+      <span class="verdict" id="v46"></span>
+    </div>
+  </div>
+
+  <p class="footnote"><b>출처</b> — 인도 수학자 <b>다타트레야 람찬드라 카프리카</b>(1905–1986)가 1949년에 발견했습니다. 그는 정규 수학자가 아닌 학교 교사였지만, 수를 가지고 노는 취미로 여러 발견을 남겼습니다. 네 자리에서는 <b>6174</b>, 세 자리에서는 <b>495</b>가 유일한 도착점입니다.</p>
+</section>
+
+<!-- ============ SET 5 ============ -->
+<section class="set" id="s5" data-ac="#8C6A17">
+  <div class="sethead">
+    <p class="no">SET 05</p>
+    <h2>자기 자신을 만들어 내는 수, 서로를 만들어 내는 수</h2>
+    <p class="from">원전 · <em>완전수</em> (유클리드 『원론』 제9권) + <em>친화수 220과 284</em> (피타고라스 학파)</p>
+    <div class="badges"><span class="bd lv">난이도 ★★★</span><span class="bd">약수의 합</span><span class="bd">분류</span><span class="bd">고전 수론</span></div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">5-1</span><span class="qkind">탐색</span></div>
+    <div class="given"><b>완전수</b> — 자기 자신을 <b>뺀</b> 약수를 모두 더했을 때 다시 자기 자신이 되는 수입니다.<br><br>
+      6의 약수는 1, 2, 3, 6 → 자기 자신을 뺀 <b>1 + 2 + 3 = 6</b> → 완전수!</div>
+    <p>1부터 500까지 완전수를 찾아보세요. 아래에서 수를 넣어 약수의 합을 확인할 수 있습니다.</p>
+    <div class="lab">
+      <div class="labbar"><span>divisor-sum</span>
+        <div class="tools">
+          <input id="dsN" type="number" value="28" min="2" max="100000" style="width:90px" />
+          <button class="tbtn" id="dsGo">약수 보기</button>
+          <button class="tbtn" id="dsFind">1~500 완전수 찾기</button>
+        </div>
+      </div>
+      <div class="labin"><div id="dsOut" style="font-family:var(--f-mono);font-size:13.4px;line-height:1.9"></div></div>
+      <div class="labfoot" id="dsMsg"></div>
+    </div>
+    <div class="ansrow">
+      <label>500 이하의 완전수 (작은 것부터)</label>
+      <input id="a51" type="text" placeholder="예: 6,28" />
+      <button class="chk" data-a="a51" data-v="6,28,496|6 28 496" data-t="맞습니다. 6, 28, 496 입니다. 다음은 8128로 훌쩍 뛰어오릅니다.">확인</button>
+      <span class="verdict" id="v51"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">5-2</span><span class="qkind">분류</span></div>
+    <p>완전수가 아닌 수들은 어떨까요? 약수의 합이 자기보다 <b>작으면 부족수</b>, <b>크면 과잉수</b>라고 합니다.</p>
+    <div class="lab">
+      <div class="labbar"><span>classify</span><div class="tools"><button class="tbtn" id="clShow">1~30 분류하기</button></div></div>
+      <div class="labin"><div class="tbscroll"><table class="dt" id="clTable"></table></div></div>
+      <div class="labfoot" id="clMsg">각 수의 약수 합을 자기 자신과 비교합니다.</div>
+    </div>
+    <div class="ansrow">
+      <label>가장 작은 과잉수</label>
+      <input id="a52" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a52" data-v="12" data-t="맞습니다. 12의 약수 합은 1+2+3+4+6 = 16 으로 12보다 큽니다.">확인</button>
+      <span class="verdict" id="v52"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">5-3</span><span class="qkind">발견</span></div>
+    <div class="given"><b>유클리드의 발견</b> — 2300년 전 유클리드는 완전수를 만드는 <b>공식</b>을 찾아냈습니다.<br><br>
+      <b>2<sup>p−1</sup> × (2<sup>p</sup> − 1)</b> &nbsp; — 단, <b>2<sup>p</sup> − 1이 소수</b>일 때만!</div>
+    <p>p에 여러 값을 넣어 확인해 보세요. 공식이 정말 완전수를 만들어 내나요?</p>
+    <div class="lab">
+      <div class="labbar"><span>euclid-formula</span>
+        <div class="tools">
+          <label style="font-family:var(--f-mono);font-size:12px">p</label>
+          <input id="euP" type="range" min="2" max="13" value="2" style="width:150px" />
+          <span id="euPV" style="font-family:var(--f-mono);font-weight:700">2</span>
+        </div>
+      </div>
+      <div class="labin"><div id="euOut" style="font-family:var(--f-mono);font-size:13.4px;line-height:2"></div></div>
+      <div class="labfoot" id="euMsg"></div>
+    </div>
+    <div class="ansrow">
+      <label>p = 7일 때 만들어지는 완전수</label>
+      <input id="a53" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a53" data-v="8128" data-t="맞습니다. 64 × 127 = 8128 입니다.">확인</button>
+      <span class="verdict" id="v53"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">5-4</span><span class="qkind talk">토론</span></div>
+    <div class="talkbox">
+      <h4>모둠에서 이야기해 봅시다</h4>
+      <ol>
+        <li><b>친화수</b>는 서로 상대의 약수 합이 되는 두 수입니다. <b>220과 284</b>가 대표적이며, 피타고라스 학파는 이를 <b>우정의 상징</b>으로 여겼습니다. 아래 도구로 직접 확인해 보세요. 왜 우정의 상징이라고 했을까요?</li>
+        <li>완전수는 지금까지 <b>51개</b>밖에 발견되지 않았고, 모두 <b>짝수</b>입니다. <b>홀수 완전수</b>가 있는지는 <b>2000년 넘게 아무도 모릅니다</b>. 세트 2의 콜라츠 추측과 비슷한 점이 있나요?</li>
+        <li>완전수 6, 28, 496, 8128의 <b>끝자리</b>를 보세요. 무엇이 보이나요? 다음 완전수의 끝자리를 예상할 수 있을까요?</li>
+        <li>세 개 이상의 수가 <b>고리</b>를 이루는 경우도 있습니다(사교수). 220↔284처럼 둘이 아니라 셋, 넷이 돌고 도는 것입니다. 이런 것을 찾으려면 무엇을 해야 할까요?</li>
+      </ol>
+    </div>
+    <div class="lab" style="margin-top:16px">
+      <div class="labbar"><span>amicable-numbers</span>
+        <div class="tools">
+          <button class="tbtn" id="am220">220과 284 확인</button>
+          <button class="tbtn" id="amFind">1~1300 친화수 찾기</button>
+          <button class="tbtn" id="amChain">사교수 고리 보기</button>
+        </div>
+      </div>
+      <div class="labin"><div id="amOut" style="font-family:var(--f-mono);font-size:13.4px;line-height:1.9"></div></div>
+      <div class="labfoot" id="amMsg"></div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">5-5</span><span class="qkind">도전</span></div>
+    <p>완전수 <b>496</b>의 약수를 모두 찾아 더해 보세요. 정말 496이 되나요? 또, 유클리드 공식에서 <b>p = 11</b>일 때는 왜 완전수가 만들어지지 않을까요?</p>
+    <div class="ansrow">
+      <label>220의 약수 합 (자기 자신 제외)</label>
+      <input id="a55" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a55" data-v="284" data-t="맞습니다. 그리고 284의 약수 합은 다시 220이 됩니다.">확인</button>
+      <span class="verdict" id="v55"></span>
+    </div>
+    <div class="ansrow">
+      <label>p = 11일 때 2¹¹ − 1 = 2047 은 소수인가</label>
+      <input id="a56" type="text" placeholder="예 / 아니오" />
+      <button class="chk" data-a="a56" data-v="아니오|아니요|no|x|소수아님" data-t="맞습니다. 2047 = 23 × 89 이므로 소수가 아니고, 공식이 적용되지 않습니다.">확인</button>
+      <span class="verdict" id="v56"></span>
+    </div>
+  </div>
+
+  <p class="footnote"><b>출처</b> — <b>유클리드</b>가 『원론』 제9권 명제 36에서 완전수 공식을 증명했고, 2000년 뒤 <b>오일러</b>가 모든 짝수 완전수가 이 꼴임을 증명했습니다. <b>220과 284</b>는 피타고라스 학파(기원전 6세기)부터 알려진 가장 오래된 친화수입니다.</p>
+</section>
+
+<div class="prm">
+  <button id="prev">← 이전 세트</button>
+  <button id="next">다음 세트 →</button>
+</div>
+
+</main>
+
+<footer>세영코딩연구소 · 사고력 수와 규칙 5제 학생용 문제집 · 규칙에는 반드시 이유가 있습니다</footer>
+
+<script>
+(function(){
+  "use strict";
+  var $ = function(id){ return document.getElementById(id); };
+  var NS = "http://www.w3.org/2000/svg";
+  function el(tag, attrs, parent){
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function ce(tag, cls, t){
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (t !== undefined) e.textContent = t;
+    return e;
+  }
+  function clear(n){ while (n.firstChild) n.removeChild(n.firstChild); }
+
+  /* ---------- 탭 ---------- */
+  var ORDER = ["s1","s2","s3","s4","s5"], cur = 0;
+  function show(i){
+    cur = Math.max(0, Math.min(ORDER.length-1, i));
+    var id = ORDER[cur];
+    document.querySelectorAll(".set").forEach(function(s){ s.classList.toggle("on", s.id===id); });
+    document.querySelectorAll(".tocbtn").forEach(function(b){ b.classList.toggle("on", b.dataset.s===id); });
+    document.documentElement.style.setProperty("--ac", $(id).dataset.ac || "#2B4C6F");
+    $("prev").disabled = cur===0; $("next").disabled = cur===ORDER.length-1;
+    window.scrollTo({ top:0, behavior:"smooth" });
+  }
+  document.querySelectorAll(".tocbtn").forEach(function(b){
+    b.addEventListener("click", function(){ show(ORDER.indexOf(b.dataset.s)); });
+  });
+  $("prev").addEventListener("click", function(){ show(cur-1); });
+  $("next").addEventListener("click", function(){ show(cur+1); });
+
+  /* ---------- 채점 ---------- */
+  function norm(s){
+    return String(s).replace(/\s+/g,"").replace(/개$/,"").replace(/단계$/,"").replace(/번$/,"")
+      .replace(/[.]$/,"").replace(/[,]/g,",").replace(/×/g,"*").replace(/÷/g,"/")
+      .replace(/[년]$/,"").toLowerCase();
+  }
+  document.querySelectorAll(".chk").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var inp = $(btn.dataset.a), v = $("v"+btn.dataset.a.slice(1));
+      if (!inp || !v) return;
+      var val = norm(inp.value);
+      if (!val){ v.textContent = "답을 먼저 입력하세요"; v.className="verdict"; return; }
+      var ok = btn.dataset.v.split("|").some(function(x){ return norm(x)===val; });
+      v.textContent = ok ? ("정답 — " + btn.dataset.t) : "다시 생각해 보세요";
+      v.className = "verdict " + (ok ? "ok" : "no");
+    });
+  });
+
+  /* ================= SET 1 : 가우스 ================= */
+  var GP = { pairs:0 };
+  function drawGP(){
+    var box = $("gpPairs"); clear(box);
+    for (var i=1;i<=50;i++){
+      var d = ce("div","pairchip" + (i<=GP.pairs ? " on" : ""), i + "+" + (101-i) + "=101");
+      box.appendChild(d);
+    }
+    var out = $("gpOut"); clear(out);
+    if (GP.pairs===0){
+      out.textContent = "1 + 2 + 3 + … + 98 + 99 + 100 = ?";
+      $("gpMsg").innerHTML = "1과 100, 2와 99, … 이렇게 짝을 지어 보세요.";
+    } else {
+      out.textContent = "짝지은 수 " + GP.pairs + "쌍 × 101 = " + (GP.pairs*101);
+      $("gpMsg").innerHTML = GP.pairs>=50
+        ? "모든 짝의 합이 <b>101</b>로 같습니다! 짝은 <b>50</b>쌍이므로 101 × 50 = <b>5050</b>"
+        : "짝의 합이 계속 <b>101</b>입니다. 100개를 둘씩 묶으면 몇 쌍일까요?";
+    }
+  }
+  $("gpStep").addEventListener("click", function(){ if (GP.pairs<50) GP.pairs++; drawGP(); });
+  $("gpAll").addEventListener("click", function(){ GP.pairs=50; drawGP(); });
+  $("gpReset").addEventListener("click", function(){ GP.pairs=0; drawGP(); });
+  drawGP();
+
+  $("asGo").addEventListener("click", function(){
+    var a = +$("asA").value || 0, d = +$("asD").value || 0, n = Math.max(1, Math.min(100, +$("asN").value || 1));
+    var seq = [];
+    for (var i=0;i<n;i++) seq.push(a + d*i);
+    var sum = seq.reduce(function(x,y){ return x+y; }, 0);
+    var out = $("asOut"); clear(out);
+    out.appendChild(ce("div", null, "수열 : " + seq.slice(0,10).join(", ") + (n>10 ? ", … , " + seq[n-1] : "")));
+    out.appendChild(ce("div", null, "하나씩 더한 합 : " + sum));
+    var formula = (seq[0]+seq[n-1])*n/2;
+    var f = ce("div", null, "(첫항 " + seq[0] + " + 끝항 " + seq[n-1] + ") × " + n + " ÷ 2 = " + formula);
+    f.style.cssText = "font-weight:700;color:var(--forest)";
+    out.appendChild(f);
+    $("asMsg").innerHTML = sum===formula
+      ? "두 값이 <b>정확히 같습니다</b>. 공차가 얼마든, 음수여도 통합니다."
+      : "값이 다릅니다. 입력을 확인하세요.";
+  });
+  $("asGo").click();
+
+  /* ================= SET 2 : 우박수 ================= */
+  function collatz(n){
+    var s=[n], guard=0;
+    while (n!==1 && guard<2000){
+      n = (n%2===0) ? n/2 : 3*n+1;
+      s.push(n); guard++;
+    }
+    return s;
+  }
+  function drawHail(n){
+    var s = collatz(n);
+    var box = $("hlSeq"); clear(box);
+    var showN = Math.min(s.length, 130);
+    for (var i=0;i<showN;i++){
+      var cls = "hn";
+      if (s[i]===1) cls += " one";
+      else if (i>0 && s[i]>s[i-1]) cls += " up";
+      else if (i>0) cls += " down";
+      box.appendChild(ce("div", cls, String(s[i])));
+    }
+    if (s.length>showN) box.appendChild(ce("div","hn","… 총 "+s.length+"개"));
+    // 그래프
+    var svg = $("hlSvg"); clear(svg);
+    el("rect",{x:0,y:0,width:640,height:220,fill:"#FAF9F5"},svg);
+    var mx = Math.max.apply(null, s), W=600, H=170, ox=25, oy=190;
+    var pts = s.map(function(v,i){
+      var x = ox + (s.length>1 ? i/(s.length-1)*W : 0);
+      var y = oy - (v/mx)*H;
+      return x.toFixed(1)+","+y.toFixed(1);
+    }).join(" ");
+    el("polyline",{points:pts,fill:"none",stroke:"#A9502C","stroke-width":"2"},svg);
+    s.forEach(function(v,i){
+      var x = ox + (s.length>1 ? i/(s.length-1)*W : 0);
+      var y = oy - (v/mx)*H;
+      el("circle",{cx:x,cy:y,r: s.length>60 ? 1.5 : 3, fill: v===mx ? "#8E3A5C" : "#2B4C6F"},svg);
+    });
+    var t = el("text",{x:ox,y:16,"font-size":"12",fill:"#565B66"},svg);
+    t.textContent = "최고점 " + mx.toLocaleString();
+    $("hlMsg").innerHTML = "<b>" + n + "</b>에서 시작 → <b>" + (s.length-1) + "</b>단계 만에 1 도착 · 최고점 <b>" +
+      mx.toLocaleString() + "</b>" + (n===27 ? " · 27은 작은 수인데도 유난히 오래 걸립니다!" : "");
+  }
+  $("hlGo").addEventListener("click", function(){
+    var n = Math.max(1, Math.min(100000, +$("hlN").value || 6));
+    drawHail(n);
+  });
+  $("hl27").addEventListener("click", function(){ $("hlN").value = 27; drawHail(27); });
+  drawHail(6);
+
+  function drawST(show){
+    var t = $("stTable"); clear(t);
+    var hd = ce("tr");
+    hd.appendChild(ce("th",null,"시작 수"));
+    for (var n=1;n<=20;n++) hd.appendChild(ce("th",null,String(n)));
+    t.appendChild(hd);
+    var tr = ce("tr");
+    tr.appendChild(ce("th",null,"단계"));
+    for (var n2=1;n2<=20;n2++){
+      var c = collatz(n2).length-1;
+      var pow2 = (n2 & (n2-1))===0;
+      tr.appendChild(ce("td", show ? (pow2?"ok":null) : null, show ? String(c) : (n2<=4 ? String(c) : "?")));
+    }
+    t.appendChild(tr);
+    $("stMsg").innerHTML = show
+      ? "초록색은 <b>2의 거듭제곱</b>(1, 2, 4, 8, 16)입니다. 계속 반으로 나뉘기만 하므로 단계가 가장 짧습니다."
+      : "직접 몇 개를 계산해 본 뒤 버튼을 누르세요.";
+  }
+  var stS=false;
+  $("stShow").addEventListener("click", function(){
+    stS=!stS; this.classList.toggle("on",stS);
+    this.textContent = stS ? "다시 가리기" : "표 채우기";
+    drawST(stS);
+  });
+  drawST(false);
+
+  $("rsGo").addEventListener("click", function(){
+    var N = Math.max(10, Math.min(100000, +$("rsN").value || 1000));
+    var cache = {1:0};
+    function steps(n){
+      var stack=[], m=n;
+      while (cache[m]===undefined){
+        stack.push(m);
+        m = (m%2===0) ? m/2 : 3*m+1;
+      }
+      var c = cache[m];
+      while (stack.length){ m = stack.pop(); c++; cache[m]=c; }
+      return cache[n];
+    }
+    var best=[0,0], high=[0,0];
+    for (var n=1;n<=N;n++){
+      var c = steps(n);
+      if (c > best[1]) best = [n,c];
+      if (N<=20000){
+        var s = collatz(n), mx = Math.max.apply(null, s);
+        if (mx > high[1]) high = [n,mx];
+      }
+    }
+    var out = $("rsOut"); clear(out);
+    out.appendChild(ce("div", null, "범위 : 1 ~ " + N.toLocaleString()));
+    var d1 = ce("div", null, "가장 오래 걸리는 수 : " + best[0] + " → " + best[1] + "단계");
+    d1.style.cssText = "font-weight:700;color:var(--rust)";
+    out.appendChild(d1);
+    if (high[0]){
+      var d2 = ce("div", null, "가장 높이 올라가는 수 : " + high[0] + " → 최고점 " + high[1].toLocaleString());
+      d2.style.cssText = "font-weight:700;color:var(--berry)";
+      out.appendChild(d2);
+    }
+    out.appendChild(ce("div", null, "모두 1에 도달했는가 : 예 (예외 없음)"));
+    $("rsMsg").innerHTML = "작은 수인데도 <b>엄청나게 오래 걸리거나 높이 올라가는</b> 수가 있습니다. 규칙성이 잘 보이지 않는 것이 이 문제의 어려움입니다.";
+  });
+  $("rsGo").click();
+
+  var RVMODE = 1;
+  function drawRV(){
+    var n0 = Math.max(1, Math.min(999, +$("rvN").value || 7));
+    var n = n0, s=[n], seen={}, loop=null, guard=0;
+    while (n!==1 && guard<300){
+      if (seen[n]){ loop = n; break; }
+      seen[n]=1;
+      n = (n%2===0) ? n/2 : 3*n + RVMODE;
+      s.push(n); guard++;
+    }
+    var out = $("rvOut"); clear(out);
+    out.appendChild(ce("div", null, (RVMODE===1 ? "3n + 1" : "3n − 1") + " 규칙, 시작 " + n0));
+    out.appendChild(ce("div", null, s.join(" → ")));
+    var d = ce("div");
+    if (n===1){ d.textContent = "→ 1에 도착 (" + (s.length-1) + "단계)"; d.style.color="var(--forest)"; }
+    else if (loop){ d.textContent = "→ " + loop + "에서 고리에 갇혔습니다! 1에 도달하지 못함"; d.style.color="var(--rust)"; }
+    else { d.textContent = "→ 300단계 안에 끝나지 않았습니다"; d.style.color="var(--rust)"; }
+    d.style.fontWeight="700";
+    out.appendChild(d);
+    $("rvMsg").innerHTML = RVMODE===1
+      ? "원래 규칙에서는 지금까지 <b>모든 수가 1에 도착</b>했습니다."
+      : "3n−1로 바꾸면 <b>1로 가지 않고 고리에 갇히는 수</b>가 생깁니다. 5나 7을 넣어 보세요!";
+  }
+  $("rvPlus").addEventListener("click", function(){
+    RVMODE=1; this.classList.add("on"); $("rvMinus").classList.remove("on"); drawRV();
+  });
+  $("rvMinus").addEventListener("click", function(){
+    RVMODE=-1; this.classList.add("on"); $("rvPlus").classList.remove("on"); drawRV();
+  });
+  $("rvGo").addEventListener("click", drawRV);
+  drawRV();
+
+  /* ================= SET 3 : 마방진 ================= */
+  var LUOSHU = [4,9,2,3,5,7,8,1,6];
+  var M3 = { g:[0,0,0,0,0,0,0,0,0] };
+  function drawM3(){
+    var box = $("m3Grid"); clear(box);
+    var counts = {};
+    M3.g.forEach(function(v){ if (v) counts[v]=(counts[v]||0)+1; });
+    for (var i=0;i<9;i++){
+      var v = M3.g[i];
+      var cls = "mc" + (v===0 ? " empty" : (counts[v]>1 ? " bad" : ""));
+      var d = ce("div", cls, v===0 ? "·" : String(v));
+      (function(idx){
+        d.addEventListener("click", function(){
+          M3.g[idx] = (M3.g[idx] + 1) % 10;
+          drawM3();
+        });
+      })(i);
+      box.appendChild(d);
+    }
+    var sums = $("m3Sums"); clear(sums);
+    var lines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+    var names = ["가로1","가로2","가로3","세로1","세로2","세로3","대각↘","대각↙"];
+    var allOk = true, filled = M3.g.every(function(v){ return v>0; });
+    lines.forEach(function(L,i){
+      var s = L.reduce(function(a,k){ return a + M3.g[k]; }, 0);
+      var ok = (s===15) && filled;
+      if (!ok) allOk = false;
+      sums.appendChild(ce("span", filled ? (ok?"ok":"no") : "", names[i] + " " + s));
+    });
+    var dup = Object.keys(counts).some(function(k){ return counts[k]>1; });
+    $("m3Msg").innerHTML = !filled
+      ? "칸을 누르면 숫자가 1씩 커집니다 · 아직 빈 칸이 있습니다"
+      : (dup ? "<b style='color:var(--rust)'>같은 숫자를 두 번 썼습니다.</b> 1~9를 한 번씩만 쓰세요."
+             : (allOk ? "<b style='color:var(--forest)'>완성했습니다!</b> 여덟 줄이 모두 15입니다."
+                      : "아직 15가 아닌 줄이 있습니다. 붉은 줄을 확인하세요."));
+  }
+  $("m3Hint").addEventListener("click", function(){
+    M3.g[4] = 5; drawM3();
+    $("m3Msg").innerHTML = "가운데에 <b>5</b>를 넣었습니다. 왜 5여야 하는지는 3-2에서 알아봅니다.";
+  });
+  $("m3Show").addEventListener("click", function(){ M3.g = LUOSHU.slice(); drawM3(); });
+  $("m3Clear").addEventListener("click", function(){ M3.g=[0,0,0,0,0,0,0,0,0]; drawM3(); });
+  drawM3();
+
+  var DURER = [16,3,2,13, 5,10,11,8, 9,6,7,12, 4,15,14,1];
+  var DUSETS = [
+    { n:"가로 4줄", idx:[[0,1,2,3],[4,5,6,7],[8,9,10,11],[12,13,14,15]] },
+    { n:"세로 4줄", idx:[[0,4,8,12],[1,5,9,13],[2,6,10,14],[3,7,11,15]] },
+    { n:"대각선", idx:[[0,5,10,15],[3,6,9,12]] },
+    { n:"네 모서리", idx:[[0,3,12,15]] },
+    { n:"가운데 4칸", idx:[[5,6,9,10]] },
+    { n:"2×2 네 구역", idx:[[0,1,4,5],[2,3,6,7],[8,9,12,13],[10,11,14,15]] }
+  ];
+  var duSel = 0;
+  (function(){
+    var box = $("duTools");
+    DUSETS.forEach(function(s,i){
+      var b = ce("button","tbtn"+(i===0?" on":""), s.n);
+      b.addEventListener("click", function(){
+        box.querySelectorAll(".tbtn").forEach(function(x){ x.classList.remove("on"); });
+        b.classList.add("on"); duSel=i; drawDU();
+      });
+      box.appendChild(b);
+    });
+  })();
+  function drawDU(){
+    var sel = DUSETS[duSel];
+    var mark = {};
+    sel.idx.forEach(function(L){ L.forEach(function(k){ mark[k]=1; }); });
+    var box = $("duGrid"); clear(box);
+    for (var i=0;i<16;i++){
+      var cls = "mc" + (mark[i] ? " good" : " fixed");
+      box.appendChild(ce("div", cls, String(DURER[i])));
+    }
+    var out = $("duOut"); clear(out);
+    var sums = sel.idx.map(function(L){
+      return L.map(function(k){ return DURER[k]; }).join(" + ") + " = " +
+        L.reduce(function(a,k){ return a+DURER[k]; },0);
+    });
+    sums.forEach(function(s){ out.appendChild(ce("div", null, s)); });
+    var allEq = sel.idx.every(function(L){ return L.reduce(function(a,k){ return a+DURER[k]; },0)===34; });
+    $("duMsg").innerHTML = allEq
+      ? "<b>" + sel.n + "</b>의 합이 모두 <b>34</b>입니다! 다른 조합도 눌러 보세요."
+      : "합이 34가 아닙니다.";
+  }
+  drawDU();
+
+  var ONSETS = [
+    { n:"1~9 (원래)", f:function(v){ return v; } },
+    { n:"2배 (짝수)", f:function(v){ return v*2; } },
+    { n:"10 더하기", f:function(v){ return v+10; } },
+    { n:"3배 후 1 더하기", f:function(v){ return v*3+1; } }
+  ];
+  var onSel=0;
+  (function(){
+    var box = $("onTools");
+    ONSETS.forEach(function(s,i){
+      var b = ce("button","tbtn"+(i===0?" on":""), s.n);
+      b.addEventListener("click", function(){
+        box.querySelectorAll(".tbtn").forEach(function(x){ x.classList.remove("on"); });
+        b.classList.add("on"); onSel=i; drawON();
+      });
+      box.appendChild(b);
+    });
+  })();
+  function drawON(){
+    var f = ONSETS[onSel].f;
+    var g = LUOSHU.map(f);
+    var box = $("onGrid"); clear(box);
+    g.forEach(function(v){ box.appendChild(ce("div","mc fixed", String(v))); });
+    var s = g[0]+g[1]+g[2];
+    var lines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+    var ok = lines.every(function(L){ return L.reduce(function(a,k){ return a+g[k]; },0)===s; });
+    var out = $("onOut"); clear(out);
+    out.appendChild(ce("div", null, "사용한 수 : " + g.slice().sort(function(a,b){return a-b;}).join(", ")));
+    var d = ce("div", null, "여덟 줄의 합 : " + s + (ok ? "  → 모두 같음 ✓" : "  → 다름 ✗"));
+    d.style.cssText = "font-weight:700;color:" + (ok ? "var(--forest)" : "var(--rust)");
+    out.appendChild(d);
+    $("onMsg").innerHTML = ok
+      ? "각 수에 <b>같은 규칙</b>을 적용하면 마방진은 그대로 유지됩니다. 합만 달라집니다."
+      : "마방진이 깨졌습니다.";
+  }
+  drawON();
+
+  /* ================= SET 4 : 카프리카 ================= */
+  function kap(n, digits){
+    var s = String(n).padStart(digits, "0").split("");
+    var big = parseInt(s.slice().sort(function(a,b){ return b-a; }).join(""), 10);
+    var small = parseInt(s.slice().sort(function(a,b){ return a-b; }).join(""), 10);
+    return { big:big, small:small, res:big-small,
+             bigS:s.slice().sort(function(a,b){return b-a;}).join(""),
+             smallS:s.slice().sort(function(a,b){return a-b;}).join("") };
+  }
+  function runKap(n0){
+    var out = $("kpOut"); clear(out);
+    var s = String(n0).padStart(4,"0");
+    if (new Set(s.split("")).size === 1){
+      out.appendChild(ce("div","kstep","모든 자리가 같은 수는 첫 계산에서 0이 되어 제외됩니다."));
+      $("kpMsg").innerHTML = "1111, 2222 같은 수는 <b>대상이 아닙니다</b>. 다른 수를 넣어 보세요.";
+      return;
+    }
+    var n = n0, i = 0;
+    while (i < 10){
+      var k = kap(n, 4);
+      var row = ce("div","kstep" + (k.res===6174 ? " final" : ""));
+      row.appendChild(ce("div","n", String(i+1)));
+      row.appendChild(ce("div", null, k.bigS + " − " + k.smallS + " = " + String(k.res).padStart(4,"0")));
+      out.appendChild(row);
+      n = k.res; i++;
+      if (n === 6174) break;
+      if (n === 0) break;
+    }
+    $("kpMsg").innerHTML = n===6174
+      ? "<b>" + i + "단계</b> 만에 <b>6174</b>에 도착했습니다! 여기서 한 번 더 하면 다시 6174가 나옵니다."
+      : "0이 되었습니다. 모든 자리가 같은 수였습니다.";
+  }
+  $("kpGo").addEventListener("click", function(){
+    runKap(Math.max(0, Math.min(9999, +$("kpN").value || 0)));
+  });
+  $("kpRnd").addEventListener("click", function(){
+    var n;
+    do { n = Math.floor(Math.random()*10000); }
+    while (new Set(String(n).padStart(4,"0").split("")).size === 1);
+    $("kpN").value = n; runKap(n);
+  });
+  $("kpMy").addEventListener("click", function(){
+    $("kpMsg").innerHTML = "생일을 <b>월일 네 자리</b>로 넣어 보세요. 예: 3월 15일 → 0315";
+  });
+  runKap(4371);
+
+  $("fcGo").addEventListener("click", function(){
+    var dist = {}, fail = 0, mx = [0,0], total = 0;
+    for (var n=0;n<10000;n++){
+      var s = String(n).padStart(4,"0");
+      if (new Set(s.split("")).size === 1) continue;
+      total++;
+      var c = 0, m = n;
+      while (m !== 6174 && c < 20){ m = kap(m,4).res; c++; }
+      if (m !== 6174) fail++;
+      dist[c] = (dist[c]||0)+1;
+      if (c > mx[1]) mx = [n,c];
+    }
+    var out = $("fcOut"); clear(out);
+    out.appendChild(ce("div", null, "검사한 수 : " + total + "개 (10000 − 같은 숫자 10개)"));
+    var d = ce("div", null, "6174에 도착하지 못한 수 : " + fail + "개");
+    d.style.cssText = "font-weight:700;color:" + (fail===0 ? "var(--forest)" : "var(--rust)");
+    out.appendChild(d);
+    out.appendChild(ce("div", null, "최대 단계 : " + mx[1] + "단계 (예: " + String(mx[0]).padStart(4,"0") + ")"));
+    var keys = Object.keys(dist).map(Number).sort(function(a,b){ return a-b; });
+    out.appendChild(ce("div", null, "단계별 개수 : " +
+      keys.map(function(k){ return k + "단계 " + dist[k] + "개"; }).join(" · ")));
+    $("fcMsg").innerHTML = "<b>9990개 전부</b>가 <b>7단계 이내</b>에 6174에 도착합니다. 예외가 하나도 없습니다.";
+  });
+
+  $("n9Go").addEventListener("click", function(){
+    var n = Math.max(0, Math.min(9999, +$("n9N").value || 0));
+    var out = $("n9Out"); clear(out);
+    var s = String(n).padStart(4,"0");
+    if (new Set(s.split("")).size === 1){
+      out.appendChild(ce("div", null, "모든 자리가 같은 수는 제외됩니다."));
+      return;
+    }
+    var m = n, i=0;
+    while (i<10){
+      var k = kap(m,4);
+      out.appendChild(ce("div", null, k.bigS + " − " + k.smallS + " = " +
+        String(k.res).padStart(4,"0") + "   →  " + k.res + " ÷ 9 = " + (k.res/9) +
+        (k.res%9===0 ? "  ✓ 9의 배수" : "  ✗")));
+      m = k.res; i++;
+      if (m===6174 || m===0) break;
+    }
+    $("n9Msg").innerHTML = "나오는 수가 <b>전부 9의 배수</b>입니다. 자릿수를 재배열해 빼면 <b>자릿수 합이 같으므로</b> 차가 9의 배수가 됩니다.";
+  });
+  $("n9Go").click();
+
+  function drawDG(digits){
+    var out = $("dgOut"); clear(out);
+    var target = digits===4 ? 6174 : (digits===3 ? 495 : null);
+    if (digits===2){
+      var seq=[], m=9;
+      for (var i=0;i<6;i++){ seq.push(m); m = kap(m,2).res; }
+      out.appendChild(ce("div", null, "2자리 수는 고정점이 없습니다."));
+      out.appendChild(ce("div", null, "순환 : " + seq.join(" → ")));
+      var d = ce("div", null, "→ 한 점에 멈추지 않고 5개의 수를 <빙글빙글> 돕니다");
+      d.style.cssText = "font-weight:700;color:var(--rust)";
+      out.appendChild(d);
+      $("dgMsg").innerHTML = "자릿수가 달라지면 결과가 <b>완전히 달라집니다</b>. 고정점이 없을 수도 있습니다.";
+      return;
+    }
+    var lim = digits===4 ? 10000 : 1000;
+    var fail=0, mx=[0,0], total=0;
+    for (var n=0;n<lim;n++){
+      var s = String(n).padStart(digits,"0");
+      if (new Set(s.split("")).size===1) continue;
+      total++;
+      var c=0, m2=n;
+      while (m2!==target && c<20){ m2 = kap(m2,digits).res; c++; }
+      if (m2!==target) fail++;
+      if (c>mx[1]) mx=[n,c];
+    }
+    out.appendChild(ce("div", null, digits + "자리 수 : 대상 " + total + "개"));
+    out.appendChild(ce("div", null, "도착점 : " + target));
+    var d2 = ce("div", null, "도달 못한 수 " + fail + "개 · 최대 " + mx[1] + "단계");
+    d2.style.cssText = "font-weight:700;color:" + (fail===0 ? "var(--forest)" : "var(--rust)");
+    out.appendChild(d2);
+    out.appendChild(ce("div", null, target + " 자신 : " + kap(target,digits).bigS + " − " +
+      kap(target,digits).smallS + " = " + kap(target,digits).res + " (고정점)"));
+    $("dgMsg").innerHTML = "자릿수마다 <b>도착점이 다릅니다</b>. 4자리는 6174, 3자리는 495입니다.";
+  }
+  $("dg4").addEventListener("click", function(){
+    this.classList.add("on"); $("dg3").classList.remove("on"); $("dg2").classList.remove("on"); drawDG(4);
+  });
+  $("dg3").addEventListener("click", function(){
+    this.classList.add("on"); $("dg4").classList.remove("on"); $("dg2").classList.remove("on"); drawDG(3);
+  });
+  $("dg2").addEventListener("click", function(){
+    this.classList.add("on"); $("dg4").classList.remove("on"); $("dg3").classList.remove("on"); drawDG(2);
+  });
+  drawDG(4);
+
+  /* ================= SET 5 : 완전수 ================= */
+  function properDivisors(n){
+    var d = [];
+    if (n>1) d.push(1);
+    for (var i=2;i*i<=n;i++){
+      if (n%i===0){
+        d.push(i);
+        if (i !== n/i) d.push(n/i);
+      }
+    }
+    return d.sort(function(a,b){ return a-b; });
+  }
+  function sDiv(n){ return properDivisors(n).reduce(function(a,b){ return a+b; }, 0); }
+
+  $("dsGo").addEventListener("click", function(){
+    var n = Math.max(2, Math.min(100000, +$("dsN").value || 28));
+    var d = properDivisors(n), s = sDiv(n);
+    var out = $("dsOut"); clear(out);
+    out.appendChild(ce("div", null, n + "의 약수 (자기 자신 제외) : " + d.join(", ")));
+    out.appendChild(ce("div", null, "합 : " + d.join(" + ") + " = " + s));
+    var kind = s===n ? "완전수 ✓" : (s<n ? "부족수 (합 < 자신)" : "과잉수 (합 > 자신)");
+    var e = ce("div", null, "→ " + kind);
+    e.style.cssText = "font-weight:700;color:" + (s===n ? "var(--forest)" : (s<n ? "var(--ink-2)" : "var(--rust)"));
+    out.appendChild(e);
+    $("dsMsg").innerHTML = s===n ? "<b>완전수</b>입니다!" : "완전수가 아닙니다. 6, 28을 넣어 보세요.";
+  });
+  $("dsFind").addEventListener("click", function(){
+    var found=[];
+    for (var n=2;n<=500;n++) if (sDiv(n)===n) found.push(n);
+    var out = $("dsOut"); clear(out);
+    out.appendChild(ce("div", null, "1~500의 완전수 : " + found.join(", ")));
+    found.forEach(function(p){
+      out.appendChild(ce("div", null, "  " + p + " = " + properDivisors(p).join(" + ")));
+    });
+    out.appendChild(ce("div", null, "다음 완전수는 8128 — 갑자기 훌쩍 뜁니다"));
+    $("dsMsg").innerHTML = "완전수는 <b>매우 드뭅니다</b>. 500 이하에 단 <b>3개</b>뿐입니다.";
+  });
+  $("dsGo").click();
+
+  function drawCL(show){
+    var t = $("clTable"); clear(t);
+    var hd = ce("tr");
+    hd.appendChild(ce("th",null,"수"));
+    for (var n=2;n<=30;n++) hd.appendChild(ce("th",null,String(n)));
+    t.appendChild(hd);
+    var tr1 = ce("tr"); tr1.appendChild(ce("th",null,"약수 합"));
+    var tr2 = ce("tr"); tr2.appendChild(ce("th",null,"분류"));
+    for (var n2=2;n2<=30;n2++){
+      var s = sDiv(n2);
+      tr1.appendChild(ce("td",null, show ? String(s) : "?"));
+      var kind = s===n2 ? "완전" : (s<n2 ? "부족" : "과잉");
+      var cls = s===n2 ? "ok" : (s>n2 ? "no" : null);
+      tr2.appendChild(ce("td", show ? cls : null, show ? kind : "?"));
+    }
+    t.appendChild(tr1); t.appendChild(tr2);
+    $("clMsg").innerHTML = show
+      ? "<b>완전수는 6과 28</b> 둘뿐이고, 과잉수(붉은색)는 12, 18, 20, 24, 30입니다. 대부분은 <b>부족수</b>입니다."
+      : "각 수의 약수 합을 자기 자신과 비교합니다.";
+  }
+  var clS=false;
+  $("clShow").addEventListener("click", function(){
+    clS=!clS; this.classList.toggle("on",clS);
+    this.textContent = clS ? "다시 가리기" : "1~30 분류하기";
+    drawCL(clS);
+  });
+  drawCL(false);
+
+  function isPrime(x){
+    if (x<2) return false;
+    for (var d=2; d*d<=x; d++) if (x%d===0) return false;
+    return true;
+  }
+  function drawEU(){
+    var p = +$("euP").value;
+    $("euPV").textContent = p;
+    var m = Math.pow(2,p) - 1;
+    var v = Math.pow(2,p-1) * m;
+    var out = $("euOut"); clear(out);
+    out.appendChild(ce("div", null, "p = " + p));
+    out.appendChild(ce("div", null, "2^" + p + " − 1 = " + m.toLocaleString() +
+      (isPrime(m) ? "  → 소수 ✓" : "  → 소수가 아님 ✗")));
+    if (isPrime(m)){
+      out.appendChild(ce("div", null, "2^" + (p-1) + " × " + m + " = " +
+        Math.pow(2,p-1) + " × " + m + " = " + v.toLocaleString()));
+      var ok = (v<=1000000) ? (sDiv(v)===v) : true;
+      var d = ce("div", null, "→ " + v.toLocaleString() + " 는 완전수" + (ok ? " ✓" : ""));
+      d.style.cssText = "font-weight:700;color:var(--forest)";
+      out.appendChild(d);
+    } else {
+      var factors = [];
+      for (var d2=2; d2*d2<=m; d2++) if (m%d2===0){ factors=[d2, m/d2]; break; }
+      out.appendChild(ce("div", null, "  " + m + " = " + factors.join(" × ") + " 이므로 소수가 아님"));
+      var e = ce("div", null, "→ 공식을 쓸 수 없습니다");
+      e.style.cssText = "font-weight:700;color:var(--rust)";
+      out.appendChild(e);
+    }
+    $("euMsg").innerHTML = isPrime(m)
+      ? "<b>2^p − 1이 소수</b>일 때만 완전수가 만들어집니다. p를 옮겨 보세요."
+      : "p = " + p + "은 2^p − 1이 소수가 아니라 <b>완전수가 나오지 않습니다</b>.";
+  }
+  $("euP").addEventListener("input", drawEU);
+  drawEU();
+
+  $("am220").addEventListener("click", function(){
+    var out = $("amOut"); clear(out);
+    [220,284].forEach(function(n){
+      var d = properDivisors(n);
+      out.appendChild(ce("div", null, n + "의 약수 : " + d.join(", ")));
+      out.appendChild(ce("div", null, "  합 = " + sDiv(n)));
+    });
+    var d2 = ce("div", null, "→ 220의 약수 합은 284, 284의 약수 합은 220 : 서로를 만들어 냄");
+    d2.style.cssText = "font-weight:700;color:var(--forest)";
+    out.appendChild(d2);
+    $("amMsg").innerHTML = "피타고라스 학파는 이 두 수를 <b>우정의 상징</b>으로 여겨 부적에 새겼다고 전해집니다.";
+  });
+  $("amFind").addEventListener("click", function(){
+    var out = $("amOut"); clear(out);
+    var found=[];
+    for (var a=2;a<=1300;a++){
+      var b = sDiv(a);
+      if (b>a && b<=100000 && sDiv(b)===a) found.push([a,b]);
+    }
+    out.appendChild(ce("div", null, "1~1300에서 찾은 친화수 쌍 :"));
+    found.forEach(function(p){
+      out.appendChild(ce("div", null, "  " + p[0] + " ↔ " + p[1] +
+        "   (" + p[0] + "→" + sDiv(p[0]) + ", " + p[1] + "→" + sDiv(p[1]) + ")"));
+    });
+    $("amMsg").innerHTML = "친화수는 <b>매우 드뭅니다</b>. 1300 이하에 " + found.length + "쌍뿐입니다.";
+  });
+  $("amChain").addEventListener("click", function(){
+    var out = $("amOut"); clear(out);
+    var n = 12496, seq=[n];
+    for (var i=0;i<8;i++){
+      n = sDiv(n); seq.push(n);
+      if (n === seq[0]) break;
+    }
+    out.appendChild(ce("div", null, "12496에서 시작해 약수 합을 반복하면"));
+    out.appendChild(ce("div", null, seq.join(" → ")));
+    var d = ce("div", null, "→ " + (seq.length-1) + "개의 수가 고리를 이룹니다 (사교수 사슬)");
+    d.style.cssText = "font-weight:700;color:var(--berry)";
+    out.appendChild(d);
+    $("amMsg").innerHTML = "둘이 아니라 <b>여럿이 돌고 도는</b> 경우도 있습니다. 이런 수를 <b>사교수</b>라고 합니다.";
+  });
+})();
+</script>
+</body>
+</html>
