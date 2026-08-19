@@ -1,0 +1,1564 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>사고력 확률과 통계 5제 · 학생용 문제집</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+<style>
+:root{
+  --bg:#F2F3F1;--paper:#FFFFFF;--ink:#1A1D22;--ink-2:#555A64;--line:#DAD9D3;--rule:#C0BFB7;
+  --sea:#1F5A6E;--clay:#B0492F;--fern:#456B3C;--plum:#6E4173;--gold:#8F7016;
+  --ac:var(--sea);
+  --f-disp:'Gowun Batang','Pretendard Variable',Pretendard,serif;
+  --f-body:'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif;
+  --f-mono:'D2Coding','JetBrains Mono',Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);line-height:1.75;-webkit-font-smoothing:antialiased;
+  background-image:linear-gradient(rgba(0,0,0,.02) 1px,transparent 1px);background-size:100% 30px}
+.wrap{max-width:840px;margin:0 auto;padding:0 20px}
+header{padding:52px 0 30px;border-bottom:3px double var(--rule)}
+.kicker{font-family:var(--f-mono);font-size:12px;letter-spacing:.24em;color:var(--clay);margin:0 0 12px}
+header h1{font-family:var(--f-disp);font-weight:700;font-size:clamp(30px,6vw,46px);line-height:1.24;margin:0 0 12px;letter-spacing:-.02em}
+header .sub{color:var(--ink-2);margin:0 0 20px;max-width:580px;font-size:15.5px}
+.metarow{display:flex;flex-wrap:wrap;gap:8px}
+.tag{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);background:var(--paper);border-radius:4px;padding:5px 11px;color:var(--ink-2)}
+.tag b{color:var(--ink)}
+.howbox{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:20px 22px;margin:26px 0}
+.howbox h2{font-family:var(--f-disp);font-weight:700;font-size:17px;margin:0 0 12px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media(max-width:700px){.steps{grid-template-columns:1fr 1fr}}
+.steps div{font-size:13.6px;color:var(--ink-2)}
+.steps div b{display:block;font-family:var(--f-mono);font-size:11.5px;color:var(--clay);letter-spacing:.1em;margin-bottom:3px}
+.steps div span{color:var(--ink);font-weight:600;display:block;margin-bottom:2px}
+nav.toc{position:sticky;top:0;z-index:40;background:rgba(242,243,241,.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);margin-bottom:32px}
+.tocrow{display:flex;gap:5px;overflow-x:auto;padding:10px 0;scrollbar-width:none}
+.tocrow::-webkit-scrollbar{display:none}
+.tocbtn{flex:0 0 auto;border:1px solid var(--line);background:var(--paper);color:var(--ink-2);cursor:pointer;
+  font-family:var(--f-body);font-size:13.4px;font-weight:600;padding:7px 14px;border-radius:5px;white-space:nowrap;transition:.15s}
+.tocbtn:hover{border-color:var(--ink-2);color:var(--ink)}
+.tocbtn.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.tocbtn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.set{display:none;padding-bottom:70px;animation:fade .3s ease}
+.set.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+.sethead{border-left:5px solid var(--ac);padding-left:18px;margin-bottom:26px}
+.sethead .no{font-family:var(--f-mono);font-size:12px;letter-spacing:.2em;color:var(--ac);margin:0}
+.sethead h2{font-family:var(--f-disp);font-weight:700;font-size:clamp(23px,4.6vw,32px);margin:5px 0 8px;line-height:1.3}
+.sethead .from{font-size:13.4px;color:var(--ink-2);margin:0}
+.sethead .from em{font-style:normal;color:var(--ink);font-weight:600}
+.badges{display:flex;flex-wrap:wrap;gap:7px;margin:14px 0 0}
+.bd{font-family:var(--f-mono);font-size:11.5px;padding:4px 10px;border-radius:99px;border:1px solid var(--line);background:var(--paper);color:var(--ink-2)}
+.bd.lv{border-color:var(--ac);color:var(--ac)}
+.q{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:22px 24px;margin-bottom:18px}
+.qh{display:flex;align-items:center;gap:11px;margin-bottom:13px;flex-wrap:wrap}
+.qno{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.1em;color:#fff;background:var(--ac);border-radius:4px;padding:3px 10px}
+.qkind{font-size:12.5px;color:var(--ink-2);border:1px dashed var(--line);border-radius:4px;padding:2px 9px}
+.qkind.talk{color:var(--clay);border-color:#E3C8BE}
+.q p{margin:0 0 12px;font-size:15.6px}
+.q p:last-child{margin-bottom:0}
+.q ul,.q ol{margin:0 0 12px;padding-left:22px;font-size:15.4px}
+.q li{margin-bottom:6px}
+.given{background:#FAF9F3;border-left:3px solid var(--gold);border-radius:0 5px 5px 0;padding:12px 16px;margin:0 0 14px;font-size:14.8px}
+.given b{color:var(--gold)}
+.talkbox{background:#FCF4F0;border:1px solid #E9D1C6;border-radius:6px;padding:16px 18px;margin-top:14px}
+.talkbox h4{font-family:var(--f-disp);font-weight:700;font-size:15px;margin:0 0 9px;color:var(--clay)}
+.talkbox ol{margin:0;padding-left:20px;font-size:14.8px}
+.talkbox li{margin-bottom:7px;color:#4A3026}
+.talkbox li:last-child{margin-bottom:0}
+details.hint{margin-top:14px;border-top:1px dashed var(--line);padding-top:12px}
+details.hint summary{cursor:pointer;font-size:13.6px;color:var(--ink-2);font-weight:600;list-style:none;display:inline-flex;gap:7px;align-items:center}
+details.hint summary::-webkit-details-marker{display:none}
+details.hint summary::before{content:"\25B8";color:var(--ac);transition:.2s}
+details.hint[open] summary::before{transform:rotate(90deg)}
+details.hint .body{font-size:14.4px;color:var(--ink-2);padding:10px 0 0 16px}
+.ansrow{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-top:14px}
+.ansrow label{font-family:var(--f-mono);font-size:12px;color:var(--ink-2)}
+.ansrow input{flex:1;min-width:150px;border:1px solid var(--line);border-radius:5px;padding:9px 12px;
+  font-family:var(--f-body);font-size:15px;background:#FCFCFA;color:var(--ink)}
+.ansrow input:focus{outline:2px solid var(--ac);outline-offset:1px}
+.chk{border:1px solid var(--ac);background:var(--paper);color:var(--ac);border-radius:5px;padding:9px 16px;
+  font-size:13.6px;font-weight:700;cursor:pointer;font-family:var(--f-body)}
+.chk:hover{background:var(--ac);color:#fff}
+.verdict{font-size:13.8px;font-weight:700}
+.verdict.ok{color:var(--fern)}
+.verdict.no{color:var(--clay)}
+textarea.memo{width:100%;border:1px solid var(--line);border-radius:5px;padding:11px 13px;margin-top:12px;
+  font-family:var(--f-body);font-size:14.6px;background:#FCFCFA;color:var(--ink);resize:vertical;line-height:1.7}
+textarea.memo:focus{outline:2px solid var(--ac);outline-offset:1px}
+.lab{background:var(--paper);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-bottom:18px}
+.labbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;background:#F6F5F0;
+  border-bottom:1px solid var(--line);font-family:var(--f-mono);font-size:12px;color:var(--ink-2);flex-wrap:wrap}
+.tools{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.tbtn{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:4px;padding:6px 12px;
+  font-size:12.5px;cursor:pointer;font-family:var(--f-body);font-weight:600}
+.tbtn:hover{border-color:var(--ac);color:var(--ac)}
+.tbtn.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.tbtn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.labin{padding:18px}
+.labfoot{padding:11px 16px;border-top:1px solid var(--line);background:#FAFAF6;font-size:13.4px;color:var(--ink-2)}
+.labfoot b{color:var(--ink)}
+input[type=range]{accent-color:var(--ac)}
+input[type=number]{padding:6px 9px;border:1px solid var(--line);border-radius:4px;font-family:var(--f-mono);background:#FCFCFA;color:var(--ink)}
+table.dt{width:100%;border-collapse:collapse;font-family:var(--f-mono);font-size:13px}
+table.dt th,table.dt td{border:1px solid var(--line);padding:6px 9px;text-align:center}
+table.dt th{background:#F1F0EB;font-weight:600}
+td.hi{background:#FAF6E2;color:var(--gold);font-weight:700}
+td.ok{background:#EDF3EB;color:var(--fern);font-weight:700}
+td.no{background:#FBEDE8;color:var(--clay);font-weight:700}
+.tbscroll{overflow-x:auto}
+svg{max-width:100%;height:auto;display:block;margin:0 auto}
+.people{display:flex;flex-wrap:wrap;gap:3px;justify-content:center}
+.pp{width:26px;height:26px;border-radius:5px;border:1px solid var(--line);background:#FAF9F5;
+  display:grid;place-items:center;font-family:var(--f-mono);font-size:9.5px;color:var(--ink-2)}
+.pp.dup{background:var(--clay);color:#fff;border-color:var(--clay);font-weight:700}
+.coins{display:flex;flex-wrap:wrap;gap:3px;justify-content:center;font-family:var(--f-mono);font-size:12px}
+.cn{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line)}
+.cn.h{background:#E7EFF3;color:var(--sea)}
+.cn.t{background:#FBEDE8;color:var(--clay)}
+.cn.run{outline:2px solid var(--gold)}
+.bracket{display:flex;flex-direction:column;gap:5px;font-family:var(--f-mono);font-size:13px}
+.brow{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.bcell{border:1px solid var(--line);border-radius:5px;padding:4px 10px;background:#FAF9F5}
+.bcell.a{background:#E7EFF3;color:var(--sea);font-weight:700}
+.bcell.b{background:#FBEDE8;color:var(--clay);font-weight:700}
+.grid100{display:grid;grid-template-columns:repeat(20,1fr);gap:2px;max-width:520px;margin:0 auto}
+.g1{aspect-ratio:1;border-radius:2px;background:#E4E2DC}
+.g1.tp{background:var(--clay)}
+.g1.fp{background:var(--gold)}
+.g1.well{background:#EDEDE7}
+.footnote{font-size:12.6px;color:var(--ink-2);border-top:1px solid var(--line);padding-top:14px;margin-top:26px}
+.footnote b{color:var(--ink)}
+footer{border-top:3px double var(--rule);padding:26px 0 60px;color:var(--ink-2);font-size:13px;text-align:center}
+.prm{display:flex;justify-content:space-between;gap:10px;margin-top:34px}
+.prm button{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:5px;padding:11px 20px;
+  font-size:14px;font-weight:600;cursor:pointer;font-family:var(--f-body)}
+.prm button:hover{border-color:var(--ac);color:var(--ac)}
+.prm button:disabled{opacity:.35;cursor:default}
+@media print{
+  nav.toc,.prm,.chk,.tbtn{display:none}
+  .set{display:block !important;page-break-after:always}
+  body{background:#fff}
+  details.hint{display:none}
+}
+@media (prefers-reduced-motion: reduce){*{animation-duration:.001ms !important;transition-duration:.001ms !important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <p class="kicker">PROBABILITY &amp; STATISTICS · WORKBOOK</p>
+    <h1>느낌은 자주<br>확률을 배신한다</h1>
+    <p class="sub">"설마 그럴 리가"라고 생각한 일이 실제로는 절반 넘게 일어납니다. 다섯 문제 모두 수학사와 실제 사건에 이름을 남긴 고전이며, <b>직관이 어디서 어떻게 어긋나는지</b>를 숫자로 확인합니다.</p>
+    <div class="metarow">
+      <span class="tag">대상 <b>초등 고학년 ~ 중등</b></span>
+      <span class="tag">세트 <b>5개</b></span>
+      <span class="tag">문항 <b>25개</b> (개별 20 · 토론 5)</span>
+      <span class="tag">권장 <b>세트당 25~35분</b></span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="howbox">
+    <h2>이 문제집을 푸는 방법</h2>
+    <div class="steps">
+      <div><b>STEP 1</b><span>먼저 예상</span>계산 전에 감으로 답을 적어 둡니다.</div>
+      <div><b>STEP 2</b><span>직접 실험</span>시뮬레이터를 돌려 결과를 봅니다.</div>
+      <div><b>STEP 3</b><span>짝과 토론</span>붉은 토론 문제를 서로 설득해 봅니다.</div>
+      <div><b>STEP 4</b><span>차이 설명</span>예상과 결과가 왜 달랐는지 씁니다.</div>
+    </div>
+  </div>
+</div>
+
+<nav class="toc">
+  <div class="wrap tocrow">
+    <button class="tocbtn on" data-s="s1">01 · 생일 문제</button>
+    <button class="tocbtn" data-s="s2">02 · 판돈 나누기</button>
+    <button class="tocbtn" data-s="s3">03 · 도박사의 오류</button>
+    <button class="tocbtn" data-s="s4">04 · 검사의 함정</button>
+    <button class="tocbtn" data-s="s5">05 · 심슨의 역설</button>
+  </div>
+</nav>
+
+<main class="wrap">
+<!-- ============ SET 1 ============ -->
+<section class="set on" id="s1" data-ac="#1F5A6E">
+  <div class="sethead">
+    <p class="no">SET 01</p>
+    <h2>스물세 명만 모여도 생일이 겹친다</h2>
+    <p class="from">원전 · <em>생일 문제(Birthday Problem)</em> — 직관과 계산이 가장 크게 어긋나는 확률 문제</p>
+    <div class="badges"><span class="bd lv">난이도 ★★☆</span><span class="bd">여사건</span><span class="bd">쌍의 개수</span><span class="bd">직관 깨기</span></div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">1-1</span><span class="qkind">예상</span></div>
+    <div class="given"><b>질문</b> — 한 교실에 사람이 몇 명 모이면, <b>생일이 같은 두 사람</b>이 있을 확률이 <b>50%를 넘을까요?</b> (1년은 365일로 봅니다.)</div>
+    <p>계산하기 전에 <b>먼저 감으로 답을 적어</b> 보세요. 대부분 100명이 넘는 수를 말합니다.</p>
+    <textarea class="memo" rows="2" placeholder="내 예상: 약 ___명"></textarea>
+    <p style="margin-top:12px">이제 아래에서 인원을 바꿔 가며 확률을 확인하세요.</p>
+    <div class="lab">
+      <div class="labbar"><span>birthday-probability</span>
+        <div class="tools">
+          <label style="font-family:var(--f-mono);font-size:12px">인원</label>
+          <input id="bpN" type="range" min="2" max="80" value="23" style="width:190px" />
+          <span id="bpV" style="font-family:var(--f-mono);font-weight:700">23</span>
+        </div>
+      </div>
+      <div class="labin">
+        <svg id="bpSvg" viewBox="0 0 620 240" role="img" aria-label="인원에 따른 확률 그래프"></svg>
+        <div id="bpOut" style="font-family:var(--f-mono);font-size:14px;text-align:center;margin-top:12px"></div>
+      </div>
+      <div class="labfoot" id="bpMsg"></div>
+    </div>
+    <div class="ansrow">
+      <label>50%를 처음 넘는 인원</label>
+      <input id="a11" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a11" data-v="23" data-t="맞습니다. 23명에서 50.73%가 되어 처음 절반을 넘습니다.">확인</button>
+      <span class="verdict" id="v11"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">1-2</span><span class="qkind">추론</span></div>
+    <p>"생일이 같은 사람이 있을 확률"은 바로 구하기 어렵습니다. <b>반대</b>를 먼저 구해 봅시다.</p>
+    <div class="given">
+      <b>모두 생일이 다를 확률</b><br>
+      첫 번째 사람 : 아무 날이나 → 365/365<br>
+      두 번째 사람 : 첫 사람과 달라야 → ___/365<br>
+      세 번째 사람 : 앞 두 사람과 달라야 → ___/365<br>
+      ⋮<br>
+      23번째 사람 : ___/365<br><br>
+      이것을 모두 <b>곱한</b> 뒤, <b>1에서 빼면</b> 답입니다.
+    </div>
+    <div class="ansrow">
+      <label>23명이 모두 다를 확률 (소수점 둘째 자리까지 %)</label>
+      <input id="a12" type="text" placeholder="예: 49.27" />
+      <button class="chk" data-a="a12" data-v="49.27|49.27%" data-t="맞습니다. 1 − 0.4927 = 0.5073 이 답입니다.">확인</button>
+      <span class="verdict" id="v12"></span>
+    </div>
+    <details class="hint"><summary>왜 반대를 구하나</summary><div class="body">"적어도 한 쌍"을 직접 세려면 한 쌍, 두 쌍, 세 쌍… 경우가 너무 많아집니다. 반면 "모두 다르다"는 <b>한 가지 상황</b>뿐이라 훨씬 간단합니다. 이런 방법을 <b>여사건</b>이라고 합니다.</div></details>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">1-3</span><span class="qkind">발견</span></div>
+    <p>왜 그렇게 확률이 높을까요? <b>비교하는 쌍의 개수</b>를 세어 보세요.</p>
+    <div class="lab">
+      <div class="labbar"><span>counting-pairs</span>
+        <div class="tools">
+          <label style="font-family:var(--f-mono);font-size:12px">인원</label>
+          <input id="cpN" type="number" value="23" min="2" max="60" style="width:70px" />
+          <button class="tbtn" id="cpGo">쌍의 개수</button>
+          <button class="tbtn" id="cpCmp">"나와 같은 사람"과 비교</button>
+        </div>
+      </div>
+      <div class="labin"><div id="cpOut" style="font-family:var(--f-mono);font-size:13.6px;line-height:2"></div></div>
+      <div class="labfoot" id="cpMsg"></div>
+    </div>
+    <div class="ansrow">
+      <label>23명이 만드는 쌍의 개수</label>
+      <input id="a13" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a13" data-v="253" data-t="맞습니다. 23×22÷2 = 253쌍입니다. 앞 단원의 악수 문제와 같은 계산입니다.">확인</button>
+      <span class="verdict" id="v13"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">1-4</span><span class="qkind talk">토론</span></div>
+    <div class="talkbox">
+      <h4>모둠에서 이야기해 봅시다</h4>
+      <ol>
+        <li>우리가 착각하는 이유는 <b>질문을 바꿔 읽기</b> 때문입니다. "<b>나와</b> 생일이 같은 사람이 있을 확률"과 "<b>아무 두 사람</b>의 생일이 같을 확률"은 얼마나 다를까요? 위 도구로 비교해 보세요.</li>
+        <li>앞 단원에서 <b>비둘기집 원리</b>로 "366명이면 반드시 같은 생일이 있다"를 배웠습니다. 그런데 여기서는 23명에 50%입니다. <b>반드시</b>와 <b>확률</b>은 어떻게 다른가요?</li>
+        <li>2014년 월드컵에서 32개 팀은 각각 <b>23명</b>이었습니다. 그중 <b>16개 팀</b>에서 생일이 같은 선수가 있었습니다. 이 결과는 계산과 잘 맞나요?</li>
+        <li>우리 반에서 직접 조사해 봅시다. 인원이 몇 명인가요? 겹칠 확률은 얼마인가요? 실제로 겹치나요? 한 번의 결과로 이론을 판단할 수 있을까요?</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">1-5</span><span class="qkind">실험</span></div>
+    <p>직접 <b>수천 번</b> 실험해 이론값과 비교해 보세요.</p>
+    <div class="lab">
+      <div class="labbar"><span>simulation</span>
+        <div class="tools">
+          <label style="font-family:var(--f-mono);font-size:12px">인원</label>
+          <input id="smK" type="number" value="23" min="2" max="80" style="width:66px" />
+          <label style="font-family:var(--f-mono);font-size:12px">반복</label>
+          <input id="smN" type="number" value="5000" min="100" max="100000" style="width:88px" />
+          <button class="tbtn" id="smGo">실행</button>
+          <button class="tbtn" id="smOne">한 교실만 보기</button>
+        </div>
+      </div>
+      <div class="labin">
+        <div class="people" id="smRoom"></div>
+        <div id="smOut" style="font-family:var(--f-mono);font-size:13.6px;line-height:1.9;margin-top:14px"></div>
+      </div>
+      <div class="labfoot" id="smMsg"></div>
+    </div>
+    <div class="ansrow">
+      <label>70명이면 확률은 약 몇 %</label>
+      <input id="a15" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a15" data-v="99.9|99.92|100" data-t="맞습니다. 70명이면 99.9%로 사실상 확실합니다.">확인</button>
+      <span class="verdict" id="v15"></span>
+    </div>
+  </div>
+
+  <p class="footnote"><b>출처</b> — 1939년 리하르트 폰 미제스가 처음 다뤘고, 이후 확률 교육의 대표 문제가 되었습니다. 컴퓨터 보안에서 <b>생일 공격(birthday attack)</b>이라는 이름으로 실제로 쓰이며, 해시 함수의 안전성을 평가하는 기준이 됩니다.</p>
+</section>
+
+<!-- ============ SET 2 ============ -->
+<section class="set" id="s2" data-ac="#6E4173">
+  <div class="sethead">
+    <p class="no">SET 02</p>
+    <h2>중간에 그만둔 내기, 판돈은 어떻게 나눌까</h2>
+    <p class="from">원전 · <em>점수 나누기 문제</em> — 파스칼과 페르마의 1654년 편지, <b>확률론이 태어난 순간</b></p>
+    <div class="badges"><span class="bd lv">난이도 ★★☆</span><span class="bd">기댓값</span><span class="bd">경우 나열</span><span class="bd">공정함</span></div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">2-1</span><span class="qkind">탐색</span></div>
+    <div class="given"><b>상황</b> — 두 사람이 판돈을 걸고 내기를 합니다. <b>먼저 3판을 이기면</b> 판돈을 모두 가집니다. 실력은 똑같아 매 판 이길 확률은 반반입니다.<br><br>
+      그런데 <b>A가 2승, B가 1승</b>인 상태에서 사정이 생겨 <b>중단</b>했습니다. 판돈을 어떻게 나눠야 공정할까요?</div>
+    <p>먼저 자기 생각을 적어 보세요. 그런 다음 <b>남은 판을 모두 따져</b> 확인합니다.</p>
+    <textarea class="memo" rows="2" placeholder="내 생각: A : B = ___ : ___ 인 이유는"></textarea>
+    <div class="lab" style="margin-top:14px">
+      <div class="labbar"><span>remaining-games</span>
+        <div class="tools">
+          <button class="tbtn" id="rgStep">한 경우씩 펼치기</button>
+          <button class="tbtn" id="rgAll">전부 펼치기</button>
+          <button class="tbtn" id="rgReset">접기</button>
+        </div>
+      </div>
+      <div class="labin">
+        <div class="bracket" id="rgBox"></div>
+        <div id="rgOut" style="font-family:var(--f-mono);font-size:14px;text-align:center;margin-top:14px"></div>
+      </div>
+      <div class="labfoot" id="rgMsg">남은 판을 두 번 더 친다고 생각하면 경우는 몇 가지일까요?</div>
+    </div>
+    <div class="ansrow">
+      <label>판돈을 나누는 비 (A : B)</label>
+      <input id="a21" type="text" placeholder="예: 2:1" />
+      <button class="chk" data-a="a21" data-v="3:1|3 : 1" data-t="맞습니다. A가 이길 확률이 3/4이므로 3 : 1 입니다.">확인</button>
+      <span class="verdict" id="v21"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">2-2</span><span class="qkind">추론</span></div>
+    <p>왜 <b>2 : 1</b>이 아닐까요? 이긴 판 수는 분명 2 대 1인데 말입니다.</p>
+    <ul>
+      <li>판돈은 <b>이미 이긴 판</b>이 아니라 <b>앞으로 이길 가능성</b>에 따라 나눠야 공정합니다.</li>
+      <li>A는 <b>한 판만</b> 더 이기면 되지만, B는 <b>두 판을 연달아</b> 이겨야 합니다.</li>
+      <li>B가 이기려면 남은 두 판을 모두 가져가야 하므로 그 확률은 ___입니다.</li>
+    </ul>
+    <div class="given">
+      <b>중요한 발견</b> — 남은 판을 <b>실제로 치지 않아도</b> 됩니다. B가 첫 판을 이기면 게임이 계속되고, A가 첫 판을 이기면 거기서 끝납니다. 그런데 <b>끝나는 경우까지 두 판을 다 친 것으로 세면</b> 계산이 훨씬 간단해집니다. 이것이 파스칼의 아이디어입니다.
+    </div>
+    <div class="ansrow">
+      <label>B가 최종 우승할 확률</label>
+      <input id="a22" type="text" placeholder="분수로" />
+      <button class="chk" data-a="a22" data-v="1/4|4분의1|25%" data-t="맞습니다. 두 판을 연달아 이겨야 하므로 1/2 × 1/2 = 1/4 입니다.">확인</button>
+      <span class="verdict" id="v22"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">2-3</span><span class="qkind">확장</span></div>
+    <p>여러 상황에서 공정한 분배를 구해 보세요. 두 사람이 <b>각각 몇 승을 더</b> 해야 하는지가 핵심입니다.</p>
+    <div class="lab">
+      <div class="labbar"><span>fair-division</span>
+        <div class="tools">
+          <label style="font-family:var(--f-mono);font-size:12px">목표 승수</label>
+          <input id="fdT" type="number" value="3" min="1" max="6" style="width:56px" />
+          <label style="font-family:var(--f-mono);font-size:12px">A 현재</label>
+          <input id="fdA" type="number" value="2" min="0" max="5" style="width:56px" />
+          <label style="font-family:var(--f-mono);font-size:12px">B 현재</label>
+          <input id="fdB" type="number" value="1" min="0" max="5" style="width:56px" />
+          <button class="tbtn" id="fdGo">계산</button>
+          <button class="tbtn" id="fdTable">표로 한꺼번에</button>
+        </div>
+      </div>
+      <div class="labin"><div id="fdOut" style="font-family:var(--f-mono);font-size:13.4px;line-height:1.9"></div></div>
+      <div class="labfoot" id="fdMsg"></div>
+    </div>
+    <div class="ansrow">
+      <label>3승제에서 A 2승 B 0승이면 A : B</label>
+      <input id="a23" type="text" placeholder="예: 5:3" />
+      <button class="chk" data-a="a23" data-v="7:1|7 : 1" data-t="맞습니다. A가 이길 확률 7/8 이므로 7 : 1 입니다.">확인</button>
+      <span class="verdict" id="v23"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">2-4</span><span class="qkind talk">토론</span></div>
+    <div class="talkbox">
+      <h4>모둠에서 이야기해 봅시다</h4>
+      <ol>
+        <li>이 문제 이전에는 "이긴 판 수 비율"로 나누는 것이 상식이었습니다. 파스칼과 페르마는 왜 그것이 <b>불공정</b>하다고 보았을까요? 만약 A 2승 B 0승에서 중단했다면 2 : 0으로 나눠 B는 <b>한 푼도 못 받는 것</b>이 옳을까요?</li>
+        <li>이 문제를 풀며 <b>기댓값</b>이라는 개념이 생겼습니다. "지금 내 몫은 얼마인가"를 <b>미래의 가능성</b>으로 계산하는 방식입니다. 보험이나 복권도 같은 방식으로 계산됩니다. 왜 그럴까요?</li>
+        <li>실력이 <b>반반이 아니라면</b> 어떻게 될까요? A가 매 판 70%로 이긴다면 분배가 어떻게 달라질지 예상해 보세요.</li>
+        <li>남은 판을 "끝났는데도 계속 친 것으로 세는" 방법이 이상하게 느껴지나요? 그래도 <b>답이 맞는 이유</b>를 설명해 보세요.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">2-5</span><span class="qkind">실험</span></div>
+    <p>정말 3 : 1이 맞는지 <b>실제로 수천 번</b> 게임을 끝까지 진행해 확인하세요.</p>
+    <div class="lab">
+      <div class="labbar"><span>play-it-out</span>
+        <div class="tools">
+          <label style="font-family:var(--f-mono);font-size:12px">반복</label>
+          <input id="pnN" type="number" value="10000" min="100" max="200000" style="width:88px" />
+          <button class="tbtn" id="pnGo">A 2승 B 1승에서 이어서 진행</button>
+        </div>
+      </div>
+      <div class="labin"><div id="pnOut" style="font-family:var(--f-mono);font-size:13.6px;line-height:1.9"></div></div>
+      <div class="labfoot" id="pnMsg"></div>
+    </div>
+    <div class="ansrow">
+      <label>3승제, A 2승 B 2승이면 A : B</label>
+      <input id="a25" type="text" placeholder="예: 1:1" />
+      <button class="chk" data-a="a25" data-v="1:1|1 : 1" data-t="맞습니다. 남은 한 판으로 결정되므로 반반입니다.">확인</button>
+      <span class="verdict" id="v25"></span>
+    </div>
+  </div>
+
+  <p class="footnote"><b>출처</b> — 1654년 <b>블레즈 파스칼</b>과 <b>피에르 드 페르마</b>가 주고받은 편지에서 해결되었습니다. 도박사 슈발리에 드 메레의 질문에서 시작된 이 문제가 <b>확률론의 출발점</b>이 되었으며, 여기서 <b>기댓값</b> 개념이 처음 등장했습니다.</p>
+</section>
+<!-- ============ SET 3 ============ -->
+<section class="set" id="s3" data-ac="#B0492F">
+  <div class="sethead">
+    <p class="no">SET 03</p>
+    <h2>스물여섯 번 연속 검정이 나온 밤</h2>
+    <p class="from">원전 · <em>도박사의 오류</em> — 1913년 8월 18일 몬테카를로 카지노에서 실제로 일어난 사건</p>
+    <div class="badges"><span class="bd lv">난이도 ★★☆</span><span class="bd">독립 시행</span><span class="bd">큰 수의 법칙</span><span class="bd">무작위 착각</span></div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">3-1</span><span class="qkind">탐색</span></div>
+    <div class="given"><b>실제 사건</b> — 1913년 몬테카를로 카지노의 룰렛에서 <b>검정이 26번 연속</b> 나왔습니다. 15번쯤부터 사람들은 "이제 빨강이 나올 때가 됐다"며 빨강에 돈을 걸기 시작했고, 계속 잃었습니다. 그날 밤 카지노는 엄청난 돈을 벌었습니다.</div>
+    <p>동전을 던져 <b>연속으로 같은 면</b>이 나오는 일이 얼마나 드문지 확인해 보세요.</p>
+    <div class="lab">
+      <div class="labbar"><span>coin-runs</span>
+        <div class="tools">
+          <button class="tbtn" id="cfFlip">한 번 던지기</button>
+          <button class="tbtn" id="cfTen">10번 던지기</button>
+          <button class="tbtn" id="cfHundred">100번 던지기</button>
+          <button class="tbtn" id="cfReset">지우기</button>
+        </div>
+      </div>
+      <div class="labin">
+        <div class="coins" id="cfBox"></div>
+        <div id="cfOut" style="font-family:var(--f-mono);font-size:13.4px;text-align:center;margin-top:14px"></div>
+      </div>
+      <div class="labfoot" id="cfMsg">100번 던지면 몇 연속까지 나올까요? 먼저 예상해 보세요.</div>
+    </div>
+    <div class="ansrow">
+      <label>동전이 26번 연속 같은 면일 확률의 분모 (1/□)</label>
+      <input id="a31" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a31" data-v="67108864|2^26" data-t="맞습니다. 2^26 = 67,108,864 분의 1 입니다.">확인</button>
+      <span class="verdict" id="v31"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">3-2</span><span class="qkind">핵심</span></div>
+    <div class="given"><b>결정적인 질문</b> — 이미 <b>25번 연속</b> 검정이 나왔습니다. 그렇다면 <b>26번째</b>에 빨강이 나올 확률은 높아졌을까요?</div>
+    <p>아래에서 두 확률을 <b>구별</b>해 보세요. 이 둘을 섞는 것이 도박사의 오류입니다.</p>
+    <div class="lab">
+      <div class="labbar"><span>two-questions</span>
+        <div class="tools">
+          <button class="tbtn on" id="tqBefore">① 앞으로 26연속 나올 확률</button>
+          <button class="tbtn" id="tqAfter">② 25연속 뒤 다음도 같을 확률</button>
+        </div>
+      </div>
+      <div class="labin"><div id="tqOut" style="font-size:14.8px;line-height:1.95"></div></div>
+      <div class="labfoot" id="tqMsg"></div>
+    </div>
+    <div class="ansrow">
+      <label>25번 연속 뒤, 다음도 검정일 확률</label>
+      <input id="a32" type="text" placeholder="분수로" />
+      <button class="chk" data-a="a32" data-v="1/2|2분의1|50%" data-t="맞습니다. 동전과 룰렛은 기억이 없습니다. 항상 반반입니다.">확인</button>
+      <span class="verdict" id="v32"></span>
+    </div>
+    <details class="hint"><summary>전수 확인해 보기</summary><div class="body">앞의 3번이 모두 앞면인 경우를 <b>전부</b> 적어 보세요. 그중에서 4번째가 앞면인 경우와 뒷면인 경우가 <b>몇 가지씩</b>인가요? 아래 도구에서 확인할 수 있습니다.</div></details>
+    <div class="lab" style="margin-top:14px">
+      <div class="labbar"><span>independence-check</span>
+        <div class="tools">
+          <label style="font-family:var(--f-mono);font-size:12px">앞의 연속 횟수</label>
+          <input id="icK" type="range" min="1" max="10" value="3" style="width:140px" />
+          <span id="icV" style="font-family:var(--f-mono);font-weight:700">3</span>
+        </div>
+      </div>
+      <div class="labin"><div id="icOut" style="font-family:var(--f-mono);font-size:13.4px;line-height:1.9"></div></div>
+      <div class="labfoot" id="icMsg"></div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">3-3</span><span class="qkind">실험</span></div>
+    <p>"횟수가 많아지면 균형이 맞는다"는 말은 맞을까요? <b>비율</b>과 <b>개수 차이</b>를 나눠서 보세요.</p>
+    <div class="lab">
+      <div class="labbar"><span>law-of-large-numbers</span>
+        <div class="tools">
+          <button class="tbtn" id="lnGo">100만 번 던지기</button>
+          <button class="tbtn" id="lnReset">지우기</button>
+        </div>
+      </div>
+      <div class="labin">
+        <div class="tbscroll"><table class="dt" id="lnTable"></table></div>
+        <svg id="lnSvg" viewBox="0 0 620 200" role="img" aria-label="비율 수렴 그래프" style="margin-top:14px"></svg>
+      </div>
+      <div class="labfoot" id="lnMsg"></div>
+    </div>
+    <div class="ansrow">
+      <label>횟수가 늘면 앞면과 뒷면의 개수 차이는?</label>
+      <input id="a33" type="text" placeholder="줄어든다 / 커질 수 있다" />
+      <button class="chk" data-a="a33" data-v="커질수있다|커진다|커질수도있다|늘어난다" data-t="맞습니다. 비율은 0.5에 가까워지지만 개수 차이는 오히려 커질 수 있습니다.">확인</button>
+      <span class="verdict" id="v33"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">3-4</span><span class="qkind talk">토론</span></div>
+    <div class="talkbox">
+      <h4>모둠에서 이야기해 봅시다</h4>
+      <ol>
+        <li>"큰 수의 법칙"을 사람들은 <b>"모자란 쪽이 나중에 더 나와서 균형을 맞춘다"</b>고 오해합니다. 실제로는 무엇이 일어나는 걸까요? 위 실험의 <b>비율</b>과 <b>개수 차이</b>를 근거로 설명하세요.</li>
+        <li>종이에 각자 <b>동전 100번 던진 결과처럼 보이는 것</b>을 상상해서 적어 보세요. 그런 다음 진짜로 100번 던진 결과와 비교하세요. 무엇이 다른가요?</li>
+        <li>로또에서 <b>"오래 안 나온 번호"</b>를 고르는 사람이 많습니다. 이것은 도박사의 오류일까요? 만약 오류라면 왜 사람들은 계속 그럴까요?</li>
+        <li>반대로 <b>"잘 나오는 번호를 계속 고른다"</b>는 사람도 있습니다(뜨거운 손 믿음). 이것도 오류일까요? 동전과 <b>농구 슛</b>은 같을까요, 다를까요?</li>
+      </ol>
+    </div>
+    <div class="lab" style="margin-top:16px">
+      <div class="labbar"><span>fake-vs-real</span>
+        <div class="tools">
+          <button class="tbtn" id="frGo">진짜 무작위 100번의 최대 연속 조사</button>
+        </div>
+      </div>
+      <div class="labin"><div id="frOut" style="font-family:var(--f-mono);font-size:13.4px;line-height:1.9"></div></div>
+      <div class="labfoot" id="frMsg"></div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">3-5</span><span class="qkind">정리</span></div>
+    <p>도박사의 오류를 한 문장으로 정리해 보세요. <b>"기억이 없다"</b>는 표현을 꼭 넣어 쓰세요.</p>
+    <textarea class="memo" rows="3" placeholder="도박사의 오류란: "></textarea>
+    <div class="ansrow">
+      <label>100번 던져 5연속 이상이 나올 확률은 대략</label>
+      <input id="a35" type="text" placeholder="숫자만 (%)" />
+      <button class="chk" data-a="a35" data-v="97|96|98|95" data-t="맞습니다. 약 97%로 거의 반드시 나옵니다. 사람들은 이를 이상하게 느낍니다.">확인</button>
+      <span class="verdict" id="v35"></span>
+    </div>
+  </div>
+
+  <p class="footnote"><b>출처</b> — <b>1913년 8월 18일</b> 모나코 몬테카를로 카지노에서 룰렛의 검정이 26번 연속 나온 실제 사건에서 이름이 붙어 <b>몬테카를로 오류</b>라고도 합니다. 큰 수의 법칙은 <b>야코프 베르누이</b>가 1713년 『추측술』에서 증명했습니다.</p>
+</section>
+
+<!-- ============ SET 4 ============ -->
+<section class="set" id="s4" data-ac="#456B3C">
+  <div class="sethead">
+    <p class="no">SET 04</p>
+    <h2>99% 정확한 검사에서 양성이 나왔다면</h2>
+    <p class="from">원전 · <em>조건부 확률과 베이즈 정리</em> — 의사도 자주 틀리는 문제 (Gigerenzer, 1998 연구)</p>
+    <div class="badges"><span class="bd lv">난이도 ★★★</span><span class="bd">조건부 확률</span><span class="bd">자연빈도</span><span class="bd">기저율</span></div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">4-1</span><span class="qkind">예상</span></div>
+    <div class="given"><b>상황</b> — 어떤 병은 <b>1000명 중 1명</b>이 걸립니다(0.1%). 검사의 성능은 이렇습니다.<br>
+      · 병에 걸린 사람을 <b>양성</b>으로 판정 : <b>99%</b><br>
+      · 건강한 사람을 <b>음성</b>으로 판정 : <b>95%</b><br><br>
+      당신이 검사를 받았는데 <b>양성</b>이 나왔습니다. 실제로 병에 걸렸을 확률은?</div>
+    <p>계산 전에 <b>먼저 감으로</b> 적어 보세요. 대부분 90% 이상이라고 답합니다.</p>
+    <textarea class="memo" rows="2" placeholder="내 예상: 약 ___%"></textarea>
+    <div class="ansrow">
+      <label>양성일 때 실제로 병일 확률 (약 %)</label>
+      <input id="a41" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a41" data-v="2|1.94|약2" data-t="맞습니다! 놀랍게도 약 2%뿐입니다.">확인</button>
+      <span class="verdict" id="v41"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">4-2</span><span class="qkind">추론</span></div>
+    <p>확률로 생각하면 어렵습니다. <b>10만 명이 검사받는다</b>고 사람 수로 세어 보세요.</p>
+    <div class="lab">
+      <div class="labbar"><span>natural-frequency</span>
+        <div class="tools">
+          <button class="tbtn" id="nfStep">한 단계씩 세어 보기</button>
+          <button class="tbtn" id="nfReset">처음부터</button>
+        </div>
+      </div>
+      <div class="labin">
+        <div id="nfOut" style="font-family:var(--f-mono);font-size:13.6px;line-height:2"></div>
+        <div class="grid100" id="nfGrid" style="margin-top:16px"></div>
+        <div id="nfLegend" style="font-family:var(--f-mono);font-size:11.5px;text-align:center;margin-top:10px;color:var(--ink-2)"></div>
+      </div>
+      <div class="labfoot" id="nfMsg">확률(%) 대신 <b>사람 수</b>로 세면 훨씬 쉬워집니다.</div>
+    </div>
+    <div class="ansrow">
+      <label>10만 명 중 양성 판정을 받는 사람 수</label>
+      <input id="a42" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a42" data-v="5094" data-t="맞습니다. 진짜 환자 99명 + 오진 4995명 = 5094명입니다.">확인</button>
+      <span class="verdict" id="v42"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">4-3</span><span class="qkind">발견</span></div>
+    <p>병이 <b>얼마나 흔한지</b>가 결과를 완전히 바꿉니다. 유병률을 움직여 보세요.</p>
+    <div class="lab">
+      <div class="labbar"><span>base-rate</span>
+        <div class="tools">
+          <label style="font-family:var(--f-mono);font-size:12px">유병률</label>
+          <select id="brSel" style="padding:5px 8px;border:1px solid var(--line);border-radius:4px;font-family:var(--f-mono)"></select>
+          <label style="font-family:var(--f-mono);font-size:12px">정확도(건강→음성)</label>
+          <input id="brSpec" type="range" min="80" max="999" value="950" style="width:130px" />
+          <span id="brSpecV" style="font-family:var(--f-mono);font-weight:700">95.0%</span>
+        </div>
+      </div>
+      <div class="labin"><div id="brOut" style="font-family:var(--f-mono);font-size:13.4px;line-height:1.9"></div></div>
+      <div class="labfoot" id="brMsg"></div>
+    </div>
+    <div class="ansrow">
+      <label>유병률이 10%라면 양성일 때 실제 병일 확률(약 %)</label>
+      <input id="a43" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a43" data-v="69|68.75|약69|68" data-t="맞습니다. 같은 검사인데 유병률이 높아지면 68.75%로 크게 올라갑니다.">확인</button>
+      <span class="verdict" id="v43"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">4-4</span><span class="qkind talk">토론</span></div>
+    <div class="talkbox">
+      <h4>모둠에서 이야기해 봅시다</h4>
+      <ol>
+        <li>"검사가 99% 정확하다"는 말과 "양성이면 99% 환자다"는 말은 <b>완전히 다른 뜻</b>입니다. 무엇이 어떻게 다른지 설명해 보세요.</li>
+        <li>독일 연구자 기거렌처가 <b>의사 24명</b>에게 비슷한 문제를 냈더니 정답을 맞힌 사람이 거의 없었습니다. 그런데 <b>사람 수(자연빈도)</b>로 문제를 바꿔 내자 정답률이 크게 올랐습니다. 왜 그럴까요?</li>
+        <li>그렇다면 이런 검사는 <b>쓸모없는 걸까요?</b> 양성이 나온 사람은 검사 전 0.1%에서 2%로 <b>20배</b> 높아진 것입니다. 이 정보는 어떤 쓸모가 있을까요?</li>
+        <li>병원에서는 보통 <b>2차 검사</b>를 합니다. 왜 그럴까요? 아래 도구로 확인해 보세요.</li>
+      </ol>
+    </div>
+    <div class="lab" style="margin-top:16px">
+      <div class="labbar"><span>second-test</span>
+        <div class="tools"><button class="tbtn" id="stGo">2차 검사까지 계산</button></div>
+      </div>
+      <div class="labin"><div id="stOut" style="font-family:var(--f-mono);font-size:13.4px;line-height:1.9"></div></div>
+      <div class="labfoot" id="stMsg"></div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">4-5</span><span class="qkind">적용</span></div>
+    <p>비슷한 상황을 하나 더 봅시다. 어떤 학교에서 <b>1000명 중 5명</b>이 규칙을 어겼습니다. 감시 장치는 어긴 사람의 <b>90%</b>를 잡아내지만, 안 어긴 사람도 <b>10%</b>를 잘못 지목합니다.</p>
+    <div class="ansrow">
+      <label>지목된 사람 중 실제로 어긴 사람의 비율(약 %)</label>
+      <input id="a45" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a45" data-v="4|4.3|약4" data-t="맞습니다. 어긴 사람 4.5명 vs 잘못 지목 99.5명 → 약 4.3%입니다.">확인</button>
+      <span class="verdict" id="v45"></span>
+    </div>
+    <textarea class="memo" rows="2" placeholder="이 결과가 우리에게 주는 교훈: "></textarea>
+  </div>
+
+  <p class="footnote"><b>출처</b> — <b>토머스 베이즈</b>(1701–1761)의 정리에 기반한 문제입니다. 독일의 심리학자 <b>게르트 기거렌처</b>가 1998년 의사들을 대상으로 한 실험에서 대부분이 틀렸으며, <b>확률 대신 사람 수(자연빈도)</b>로 제시하면 정답률이 크게 오른다는 것을 보였습니다.</p>
+</section>
+
+<!-- ============ SET 5 ============ -->
+<section class="set" id="s5" data-ac="#8F7016">
+  <div class="sethead">
+    <p class="no">SET 05</p>
+    <h2>학과마다 여학생이 유리했는데 전체는 반대였다</h2>
+    <p class="from">원전 · <em>심슨의 역설</em> — 1973년 UC 버클리 대학원 입학 데이터 (실제 사례)</p>
+    <div class="badges"><span class="bd lv">난이도 ★★★</span><span class="bd">가중평균</span><span class="bd">숨은 변수</span><span class="bd">통계 해석</span></div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">5-1</span><span class="qkind">탐색</span></div>
+    <div class="given"><b>실제 사건</b> — 1973년 UC 버클리 대학원 입학 결과입니다. 전체 합격률이 남성 <b>44.5%</b>, 여성 <b>30.4%</b>로 나오자 <b>성차별</b>이라는 의심이 제기되었습니다. 대학은 통계학자에게 분석을 맡겼습니다.</div>
+    <p>그런데 <b>학과별로 나눠</b> 보면 전혀 다른 그림이 나옵니다. 아래에서 직접 확인하세요.</p>
+    <div class="lab">
+      <div class="labbar"><span>berkeley-1973</span>
+        <div class="tools">
+          <button class="tbtn on" id="bkTotal">전체만 보기</button>
+          <button class="tbtn" id="bkDept">학과별로 나누기</button>
+        </div>
+      </div>
+      <div class="labin"><div class="tbscroll"><table class="dt" id="bkTable"></table></div></div>
+      <div class="labfoot" id="bkMsg"></div>
+    </div>
+    <div class="ansrow">
+      <label>6개 학과 중 여성 합격률이 더 높은 학과 수</label>
+      <input id="a51" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a51" data-v="4" data-t="맞습니다. A, B, D, F 네 학과에서 여성 합격률이 더 높습니다.">확인</button>
+      <span class="verdict" id="v51"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">5-2</span><span class="qkind">추론</span></div>
+    <p>어떻게 이런 일이 가능할까요? <b>어느 학과에 지원했는지</b>를 함께 보세요.</p>
+    <div class="lab">
+      <div class="labbar"><span>where-they-applied</span>
+        <div class="tools"><button class="tbtn" id="waGo">지원 분포 보기</button></div>
+      </div>
+      <div class="labin">
+        <svg id="waSvg" viewBox="0 0 620 260" role="img" aria-label="학과별 지원 분포"></svg>
+        <div id="waOut" style="font-family:var(--f-mono);font-size:13.2px;line-height:1.9;margin-top:12px"></div>
+      </div>
+      <div class="labfoot" id="waMsg"></div>
+    </div>
+    <div class="ansrow">
+      <label>합격률이 높은 A·B 학과 지원 비율 (남 %)</label>
+      <input id="a52" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a52" data-v="51.5|51|52" data-t="맞습니다. 남성은 51.5%, 여성은 7.2%였습니다. 이 차이가 역설을 만듭니다.">확인</button>
+      <span class="verdict" id="v52"></span>
+    </div>
+    <details class="hint"><summary>핵심 정리</summary><div class="body">남성은 <b>붙기 쉬운 학과</b>에 많이 지원했고, 여성은 <b>경쟁이 치열한 학과</b>에 많이 지원했습니다. 그래서 학과마다 여성이 유리했어도 전체를 합치면 뒤집힙니다. <b>학과</b>가 숨은 변수입니다.</div></details>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">5-3</span><span class="qkind">구성</span></div>
+    <p>작은 수로 직접 만들어 보세요. 표의 값을 바꿔 가며 <b>역설이 언제 생기는지</b> 확인합니다.</p>
+    <div class="lab">
+      <div class="labbar"><span>make-your-own-paradox</span>
+        <div class="tools" id="myTools"></div>
+      </div>
+      <div class="labin"><div class="tbscroll"><table class="dt" id="myTable"></table></div><div id="myOut" style="text-align:center;margin-top:12px;font-size:14px"></div></div>
+      <div class="labfoot" id="myMsg"></div>
+    </div>
+    <div class="ansrow">
+      <label>역설이 생기려면 두 그룹의 무엇이 달라야 하나</label>
+      <input id="a53" type="text" placeholder="한 단어로" />
+      <button class="chk" data-a="a53" data-v="지원분포|분포|인원분포|지원비율|비율" data-t="맞습니다. 두 그룹이 어느 쪽에 몰렸는지(분포)가 다르면 역설이 생길 수 있습니다.">확인</button>
+      <span class="verdict" id="v53"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">5-4</span><span class="qkind talk">토론</span></div>
+    <div class="talkbox">
+      <h4>모둠에서 이야기해 봅시다</h4>
+      <ol>
+        <li>이 사건에서 <b>데이터는 거짓말을 하지 않았습니다</b>. 전체 수치도 맞고 학과별 수치도 맞습니다. 그런데 결론이 정반대입니다. 그렇다면 <b>무엇이 문제</b>였을까요?</li>
+        <li>"차별이 없었다"고 결론 내려도 될까요? 여성이 <b>경쟁 치열한 학과에 몰린 이유</b> 자체에 사회적 원인이 있다면요? 통계가 답할 수 있는 것과 없는 것을 구분해 보세요.</li>
+        <li>비슷한 예를 찾아봅시다. 예를 들어 <b>두 병원의 수술 성공률</b>이 있습니다. A병원이 전체 성공률은 높은데, 중증·경증으로 나눠 보면 둘 다 B병원이 높습니다. 어느 병원에 가야 할까요?</li>
+        <li>뉴스에서 <b>평균</b>이나 <b>비율</b>을 볼 때 무엇을 물어야 할까요? 세 가지 질문을 만들어 보세요.</li>
+      </ol>
+    </div>
+    <div class="lab" style="margin-top:16px">
+      <div class="labbar"><span>average-trap</span>
+        <div class="tools">
+          <button class="tbtn on" id="atSalary">월급 평균의 함정</button>
+          <button class="tbtn" id="atHospital">두 병원 이야기</button>
+        </div>
+      </div>
+      <div class="labin"><div id="atOut" style="font-family:var(--f-mono);font-size:13.2px;line-height:1.9"></div></div>
+      <div class="labfoot" id="atMsg"></div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">5-5</span><span class="qkind">정리</span></div>
+    <p>다섯 세트를 마무리하며, <b>통계를 볼 때 확인할 목록</b>을 만들어 보세요.</p>
+    <textarea class="memo" rows="4" placeholder="1. 전체 말고 나눠 보면 어떤가?&#10;2. &#10;3. "></textarea>
+    <div class="ansrow">
+      <label>월급 예시에서 평균보다 적게 버는 사람 수 (10명 중)</label>
+      <input id="a55" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a55" data-v="9" data-t="맞습니다. 한 명의 극단값 때문에 9명이 평균 이하가 됩니다.">확인</button>
+      <span class="verdict" id="v55"></span>
+    </div>
+  </div>
+
+  <p class="footnote"><b>출처</b> — 1973년 UC 버클리 대학원 입학 데이터를 <b>비켈, 해멀, 오코넬</b>이 1975년 『Science』에 분석해 발표했습니다. 흔히 "소송을 당했다"고 알려져 있으나 <b>실제 소송은 없었고</b>, 학장이 우려해 분석을 의뢰한 것이 연구의 시작이었습니다. 역설 자체는 <b>에드워드 심슨</b>이 1951년에 정리했습니다.</p>
+</section>
+
+<div class="prm">
+  <button id="prev">← 이전 세트</button>
+  <button id="next">다음 세트 →</button>
+</div>
+
+</main>
+
+<footer>세영코딩연구소 · 사고력 확률과 통계 5제 학생용 문제집 · 느낌보다 계산을 믿으세요</footer>
+<script>
+(function(){
+  "use strict";
+  var $ = function(id){ return document.getElementById(id); };
+  var NS = "http://www.w3.org/2000/svg";
+  function el(tag, attrs, parent){
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function ce(tag, cls, t){
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (t !== undefined) e.textContent = t;
+    return e;
+  }
+  function clear(n){ while (n.firstChild) n.removeChild(n.firstChild); }
+  function fmt(n){ return n.toLocaleString(); }
+
+  /* ---------- 탭 ---------- */
+  var ORDER = ["s1","s2","s3","s4","s5"], cur = 0;
+  function show(i){
+    cur = Math.max(0, Math.min(ORDER.length-1, i));
+    var id = ORDER[cur];
+    document.querySelectorAll(".set").forEach(function(s){ s.classList.toggle("on", s.id===id); });
+    document.querySelectorAll(".tocbtn").forEach(function(b){ b.classList.toggle("on", b.dataset.s===id); });
+    document.documentElement.style.setProperty("--ac", $(id).dataset.ac || "#1F5A6E");
+    $("prev").disabled = cur===0; $("next").disabled = cur===ORDER.length-1;
+    window.scrollTo({ top:0, behavior:"smooth" });
+  }
+  document.querySelectorAll(".tocbtn").forEach(function(b){
+    b.addEventListener("click", function(){ show(ORDER.indexOf(b.dataset.s)); });
+  });
+  $("prev").addEventListener("click", function(){ show(cur-1); });
+  $("next").addEventListener("click", function(){ show(cur+1); });
+
+  /* ---------- 채점 ---------- */
+  function norm(s){
+    return String(s).replace(/\s+/g,"").replace(/명$/,"").replace(/개$/,"").replace(/쌍$/,"")
+      .replace(/[.]$/,"").replace(/퍼센트$/,"").replace(/%$/,"").replace(/약/,"")
+      .replace(/[,]/g,"").toLowerCase();
+  }
+  document.querySelectorAll(".chk").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var inp = $(btn.dataset.a), v = $("v"+btn.dataset.a.slice(1));
+      if (!inp || !v) return;
+      var val = norm(inp.value);
+      if (!val){ v.textContent = "답을 먼저 입력하세요"; v.className="verdict"; return; }
+      var ok = btn.dataset.v.split("|").some(function(x){ return norm(x)===val; });
+      v.textContent = ok ? ("정답 — " + btn.dataset.t) : "다시 생각해 보세요";
+      v.className = "verdict " + (ok ? "ok" : "no");
+    });
+  });
+
+  /* ================= SET 1 : 생일 문제 ================= */
+  function pSame(n){
+    var p = 1;
+    for (var i=0;i<n;i++) p *= (365-i)/365;
+    return 1-p;
+  }
+  function drawBP(){
+    var n = +$("bpN").value;
+    $("bpV").textContent = n;
+    var svg = $("bpSvg"); clear(svg);
+    el("rect",{x:0,y:0,width:620,height:240,fill:"#FAF9F5"},svg);
+    var ox=48, oy=195, W=545, H=160;
+    // 눈금
+    [0,25,50,75,100].forEach(function(pc){
+      var y = oy - pc/100*H;
+      el("line",{x1:ox,y1:y,x2:ox+W,y2:y,stroke:"#E0DED6","stroke-width":"1"},svg);
+      var t = el("text",{x:ox-8,y:y+4,"text-anchor":"end","font-size":"11",fill:"#555A64"},svg);
+      t.textContent = pc+"%";
+    });
+    el("line",{x1:ox,y1:oy-0.5*H,x2:ox+W,y2:oy-0.5*H,stroke:"#B0492F","stroke-width":"1.5","stroke-dasharray":"5 4"},svg);
+    var pts=[];
+    for (var k=1;k<=80;k++){
+      var x = ox + (k-1)/79*W;
+      var y = oy - pSame(k)*H;
+      pts.push(x.toFixed(1)+","+y.toFixed(1));
+    }
+    el("polyline",{points:pts.join(" "),fill:"none",stroke:"#1F5A6E","stroke-width":"2.5"},svg);
+    var cx = ox + (n-1)/79*W, cy = oy - pSame(n)*H;
+    el("line",{x1:cx,y1:oy,x2:cx,y2:cy,stroke:"#8F7016","stroke-width":"1.5","stroke-dasharray":"3 3"},svg);
+    el("circle",{cx:cx,cy:cy,r:6,fill:"#8F7016"},svg);
+    [2,23,40,60,80].forEach(function(k){
+      var x = ox + (k-1)/79*W;
+      var t = el("text",{x:x,y:oy+18,"text-anchor":"middle","font-size":"11",fill:"#555A64"},svg);
+      t.textContent = k;
+    });
+    var lab = el("text",{x:ox+W,y:24,"text-anchor":"end","font-size":"11.5",fill:"#B0492F"},svg);
+    lab.textContent = "50% 기준선";
+    $("bpOut").textContent = n + "명 → 생일이 같은 두 사람이 있을 확률 " + (pSame(n)*100).toFixed(2) + "%";
+    var msg;
+    if (n < 23) msg = "아직 절반이 안 됩니다. 인원을 더 늘려 보세요.";
+    else if (n === 23) msg = "<b>바로 여기!</b> 23명에서 처음으로 50%를 넘습니다 (50.73%).";
+    else if (n >= 70) msg = "70명이 넘으면 <b>99.9%</b>로 사실상 확실합니다.";
+    else msg = "생각보다 훨씬 빠르게 올라갑니다.";
+    $("bpMsg").innerHTML = msg;
+  }
+  $("bpN").addEventListener("input", drawBP);
+  drawBP();
+
+  function comb2(n){ return n*(n-1)/2; }
+  $("cpGo").addEventListener("click", function(){
+    var n = Math.max(2, Math.min(60, +$("cpN").value || 23));
+    var out = $("cpOut"); clear(out);
+    out.appendChild(ce("div", null, n + "명이 만드는 쌍의 개수 = " + n + " × " + (n-1) + " ÷ 2 = " + comb2(n) + "쌍"));
+    out.appendChild(ce("div", null, "→ 확인해야 할 '두 사람' 조합이 " + comb2(n) + "가지나 됩니다"));
+    $("cpMsg").innerHTML = "우리는 '나'만 생각하지만, 실제로는 <b>모든 두 사람</b>을 비교합니다. 앞 단원의 <b>악수 문제</b>와 똑같은 계산입니다.";
+  });
+  $("cpCmp").addEventListener("click", function(){
+    var n = Math.max(2, Math.min(60, +$("cpN").value || 23));
+    var pAny = pSame(n)*100;
+    var pMe = (1 - Math.pow(364/365, n-1))*100;
+    var out = $("cpOut"); clear(out);
+    out.appendChild(ce("div", null, n + "명일 때 두 가지 확률"));
+    var d1 = ce("div", null, "  ① 아무 두 사람의 생일이 같을 확률 : " + pAny.toFixed(2) + "%   (쌍 " + comb2(n) + "개)");
+    d1.style.color = "var(--sea)"; d1.style.fontWeight="700";
+    out.appendChild(d1);
+    var d2 = ce("div", null, "  ② 나와 생일이 같은 사람이 있을 확률 : " + pMe.toFixed(2) + "%   (비교 " + (n-1) + "번)");
+    d2.style.color = "var(--clay)"; d2.style.fontWeight="700";
+    out.appendChild(d2);
+    out.appendChild(ce("div", null, "  → 차이가 " + (pAny/pMe).toFixed(1) + "배!"));
+    $("cpMsg").innerHTML = "우리 직관은 <b>②</b>를 계산합니다. 그래서 실제(①)보다 훨씬 작게 느낍니다.";
+  });
+  $("cpGo").click();
+
+  function runRoom(k){
+    var bs=[];
+    for (var i=0;i<k;i++) bs.push(Math.floor(Math.random()*365));
+    return bs;
+  }
+  $("smOne").addEventListener("click", function(){
+    var k = Math.max(2, Math.min(80, +$("smK").value || 23));
+    var bs = runRoom(k);
+    var count = {};
+    bs.forEach(function(b){ count[b]=(count[b]||0)+1; });
+    var box = $("smRoom"); clear(box);
+    bs.forEach(function(b){
+      var m = (Math.floor(b/31)+1), d = (b%31)+1;
+      var e = ce("div","pp" + (count[b]>1 ? " dup" : ""), m+"/"+d);
+      box.appendChild(e);
+    });
+    var dup = Object.keys(count).some(function(x){ return count[x]>1; });
+    var out = $("smOut"); clear(out);
+    out.appendChild(ce("div", null, k + "명의 교실 한 개 : " + (dup ? "생일이 겹치는 사람 있음!" : "모두 다름")));
+    $("smMsg").innerHTML = dup
+      ? "<b style='color:var(--clay)'>붉은 칸</b>이 생일이 겹친 사람입니다. 여러 번 눌러 보세요."
+      : "이번엔 겹치지 않았습니다. 그래도 확률은 " + (pSame(k)*100).toFixed(1) + "%입니다. 다시 눌러 보세요.";
+  });
+  $("smGo").addEventListener("click", function(){
+    var k = Math.max(2, Math.min(80, +$("smK").value || 23));
+    var N = Math.max(100, Math.min(100000, +$("smN").value || 5000));
+    var hit = 0;
+    for (var t=0;t<N;t++){
+      var seen = {}, dup=false;
+      for (var i=0;i<k;i++){
+        var b = Math.floor(Math.random()*365);
+        if (seen[b]){ dup=true; break; }
+        seen[b]=1;
+      }
+      if (dup) hit++;
+    }
+    clear($("smRoom"));
+    var out = $("smOut"); clear(out);
+    out.appendChild(ce("div", null, k + "명 교실을 " + fmt(N) + "번 만들어 봄"));
+    out.appendChild(ce("div", null, "겹친 교실 : " + fmt(hit) + "개"));
+    var d = ce("div", null, "실험 확률 " + (hit/N*100).toFixed(2) + "%   vs   이론 " + (pSame(k)*100).toFixed(2) + "%");
+    d.style.cssText = "font-weight:700;color:var(--fern)";
+    out.appendChild(d);
+    $("smMsg").innerHTML = "반복 횟수를 늘릴수록 <b>이론값에 가까워집니다</b>.";
+  });
+  $("smGo").click();
+
+  /* ================= SET 2 : 판돈 나누기 ================= */
+  var RG = { step:0 };
+  var RGCASES = [
+    { seq:["A","A"], a:4, b:1, win:"A" },
+    { seq:["A","B"], a:3, b:2, win:"A" },
+    { seq:["B","A"], a:3, b:2, win:"A" },
+    { seq:["B","B"], a:2, b:3, win:"B" }
+  ];
+  function drawRG(){
+    var box = $("rgBox"); clear(box);
+    for (var i=0;i<RG.step;i++){
+      var c = RGCASES[i];
+      var row = ce("div","brow");
+      row.appendChild(ce("div","bcell","경우 " + (i+1)));
+      c.seq.forEach(function(w){
+        row.appendChild(ce("div","bcell " + (w==="A" ? "a" : "b"), w + " 승"));
+      });
+      row.appendChild(ce("div","bcell","→ A " + c.a + "승 B " + c.b + "승"));
+      row.appendChild(ce("div","bcell " + (c.win==="A" ? "a" : "b"), c.win + " 최종 우승"));
+      box.appendChild(row);
+    }
+    var out = $("rgOut"); clear(out);
+    if (RG.step===0){
+      out.textContent = "남은 판을 두 번 더 친다고 생각하면 경우는 2 × 2 = 4가지";
+      $("rgMsg").innerHTML = "버튼을 눌러 한 경우씩 펼쳐 보세요.";
+    } else {
+      var aw = RGCASES.slice(0,RG.step).filter(function(c){ return c.win==="A"; }).length;
+      out.textContent = RG.step + "가지 중 A 우승 " + aw + "가지";
+      $("rgMsg").innerHTML = RG.step>=4
+        ? "4가지 중 A가 <b>3가지</b>에서 우승 → A가 이길 확률 <b>3/4</b> → 판돈은 <b>3 : 1</b>"
+        : "계속 펼쳐 보세요.";
+    }
+  }
+  $("rgStep").addEventListener("click", function(){ if (RG.step<4) RG.step++; drawRG(); });
+  $("rgAll").addEventListener("click", function(){ RG.step=4; drawRG(); });
+  $("rgReset").addEventListener("click", function(){ RG.step=0; drawRG(); });
+  drawRG();
+
+  function gcd(a,b){ while(b){ var t=a%b; a=b; b=t; } return a; }
+  function winProb(a, b, memo){
+    memo = memo || {};
+    if (a<=0) return 1;
+    if (b<=0) return 0;
+    var key = a+","+b;
+    if (memo[key]!==undefined) return memo[key];
+    var v = (winProb(a-1,b,memo) + winProb(a,b-1,memo))/2;
+    memo[key]=v; return v;
+  }
+  function ratioText(p){
+    var den = 1;
+    for (var k=1;k<=1024;k*=2){ if (Math.abs(p*k - Math.round(p*k)) < 1e-9){ den=k; break; } }
+    var num = Math.round(p*den), other = den-num;
+    var g = gcd(num, other) || 1;
+    return (num/g) + " : " + (other/g);
+  }
+  $("fdGo").addEventListener("click", function(){
+    var t = Math.max(1, Math.min(6, +$("fdT").value || 3));
+    var a = Math.max(0, Math.min(t-1, +$("fdA").value || 0));
+    var b = Math.max(0, Math.min(t-1, +$("fdB").value || 0));
+    var na = t-a, nb = t-b;
+    var p = winProb(na, nb);
+    var out = $("fdOut"); clear(out);
+    out.appendChild(ce("div", null, "목표 " + t + "승 · 현재 A " + a + "승, B " + b + "승"));
+    out.appendChild(ce("div", null, "A는 " + na + "승, B는 " + nb + "승 더 필요"));
+    var d = ce("div", null, "A가 최종 우승할 확률 = " + (p*100).toFixed(2) + "%  →  판돈 A : B = " + ratioText(p));
+    d.style.cssText = "font-weight:700;color:var(--plum)";
+    out.appendChild(d);
+    $("fdMsg").innerHTML = "이긴 판 수가 아니라 <b>앞으로 몇 승이 더 필요한가</b>로 정해집니다.";
+  });
+  $("fdTable").addEventListener("click", function(){
+    var out = $("fdOut"); clear(out);
+    out.appendChild(ce("div", null, "3승제에서 가능한 모든 중단 상황"));
+    var rows = [[2,1],[2,0],[1,0],[2,2],[1,1],[0,0],[1,2],[0,1],[0,2]];
+    rows.forEach(function(r){
+      var a=r[0], b=r[1];
+      var p = winProb(3-a, 3-b);
+      out.appendChild(ce("div", null,
+        "  A " + a + "승 B " + b + "승 → A 우승 확률 " + (p*100).toFixed(1).padStart(5," ") +
+        "%  →  " + ratioText(p)));
+    });
+    $("fdMsg").innerHTML = "같은 <b>2승 차이</b>라도 남은 판 수에 따라 분배가 달라집니다.";
+  });
+  $("fdGo").click();
+
+  $("pnGo").addEventListener("click", function(){
+    var N = Math.max(100, Math.min(200000, +$("pnN").value || 10000));
+    var aw = 0;
+    for (var t=0;t<N;t++){
+      var a=2, b=1;
+      while (a<3 && b<3){
+        if (Math.random()<0.5) a++; else b++;
+      }
+      if (a===3) aw++;
+    }
+    var out = $("pnOut"); clear(out);
+    out.appendChild(ce("div", null, "A 2승 B 1승 상태에서 끝까지 진행 × " + fmt(N) + "회"));
+    out.appendChild(ce("div", null, "A 우승 " + fmt(aw) + "회 · B 우승 " + fmt(N-aw) + "회"));
+    var d = ce("div", null, "실험 비율 " + (aw/N*100).toFixed(2) + "%   vs   이론 75%");
+    d.style.cssText = "font-weight:700;color:var(--fern)";
+    out.appendChild(d);
+    $("pnMsg").innerHTML = "실제로 쳐 봐도 <b>3 : 1</b>에 가까워집니다. 계산이 옳았습니다.";
+  });
+  $("pnGo").click();
+
+  /* ================= SET 3 : 도박사의 오류 ================= */
+  var CF = { flips:[] };
+  function maxRun(arr){
+    var best=0, cur=0;
+    for (var i=0;i<arr.length;i++){
+      cur = (i>0 && arr[i]===arr[i-1]) ? cur+1 : 1;
+      if (cur>best) best=cur;
+    }
+    return best;
+  }
+  function drawCF(){
+    var box = $("cfBox"); clear(box);
+    var mr = maxRun(CF.flips);
+    // 최장 연속 구간 표시
+    var bestStart=-1, cur=0, curStart=0;
+    for (var i=0;i<CF.flips.length;i++){
+      if (i>0 && CF.flips[i]===CF.flips[i-1]) cur++;
+      else { cur=1; curStart=i; }
+      if (cur===mr && bestStart<0) bestStart=curStart;
+    }
+    CF.flips.forEach(function(f,i){
+      var cls = "cn " + (f===1 ? "h" : "t");
+      if (bestStart>=0 && i>=bestStart && i<bestStart+mr) cls += " run";
+      box.appendChild(ce("div", cls, f===1 ? "앞" : "뒤"));
+    });
+    var h = CF.flips.filter(function(f){ return f===1; }).length;
+    var n = CF.flips.length;
+    $("cfOut").textContent = n===0 ? "" :
+      ("총 " + n + "번 · 앞면 " + h + "회 (" + (h/n*100).toFixed(1) + "%) · 최대 연속 " + mr + "회");
+    $("cfMsg").innerHTML = n===0
+      ? "100번 던지면 몇 연속까지 나올까요? 먼저 예상해 보세요."
+      : (mr>=5
+          ? "<b style='color:var(--gold)'>" + mr + "연속</b>이 나왔습니다! 노란 테두리를 보세요. 100번이면 5연속은 거의 반드시 나옵니다."
+          : "최대 연속 " + mr + "회 · 더 던져 보세요.");
+  }
+  $("cfFlip").addEventListener("click", function(){
+    CF.flips.push(Math.random()<0.5?1:0); drawCF();
+  });
+  $("cfTen").addEventListener("click", function(){
+    for (var i=0;i<10;i++) CF.flips.push(Math.random()<0.5?1:0);
+    drawCF();
+  });
+  $("cfHundred").addEventListener("click", function(){
+    CF.flips = [];
+    for (var i=0;i<100;i++) CF.flips.push(Math.random()<0.5?1:0);
+    drawCF();
+  });
+  $("cfReset").addEventListener("click", function(){ CF.flips=[]; drawCF(); });
+  drawCF();
+
+  function drawTQ(mode){
+    var out = $("tqOut"); clear(out);
+    if (mode==="before"){
+      var d1 = ce("div");
+      d1.innerHTML = "<b>① 지금부터 26번 연속 검정이 나올 확률</b>";
+      out.appendChild(d1);
+      out.appendChild(ce("div", null, "1/2 × 1/2 × … × 1/2  (26번)"));
+      var d2 = ce("div", null, "= 1 / 67,108,864  ≈  0.0000015%");
+      d2.style.cssText = "font-family:var(--f-mono);font-weight:700;color:var(--clay)";
+      out.appendChild(d2);
+      out.appendChild(ce("div", null, "→ 극히 드문 일이 맞습니다"));
+      $("tqMsg").innerHTML = "이것은 <b>아직 아무것도 안 던졌을 때</b>의 확률입니다.";
+    } else {
+      var e1 = ce("div");
+      e1.innerHTML = "<b>② 이미 25번 연속 검정이 나온 뒤, 다음도 검정일 확률</b>";
+      out.appendChild(e1);
+      out.appendChild(ce("div", null, "동전과 룰렛은 <b>지난 결과를 기억하지 못합니다</b>"));
+      var e2 = ce("div", null, "= 1/2  =  50%   (그대로!)");
+      e2.style.cssText = "font-family:var(--f-mono);font-weight:700;color:var(--sea)";
+      out.appendChild(e2);
+      var e3 = ce("div", null, "→ '이제 빨강이 나올 때가 됐다'는 생각이 바로 도박사의 오류");
+      e3.style.color = "var(--clay)";
+      out.appendChild(e3);
+      $("tqMsg").innerHTML = "①은 <b>매우 작고</b> ②는 <b>그대로 1/2</b>입니다. 이 둘을 섞는 것이 착각의 정체입니다.";
+    }
+  }
+  $("tqBefore").addEventListener("click", function(){
+    this.classList.add("on"); $("tqAfter").classList.remove("on"); drawTQ("before");
+  });
+  $("tqAfter").addEventListener("click", function(){
+    this.classList.add("on"); $("tqBefore").classList.remove("on"); drawTQ("after");
+  });
+  drawTQ("before");
+
+  function drawIC(){
+    var k = +$("icK").value;
+    $("icV").textContent = k;
+    var total = Math.pow(2, k+1);
+    var prevAll = Math.pow(2, 1);   // 앞 k번이 모두 앞면인 경우: 다음 1번만 자유 → 2가지
+    var out = $("icOut"); clear(out);
+    out.appendChild(ce("div", null, "동전을 " + (k+1) + "번 던지는 모든 경우 : " + total + "가지"));
+    out.appendChild(ce("div", null, "그중 <앞의 " + k + "번이 모두 앞면>인 경우 : " + prevAll + "가지"));
+    out.appendChild(ce("div", null, "  → 그중 " + (k+1) + "번째도 앞면 : 1가지 / 뒷면 : 1가지"));
+    var d = ce("div", null, "  → 다음이 앞면일 확률 = 1/2 (앞이 몇 번 연속이든 똑같음)");
+    d.style.cssText = "font-weight:700;color:var(--sea)";
+    out.appendChild(d);
+    $("icMsg").innerHTML = "연속 횟수를 <b>10까지</b> 늘려 보세요. 답은 <b>언제나 1/2</b>입니다.";
+  }
+  $("icK").addEventListener("input", drawIC);
+  drawIC();
+
+  var LN = { data:null };
+  function drawLN(){
+    var t = $("lnTable"); clear(t);
+    var hd = ce("tr");
+    ["던진 횟수","앞면 수","앞면 비율","앞면−뒷면 차이"].forEach(function(h){ hd.appendChild(ce("th",null,h)); });
+    t.appendChild(hd);
+    if (!LN.data){
+      var tr = ce("tr");
+      for (var i=0;i<4;i++) tr.appendChild(ce("td",null,"?"));
+      t.appendChild(tr);
+      clear($("lnSvg"));
+      $("lnMsg").innerHTML = "버튼을 눌러 100만 번 던져 보세요.";
+      return;
+    }
+    LN.data.rows.forEach(function(r){
+      var tr = ce("tr");
+      tr.appendChild(ce("td",null,fmt(r.n)));
+      tr.appendChild(ce("td",null,fmt(r.h)));
+      tr.appendChild(ce("td","ok",(r.h/r.n).toFixed(4)));
+      tr.appendChild(ce("td","no",fmt(Math.abs(2*r.h-r.n))));
+      t.appendChild(tr);
+    });
+    var svg = $("lnSvg"); clear(svg);
+    el("rect",{x:0,y:0,width:620,height:200,fill:"#FAF9F5"},svg);
+    var ox=50, oy=160, W=545, H=120;
+    el("line",{x1:ox,y1:oy-H/2,x2:ox+W,y2:oy-H/2,stroke:"#B0492F","stroke-width":"1.5","stroke-dasharray":"5 4"},svg);
+    var t5 = el("text",{x:ox-8,y:oy-H/2+4,"text-anchor":"end","font-size":"11",fill:"#B0492F"},svg);
+    t5.textContent = "0.5";
+    var pts = LN.data.curve.map(function(p,i){
+      var x = ox + i/(LN.data.curve.length-1)*W;
+      var y = oy - (p-0.3)/0.4*H;
+      y = Math.max(oy-H, Math.min(oy, y));
+      return x.toFixed(1)+","+y.toFixed(1);
+    }).join(" ");
+    el("polyline",{points:pts,fill:"none",stroke:"#1F5A6E","stroke-width":"2"},svg);
+    var lab = el("text",{x:ox,y:20,"font-size":"11.5",fill:"#555A64"},svg);
+    lab.textContent = "던진 횟수가 늘수록 앞면 비율이 0.5로 수렴";
+    $("lnMsg").innerHTML = "<b>비율</b>은 0.5로 다가가지만 <b>개수 차이</b>는 오히려 커졌습니다. " +
+      "'모자란 쪽이 나중에 더 나온다'는 생각은 <b>오해</b>입니다.";
+  }
+  $("lnGo").addEventListener("click", function(){
+    var snap = [10,100,1000,10000,100000,1000000];
+    var rows=[], curve=[], h=0, si=0;
+    for (var n=1;n<=1000000;n++){
+      if (Math.random()<0.5) h++;
+      if (n===snap[si]){ rows.push({n:n,h:h}); si++; }
+      if (n % 5000 === 0) curve.push(h/n);
+    }
+    LN.data = { rows:rows, curve:curve };
+    drawLN();
+  });
+  $("lnReset").addEventListener("click", function(){ LN.data=null; drawLN(); });
+  drawLN();
+
+  $("frGo").addEventListener("click", function(){
+    var trials = 5000, runs = [], c5=0, c6=0, sum=0;
+    for (var t=0;t<trials;t++){
+      var s=[];
+      for (var i=0;i<100;i++) s.push(Math.random()<0.5?1:0);
+      var m = maxRun(s);
+      runs.push(m); sum+=m;
+      if (m>=5) c5++;
+      if (m>=6) c6++;
+    }
+    var out = $("frOut"); clear(out);
+    out.appendChild(ce("div", null, "진짜 무작위로 100번 던지기 × " + fmt(trials) + "회"));
+    out.appendChild(ce("div", null, "평균 최대 연속 길이 : " + (sum/trials).toFixed(2) + "회"));
+    var d = ce("div", null, "5연속 이상이 나온 비율 : " + (c5/trials*100).toFixed(1) + "%");
+    d.style.cssText = "font-weight:700;color:var(--gold)";
+    out.appendChild(d);
+    out.appendChild(ce("div", null, "6연속 이상 : " + (c6/trials*100).toFixed(1) + "%"));
+    $("frMsg").innerHTML = "사람이 지어낸 '무작위'에는 이런 <b>긴 연속</b>이 거의 없습니다. " +
+      "그래서 진짜 무작위를 보면 오히려 <b>조작된 것 같다</b>고 느낍니다.";
+  });
+  $("frGo").click();
+
+  /* ================= SET 4 : 검사의 함정 ================= */
+  function bayes(prev, sens, spec, pop){
+    var sick = Math.round(pop*prev), well = pop-sick;
+    var tp = Math.round(sick*sens), fn = sick-tp;
+    var tn = Math.round(well*spec), fp = well-tn;
+    return {pop:pop, sick:sick, well:well, tp:tp, fn:fn, tn:tn, fp:fp,
+            ppv: (tp+fp)>0 ? tp/(tp+fp) : 0};
+  }
+  var NF = { step:0 };
+  var NFSTEPS = [
+    "10만 명이 검사를 받는다",
+    "실제 환자는 1000명 중 1명 → <b>100명</b>",
+    "건강한 사람은 <b>99,900명</b>",
+    "환자 100명 중 99% → <b>99명이 양성</b> (1명은 놓침)",
+    "건강한 99,900명 중 95%는 음성 → 하지만 <b>4,995명이 양성</b> (오진!)",
+    "양성 판정을 받은 사람 = 99 + 4,995 = <b>5,094명</b>",
+    "그중 진짜 환자는 <b>99명</b> → 99 ÷ 5094 = <b>1.94%</b>"
+  ];
+  function drawNF(){
+    var out = $("nfOut"); clear(out);
+    for (var i=0;i<NF.step;i++){
+      var d = ce("div");
+      d.innerHTML = (i+1) + ". " + NFSTEPS[i];
+      d.style.cssText = "padding:4px 0;border-bottom:1px dashed var(--line)";
+      if (i===NF.step-1) d.style.background = "#FAF6E2";
+      out.appendChild(d);
+    }
+    if (NF.step===0) out.appendChild(ce("div", null, "버튼을 눌러 한 단계씩 세어 보세요."));
+    // 그리드: 1000칸 = 100명당 1칸 기준 축소 (양성 5094 ≈ 51칸)
+    var g = $("nfGrid"); clear(g);
+    if (NF.step >= 5){
+      var total = 500;  // 500칸 = 10만명 → 1칸 = 200명
+      var tpCells = 1;              // 99명 → 반올림 1칸
+      var fpCells = Math.round(4995/200);  // 25칸
+      for (var k=0;k<total;k++){
+        var cls = "g1";
+        if (k < tpCells) cls += " tp";
+        else if (k < tpCells+fpCells) cls += " fp";
+        else cls += " well";
+        g.appendChild(ce("div", cls));
+      }
+      $("nfLegend").innerHTML =
+        "<span style='color:var(--clay)'>■</span> 진짜 환자이면서 양성 (99명) &nbsp; " +
+        "<span style='color:var(--gold)'>■</span> 건강한데 양성 (4,995명) &nbsp; " +
+        "<span style='color:#BDBAB2'>■</span> 음성 (94,906명) &nbsp; · 1칸 = 200명";
+    } else {
+      $("nfLegend").textContent = "";
+    }
+    $("nfMsg").innerHTML = NF.step>=7
+      ? "검사가 '99% 정확'해도 양성일 때 실제 환자는 <b>약 2%</b>뿐입니다. 건강한 사람이 <b>훨씬 많기</b> 때문입니다."
+      : "확률(%) 대신 <b>사람 수</b>로 세면 훨씬 쉬워집니다.";
+  }
+  $("nfStep").addEventListener("click", function(){ if (NF.step<7) NF.step++; drawNF(); });
+  $("nfReset").addEventListener("click", function(){ NF.step=0; drawNF(); });
+  drawNF();
+
+  (function(){
+    var sel = $("brSel");
+    [[0.0001,"0.01% (1만 명 중 1명)"],[0.001,"0.1% (1000명 중 1명)"],
+     [0.01,"1% (100명 중 1명)"],[0.1,"10% (10명 중 1명)"],[0.5,"50% (2명 중 1명)"]]
+    .forEach(function(o){
+      var e = ce("option", null, o[1]);
+      e.value = String(o[0]);
+      sel.appendChild(e);
+    });
+    sel.value = "0.001";
+  })();
+  function drawBR(){
+    var prev = parseFloat($("brSel").value);
+    var spec = (+$("brSpec").value)/1000;
+    $("brSpecV").textContent = (spec*100).toFixed(1) + "%";
+    var r = bayes(prev, 0.99, spec, 10000000);
+    var out = $("brOut"); clear(out);
+    out.appendChild(ce("div", null, "1000만 명 검사 · 유병률 " + (prev*100).toFixed(2) +
+      "% · 건강한 사람을 음성으로 " + (spec*100).toFixed(1) + "%"));
+    out.appendChild(ce("div", null, "  진짜 양성 " + fmt(r.tp) + "명  vs  가짜 양성 " + fmt(r.fp) + "명"));
+    var d = ce("div", null, "  → 양성일 때 실제 병일 확률 = " + (r.ppv*100).toFixed(2) + "%");
+    d.style.cssText = "font-weight:700;color:" + (r.ppv>0.5 ? "var(--fern)" : "var(--clay)");
+    out.appendChild(d);
+    $("brMsg").innerHTML = "같은 검사인데 <b>병이 흔한 정도</b>에 따라 결과 해석이 완전히 달라집니다.";
+  }
+  $("brSel").addEventListener("change", drawBR);
+  $("brSpec").addEventListener("input", drawBR);
+  drawBR();
+
+  $("stGo").addEventListener("click", function(){
+    var r1 = bayes(0.001, 0.99, 0.95, 10000000);
+    var r2 = bayes(r1.ppv, 0.99, 0.95, 10000000);
+    var r3 = bayes(r2.ppv, 0.99, 0.95, 10000000);
+    var out = $("stOut"); clear(out);
+    out.appendChild(ce("div", null, "검사 전 : 병일 확률 0.10%"));
+    out.appendChild(ce("div", null, "1차 양성 → " + (r1.ppv*100).toFixed(2) + "%"));
+    var d = ce("div", null, "2차도 양성 → " + (r2.ppv*100).toFixed(1) + "%");
+    d.style.cssText = "font-weight:700;color:var(--fern)";
+    out.appendChild(d);
+    out.appendChild(ce("div", null, "3차도 양성 → " + (r3.ppv*100).toFixed(1) + "%"));
+    $("stMsg").innerHTML = "1차 결과를 <b>새로운 출발점</b>으로 삼아 다시 계산합니다. " +
+      "그래서 병원에서는 <b>다시 검사</b>합니다.";
+  });
+  $("stGo").click();
+
+  /* ================= SET 5 : 심슨의 역설 ================= */
+  var DEPT = {
+    A: { M:[825,512], F:[108, 89] },
+    B: { M:[560,353], F:[ 25, 17] },
+    C: { M:[325,120], F:[593,202] },
+    D: { M:[417,138], F:[375,131] },
+    E: { M:[191, 53], F:[393, 94] },
+    F: { M:[373, 22], F:[341, 24] }
+  };
+  var DKEYS = ["A","B","C","D","E","F"];
+  function totals(){
+    var tm=0,tma=0,tf=0,tfa=0;
+    DKEYS.forEach(function(d){
+      tm+=DEPT[d].M[0]; tma+=DEPT[d].M[1];
+      tf+=DEPT[d].F[0]; tfa+=DEPT[d].F[1];
+    });
+    return {tm:tm,tma:tma,tf:tf,tfa:tfa};
+  }
+  function drawBK(mode){
+    var T = totals();
+    var t = $("bkTable"); clear(t);
+    var hd = ce("tr");
+    ["구분","남 지원","남 합격","남 합격률","여 지원","여 합격","여 합격률","누가 높은가"]
+      .forEach(function(h){ hd.appendChild(ce("th",null,h)); });
+    t.appendChild(hd);
+    var higherF = 0;
+    if (mode==="dept"){
+      DKEYS.forEach(function(d){
+        var m = DEPT[d].M, f = DEPT[d].F;
+        var rm = m[1]/m[0]*100, rf = f[1]/f[0]*100;
+        if (rf>rm) higherF++;
+        var tr = ce("tr");
+        tr.appendChild(ce("th",null,d+" 학과"));
+        tr.appendChild(ce("td",null,fmt(m[0])));
+        tr.appendChild(ce("td",null,fmt(m[1])));
+        tr.appendChild(ce("td", rm>rf?"hi":null, rm.toFixed(1)+"%"));
+        tr.appendChild(ce("td",null,fmt(f[0])));
+        tr.appendChild(ce("td",null,fmt(f[1])));
+        tr.appendChild(ce("td", rf>rm?"hi":null, rf.toFixed(1)+"%"));
+        tr.appendChild(ce("td", rf>rm?"ok":"no", rf>rm ? "여성" : "남성"));
+        t.appendChild(tr);
+      });
+    }
+    var tr2 = ce("tr");
+    tr2.appendChild(ce("th",null,"전체 합계"));
+    tr2.appendChild(ce("td",null,fmt(T.tm)));
+    tr2.appendChild(ce("td",null,fmt(T.tma)));
+    tr2.appendChild(ce("td","no",(T.tma/T.tm*100).toFixed(1)+"%"));
+    tr2.appendChild(ce("td",null,fmt(T.tf)));
+    tr2.appendChild(ce("td",null,fmt(T.tfa)));
+    tr2.appendChild(ce("td","no",(T.tfa/T.tf*100).toFixed(1)+"%"));
+    tr2.appendChild(ce("td","no","남성"));
+    t.appendChild(tr2);
+    $("bkMsg").innerHTML = mode==="dept"
+      ? "학과별로는 <b>여성이 더 높은 학과가 " + higherF + "개</b>(6개 중)인데, 합치면 <b>남성이 높습니다</b>. 이것이 <b>심슨의 역설</b>입니다."
+      : "전체만 보면 남성 <b>" + (T.tma/T.tm*100).toFixed(1) + "%</b> vs 여성 <b>" +
+        (T.tfa/T.tf*100).toFixed(1) + "%</b> — 차별처럼 보입니다. 학과별로 나눠 보세요.";
+  }
+  $("bkTotal").addEventListener("click", function(){
+    this.classList.add("on"); $("bkDept").classList.remove("on"); drawBK("total");
+  });
+  $("bkDept").addEventListener("click", function(){
+    this.classList.add("on"); $("bkTotal").classList.remove("on"); drawBK("dept");
+  });
+  drawBK("total");
+
+  $("waGo").addEventListener("click", function(){
+    var T = totals();
+    var svg = $("waSvg"); clear(svg);
+    el("rect",{x:0,y:0,width:620,height:260,fill:"#FAF9F5"},svg);
+    var ox=52, oy=200, W=520, H=150;
+    DKEYS.forEach(function(d,i){
+      var m = DEPT[d].M, f = DEPT[d].F;
+      var rate = (m[1]+f[1])/(m[0]+f[0]);
+      var pm = m[0]/T.tm, pf = f[0]/T.tf;
+      var x = ox + i*(W/6);
+      var bw = (W/6)/3.2;
+      // 남 지원 비율 막대
+      el("rect",{x:x+6,y:oy-pm*H*2.2,width:bw,height:pm*H*2.2,fill:"#1F5A6E",opacity:"0.85"},svg);
+      // 여 지원 비율 막대
+      el("rect",{x:x+6+bw+4,y:oy-pf*H*2.2,width:bw,height:pf*H*2.2,fill:"#B0492F",opacity:"0.85"},svg);
+      // 합격률 점
+      el("circle",{cx:x+6+bw+2,cy:oy-rate*H,r:5,fill:"#8F7016"},svg);
+      var t1 = el("text",{x:x+(W/6)/2,y:oy+18,"text-anchor":"middle","font-size":"12",fill:"#1A1D22"},svg);
+      t1.textContent = d;
+      var t2 = el("text",{x:x+(W/6)/2,y:oy+33,"text-anchor":"middle","font-size":"10",fill:"#8F7016"},svg);
+      t2.textContent = (rate*100).toFixed(0)+"%";
+    });
+    var lg1 = el("text",{x:ox,y:24,"font-size":"11.5",fill:"#1F5A6E"},svg);
+    lg1.textContent = "■ 남 지원 비율";
+    var lg2 = el("text",{x:ox+110,y:24,"font-size":"11.5",fill:"#B0492F"},svg);
+    lg2.textContent = "■ 여 지원 비율";
+    var lg3 = el("text",{x:ox+225,y:24,"font-size":"11.5",fill:"#8F7016"},svg);
+    lg3.textContent = "● 그 학과 전체 합격률";
+    var out = $("waOut"); clear(out);
+    var easyM = (DEPT.A.M[0]+DEPT.B.M[0])/T.tm*100;
+    var easyF = (DEPT.A.F[0]+DEPT.B.F[0])/T.tf*100;
+    out.appendChild(ce("div", null, "A학과 합격률 64% · B학과 63%  ←  붙기 쉬운 학과"));
+    out.appendChild(ce("div", null, "E학과 25% · F학과 6%          ←  경쟁 치열한 학과"));
+    var d = ce("div", null, "A·B 학과 지원 비율 : 남 " + easyM.toFixed(1) + "%  vs  여 " + easyF.toFixed(1) + "%");
+    d.style.cssText = "font-weight:700;color:var(--gold);margin-top:6px";
+    out.appendChild(d);
+    $("waMsg").innerHTML = "남성은 <b>붙기 쉬운 학과</b>에, 여성은 <b>경쟁 치열한 학과</b>에 많이 지원했습니다. " +
+      "<b>학과</b>가 숨은 변수입니다.";
+  });
+  $("waGo").click();
+
+  var MYSETS = [
+    { n:"역설 발생 (분포 다름)",
+      d:{ "쉬운 과":{ m:[80,72], f:[20,19] }, "어려운 과":{ m:[20,4], f:[80,20] } } },
+    { n:"역설 없음 (분포 같음)",
+      d:{ "쉬운 과":{ m:[50,45], f:[50,48] }, "어려운 과":{ m:[50,10], f:[50,13] } } },
+    { n:"버클리와 같은 구조",
+      d:{ "쉬운 과":{ m:[1385,865], f:[133,106] }, "어려운 과":{ m:[1306,333], f:[1702,451] } } }
+  ];
+  var mySel = 0;
+  (function(){
+    var box = $("myTools");
+    MYSETS.forEach(function(s,i){
+      var b = ce("button","tbtn"+(i===0?" on":""), s.n);
+      b.addEventListener("click", function(){
+        box.querySelectorAll(".tbtn").forEach(function(x){ x.classList.remove("on"); });
+        b.classList.add("on"); mySel=i; drawMY();
+      });
+      box.appendChild(b);
+    });
+  })();
+  function drawMY(){
+    var D = MYSETS[mySel].d;
+    var t = $("myTable"); clear(t);
+    var hd = ce("tr");
+    ["구분","남 합격/지원","남 비율","여 합격/지원","여 비율","누가 높은가"]
+      .forEach(function(h){ hd.appendChild(ce("th",null,h)); });
+    t.appendChild(hd);
+    var tm=0,tma=0,tf=0,tfa=0, allF=true;
+    Object.keys(D).forEach(function(k){
+      var m=D[k].m, f=D[k].f;
+      tm+=m[0]; tma+=m[1]; tf+=f[0]; tfa+=f[1];
+      var rm=m[1]/m[0]*100, rf=f[1]/f[0]*100;
+      if (rf<=rm) allF=false;
+      var tr = ce("tr");
+      tr.appendChild(ce("th",null,k));
+      tr.appendChild(ce("td",null,m[1]+"/"+m[0]));
+      tr.appendChild(ce("td", rm>rf?"hi":null, rm.toFixed(1)+"%"));
+      tr.appendChild(ce("td",null,f[1]+"/"+f[0]));
+      tr.appendChild(ce("td", rf>rm?"hi":null, rf.toFixed(1)+"%"));
+      tr.appendChild(ce("td", rf>rm?"ok":"no", rf>rm?"여성":"남성"));
+      t.appendChild(tr);
+    });
+    var RM=tma/tm*100, RF=tfa/tf*100;
+    var tr2 = ce("tr");
+    tr2.appendChild(ce("th",null,"합계"));
+    tr2.appendChild(ce("td",null,tma+"/"+tm));
+    tr2.appendChild(ce("td", RM>RF?"no":null, RM.toFixed(1)+"%"));
+    tr2.appendChild(ce("td",null,tfa+"/"+tf));
+    tr2.appendChild(ce("td", RF>RM?"no":null, RF.toFixed(1)+"%"));
+    tr2.appendChild(ce("td", RF>RM?"ok":"no", RF>RM?"여성":"남성"));
+    t.appendChild(tr2);
+    var flip = allF && RM>RF;
+    var out = $("myOut"); clear(out);
+    var d = ce("div", null, flip
+      ? "두 과 모두 여성이 높은데 합치면 남성이 높다 → 역설 발생!"
+      : (allF ? "두 과 모두 여성이 높고 합계도 여성이 높다 → 역설 없음"
+              : "각 과의 우위가 엇갈립니다"));
+    d.style.cssText = "font-weight:700;color:" + (flip ? "var(--clay)" : "var(--fern)");
+    out.appendChild(d);
+    $("myMsg").innerHTML = flip
+      ? "두 그룹이 <b>서로 다른 쪽에 몰려 있을 때</b> 역설이 생깁니다."
+      : "두 그룹의 지원 분포가 <b>같으면</b> 역설이 생기지 않습니다.";
+  }
+  drawMY();
+
+  function drawAT(mode){
+    var out = $("atOut"); clear(out);
+    if (mode==="salary"){
+      var sal = [200,210,220,230,240,250,260,270,280,8000];
+      var sum = sal.reduce(function(a,b){ return a+b; },0);
+      var mean = sum/sal.length;
+      var srt = sal.slice().sort(function(a,b){ return a-b; });
+      var med = (srt[4]+srt[5])/2;
+      var below = sal.filter(function(s){ return s<mean; }).length;
+      out.appendChild(ce("div", null, "어느 회사 10명의 월급(만원)"));
+      out.appendChild(ce("div", null, "  " + sal.join(", ")));
+      out.appendChild(ce("div", null, "  평균 = " + mean.toFixed(0) + "만원"));
+      out.appendChild(ce("div", null, "  중앙값 = " + med.toFixed(0) + "만원"));
+      var d = ce("div", null, "  → 평균보다 적게 버는 사람이 " + below + "명 / 10명!");
+      d.style.cssText = "font-weight:700;color:var(--clay)";
+      out.appendChild(d);
+      $("atMsg").innerHTML = "<b>한 명의 극단값</b>이 평균을 끌어올렸습니다. '평균 연봉' 기사를 볼 때 조심해야 하는 이유입니다.";
+    } else {
+      out.appendChild(ce("div", null, "두 병원의 수술 성공률"));
+      out.appendChild(ce("div", null, "  경증 환자 : A병원 90/100 = 90%   B병원 190/200 = 95%"));
+      out.appendChild(ce("div", null, "  중증 환자 : A병원 100/200 = 50%   B병원 60/100 = 60%"));
+      out.appendChild(ce("div", null, "  ─────────────────────────────"));
+      out.appendChild(ce("div", null, "  전체      : A병원 190/300 = 63.3%  B병원 250/300 = 83.3%"));
+      var d = ce("div", null, "  → 둘 다 B병원이 높고 전체도 B병원 (여기선 역설 없음)");
+      d.style.color = "var(--fern)";
+      out.appendChild(d);
+      out.appendChild(ce("div", null, ""));
+      out.appendChild(ce("div", null, "그런데 A병원이 <중증 환자를 훨씬 많이> 받는다면?"));
+      out.appendChild(ce("div", null, "  전체 수치만 보고 'A병원이 나쁘다'고 할 수 있을까요?"));
+      $("atMsg").innerHTML = "병원을 고를 때는 <b>전체 성공률</b>이 아니라 <b>내 상태와 같은 환자의 성공률</b>을 봐야 합니다.";
+    }
+  }
+  $("atSalary").addEventListener("click", function(){
+    this.classList.add("on"); $("atHospital").classList.remove("on"); drawAT("salary");
+  });
+  $("atHospital").addEventListener("click", function(){
+    this.classList.add("on"); $("atSalary").classList.remove("on"); drawAT("hospital");
+  });
+  drawAT("salary");
+})();
+</script>
+</body>
+</html>

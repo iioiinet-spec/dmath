@@ -1,0 +1,1676 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>사고력 대수와 함수 5제 · 학생용 문제집</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+<style>
+:root{
+  --bg:#F3F1EC;--paper:#FFFFFF;--ink:#1A1C22;--ink-2:#555A63;--line:#DBD8D0;--rule:#C1BEB5;
+  --indigo:#2A4A7B;--cinnabar:#B34A2B;--olive:#5E6B2C;--wine:#7B3350;--teal:#1E6B66;
+  --ac:var(--indigo);
+  --f-disp:'Gowun Batang','Pretendard Variable',Pretendard,serif;
+  --f-body:'Pretendard Variable',Pretendard,'Malgun Gothic','Apple SD Gothic Neo',sans-serif;
+  --f-mono:'D2Coding','JetBrains Mono',Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);line-height:1.75;-webkit-font-smoothing:antialiased;
+  background-image:linear-gradient(rgba(0,0,0,.02) 1px,transparent 1px);background-size:100% 30px}
+.wrap{max-width:840px;margin:0 auto;padding:0 20px}
+header{padding:52px 0 30px;border-bottom:3px double var(--rule)}
+.kicker{font-family:var(--f-mono);font-size:12px;letter-spacing:.24em;color:var(--cinnabar);margin:0 0 12px}
+header h1{font-family:var(--f-disp);font-weight:700;font-size:clamp(30px,6vw,46px);line-height:1.24;margin:0 0 12px;letter-spacing:-.02em}
+header .sub{color:var(--ink-2);margin:0 0 20px;max-width:580px;font-size:15.5px}
+.metarow{display:flex;flex-wrap:wrap;gap:8px}
+.tag{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);background:var(--paper);border-radius:4px;padding:5px 11px;color:var(--ink-2)}
+.tag b{color:var(--ink)}
+.howbox{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:20px 22px;margin:26px 0}
+.howbox h2{font-family:var(--f-disp);font-weight:700;font-size:17px;margin:0 0 12px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media(max-width:700px){.steps{grid-template-columns:1fr 1fr}}
+.steps div{font-size:13.6px;color:var(--ink-2)}
+.steps div b{display:block;font-family:var(--f-mono);font-size:11.5px;color:var(--cinnabar);letter-spacing:.1em;margin-bottom:3px}
+.steps div span{color:var(--ink);font-weight:600;display:block;margin-bottom:2px}
+nav.toc{position:sticky;top:0;z-index:40;background:rgba(243,241,236,.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);margin-bottom:32px}
+.tocrow{display:flex;gap:5px;overflow-x:auto;padding:10px 0;scrollbar-width:none}
+.tocrow::-webkit-scrollbar{display:none}
+.tocbtn{flex:0 0 auto;border:1px solid var(--line);background:var(--paper);color:var(--ink-2);cursor:pointer;
+  font-family:var(--f-body);font-size:13.4px;font-weight:600;padding:7px 14px;border-radius:5px;white-space:nowrap;transition:.15s}
+.tocbtn:hover{border-color:var(--ink-2);color:var(--ink)}
+.tocbtn.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.tocbtn:focus-visible{outline:2px solid var(--cinnabar);outline-offset:2px}
+.set{display:none;padding-bottom:70px;animation:fade .3s ease}
+.set.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+.sethead{border-left:5px solid var(--ac);padding-left:18px;margin-bottom:26px}
+.sethead .no{font-family:var(--f-mono);font-size:12px;letter-spacing:.2em;color:var(--ac);margin:0}
+.sethead h2{font-family:var(--f-disp);font-weight:700;font-size:clamp(23px,4.6vw,32px);margin:5px 0 8px;line-height:1.3}
+.sethead .from{font-size:13.4px;color:var(--ink-2);margin:0}
+.sethead .from em{font-style:normal;color:var(--ink);font-weight:600}
+.badges{display:flex;flex-wrap:wrap;gap:7px;margin:14px 0 0}
+.bd{font-family:var(--f-mono);font-size:11.5px;padding:4px 10px;border-radius:99px;border:1px solid var(--line);background:var(--paper);color:var(--ink-2)}
+.bd.lv{border-color:var(--ac);color:var(--ac)}
+.q{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:22px 24px;margin-bottom:18px}
+.qh{display:flex;align-items:center;gap:11px;margin-bottom:13px;flex-wrap:wrap}
+.qno{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.1em;color:#fff;background:var(--ac);border-radius:4px;padding:3px 10px}
+.qkind{font-size:12.5px;color:var(--ink-2);border:1px dashed var(--line);border-radius:4px;padding:2px 9px}
+.qkind.talk{color:var(--cinnabar);border-color:#E3C8BE}
+.q p{margin:0 0 12px;font-size:15.6px}
+.q p:last-child{margin-bottom:0}
+.q ul,.q ol{margin:0 0 12px;padding-left:22px;font-size:15.4px}
+.q li{margin-bottom:6px}
+.given{background:#FAF8F2;border-left:3px solid var(--wine);border-radius:0 5px 5px 0;padding:12px 16px;margin:0 0 14px;font-size:14.8px}
+.given b{color:var(--wine)}
+.talkbox{background:#FCF4F0;border:1px solid #E9D1C6;border-radius:6px;padding:16px 18px;margin-top:14px}
+.talkbox h4{font-family:var(--f-disp);font-weight:700;font-size:15px;margin:0 0 9px;color:var(--cinnabar)}
+.talkbox ol{margin:0;padding-left:20px;font-size:14.8px}
+.talkbox li{margin-bottom:7px;color:#4A3026}
+.talkbox li:last-child{margin-bottom:0}
+details.hint{margin-top:14px;border-top:1px dashed var(--line);padding-top:12px}
+details.hint summary{cursor:pointer;font-size:13.6px;color:var(--ink-2);font-weight:600;list-style:none;display:inline-flex;gap:7px;align-items:center}
+details.hint summary::-webkit-details-marker{display:none}
+details.hint summary::before{content:"\25B8";color:var(--ac);transition:.2s}
+details.hint[open] summary::before{transform:rotate(90deg)}
+details.hint .body{font-size:14.4px;color:var(--ink-2);padding:10px 0 0 16px}
+.ansrow{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-top:14px}
+.ansrow label{font-family:var(--f-mono);font-size:12px;color:var(--ink-2)}
+.ansrow input{flex:1;min-width:150px;border:1px solid var(--line);border-radius:5px;padding:9px 12px;
+  font-family:var(--f-body);font-size:15px;background:#FCFCFA;color:var(--ink)}
+.ansrow input:focus{outline:2px solid var(--ac);outline-offset:1px}
+.chk{border:1px solid var(--ac);background:var(--paper);color:var(--ac);border-radius:5px;padding:9px 16px;
+  font-size:13.6px;font-weight:700;cursor:pointer;font-family:var(--f-body)}
+.chk:hover{background:var(--ac);color:#fff}
+.verdict{font-size:13.8px;font-weight:700}
+.verdict.ok{color:var(--olive)}
+.verdict.no{color:var(--cinnabar)}
+textarea.memo{width:100%;border:1px solid var(--line);border-radius:5px;padding:11px 13px;margin-top:12px;
+  font-family:var(--f-body);font-size:14.6px;background:#FCFCFA;color:var(--ink);resize:vertical;line-height:1.7}
+textarea.memo:focus{outline:2px solid var(--ac);outline-offset:1px}
+.lab{background:var(--paper);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-bottom:18px}
+.labbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;background:#F6F4EE;
+  border-bottom:1px solid var(--line);font-family:var(--f-mono);font-size:12px;color:var(--ink-2);flex-wrap:wrap}
+.tools{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.tbtn{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:4px;padding:6px 12px;
+  font-size:12.5px;cursor:pointer;font-family:var(--f-body);font-weight:600}
+.tbtn:hover{border-color:var(--ac);color:var(--ac)}
+.tbtn.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.tbtn:focus-visible{outline:2px solid var(--cinnabar);outline-offset:2px}
+.labin{padding:18px}
+.labfoot{padding:11px 16px;border-top:1px solid var(--line);background:#FAF9F4;font-size:13.4px;color:var(--ink-2)}
+.labfoot b{color:var(--ink)}
+input[type=range]{accent-color:var(--ac)}
+input[type=number]{padding:6px 9px;border:1px solid var(--line);border-radius:4px;font-family:var(--f-mono);background:#FCFCFA;color:var(--ink)}
+table.dt{width:100%;border-collapse:collapse;font-family:var(--f-mono);font-size:13px}
+table.dt th,table.dt td{border:1px solid var(--line);padding:6px 9px;text-align:center}
+table.dt th{background:#F1EFE8;font-weight:600}
+td.hi{background:#FAF4E6;color:var(--wine);font-weight:700}
+td.ok{background:#EFF2E6;color:var(--olive);font-weight:700}
+td.no{background:#FBEDE8;color:var(--cinnabar);font-weight:700}
+.tbscroll{overflow-x:auto}
+svg{max-width:100%;height:auto;display:block;margin:0 auto}
+.animals{display:flex;flex-wrap:wrap;gap:4px;justify-content:center}
+.an{width:30px;height:30px;display:grid;place-items:center;font-size:19px;border-radius:6px;border:1px solid var(--line);background:#FAF9F4}
+.an.ph{background:#E9EEF6}
+.an.rb{background:#F7ECE6}
+.legs{display:flex;flex-wrap:wrap;gap:2px;justify-content:center;margin-top:8px}
+.lg{width:6px;height:14px;border-radius:2px;background:var(--indigo)}
+.lg.r{background:var(--cinnabar)}
+.lifebar{display:flex;height:38px;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.seg{display:grid;place-items:center;font-family:var(--f-mono);font-size:11px;color:#fff;transition:.3s}
+.balance{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap}
+.pan{border:1px solid var(--line);border-radius:8px;padding:10px 14px;background:#FAF9F4;min-width:150px;text-align:center}
+.pan b{font-family:var(--f-mono);font-size:16px}
+.mach{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
+.mbox{border:2px solid var(--ac);border-radius:10px;padding:14px 20px;background:#F1F3F8;font-family:var(--f-mono);font-weight:700}
+.mio{border:1px solid var(--line);border-radius:6px;padding:6px 12px;background:#FAF9F4;font-family:var(--f-mono)}
+.footnote{font-size:12.6px;color:var(--ink-2);border-top:1px solid var(--line);padding-top:14px;margin-top:26px}
+.footnote b{color:var(--ink)}
+footer{border-top:3px double var(--rule);padding:26px 0 60px;color:var(--ink-2);font-size:13px;text-align:center}
+.prm{display:flex;justify-content:space-between;gap:10px;margin-top:34px}
+.prm button{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:5px;padding:11px 20px;
+  font-size:14px;font-weight:600;cursor:pointer;font-family:var(--f-body)}
+.prm button:hover{border-color:var(--ac);color:var(--ac)}
+.prm button:disabled{opacity:.35;cursor:default}
+@media print{
+  nav.toc,.prm,.chk,.tbtn{display:none}
+  .set{display:block !important;page-break-after:always}
+  body{background:#fff}
+  details.hint{display:none}
+}
+@media (prefers-reduced-motion: reduce){*{animation-duration:.001ms !important;transition-duration:.001ms !important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <p class="kicker">ALGEBRA &amp; FUNCTIONS · WORKBOOK</p>
+    <h1>모르는 것에<br>이름을 붙이면</h1>
+    <p class="sub">모르는 값을 <b>x</b>라 부르는 순간, 풀 수 없던 문제가 풀리기 시작합니다. 다섯 문제 모두 1500년 전부터 이어진 고전이며, <b>대수학(algebra)이라는 이름이 태어난 순간</b>도 함께 만납니다.</p>
+    <div class="metarow">
+      <span class="tag">대상 <b>초등 고학년 ~ 중등</b></span>
+      <span class="tag">세트 <b>5개</b></span>
+      <span class="tag">문항 <b>25개</b> (개별 20 · 토론 5)</span>
+      <span class="tag">권장 <b>세트당 25~35분</b></span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="howbox">
+    <h2>이 문제집을 푸는 방법</h2>
+    <div class="steps">
+      <div><b>STEP 1</b><span>손으로 먼저</span>식 없이 표를 그려 찾아봅니다.</div>
+      <div><b>STEP 2</b><span>x라고 부르기</span>모르는 값에 이름을 붙입니다.</div>
+      <div><b>STEP 3</b><span>짝과 토론</span>붉은 토론 문제를 서로 설득해 봅니다.</div>
+      <div><b>STEP 4</b><span>반드시 검산</span>구한 답을 원래 문장에 넣어 봅니다.</div>
+    </div>
+  </div>
+</div>
+
+<nav class="toc">
+  <div class="wrap tocrow">
+    <button class="tocbtn on" data-s="s1">01 · 꿩과 토끼</button>
+    <button class="tocbtn" data-s="s2">02 · 디오판토스</button>
+    <button class="tocbtn" data-s="s3">03 · 완전제곱</button>
+    <button class="tocbtn" data-s="s4">04 · 갈릴레오</button>
+    <button class="tocbtn" data-s="s5">05 · 최대와 최소</button>
+  </div>
+</nav>
+
+<main class="wrap">
+<!-- ============ SET 1 ============ -->
+<section class="set on" id="s1" data-ac="#2A4A7B">
+  <div class="sethead">
+    <p class="no">SET 01</p>
+    <h2>머리 35개, 다리 94개 — 꿩은 몇 마리일까</h2>
+    <p class="from">원전 · <em>학구산(鶴龜算)</em> — 중국 『손자산경(孫子算經)』 5세기경, 동아시아에서 1500년간 전해진 문제</p>
+    <div class="badges"><span class="bd lv">난이도 ★★☆</span><span class="bd">연립방정식</span><span class="bd">가정하고 고치기</span><span class="bd">여러 풀이</span></div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">1-1</span><span class="qkind">탐색</span></div>
+    <div class="given"><b>문제</b> — 우리 안에 <b>꿩</b>과 <b>토끼</b>가 함께 있습니다. 위에서 세니 <b>머리가 35개</b>, 아래에서 세니 <b>다리가 94개</b>였습니다. 꿩과 토끼는 각각 몇 마리일까요?<br><br>
+      (꿩은 다리가 2개, 토끼는 다리가 4개입니다.)</div>
+    <p>먼저 <b>표를 그려</b> 찾아보세요. 꿩의 수를 바꿔 가며 다리 수가 94가 되는 곳을 찾습니다.</p>
+    <div class="lab">
+      <div class="labbar"><span>guess-and-check</span>
+        <div class="tools">
+          <label style="font-family:var(--f-mono);font-size:12px">꿩</label>
+          <input id="gcP" type="range" min="0" max="35" value="30" style="width:180px" />
+          <span id="gcV" style="font-family:var(--f-mono);font-weight:700">30</span>
+          <button class="tbtn" id="gcTable">표로 한꺼번에</button>
+        </div>
+      </div>
+      <div class="labin">
+        <div class="animals" id="gcAnimals"></div>
+        <div class="legs" id="gcLegs"></div>
+        <div id="gcOut" style="font-family:var(--f-mono);font-size:14px;text-align:center;margin-top:14px"></div>
+        <div class="tbscroll" style="margin-top:14px"><table class="dt" id="gcTbl"></table></div>
+      </div>
+      <div class="labfoot" id="gcMsg">꿩 수를 움직이면 토끼 수와 다리 수가 함께 바뀝니다.</div>
+    </div>
+    <div class="ansrow">
+      <label>꿩과 토끼는 각각 몇 마리 (예: 꿩20,토끼15)</label>
+      <input id="a11" type="text" placeholder="꿩__,토끼__" />
+      <button class="chk" data-a="a11" data-v="꿩23,토끼12|23,12|꿩23토끼12" data-t="맞습니다. 꿩 23마리, 토끼 12마리입니다.">확인</button>
+      <span class="verdict" id="v11"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">1-2</span><span class="qkind">추론</span></div>
+    <p>하나씩 넣어 보지 않고 <b>한 번에</b> 구하는 방법이 있을까요? <b>"모두 꿩이라고 가정"</b>해 보세요.</p>
+    <ul>
+      <li>35마리가 <b>모두 꿩</b>이라면 다리는 2 × 35 = ___개입니다.</li>
+      <li>그런데 실제 다리는 94개이므로 ___개가 부족합니다.</li>
+      <li>꿩 한 마리를 토끼로 바꾸면 다리가 ___개 늘어납니다.</li>
+      <li>따라서 토끼는 ___마리입니다.</li>
+    </ul>
+    <div class="lab">
+      <div class="labbar"><span>assume-and-fix</span>
+        <div class="tools">
+          <button class="tbtn" id="afStep">한 마리씩 토끼로 바꾸기</button>
+          <button class="tbtn" id="afReset">처음부터</button>
+        </div>
+      </div>
+      <div class="labin"><div id="afOut" style="font-family:var(--f-mono);font-size:13.6px;line-height:1.9"></div></div>
+      <div class="labfoot" id="afMsg"></div>
+    </div>
+    <div class="ansrow">
+      <label>꿩 하나를 토끼로 바꾸면 다리는 몇 개 느나</label>
+      <input id="a12" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a12" data-v="2" data-t="맞습니다. 4 − 2 = 2개씩 늘어납니다.">확인</button>
+      <span class="verdict" id="v12"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">1-3</span><span class="qkind">확장</span></div>
+    <div class="given"><b>『손자산경』의 방법</b> — 옛날에는 <b>문자를 쓰지 않았습니다</b>. 그래서 이렇게 풀었습니다.<br><br>
+      ① 다리를 모두 <b>반으로</b> 나눈다 : 94 ÷ 2 = 47<br>
+      　(이제 꿩은 1씩, 토끼는 2씩 센 셈)<br>
+      ② 여기서 머리 수를 뺀다 : 47 − 35 = <b>12</b> → 토끼 수<br>
+      ③ 35 − 12 = <b>23</b> → 꿩 수</div>
+    <p>왜 ②에서 <b>토끼 수</b>가 나올까요? 아래에서 확인하고, 다른 수로도 실험해 보세요.</p>
+    <div class="lab">
+      <div class="labbar"><span>sunzi-method</span>
+        <div class="tools">
+          <label style="font-family:var(--f-mono);font-size:12px">머리</label>
+          <input id="smH" type="number" value="35" min="1" max="200" style="width:70px" />
+          <label style="font-family:var(--f-mono);font-size:12px">다리</label>
+          <input id="smF" type="number" value="94" min="0" max="800" style="width:78px" />
+          <button class="tbtn" id="smGo">풀기</button>
+          <button class="tbtn" id="smBad">해가 없는 예</button>
+        </div>
+      </div>
+      <div class="labin"><div id="smOut" style="font-family:var(--f-mono);font-size:13.4px;line-height:1.9"></div></div>
+      <div class="labfoot" id="smMsg"></div>
+    </div>
+    <div class="ansrow">
+      <label>머리 20, 다리 50이면 토끼는 몇 마리</label>
+      <input id="a13" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a13" data-v="5" data-t="맞습니다. 50÷2 − 20 = 5마리입니다.">확인</button>
+      <span class="verdict" id="v13"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">1-4</span><span class="qkind talk">토론</span></div>
+    <div class="talkbox">
+      <h4>모둠에서 이야기해 봅시다</h4>
+      <ol>
+        <li>이 문제를 <b>세 가지 방법</b>으로 풀었습니다. ① 하나씩 넣어 보기 ② 모두 꿩이라 가정하고 고치기 ③ 다리를 반으로 나누기. 각 방법의 <b>좋은 점과 아쉬운 점</b>은 무엇인가요?</li>
+        <li>모르는 값을 <b>x</b>라고 부르면 어떻게 될까요? 꿩을 x, 토끼를 y라 하고 식 두 개를 세워 보세요. <b>문자를 쓰는 것</b>이 왜 편리한가요?</li>
+        <li>머리가 10개인데 다리가 <b>21개</b>라면 어떻게 될까요? 또 다리가 <b>50개</b>라면요? <b>답이 없는 경우</b>는 언제 생기나요?</li>
+        <li>이 문제는 중국·한국·일본에서 <b>1500년 동안</b> 전해졌습니다. 왜 이렇게 오래 사랑받았을까요? 여러분이라면 어떤 동물로 바꿔 문제를 만들겠습니까?</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">1-5</span><span class="qkind">도전</span></div>
+    <p>조건을 바꿔 봅시다. <b>거미(다리 8개)</b>와 <b>잠자리(다리 6개)</b>가 있습니다. 머리 12개, 다리 86개라면 각각 몇 마리일까요?</p>
+    <div class="lab">
+      <div class="labbar"><span>other-animals</span>
+        <div class="tools" id="oaTools"></div>
+      </div>
+      <div class="labin"><div id="oaOut" style="font-family:var(--f-mono);font-size:13.4px;line-height:1.9"></div></div>
+      <div class="labfoot" id="oaMsg"></div>
+    </div>
+    <div class="ansrow">
+      <label>거미는 몇 마리</label>
+      <input id="a15" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a15" data-v="7" data-t="맞습니다. 거미 7마리, 잠자리 5마리입니다.">확인</button>
+      <span class="verdict" id="v15"></span>
+    </div>
+  </div>
+
+  <p class="footnote"><b>출처</b> — 중국의 수학책 <b>『손자산경(孫子算經)』</b>(5세기경)에 실린 문제로, 원문은 꿩(雉)과 토끼(兔)입니다. 일본에서는 학과 거북으로 바뀌어 <b>학구산(鶴龜算)</b>이라 불리며, 우리나라 옛 산학서에도 전해집니다.</p>
+</section>
+
+<!-- ============ SET 2 ============ -->
+<section class="set" id="s2" data-ac="#7B3350">
+  <div class="sethead">
+    <p class="no">SET 02</p>
+    <h2>묘비에 새겨진 수수께끼로 나이를 알아내다</h2>
+    <p class="from">원전 · <em>디오판토스의 묘비명</em> — 『그리스 사화집(Greek Anthology)』 5~6세기, 대수학의 아버지에게 바쳐진 문제</p>
+    <div class="badges"><span class="bd lv">난이도 ★★☆</span><span class="bd">일차방정식</span><span class="bd">분수 계수</span><span class="bd">최소공배수</span></div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">2-1</span><span class="qkind">탐색</span></div>
+    <div class="given"><b>묘비명</b> — 고대 그리스 수학자 <b>디오판토스</b>의 무덤에는 그의 나이 대신 이런 글이 새겨져 있었다고 전해집니다.<br><br>
+      "일생의 <b>1/6</b>은 소년으로 지냈고,<br>
+      그 뒤 <b>1/12</b>이 지나 수염이 났으며,<br>
+      다시 <b>1/7</b>이 지나 결혼했다.<br>
+      결혼하고 <b>5년</b> 뒤 아들이 태어났으나,<br>
+      아들은 아버지 일생의 <b>절반</b>만 살았고,<br>
+      아들이 죽고 <b>4년</b> 뒤 그도 세상을 떠났다."</div>
+    <p>디오판토스는 몇 살에 세상을 떠났을까요? 아래에서 나이를 바꿔 가며 <b>딱 맞아떨어지는 값</b>을 찾아보세요.</p>
+    <div class="lab">
+      <div class="labbar"><span>epitaph-solver</span>
+        <div class="tools">
+          <label style="font-family:var(--f-mono);font-size:12px">나이 추측</label>
+          <input id="epN" type="range" min="12" max="120" value="60" style="width:190px" />
+          <span id="epV" style="font-family:var(--f-mono);font-weight:700">60</span>
+        </div>
+      </div>
+      <div class="labin">
+        <div class="lifebar" id="epBar"></div>
+        <div id="epOut" style="font-family:var(--f-mono);font-size:13.4px;line-height:1.9;margin-top:14px"></div>
+      </div>
+      <div class="labfoot" id="epMsg"></div>
+    </div>
+    <div class="ansrow">
+      <label>디오판토스가 세상을 떠난 나이</label>
+      <input id="a21" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a21" data-v="84" data-t="맞습니다. 84세입니다.">확인</button>
+      <span class="verdict" id="v21"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">2-2</span><span class="qkind">추론</span></div>
+    <p>추측하지 않고 <b>식으로</b> 풀어 봅시다. 일생을 <b>x</b>라고 놓으세요.</p>
+    <div class="given">
+      소년기 <b>x/6</b> + 청년기 <b>x/12</b> + 결혼 전 <b>x/7</b> + <b>5</b> + 아들의 생애 <b>x/2</b> + <b>4</b> = <b>x</b><br><br>
+      ① 분수 계수를 모두 더하면 : 1/6 + 1/12 + 1/7 + 1/2 = ___<br>
+      ② 상수를 모으면 : 5 + 4 = ___<br>
+      ③ 정리하면 : (1 − ___)x = ___<br>
+      ④ 따라서 x = ___
+    </div>
+    <div class="lab">
+      <div class="labbar"><span>solve-step-by-step</span>
+        <div class="tools"><button class="tbtn" id="ssStep">한 단계씩 풀기</button><button class="tbtn" id="ssReset">처음부터</button></div>
+      </div>
+      <div class="labin"><div id="ssOut" style="font-family:var(--f-mono);font-size:13.6px;line-height:2"></div></div>
+      <div class="labfoot" id="ssMsg"></div>
+    </div>
+    <div class="ansrow">
+      <label>1/6 + 1/12 + 1/7 + 1/2 = ? (기약분수)</label>
+      <input id="a22" type="text" placeholder="예: 3/4" />
+      <button class="chk" data-a="a22" data-v="25/28" data-t="맞습니다. 통분하면 25/28 입니다.">확인</button>
+      <span class="verdict" id="v22"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">2-3</span><span class="qkind">발견</span></div>
+    <p>왜 답이 <b>84</b>처럼 딱 떨어질까요? 분모들을 다시 보세요.</p>
+    <ul>
+      <li>등장하는 분모는 <b>6, 12, 7, 2</b>입니다.</li>
+      <li>이 네 수의 <b>최소공배수</b>는 얼마인가요?</li>
+      <li>만약 나이가 84가 아니었다면 어떤 문제가 생길까요?</li>
+    </ul>
+    <div class="lab">
+      <div class="labbar"><span>why-84</span><div class="tools"><button class="tbtn" id="wyGo">확인하기</button></div></div>
+      <div class="labin"><div id="wyOut" style="font-family:var(--f-mono);font-size:13.4px;line-height:1.9"></div></div>
+      <div class="labfoot" id="wyMsg"></div>
+    </div>
+    <div class="ansrow">
+      <label>6, 12, 7, 2의 최소공배수</label>
+      <input id="a23" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a23" data-v="84" data-t="맞습니다. 정답인 나이와 정확히 같습니다!">확인</button>
+      <span class="verdict" id="v23"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">2-4</span><span class="qkind talk">토론</span></div>
+    <div class="talkbox">
+      <h4>모둠에서 이야기해 봅시다</h4>
+      <ol>
+        <li>문제를 만든 사람은 <b>답을 먼저 정하고</b> 문제를 만들었을 것입니다. 왜 그렇게 생각하나요? 만약 답이 85세였다면 무슨 일이 생겼을까요?</li>
+        <li>이 묘비명이 <b>실제 디오판토스의 무덤</b>에 있었을까요? 사실 이 글은 그가 죽고 <b>수백 년 뒤</b> 편찬된 시집에 실려 있습니다. 그래도 이 문제의 가치는 무엇일까요?</li>
+        <li>여러분도 <b>자기 나이를 맞히는 문제</b>를 만들어 보세요. 답이 깔끔하게 나오려면 어떤 분모를 골라야 할까요?</li>
+        <li>"모르는 값을 <b>x</b>라 부른다"는 생각은 지금은 당연하지만, 디오판토스 시대에는 <b>혁명적</b>이었습니다. 문자를 쓰지 않고 이 문제를 풀 수 있을까요?</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">2-5</span><span class="qkind">도전</span></div>
+    <p>직접 <b>나이 문제</b>를 만들어 보세요. 아래 도구로 분모를 골라 답이 정수가 되는지 확인할 수 있습니다.</p>
+    <div class="lab">
+      <div class="labbar"><span>make-your-own-riddle</span>
+        <div class="tools">
+          <label style="font-family:var(--f-mono);font-size:12px">분모들</label>
+          <input id="mkD" type="text" value="4,6,3" style="width:110px;padding:6px 9px;border:1px solid var(--line);border-radius:4px;font-family:var(--f-mono)" />
+          <label style="font-family:var(--f-mono);font-size:12px">상수 합</label>
+          <input id="mkC" type="number" value="6" min="1" max="60" style="width:66px" />
+          <button class="tbtn" id="mkGo">확인</button>
+        </div>
+      </div>
+      <div class="labin"><div id="mkOut" style="font-family:var(--f-mono);font-size:13.4px;line-height:1.9"></div></div>
+      <div class="labfoot" id="mkMsg"></div>
+    </div>
+    <div class="ansrow">
+      <label>아들이 죽었을 때 디오판토스의 나이</label>
+      <input id="a25" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a25" data-v="80" data-t="맞습니다. 84 − 4 = 80세입니다. 아들은 42세였습니다.">확인</button>
+      <span class="verdict" id="v25"></span>
+    </div>
+  </div>
+
+  <p class="footnote"><b>출처</b> — <b>『그리스 사화집』</b> 제14권에 실린 수수께끼 시입니다. <b>디오판토스</b>(3세기경)는 『산술(Arithmetica)』을 써서 <b>대수학의 아버지</b>로 불리며, 그의 책 여백에 페르마가 남긴 메모가 훗날 <b>페르마의 마지막 정리</b>가 되었습니다.</p>
+</section>
+<!-- ============ SET 3 ============ -->
+<section class="set" id="s3" data-ac="#B34A2B">
+  <div class="sethead">
+    <p class="no">SET 03</p>
+    <h2>넓이로 방정식을 푼 사람 — 대수학의 탄생</h2>
+    <p class="from">원전 · <em>알콰리즈미 『알자브르』</em>(820년) — 책 제목 <b>al-jabr</b>가 <b>algebra</b>의 어원이 되었다</p>
+    <div class="badges"><span class="bd lv">난이도 ★★★</span><span class="bd">이차방정식</span><span class="bd">완전제곱</span><span class="bd">기하적 해법</span></div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">3-1</span><span class="qkind">탐색</span></div>
+    <div class="given"><b>원전 문제</b> — "어떤 근의 제곱에 그 근 <b>10개</b>를 더하면 <b>39</b>가 된다. 그 근은 얼마인가?"<br><br>
+      오늘날의 식으로는 <b>x² + 10x = 39</b> 입니다.</div>
+    <p>알콰리즈미는 <b>넓이 그림</b>으로 풀었습니다. 아래에서 한 단계씩 따라가 보세요.</p>
+    <div class="lab">
+      <div class="labbar"><span>completing-the-square</span>
+        <div class="tools">
+          <button class="tbtn" id="csStep">다음 단계</button>
+          <button class="tbtn" id="csReset">처음부터</button>
+        </div>
+      </div>
+      <div class="labin">
+        <svg id="csSvg" viewBox="0 0 460 380" role="img" aria-label="완전제곱 기하 그림"></svg>
+        <div id="csOut" style="font-family:var(--f-mono);font-size:13.4px;text-align:center;margin-top:12px"></div>
+      </div>
+      <div class="labfoot" id="csMsg"></div>
+    </div>
+    <div class="ansrow">
+      <label>x² + 10x = 39 의 답 (양수)</label>
+      <input id="a31" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a31" data-v="3" data-t="맞습니다. 3² + 10×3 = 9 + 30 = 39 입니다.">확인</button>
+      <span class="verdict" id="v31"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">3-2</span><span class="qkind">추론</span></div>
+    <p>그림에서 한 일을 <b>식으로</b> 옮겨 봅시다.</p>
+    <div class="given">
+      x² + 10x = 39<br>
+      x² + 10x + <b>___</b> = 39 + <b>___</b> &nbsp;&nbsp;← 양변에 같은 수를 더한다<br>
+      (x + <b>___</b>)² = <b>___</b><br>
+      x + 5 = <b>___</b> &nbsp;→&nbsp; x = <b>___</b><br><br>
+      <b>비밀</b> — 더해야 할 수는 <b>(x의 계수 ÷ 2)의 제곱</b>입니다. 여기서는 (10 ÷ 2)² = 25.
+    </div>
+    <p>왜 하필 그 수일까요? 그림에서 <b>모서리에 채운 정사각형</b>의 한 변을 보세요.</p>
+    <div class="ansrow">
+      <label>양변에 더해야 할 수</label>
+      <input id="a32" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a32" data-v="25" data-t="맞습니다. (10÷2)² = 25 입니다.">확인</button>
+      <span class="verdict" id="v32"></span>
+    </div>
+    <details class="hint"><summary>알콰리즈미가 놓친 답</summary><div class="body">(x+5)² = 64 에서 x + 5 = 8 뿐 아니라 <b>x + 5 = −8</b>도 가능합니다. 그러면 x = <b>−13</b>이 됩니다. 실제로 (−13)² + 10×(−13) = 169 − 130 = 39 로 <b>맞습니다!</b> 그런데 알콰리즈미 시대에는 <b>음수를 수로 인정하지 않아</b> 이 답을 버렸습니다.</div></details>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">3-3</span><span class="qkind">적용</span></div>
+    <p>여러 이차방정식을 완전제곱으로 풀어 보세요. <b>계수를 바꿔 가며</b> 확인합니다.</p>
+    <div class="lab">
+      <div class="labbar"><span>quadratic-solver</span>
+        <div class="tools">
+          <span style="font-family:var(--f-mono);font-size:12px">x² +</span>
+          <input id="qsB" type="number" value="8" min="-20" max="20" style="width:62px" />
+          <span style="font-family:var(--f-mono);font-size:12px">x =</span>
+          <input id="qsC" type="number" value="20" min="-100" max="400" style="width:74px" />
+          <button class="tbtn" id="qsGo">완전제곱으로 풀기</button>
+        </div>
+      </div>
+      <div class="labin"><div id="qsOut" style="font-family:var(--f-mono);font-size:13.4px;line-height:2"></div></div>
+      <div class="labfoot" id="qsMsg"></div>
+    </div>
+    <div class="ansrow">
+      <label>x² + 6x = 7 의 양수 답</label>
+      <input id="a33" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a33" data-v="1" data-t="맞습니다. (x+3)² = 16 이므로 x = 1 또는 −7 입니다.">확인</button>
+      <span class="verdict" id="v33"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">3-4</span><span class="qkind talk">토론</span></div>
+    <div class="talkbox">
+      <h4>모둠에서 이야기해 봅시다</h4>
+      <ol>
+        <li>알콰리즈미는 <b>음수 답을 버렸습니다</b>. 넓이가 음수일 수 없으니 그림으로는 나타낼 수 없었기 때문입니다. 그렇다면 <b>−13은 답이 아닌 걸까요?</b> "답"이란 무엇으로 정해지나요?</li>
+        <li><b>algebra</b>는 아랍어 <b>al-jabr</b>(복원, 옮기기)에서 왔습니다. 오늘날 "이항"이라 부르는 것입니다. 왜 이 단어가 <b>학문 전체의 이름</b>이 되었을까요?</li>
+        <li>같은 문제를 <b>그림</b>으로 푸는 것과 <b>식</b>으로 푸는 것 중 어느 쪽이 좋을까요? 그림의 장점과 한계를 각각 말해 보세요.</li>
+        <li>어떤 이차방정식은 <b>답이 없습니다</b>(실수 범위에서). 예를 들어 x² + 2x + 5 = 0. 그림으로 그리면 무슨 일이 생길지 예상해 보세요.</li>
+      </ol>
+    </div>
+    <div class="lab" style="margin-top:16px">
+      <div class="labbar"><span>discriminant</span>
+        <div class="tools" id="dcTools"></div>
+      </div>
+      <div class="labin">
+        <svg id="dcSvg" viewBox="0 0 480 260" role="img" aria-label="이차함수 그래프와 근"></svg>
+        <div id="dcOut" style="font-family:var(--f-mono);font-size:13.2px;text-align:center;margin-top:10px"></div>
+      </div>
+      <div class="labfoot" id="dcMsg"></div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">3-5</span><span class="qkind">도전</span></div>
+    <p>알콰리즈미의 책에 나오는 또 다른 문제입니다.</p>
+    <div class="given"><b>원숭이 문제</b> — 원숭이 무리가 있습니다. 전체의 <b>1/4</b>을 제곱한 수만큼이 숲에서 놀고, 나머지 <b>3</b>마리는 나무 위에 있습니다. 원숭이는 모두 몇 마리일까요?<br><br>
+      식으로 : <b>(x/4)² + 3 = x</b></div>
+    <div class="ansrow">
+      <label>가능한 답 두 개 (예: 5,9)</label>
+      <input id="a35" type="text" placeholder="__,__" />
+      <button class="chk" data-a="a35" data-v="4,12|12,4" data-t="맞습니다. 4와 12 모두 식을 만족합니다.">확인</button>
+      <span class="verdict" id="v35"></span>
+    </div>
+    <details class="hint"><summary>푸는 방법</summary><div class="body">양변에 <b>16</b>을 곱하면 x² + 48 = 16x, 즉 <b>x² − 16x = −48</b>이 됩니다. 완전제곱으로 (x − 8)² = −48 + 64 = 16 이므로 x − 8 = ±4 입니다.</div></details>
+    <textarea class="memo" rows="2" placeholder="답이 두 개인데, 실제 상황에서는 둘 다 말이 될까요?"></textarea>
+  </div>
+
+  <p class="footnote"><b>출처</b> — <b>알콰리즈미</b>(780~850년경)가 820년경 바그다드에서 쓴 <b>『키타브 알자브르 왈무카발라』</b>(복원과 대비의 책)에 실린 문제입니다. 제목의 <b>al-jabr</b>가 <b>algebra</b>(대수학)의 어원이 되었고, 그의 이름 <b>al-Khwarizmi</b>는 <b>algorithm</b>(알고리즘)의 어원이 되었습니다.</p>
+</section>
+
+<!-- ============ SET 4 ============ -->
+<section class="set" id="s4" data-ac="#1E6B66">
+  <div class="sethead">
+    <p class="no">SET 04</p>
+    <h2>공은 어떻게 굴러 내려가는가 — 함수의 발견</h2>
+    <p class="from">원전 · <em>갈릴레오의 빗면 실험</em>(1604) — 물리 현상을 <b>수식</b>으로 나타낸 최초의 사례</p>
+    <div class="badges"><span class="bd lv">난이도 ★★☆</span><span class="bd">대응 관계</span><span class="bd">일차 vs 이차</span><span class="bd">변화율</span></div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">4-1</span><span class="qkind">탐색</span></div>
+    <div class="given"><b>실험</b> — 갈릴레오는 긴 빗면에 공을 굴리며 <b>같은 시간 간격</b>마다 공이 어디까지 갔는지 표시했습니다. 정확한 시계가 없어 <b>물시계</b>와 <b>노래 박자</b>를 썼다고 전해집니다.<br><br>
+      놀랍게도 <b>구간마다 지나간 거리</b>가 규칙을 이루었습니다.</div>
+    <p>아래에서 공을 굴려 보고, <b>각 구간의 길이</b>가 어떤 수를 이루는지 찾아보세요.</p>
+    <div class="lab">
+      <div class="labbar"><span>galileo-ramp</span>
+        <div class="tools">
+          <button class="tbtn" id="grStep">1초 더 굴리기</button>
+          <button class="tbtn" id="grReset">처음부터</button>
+        </div>
+      </div>
+      <div class="labin">
+        <svg id="grSvg" viewBox="0 0 620 240" role="img" aria-label="빗면 위 공의 위치"></svg>
+        <div class="tbscroll" style="margin-top:12px"><table class="dt" id="grTbl"></table></div>
+      </div>
+      <div class="labfoot" id="grMsg">각 구간에서 간 거리를 잘 보세요.</div>
+    </div>
+    <div class="ansrow">
+      <label>구간 거리가 이루는 수 (예: 2,4,6)</label>
+      <input id="a41" type="text" placeholder="__,__,__,__" />
+      <button class="chk" data-a="a41" data-v="1,3,5,7|1,3,5,7,9" data-t="맞습니다. 연속한 홀수 1, 3, 5, 7, … 입니다.">확인</button>
+      <span class="verdict" id="v41"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">4-2</span><span class="qkind">연결</span></div>
+    <p>구간 거리가 <b>1, 3, 5, 7, …</b> 이라면 <b>총 거리</b>는 어떻게 될까요? 홀수를 더해 보세요.</p>
+    <ul>
+      <li>1 = ___</li>
+      <li>1 + 3 = ___</li>
+      <li>1 + 3 + 5 = ___</li>
+      <li>1 + 3 + 5 + 7 = ___</li>
+    </ul>
+    <div class="given"><b>앞 단원과의 연결</b> — '논리와 증명' 단원에서 <b>홀수를 n개 더하면 n²</b>임을 ㄱ자 그림으로 증명했습니다. 그러므로 <b>총 거리 = (시간)²</b>에 비례합니다. 갈릴레오는 이것을 <b>실험</b>으로 발견했습니다.</div>
+    <div class="ansrow">
+      <label>t초 동안 간 총 거리는 무엇에 비례하나</label>
+      <input id="a42" type="text" placeholder="식으로" />
+      <button class="chk" data-a="a42" data-v="t^2|t²|t*t|시간의제곱" data-t="맞습니다. 거리 ∝ t² 입니다.">확인</button>
+      <span class="verdict" id="v42"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">4-3</span><span class="qkind">비교</span></div>
+    <p><b>일차함수</b>와 <b>이차함수</b>는 어떻게 다를까요? 표와 그래프를 함께 보세요.</p>
+    <div class="lab">
+      <div class="labbar"><span>linear-vs-quadratic</span>
+        <div class="tools">
+          <button class="tbtn on" id="lqTable">차이 표로 보기</button>
+          <button class="tbtn" id="lqGraph">그래프로 보기</button>
+        </div>
+      </div>
+      <div class="labin">
+        <div id="lqTableBox" class="tbscroll"><table class="dt" id="lqTbl"></table></div>
+        <svg id="lqSvg" viewBox="0 0 480 280" role="img" aria-label="일차함수와 이차함수 그래프" style="display:none"></svg>
+      </div>
+      <div class="labfoot" id="lqMsg"></div>
+    </div>
+    <div class="ansrow">
+      <label>이차함수에서 일정한 것은 무엇의 차이</label>
+      <input id="a43" type="text" placeholder="___의 차이" />
+      <button class="chk" data-a="a43" data-v="차이|차이의차이|이차차이" data-t="맞습니다. 이차함수는 '차이의 차이'가 일정합니다.">확인</button>
+      <span class="verdict" id="v43"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">4-4</span><span class="qkind talk">토론</span></div>
+    <div class="talkbox">
+      <h4>모둠에서 이야기해 봅시다</h4>
+      <ol>
+        <li>갈릴레오 이전에는 "무거운 것이 빨리 떨어진다"고 믿었습니다. 갈릴레오는 <b>실험</b>으로 이를 뒤집었습니다. 수학이 <b>자연을 설명하는 언어</b>가 된다는 것은 무슨 뜻일까요?</li>
+        <li>왜 <b>수직 낙하</b>가 아니라 <b>빗면</b>을 썼을까요? (힌트: 당시에는 정확한 시계가 없었습니다.)</li>
+        <li>표만 보고 <b>일차인지 이차인지</b> 알아내려면 무엇을 확인하면 될까요? 아래 도구로 규칙을 맞혀 보세요.</li>
+        <li>거리가 t²에 비례한다면, 시간이 <b>2배</b>가 될 때 거리는 몇 배가 될까요? <b>3배</b>라면요? 이것을 "비례한다"고 말할 수 있나요?</li>
+      </ol>
+    </div>
+    <div class="lab" style="margin-top:16px">
+      <div class="labbar"><span>function-machine</span>
+        <div class="tools">
+          <button class="tbtn" id="fmNew">새 규칙 만들기</button>
+          <button class="tbtn" id="fmFeed">숫자 넣어 보기</button>
+          <button class="tbtn" id="fmShow">규칙 확인</button>
+        </div>
+      </div>
+      <div class="labin">
+        <div class="mach">
+          <div class="mio" id="fmIn">입력 ?</div>
+          <div style="font-size:20px">→</div>
+          <div class="mbox">함수 기계</div>
+          <div style="font-size:20px">→</div>
+          <div class="mio" id="fmOut2">출력 ?</div>
+        </div>
+        <div class="tbscroll" style="margin-top:14px"><table class="dt" id="fmTbl"></table></div>
+      </div>
+      <div class="labfoot" id="fmMsg"></div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">4-5</span><span class="qkind">적용</span></div>
+    <p>실제 자유낙하에서는 <b>거리 = 4.9 × t²</b>(미터)입니다. 계산해 보세요.</p>
+    <div class="lab">
+      <div class="labbar"><span>free-fall</span>
+        <div class="tools">
+          <label style="font-family:var(--f-mono);font-size:12px">시간(초)</label>
+          <input id="ffT" type="number" value="3" min="1" max="10" step="0.5" style="width:70px" />
+          <button class="tbtn" id="ffGo">계산</button>
+        </div>
+      </div>
+      <div class="labin"><div id="ffOut" style="font-family:var(--f-mono);font-size:13.4px;line-height:1.9"></div></div>
+      <div class="labfoot" id="ffMsg"></div>
+    </div>
+    <div class="ansrow">
+      <label>3초 동안 떨어지는 거리 (m)</label>
+      <input id="a45" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a45" data-v="44.1" data-t="맞습니다. 4.9 × 9 = 44.1m 입니다.">확인</button>
+      <span class="verdict" id="v45"></span>
+    </div>
+  </div>
+
+  <p class="footnote"><b>출처</b> — <b>갈릴레오 갈릴레이</b>(1564–1642)가 1604년경 파도바에서 수행한 빗면 실험입니다. 결과는 1638년 『새로운 두 과학』에 실렸습니다. 자연 현상을 <b>수식</b>으로 나타낸 최초의 사례로 평가받으며, 근대 과학의 출발점이 되었습니다.</p>
+</section>
+
+<!-- ============ SET 5 ============ -->
+<section class="set" id="s5" data-ac="#5E6B2C">
+  <div class="sethead">
+    <p class="no">SET 05</p>
+    <h2>같은 울타리로 가장 넓은 땅을 둘러싸려면</h2>
+    <p class="from">원전 · <em>등주 문제(Isoperimetric problem)</em> — 디도 여왕의 전설과 이차함수 최적화</p>
+    <div class="badges"><span class="bd lv">난이도 ★★★</span><span class="bd">이차함수</span><span class="bd">꼭짓점</span><span class="bd">최대·최소</span></div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">5-1</span><span class="qkind">탐색</span></div>
+    <div class="given"><b>문제</b> — 길이 <b>40m</b>짜리 울타리로 <b>직사각형</b> 땅을 둘러싸려고 합니다. 넓이가 가장 넓어지는 모양은 무엇일까요?<br><br>
+      (가로를 x라 하면 세로는 20 − x 입니다. 왜 그럴까요?)</div>
+    <p>가로 길이를 바꿔 가며 넓이가 어떻게 변하는지 보세요.</p>
+    <div class="lab">
+      <div class="labbar"><span>fence-problem</span>
+        <div class="tools">
+          <label style="font-family:var(--f-mono);font-size:12px">가로</label>
+          <input id="fnX" type="range" min="1" max="19" value="4" style="width:180px" />
+          <span id="fnV" style="font-family:var(--f-mono);font-weight:700">4</span>
+          <button class="tbtn" id="fnTable">표로 보기</button>
+        </div>
+      </div>
+      <div class="labin">
+        <svg id="fnSvg" viewBox="0 0 500 300" role="img" aria-label="직사각형과 넓이 그래프"></svg>
+        <div id="fnOut" style="font-family:var(--f-mono);font-size:14px;text-align:center;margin-top:10px"></div>
+        <div class="tbscroll" style="margin-top:12px"><table class="dt" id="fnTbl"></table></div>
+      </div>
+      <div class="labfoot" id="fnMsg"></div>
+    </div>
+    <div class="ansrow">
+      <label>넓이가 최대일 때의 넓이 (㎡)</label>
+      <input id="a51" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a51" data-v="100" data-t="맞습니다. 10×10 정사각형일 때 100㎡ 로 최대입니다.">확인</button>
+      <span class="verdict" id="v51"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">5-2</span><span class="qkind">추론</span></div>
+    <p>왜 <b>정사각형</b>일 때 최대일까요? 식으로 확인해 봅시다.</p>
+    <div class="given">
+      넓이 = x(20 − x) = 20x − x² = −(x² − 20x)<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= −(x² − 20x + <b>100</b>) + <b>100</b> &nbsp;← 완전제곱 (세트 3과 같은 방법!)<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <b>−(x − 10)² + 100</b><br><br>
+      (x − 10)²은 <b>항상 0 이상</b>이므로, x = 10일 때 가장 작은 값 0이 되어 넓이가 <b>최대 100</b>이 됩니다.
+    </div>
+    <p>이 식의 모양을 <b>꼭짓점 형태</b>라고 합니다. 꼭짓점은 (___, ___)입니다.</p>
+    <div class="ansrow">
+      <label>꼭짓점의 좌표 (예: 5,50)</label>
+      <input id="a52" type="text" placeholder="__,__" />
+      <button class="chk" data-a="a52" data-v="10,100" data-t="맞습니다. 꼭짓점 (10, 100)이 최댓값을 알려 줍니다.">확인</button>
+      <span class="verdict" id="v52"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">5-3</span><span class="qkind">확장</span></div>
+    <p>조건을 바꿔 봅시다. 아래 세 가지 상황에서 최댓값을 찾아보세요.</p>
+    <div class="lab">
+      <div class="labbar"><span>variations</span>
+        <div class="tools" id="vrTools"></div>
+      </div>
+      <div class="labin">
+        <svg id="vrSvg" viewBox="0 0 500 260" role="img" aria-label="상황별 그래프"></svg>
+        <div id="vrOut" style="font-family:var(--f-mono);font-size:13.2px;line-height:1.9;margin-top:10px"></div>
+      </div>
+      <div class="labfoot" id="vrMsg"></div>
+    </div>
+    <div class="ansrow">
+      <label>한쪽이 벽일 때(울타리 40m) 최대 넓이</label>
+      <input id="a53" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a53" data-v="200" data-t="맞습니다. 벽을 쓰면 넓이가 2배인 200㎡ 가 됩니다.">확인</button>
+      <span class="verdict" id="v53"></span>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">5-4</span><span class="qkind talk">토론</span></div>
+    <div class="talkbox">
+      <h4>모둠에서 이야기해 봅시다</h4>
+      <ol>
+        <li>전설에 따르면 <b>디도 여왕</b>은 "소가죽 하나로 덮을 만큼의 땅"을 얻기로 했습니다. 그녀는 가죽을 <b>가늘게 잘라 긴 끈</b>으로 만들어 넓은 땅을 둘렀다고 합니다. 이 이야기가 이 단원과 어떻게 연결되나요?</li>
+        <li>직사각형이 아니라 <b>어떤 모양이든</b> 괜찮다면, 같은 길이로 가장 넓은 땅을 둘러싸는 모양은 무엇일까요? 왜 그럴까요?</li>
+        <li>"합이 일정할 때 곱이 최대가 되는 경우"를 여러 수로 확인해 보세요. 어떤 규칙이 보이나요? 이것을 <b>말로</b> 설명해 보세요.</li>
+        <li>반대로 <b>최소</b>를 구하는 문제도 있습니다. 어떤 상황에서 최소가 중요할까요? 예를 들어 보세요.</li>
+      </ol>
+    </div>
+    <div class="lab" style="margin-top:16px">
+      <div class="labbar"><span>sum-and-product</span>
+        <div class="tools">
+          <label style="font-family:var(--f-mono);font-size:12px">두 수의 합</label>
+          <input id="spS" type="number" value="20" min="2" max="100" style="width:70px" />
+          <button class="tbtn" id="spGo">곱이 최대인 경우 찾기</button>
+        </div>
+      </div>
+      <div class="labin"><div id="spOut" style="font-family:var(--f-mono);font-size:13.4px;line-height:1.9"></div></div>
+      <div class="labfoot" id="spMsg"></div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="qh"><span class="qno">5-5</span><span class="qkind">도전</span></div>
+    <div class="given"><b>상자 만들기</b> — 한 변이 <b>12cm</b>인 정사각형 종이가 있습니다. 네 모서리에서 한 변이 <b>x</b>인 작은 정사각형을 잘라 내고 접어 <b>뚜껑 없는 상자</b>를 만듭니다. 부피가 가장 큰 상자를 만들려면 x를 얼마로 해야 할까요?</div>
+    <div class="lab">
+      <div class="labbar"><span>open-box</span>
+        <div class="tools">
+          <label style="font-family:var(--f-mono);font-size:12px">자를 길이 x</label>
+          <input id="bxX" type="range" min="1" max="55" value="10" style="width:170px" />
+          <span id="bxV" style="font-family:var(--f-mono);font-weight:700">1.0</span>
+          <button class="tbtn" id="bxBest">최대 찾기</button>
+        </div>
+      </div>
+      <div class="labin">
+        <svg id="bxSvg" viewBox="0 0 520 250" role="img" aria-label="상자 전개도와 부피 그래프"></svg>
+        <div id="bxOut" style="font-family:var(--f-mono);font-size:13.6px;text-align:center;margin-top:10px"></div>
+      </div>
+      <div class="labfoot" id="bxMsg"></div>
+    </div>
+    <div class="ansrow">
+      <label>부피가 최대일 때 x (cm)</label>
+      <input id="a55" type="text" placeholder="숫자만" />
+      <button class="chk" data-a="a55" data-v="2" data-t="맞습니다. x=2일 때 부피 128㎤ 로 최대입니다.">확인</button>
+      <span class="verdict" id="v55"></span>
+    </div>
+  </div>
+
+  <p class="footnote"><b>출처</b> — <b>등주 문제</b>는 고대부터 알려진 문제로, 카르타고를 세운 <b>디도 여왕</b>의 전설과 함께 전해집니다. 같은 둘레로 가장 넓은 넓이를 갖는 도형이 <b>원</b>이라는 사실은 직관적으로는 오래전부터 알려졌으나, <b>엄밀한 증명은 19세기</b>에야 완성되었습니다.</p>
+</section>
+
+<div class="prm">
+  <button id="prev">← 이전 세트</button>
+  <button id="next">다음 세트 →</button>
+</div>
+
+</main>
+
+<footer>세영코딩연구소 · 사고력 대수와 함수 5제 학생용 문제집 · 모르는 것에 이름을 붙이는 순간 길이 열립니다</footer>
+<script>
+(function(){
+  "use strict";
+  var $ = function(id){ return document.getElementById(id); };
+  var NS = "http://www.w3.org/2000/svg";
+  function el(tag, attrs, parent){
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function ce(tag, cls, t){
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (t !== undefined) e.textContent = t;
+    return e;
+  }
+  function clear(n){ while (n.firstChild) n.removeChild(n.firstChild); }
+  function gcd(a,b){ a=Math.abs(a); b=Math.abs(b); while(b){ var t=a%b; a=b; b=t; } return a; }
+  function frac(n,d){
+    var g = gcd(n,d) || 1;
+    n/=g; d/=g;
+    if (d<0){ n=-n; d=-d; }
+    return d===1 ? String(n) : (n+"/"+d);
+  }
+
+  /* ---------- 탭 ---------- */
+  var ORDER = ["s1","s2","s3","s4","s5"], cur = 0;
+  function show(i){
+    cur = Math.max(0, Math.min(ORDER.length-1, i));
+    var id = ORDER[cur];
+    document.querySelectorAll(".set").forEach(function(s){ s.classList.toggle("on", s.id===id); });
+    document.querySelectorAll(".tocbtn").forEach(function(b){ b.classList.toggle("on", b.dataset.s===id); });
+    document.documentElement.style.setProperty("--ac", $(id).dataset.ac || "#2A4A7B");
+    $("prev").disabled = cur===0; $("next").disabled = cur===ORDER.length-1;
+    window.scrollTo({ top:0, behavior:"smooth" });
+  }
+  document.querySelectorAll(".tocbtn").forEach(function(b){
+    b.addEventListener("click", function(){ show(ORDER.indexOf(b.dataset.s)); });
+  });
+  $("prev").addEventListener("click", function(){ show(cur-1); });
+  $("next").addEventListener("click", function(){ show(cur+1); });
+
+  /* ---------- 채점 ---------- */
+  function norm(s){
+    return String(s).replace(/\s+/g,"").replace(/마리/g,"").replace(/개$/,"").replace(/세$/,"")
+      .replace(/살$/,"").replace(/[.]$/,"").replace(/cm$/,"").replace(/m²$/,"").replace(/㎡$/,"")
+      .replace(/m$/,"").replace(/²/g,"^2").replace(/×/g,"*").toLowerCase();
+  }
+  document.querySelectorAll(".chk").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var inp = $(btn.dataset.a), v = $("v"+btn.dataset.a.slice(1));
+      if (!inp || !v) return;
+      var val = norm(inp.value);
+      if (!val){ v.textContent = "답을 먼저 입력하세요"; v.className="verdict"; return; }
+      var ok = btn.dataset.v.split("|").some(function(x){ return norm(x)===val; });
+      v.textContent = ok ? ("정답 — " + btn.dataset.t) : "다시 생각해 보세요";
+      v.className = "verdict " + (ok ? "ok" : "no");
+    });
+  });
+
+  /* ================= SET 1 : 꿩과 토끼 ================= */
+  function drawGC(){
+    var p = +$("gcP").value, r = 35 - p;
+    $("gcV").textContent = p;
+    var box = $("gcAnimals"); clear(box);
+    for (var i=0;i<p;i++) box.appendChild(ce("div","an ph","\uD83D\uDC26"));
+    for (var j=0;j<r;j++) box.appendChild(ce("div","an rb","\uD83D\uDC07"));
+    var legs = 2*p + 4*r;
+    var lb = $("gcLegs"); clear(lb);
+    var showLegs = Math.min(legs, 140);
+    for (var k=0;k<showLegs;k++){
+      lb.appendChild(ce("div","lg" + (k >= 2*p ? " r" : "")));
+    }
+    var out = $("gcOut"); clear(out);
+    out.appendChild(ce("div", null, "꿩 " + p + "마리 · 토끼 " + r + "마리"));
+    var d = ce("div", null, "머리 " + (p+r) + "개 · 다리 " + legs + "개" +
+      (legs===94 ? "   ← 정답!" : (legs<94 ? "   (94보다 " + (94-legs) + "개 부족)" : "   (94보다 " + (legs-94) + "개 많음)")));
+    d.style.cssText = "font-weight:700;color:" + (legs===94 ? "var(--olive)" : "var(--ink-2)");
+    out.appendChild(d);
+    $("gcMsg").innerHTML = legs===94
+      ? "<b style='color:var(--olive)'>찾았습니다!</b> 꿩 <b>23</b>마리, 토끼 <b>12</b>마리입니다."
+      : "꿩 수를 움직이면 다리 수가 <b>2씩</b> 바뀝니다. 왜 그럴까요?";
+  }
+  $("gcP").addEventListener("input", function(){ drawGC(); clear($("gcTbl")); });
+  $("gcTable").addEventListener("click", function(){
+    var t = $("gcTbl"); clear(t);
+    var hd = ce("tr");
+    ["꿩","토끼","다리 수","94와 비교"].forEach(function(h){ hd.appendChild(ce("th",null,h)); });
+    t.appendChild(hd);
+    for (var p=28;p>=18;p--){
+      var r = 35-p, legs = 2*p+4*r;
+      var tr = ce("tr");
+      tr.appendChild(ce("td",null,String(p)));
+      tr.appendChild(ce("td",null,String(r)));
+      tr.appendChild(ce("td", legs===94?"ok":null, String(legs)));
+      tr.appendChild(ce("td", legs===94?"ok":null, legs===94 ? "정답!" : (legs>94 ? "+"+(legs-94) : String(legs-94))));
+      t.appendChild(tr);
+    }
+    $("gcMsg").innerHTML = "꿩이 <b>1마리 늘면</b> 다리가 <b>2개 줄어듭니다</b>. 그래서 답이 하나로 정해집니다.";
+  });
+  drawGC();
+
+  var AF = { r:0 };
+  function drawAF(){
+    var r = AF.r, p = 35-r, legs = 2*p+4*r;
+    var out = $("afOut"); clear(out);
+    out.appendChild(ce("div", null, "모두 꿩이라고 가정 → 다리 2 × 35 = 70개"));
+    out.appendChild(ce("div", null, "실제 다리 94개 → " + (94-70) + "개 부족"));
+    out.appendChild(ce("div", null, ""));
+    out.appendChild(ce("div", null, "꿩 → 토끼로 바꾼 횟수 : " + r + "번"));
+    out.appendChild(ce("div", null, "현재 : 꿩 " + p + "마리, 토끼 " + r + "마리 → 다리 " + legs + "개"));
+    var d = ce("div", null, legs===94 ? "→ 94개 도달! 토끼는 12마리" : "→ 아직 " + (94-legs) + "개 부족");
+    d.style.cssText = "font-weight:700;color:" + (legs===94 ? "var(--olive)" : "var(--cinnabar)");
+    out.appendChild(d);
+    $("afMsg").innerHTML = legs===94
+      ? "한 번 바꿀 때마다 다리가 <b>2개씩</b> 늘어납니다. 24 ÷ 2 = <b>12</b>번이면 됩니다."
+      : "한 번 바꿀 때마다 다리가 <b>2개</b> 늘어납니다. 계속 눌러 보세요.";
+  }
+  $("afStep").addEventListener("click", function(){ if (AF.r<35) AF.r++; drawAF(); });
+  $("afReset").addEventListener("click", function(){ AF.r=0; drawAF(); });
+  drawAF();
+
+  function solveHR(h, f){
+    if (f % 2 !== 0) return null;
+    var r = f/2 - h, p = h - r;
+    if (r < 0 || p < 0) return null;
+    return [p, r];
+  }
+  function runSM(h, f){
+    var out = $("smOut"); clear(out);
+    out.appendChild(ce("div", null, "머리 " + h + "개, 다리 " + f + "개"));
+    out.appendChild(ce("div", null, "① 다리를 반으로 : " + f + " ÷ 2 = " + (f/2)));
+    var s = solveHR(h,f);
+    if (!s){
+      var bad = ce("div", null, f%2 ? "→ 다리가 홀수라서 불가능합니다!"
+        : "→ " + (f/2) + " − " + h + " = " + (f/2-h) + " : 범위를 벗어나 불가능합니다!");
+      bad.style.cssText = "font-weight:700;color:var(--cinnabar)";
+      out.appendChild(bad);
+      out.appendChild(ce("div", null, "  (다리 수는 " + (2*h) + " 이상 " + (4*h) + " 이하인 짝수여야 합니다)"));
+      $("smMsg").innerHTML = "모든 문제에 답이 있는 것은 아닙니다. <b>조건을 만족하는 경우가 없을 수도</b> 있습니다.";
+      return;
+    }
+    out.appendChild(ce("div", null, "② " + (f/2) + " − " + h + " = " + s[1] + "  → 토끼 수"));
+    out.appendChild(ce("div", null, "③ " + h + " − " + s[1] + " = " + s[0] + "  → 꿩 수"));
+    var d = ce("div", null, "검산 : 머리 " + (s[0]+s[1]) + "개 · 다리 " + (2*s[0]+4*s[1]) + "개 ✓");
+    d.style.cssText = "font-weight:700;color:var(--olive)";
+    out.appendChild(d);
+    $("smMsg").innerHTML = "다리를 반으로 나누면 꿩은 <b>1</b>, 토끼는 <b>2</b>가 됩니다. 머리 수보다 <b>넘치는 만큼</b>이 토끼입니다.";
+  }
+  $("smGo").addEventListener("click", function(){
+    runSM(Math.max(1,+$("smH").value||35), Math.max(0,+$("smF").value||94));
+  });
+  $("smBad").addEventListener("click", function(){
+    $("smH").value = 10; $("smF").value = 21; runSM(10, 21);
+  });
+  runSM(35, 94);
+
+  var OACASES = [
+    { n:"거미(8)와 잠자리(6)", a:8, b:6, h:12, f:86 },
+    { n:"닭(2)과 돼지(4)", a:2, b:4, h:30, f:88 },
+    { n:"세발자전거(3)와 자동차(4)", a:3, b:4, h:20, f:68 }
+  ];
+  var oaSel = 0;
+  (function(){
+    var box = $("oaTools");
+    OACASES.forEach(function(c,i){
+      var b = ce("button","tbtn"+(i===0?" on":""), c.n);
+      b.addEventListener("click", function(){
+        box.querySelectorAll(".tbtn").forEach(function(x){ x.classList.remove("on"); });
+        b.classList.add("on"); oaSel=i; drawOA();
+      });
+      box.appendChild(b);
+    });
+  })();
+  function drawOA(){
+    var c = OACASES[oaSel];
+    var out = $("oaOut"); clear(out);
+    out.appendChild(ce("div", null, c.n + " · 머리 " + c.h + "개, 다리 " + c.f + "개"));
+    out.appendChild(ce("div", null, "모두 " + c.b + "개짜리라 가정 → " + (c.b*c.h) + "개"));
+    var diff = c.f - c.b*c.h;
+    var step = c.a - c.b;
+    var cnt = diff/step;
+    out.appendChild(ce("div", null, "차이 " + diff + "개 ÷ (" + c.a + "−" + c.b + "=" + step + ") = " + cnt + "마리"));
+    var found = [];
+    for (var x=0;x<=c.h;x++){
+      var y = c.h - x;
+      if (c.a*x + c.b*y === c.f) found.push([x,y]);
+    }
+    var d = ce("div", null, found.length
+      ? "→ 다리 " + c.a + "개짜리 " + found[0][0] + "마리, 다리 " + c.b + "개짜리 " + found[0][1] + "마리"
+      : "→ 조건을 만족하는 경우가 없습니다");
+    d.style.cssText = "font-weight:700;color:" + (found.length ? "var(--olive)" : "var(--cinnabar)");
+    out.appendChild(d);
+    if (found.length){
+      out.appendChild(ce("div", null, "검산 : " + c.a + "×" + found[0][0] + " + " + c.b + "×" + found[0][1] +
+        " = " + (c.a*found[0][0]+c.b*found[0][1]) + " ✓"));
+    }
+    $("oaMsg").innerHTML = "동물이 바뀌어도 <b>방법은 똑같습니다</b>. 하나를 가정하고 차이만큼 바꾸면 됩니다.";
+  }
+  drawOA();
+
+  /* ================= SET 2 : 디오판토스 ================= */
+  var EPSEG = [
+    { n:"소년기", d:6, c:"#2A4A7B" },
+    { n:"청년기", d:12, c:"#1E6B66" },
+    { n:"결혼 전", d:7, c:"#5E6B2C" },
+    { n:"결혼 후", d:0, k:5, c:"#8F7016" },
+    { n:"아들 생애", d:2, c:"#7B3350" },
+    { n:"그 뒤", d:0, k:4, c:"#B34A2B" }
+  ];
+  function drawEP(){
+    var x = +$("epN").value;
+    $("epV").textContent = x;
+    var bar = $("epBar"); clear(bar);
+    var total = 0;
+    EPSEG.forEach(function(s){
+      var len = s.d ? x/s.d : s.k;
+      total += len;
+      var e = ce("div","seg", len >= x*0.07 ? s.n : "");
+      e.style.cssText = "flex:" + Math.max(len,0.1) + ";background:" + s.c;
+      bar.appendChild(e);
+    });
+    var out = $("epOut"); clear(out);
+    EPSEG.forEach(function(s){
+      var len = s.d ? x/s.d : s.k;
+      var txt = s.d ? (x + "/" + s.d + " = " + (Math.round(len*100)/100)) : String(s.k);
+      out.appendChild(ce("div", null, "  " + s.n.padEnd(8," ") + " : " + txt + "년"));
+    });
+    var diff = total - x;
+    var d = ce("div", null, "합계 " + (Math.round(total*100)/100) + "년  vs  나이 " + x + "세  → 차이 " +
+      (Math.round(diff*100)/100));
+    d.style.cssText = "font-weight:700;color:" + (Math.abs(diff)<1e-9 ? "var(--olive)" : "var(--cinnabar)");
+    out.appendChild(d);
+    var allInt = EPSEG.every(function(s){ return !s.d || Math.abs(x/s.d - Math.round(x/s.d)) < 1e-9; });
+    $("epMsg").innerHTML = Math.abs(diff)<1e-9
+      ? "<b style='color:var(--olive)'>딱 맞습니다!</b> 디오판토스는 <b>84세</b>에 세상을 떠났습니다."
+      : (diff > 0 ? "합계가 나이보다 <b>큽니다</b>. 나이를 <b>늘려</b> 보세요."
+                  : "합계가 나이보다 <b>작습니다</b>. 나이를 <b>줄여</b> 보세요.")
+        + (allInt ? " (지금 나이는 모든 단계가 정수로 떨어집니다)" : "");
+  }
+  $("epN").addEventListener("input", drawEP);
+  drawEP();
+
+  var SS = { step:0 };
+  var SSSTEPS = [
+    "x/6 + x/12 + x/7 + 5 + x/2 + 4 = x",
+    "분수 계수를 모두 더한다 : 1/6 + 1/12 + 1/7 + 1/2",
+    "  통분 (분모 84) : 14/84 + 7/84 + 12/84 + 42/84 = 75/84 = <b>25/28</b>",
+    "상수를 모은다 : 5 + 4 = <b>9</b>",
+    "정리하면 : (25/28)x + 9 = x",
+    "  9 = x − (25/28)x = (3/28)x",
+    "x = 9 × 28/3 = <b>84</b>",
+    "검산 : 14 + 7 + 12 + 5 + 42 + 4 = <b>84</b> ✓"
+  ];
+  function drawSS(){
+    var out = $("ssOut"); clear(out);
+    for (var i=0;i<SS.step;i++){
+      var d = ce("div");
+      d.innerHTML = SSSTEPS[i];
+      d.style.cssText = "padding:3px 0";
+      if (i===SS.step-1) d.style.background = "#FAF4E6";
+      out.appendChild(d);
+    }
+    if (SS.step===0) out.appendChild(ce("div", null, "버튼을 눌러 한 단계씩 풀어 보세요."));
+    $("ssMsg").innerHTML = SS.step>=SSSTEPS.length
+      ? "분수 계수를 모으고 <b>양변을 정리</b>하면 답이 나옵니다."
+      : "단계 " + SS.step + " / " + SSSTEPS.length;
+  }
+  $("ssStep").addEventListener("click", function(){ if (SS.step<SSSTEPS.length) SS.step++; drawSS(); });
+  $("ssReset").addEventListener("click", function(){ SS.step=0; drawSS(); });
+  drawSS();
+
+  $("wyGo").addEventListener("click", function(){
+    var out = $("wyOut"); clear(out);
+    out.appendChild(ce("div", null, "등장하는 분모 : 6, 12, 7, 2"));
+    function lcm(a,b){ return a/gcd(a,b)*b; }
+    var L = [6,12,7,2].reduce(lcm);
+    out.appendChild(ce("div", null, "최소공배수 = " + L));
+    out.appendChild(ce("div", null, ""));
+    out.appendChild(ce("div", null, "84를 각 분모로 나누면"));
+    [6,12,7,2].forEach(function(d){
+      out.appendChild(ce("div", null, "  84 ÷ " + d + " = " + (84/d) + "  (정수!)"));
+    });
+    out.appendChild(ce("div", null, ""));
+    out.appendChild(ce("div", null, "만약 나이가 85였다면"));
+    [6,12,7,2].forEach(function(d){
+      out.appendChild(ce("div", null, "  85 ÷ " + d + " = " + (Math.round(85/d*100)/100) + "  (정수가 아님)"));
+    });
+    var e = ce("div", null, "→ 문제를 만든 사람이 답을 84로 정해 두고 분모를 골랐다!");
+    e.style.cssText = "font-weight:700;color:var(--wine)";
+    out.appendChild(e);
+    $("wyMsg").innerHTML = "최소공배수 <b>84</b>가 곧 정답입니다. 우연이 아니라 <b>설계된 것</b>입니다.";
+  });
+  $("wyGo").click();
+
+  $("mkGo").addEventListener("click", function(){
+    var ds = $("mkD").value.split(",").map(function(s){ return parseInt(s,10); })
+              .filter(function(n){ return n>0; });
+    var c = Math.max(1, +$("mkC").value || 1);
+    var out = $("mkOut"); clear(out);
+    if (!ds.length){ out.appendChild(ce("div",null,"분모를 쉼표로 입력하세요 (예: 4,6,3)")); return; }
+    var num = 0, den = 1;
+    ds.forEach(function(d){ num = num*d + den; den *= d; });
+    var g = gcd(num, den) || 1;
+    num/=g; den/=g;
+    out.appendChild(ce("div", null, "분모 : " + ds.join(", ")));
+    out.appendChild(ce("div", null, "계수 합 = " + frac(num, den)));
+    if (num >= den){
+      var bad = ce("div", null, "→ 계수 합이 1 이상이라 문제가 성립하지 않습니다");
+      bad.style.cssText = "font-weight:700;color:var(--cinnabar)";
+      out.appendChild(bad);
+      $("mkMsg").innerHTML = "분수들의 합이 <b>1보다 작아야</b> 답이 나옵니다.";
+      return;
+    }
+    var xn = c*den, xd = den-num;
+    var g2 = gcd(xn, xd) || 1;
+    var ans = frac(xn, xd);
+    var isInt = (xn % xd === 0);
+    out.appendChild(ce("div", null, "(1 − " + frac(num,den) + ")x = " + c));
+    var d2 = ce("div", null, "x = " + ans + (isInt ? "  (정수!)" : "  (정수가 아님)"));
+    d2.style.cssText = "font-weight:700;color:" + (isInt ? "var(--olive)" : "var(--cinnabar)");
+    out.appendChild(d2);
+    if (isInt){
+      var x = xn/xd;
+      out.appendChild(ce("div", null, "각 단계 : " + ds.map(function(d){
+        return x + "/" + d + " = " + (Math.round(x/d*100)/100);
+      }).join(" · ")));
+      var allInt = ds.every(function(d){ return x % d === 0; });
+      out.appendChild(ce("div", null, allInt ? "  모든 단계가 정수 ✓" : "  일부 단계가 정수가 아님"));
+    }
+    $("mkMsg").innerHTML = isInt
+      ? "좋은 문제가 되려면 <b>답도 정수</b>이고 <b>각 단계도 정수</b>여야 합니다."
+      : "분모나 상수를 바꿔 <b>정수가 되도록</b> 만들어 보세요.";
+  });
+  $("mkGo").click();
+
+  /* ================= SET 3 : 완전제곱 ================= */
+  var CS = { step:0 };
+  var CSTEXT = [
+    "x² + 10x = 39 — 넓이로 생각해 봅시다",
+    "① 한 변이 x인 정사각형 : 넓이 x²",
+    "② 10x를 5x짜리 직사각형 <b>2개</b>로 나눠 오른쪽과 아래에 붙인다",
+    "③ 지금까지 넓이 = x² + 10x = <b>39</b> (ㄱ자 모양)",
+    "④ 빈 모서리에 한 변 5인 정사각형(넓이 <b>25</b>)을 채운다",
+    "⑤ 전체는 한 변 (x+5)인 정사각형 : (x+5)² = 39 + 25 = <b>64</b>",
+    "⑥ x + 5 = 8  →  <b>x = 3</b>"
+  ];
+  function drawCS(){
+    var svg = $("csSvg"); clear(svg);
+    el("rect",{x:0,y:0,width:460,height:380,fill:"#FAF9F4"},svg);
+    var ox=90, oy=290, ux=22;   // x=3 → 3*22=66px, 5 → 110px
+    var xs = 3*ux, fs = 5*ux;
+    var st = CS.step;
+    // x² 정사각형
+    if (st>=1){
+      el("rect",{x:ox,y:oy-xs,width:xs,height:xs,fill:"#2A4A7B",opacity:"0.85"},svg);
+      var t1 = el("text",{x:ox+xs/2,y:oy-xs/2+5,"text-anchor":"middle","font-size":"15",fill:"#fff"},svg);
+      t1.textContent = "x²";
+    }
+    // 5x 직사각형 2개
+    if (st>=2){
+      el("rect",{x:ox+xs,y:oy-xs,width:fs,height:xs,fill:"#B34A2B",opacity:"0.8"},svg);
+      var t2 = el("text",{x:ox+xs+fs/2,y:oy-xs/2+5,"text-anchor":"middle","font-size":"14",fill:"#fff"},svg);
+      t2.textContent = "5x";
+      el("rect",{x:ox,y:oy,width:xs,height:fs,fill:"#B34A2B",opacity:"0.8"},svg);
+      var t3 = el("text",{x:ox+xs/2,y:oy+fs/2+5,"text-anchor":"middle","font-size":"14",fill:"#fff"},svg);
+      t3.textContent = "5x";
+    }
+    // 25 정사각형
+    if (st>=4){
+      el("rect",{x:ox+xs,y:oy,width:fs,height:fs,fill:"#5E6B2C",opacity:"0.75"},svg);
+      var t4 = el("text",{x:ox+xs+fs/2,y:oy+fs/2+5,"text-anchor":"middle","font-size":"15",fill:"#fff"},svg);
+      t4.textContent = "25";
+    }
+    // 전체 테두리
+    if (st>=5){
+      el("rect",{x:ox,y:oy-xs,width:xs+fs,height:xs+fs,fill:"none",stroke:"#1A1C22","stroke-width":"3"},svg);
+      var t5 = el("text",{x:ox+(xs+fs)/2,y:oy-xs-14,"text-anchor":"middle","font-size":"14",fill:"#1A1C22"},svg);
+      t5.textContent = "한 변 (x + 5)";
+      var t6 = el("text",{x:ox+xs+fs+12,y:oy+fs/2,"font-size":"13",fill:"#1A1C22"},svg);
+      t6.textContent = "= 8";
+    }
+    if (st>=3 && st<4){
+      var t7 = el("text",{x:ox,y:oy+fs+30,"font-size":"14",fill:"#B34A2B"},svg);
+      t7.textContent = "ㄱ자 모양의 넓이 = 39";
+    }
+    if (st>=6){
+      var t8 = el("text",{x:ox,y:oy+fs+34,"font-size":"16",fill:"#5E6B2C","font-weight":"700"},svg);
+      t8.textContent = "(x+5)² = 64  →  x + 5 = 8  →  x = 3";
+    }
+    $("csOut").innerHTML = st===0 ? "" : CSTEXT[st];
+    $("csMsg").innerHTML = st===0 ? CSTEXT[0]
+      : (st>=6 ? "이것이 <b>완전제곱</b>입니다. 모자란 모서리를 채워 <b>정사각형으로 만드는</b> 것입니다."
+               : "단계 " + st + " / 6");
+  }
+  $("csStep").addEventListener("click", function(){ if (CS.step<6) CS.step++; drawCS(); });
+  $("csReset").addEventListener("click", function(){ CS.step=0; drawCS(); });
+  drawCS();
+
+  $("qsGo").addEventListener("click", function(){
+    var b = +$("qsB").value || 0, c = +$("qsC").value || 0;
+    var h = b/2, rhs = c + h*h;
+    var out = $("qsOut"); clear(out);
+    out.appendChild(ce("div", null, "x² + " + b + "x = " + c));
+    out.appendChild(ce("div", null, "양변에 (" + b + "÷2)² = " + (h*h) + " 를 더한다"));
+    out.appendChild(ce("div", null, "(x + " + h + ")² = " + c + " + " + (h*h) + " = " + rhs));
+    if (rhs < 0){
+      var d = ce("div", null, "→ 제곱이 음수! 실수 범위에서 <답이 없습니다>");
+      d.style.cssText = "font-weight:700;color:var(--cinnabar)";
+      out.appendChild(d);
+      $("qsMsg").innerHTML = "제곱한 값은 <b>음수가 될 수 없습니다</b>. 그래서 답이 없습니다.";
+      return;
+    }
+    var s = Math.sqrt(rhs);
+    var r1 = -h + s, r2 = -h - s;
+    var nice = Math.abs(s - Math.round(s)) < 1e-9;
+    out.appendChild(ce("div", null, "x + " + h + " = ±" + (nice ? Math.round(s) : s.toFixed(4))));
+    var d2 = ce("div", null, "→ x = " + (nice ? r1 : r1.toFixed(4)) + " 또는 " + (nice ? r2 : r2.toFixed(4)));
+    d2.style.cssText = "font-weight:700;color:var(--olive)";
+    out.appendChild(d2);
+    out.appendChild(ce("div", null, "검산 : " + (nice?r1:r1.toFixed(2)) + "² + " + b + "×" + (nice?r1:r1.toFixed(2)) +
+      " = " + (Math.round((r1*r1 + b*r1)*10000)/10000)));
+    $("qsMsg").innerHTML = rhs===0
+      ? "제곱이 0이라 <b>답이 하나뿐</b>입니다 (중근)."
+      : "알콰리즈미는 <b>양수 답만</b> 인정했지만, 음수 답도 식을 만족합니다.";
+  });
+  $("qsGo").click();
+
+  var DCCASES = [
+    { n:"x² + 10x − 39 = 0", b:10, c:-39 },
+    { n:"x² + 6x + 9 = 0", b:6, c:9 },
+    { n:"x² + 2x + 5 = 0", b:2, c:5 }
+  ];
+  var dcSel = 0;
+  (function(){
+    var box = $("dcTools");
+    DCCASES.forEach(function(cs,i){
+      var b = ce("button","tbtn"+(i===0?" on":""), cs.n);
+      b.addEventListener("click", function(){
+        box.querySelectorAll(".tbtn").forEach(function(x){ x.classList.remove("on"); });
+        b.classList.add("on"); dcSel=i; drawDC();
+      });
+      box.appendChild(b);
+    });
+  })();
+  function drawDC(){
+    var cs = DCCASES[dcSel];
+    var svg = $("dcSvg"); clear(svg);
+    el("rect",{x:0,y:0,width:480,height:260,fill:"#FAF9F4"},svg);
+    var ox=240, oy=170, sx=13, sy=2.2;
+    el("line",{x1:20,y1:oy,x2:460,y2:oy,stroke:"#BDBAB2","stroke-width":"1.5"},svg);
+    el("line",{x1:ox,y1:20,x2:ox,y2:245,stroke:"#BDBAB2","stroke-width":"1.5"},svg);
+    var pts=[];
+    for (var xv=-16; xv<=16; xv+=0.25){
+      var yv = xv*xv + cs.b*xv + cs.c;
+      var px = ox + xv*sx, py = oy - yv*sy;
+      if (py>=15 && py<=250 && px>=20 && px<=460) pts.push(px.toFixed(1)+","+py.toFixed(1));
+      else pts.push("");
+    }
+    var segs = pts.join(" ").split(/\s{2,}/);
+    pts.filter(function(p){return p;}).length && el("polyline",
+      {points:pts.filter(function(p){return p;}).join(" "),fill:"none",stroke:"#B34A2B","stroke-width":"2.5"},svg);
+    var D = cs.b*cs.b - 4*cs.c;
+    var out = $("dcOut"); clear(out);
+    if (D > 0){
+      var r1 = (-cs.b + Math.sqrt(D))/2, r2 = (-cs.b - Math.sqrt(D))/2;
+      [r1,r2].forEach(function(r){
+        el("circle",{cx:ox+r*sx,cy:oy,r:6,fill:"#5E6B2C"},svg);
+      });
+      out.textContent = "D = " + D + " > 0 → x축과 두 점에서 만남 → 근 " + r1 + ", " + r2;
+    } else if (D === 0){
+      var r = -cs.b/2;
+      el("circle",{cx:ox+r*sx,cy:oy,r:6,fill:"#8F7016"},svg);
+      out.textContent = "D = 0 → x축에 닿기만 함 → 중근 " + r;
+    } else {
+      out.textContent = "D = " + D + " < 0 → x축과 만나지 않음 → 실근 없음";
+    }
+    $("dcMsg").innerHTML = D>0 ? "그래프가 x축을 <b>두 번</b> 지나면 답이 2개입니다."
+      : (D===0 ? "그래프가 x축에 <b>살짝 닿으면</b> 답이 1개입니다(중근)."
+               : "그래프가 <b>x축 위에만</b> 있으면 답이 없습니다. 알콰리즈미의 그림으로도 만들 수 없습니다.");
+  }
+  drawDC();
+
+  /* ================= SET 4 : 갈릴레오 ================= */
+  var GR = { t:0 };
+  function drawGR(){
+    var svg = $("grSvg"); clear(svg);
+    el("rect",{x:0,y:0,width:620,height:240,fill:"#FAF9F4"},svg);
+    var x0=40, y0=40, x1=580, y1=200;
+    el("line",{x1:x0,y1:y0,x2:x1,y2:y1,stroke:"#8C7A5E","stroke-width":"5","stroke-linecap":"round"},svg);
+    var maxD = 64;
+    for (var k=1;k<=Math.min(GR.t,8);k++){
+      var d = k*k/maxD;
+      var px = x0 + (x1-x0)*d, py = y0 + (y1-y0)*d;
+      el("circle",{cx:px,cy:py,r:5,fill:"#1E6B66"},svg);
+      var tk = el("text",{x:px,y:py-10,"text-anchor":"middle","font-size":"11",fill:"#1E6B66"},svg);
+      tk.textContent = k + "초";
+      // 구간 표시
+      var dprev = (k-1)*(k-1)/maxD;
+      var qx = x0 + (x1-x0)*dprev, qy = y0 + (y1-y0)*dprev;
+      el("line",{x1:qx,y1:qy,x2:px,y2:py,stroke:"#B34A2B","stroke-width":"3"},svg);
+      var mx = (qx+px)/2, my=(qy+py)/2;
+      var ts = el("text",{x:mx,y:my+18,"text-anchor":"middle","font-size":"11",fill:"#B34A2B"},svg);
+      ts.textContent = (2*k-1);
+    }
+    if (GR.t>0){
+      var cur = Math.min(GR.t,8);
+      var d2 = cur*cur/maxD;
+      el("circle",{cx:x0+(x1-x0)*d2,cy:y0+(y1-y0)*d2,r:9,fill:"none",stroke:"#5E6B2C","stroke-width":"3"},svg);
+    }
+    var t = $("grTbl"); clear(t);
+    var hd = ce("tr");
+    ["시간(초)","총 거리","그 구간에서 간 거리"].forEach(function(h){ hd.appendChild(ce("th",null,h)); });
+    t.appendChild(hd);
+    for (var i=1;i<=Math.min(GR.t,8);i++){
+      var tr = ce("tr");
+      tr.appendChild(ce("td",null,String(i)));
+      tr.appendChild(ce("td",null,String(i*i)));
+      tr.appendChild(ce("td","hi",String(2*i-1)));
+      t.appendChild(tr);
+    }
+    $("grMsg").innerHTML = GR.t===0 ? "버튼을 눌러 공을 굴려 보세요."
+      : (GR.t>=4 ? "구간 거리가 <b>1, 3, 5, 7, …</b> 연속한 <b>홀수</b>입니다! 총 거리는 <b>1, 4, 9, 16 = 제곱수</b>."
+                 : "각 구간에서 간 거리를 잘 보세요. 시간 " + GR.t + "초까지 진행했습니다.");
+  }
+  $("grStep").addEventListener("click", function(){ if (GR.t<8) GR.t++; drawGR(); });
+  $("grReset").addEventListener("click", function(){ GR.t=0; drawGR(); });
+  drawGR();
+
+  function drawLQTable(){
+    var t = $("lqTbl"); clear(t);
+    var hd = ce("tr");
+    ["x","일차 y=3x+2","차이","이차 y=x²","차이","차이의 차이"].forEach(function(h){ hd.appendChild(ce("th",null,h)); });
+    t.appendChild(hd);
+    var p1=null,p2=null,dp=null;
+    for (var x=0;x<=7;x++){
+      var y1=3*x+2, y2=x*x;
+      var tr = ce("tr");
+      tr.appendChild(ce("td",null,String(x)));
+      tr.appendChild(ce("td",null,String(y1)));
+      tr.appendChild(ce("td", p1!==null?"ok":null, p1===null?"":String(y1-p1)));
+      tr.appendChild(ce("td",null,String(y2)));
+      tr.appendChild(ce("td",null, p2===null?"":String(y2-p2)));
+      var dd = "";
+      if (p2!==null && dp!==null) dd = String((y2-p2)-dp);
+      tr.appendChild(ce("td", dd?"hi":null, dd));
+      t.appendChild(tr);
+      if (p2!==null) dp = y2-p2;
+      p1=y1; p2=y2;
+    }
+    $("lqMsg").innerHTML = "일차함수는 <b>차이가 3으로 일정</b>, 이차함수는 <b>차이의 차이가 2로 일정</b>합니다.";
+  }
+  function drawLQGraph(){
+    var svg = $("lqSvg"); clear(svg);
+    el("rect",{x:0,y:0,width:480,height:280,fill:"#FAF9F4"},svg);
+    var ox=50, oy=240, sx=52, sy=4.2;
+    el("line",{x1:ox,y1:20,x2:ox,y2:oy,stroke:"#BDBAB2","stroke-width":"1.5"},svg);
+    el("line",{x1:ox,y1:oy,x2:460,y2:oy,stroke:"#BDBAB2","stroke-width":"1.5"},svg);
+    var p1=[],p2=[];
+    for (var x=0;x<=7;x+=0.1){
+      var y1=3*x+2, y2=x*x;
+      if (y1*sy<220) p1.push((ox+x*sx).toFixed(1)+","+(oy-y1*sy).toFixed(1));
+      if (y2*sy<220) p2.push((ox+x*sx).toFixed(1)+","+(oy-y2*sy).toFixed(1));
+    }
+    el("polyline",{points:p1.join(" "),fill:"none",stroke:"#2A4A7B","stroke-width":"2.5"},svg);
+    el("polyline",{points:p2.join(" "),fill:"none",stroke:"#B34A2B","stroke-width":"2.5"},svg);
+    var l1 = el("text",{x:ox+10,y:36,"font-size":"12",fill:"#2A4A7B"},svg);
+    l1.textContent = "y = 3x + 2 (일차) — 곧은 직선";
+    var l2 = el("text",{x:ox+10,y:54,"font-size":"12",fill:"#B34A2B"},svg);
+    l2.textContent = "y = x² (이차) — 점점 가팔라지는 곡선";
+    for (var k=0;k<=7;k++){
+      var tk = el("text",{x:ox+k*sx,y:oy+16,"text-anchor":"middle","font-size":"11",fill:"#555A63"},svg);
+      tk.textContent = k;
+    }
+    $("lqMsg").innerHTML = "일차함수는 <b>일정한 기울기의 직선</b>, 이차함수는 <b>점점 가팔라지는 곡선</b>입니다.";
+  }
+  $("lqTable").addEventListener("click", function(){
+    this.classList.add("on"); $("lqGraph").classList.remove("on");
+    $("lqTableBox").style.display=""; $("lqSvg").style.display="none";
+    drawLQTable();
+  });
+  $("lqGraph").addEventListener("click", function(){
+    this.classList.add("on"); $("lqTable").classList.remove("on");
+    $("lqTableBox").style.display="none"; $("lqSvg").style.display="";
+    drawLQGraph();
+  });
+  drawLQTable();
+
+  var FM = { rule:null, inputs:[], name:"" };
+  var FMRULES = [
+    { n:"2배 하고 1 더하기", f:function(x){ return 2*x+1; } },
+    { n:"제곱하기", f:function(x){ return x*x; } },
+    { n:"3배 하고 2 빼기", f:function(x){ return 3*x-2; } },
+    { n:"제곱하고 1 더하기", f:function(x){ return x*x+1; } },
+    { n:"5에서 빼기", f:function(x){ return 5-x; } }
+  ];
+  function newFM(){
+    var r = FMRULES[Math.floor(Math.random()*FMRULES.length)];
+    FM.rule = r.f; FM.name = r.n; FM.inputs = [];
+    $("fmIn").textContent = "입력 ?";
+    $("fmOut2").textContent = "출력 ?";
+    drawFMTable();
+    $("fmMsg").innerHTML = "새 규칙을 만들었습니다. <b>숫자를 넣어</b> 규칙을 알아내세요.";
+  }
+  function drawFMTable(){
+    var t = $("fmTbl"); clear(t);
+    var hd = ce("tr");
+    hd.appendChild(ce("th",null,"입력"));
+    FM.inputs.forEach(function(x){ hd.appendChild(ce("td",null,String(x))); });
+    t.appendChild(hd);
+    var tr = ce("tr");
+    tr.appendChild(ce("th",null,"출력"));
+    FM.inputs.forEach(function(x){ tr.appendChild(ce("td","hi",String(FM.rule(x)))); });
+    t.appendChild(tr);
+    if (FM.inputs.length>=2){
+      var tr2 = ce("tr");
+      tr2.appendChild(ce("th",null,"차이"));
+      tr2.appendChild(ce("td",null,""));
+      for (var i=1;i<FM.inputs.length;i++){
+        tr2.appendChild(ce("td",null,String(FM.rule(FM.inputs[i]) - FM.rule(FM.inputs[i-1]))));
+      }
+      t.appendChild(tr2);
+    }
+  }
+  $("fmNew").addEventListener("click", newFM);
+  $("fmFeed").addEventListener("click", function(){
+    if (!FM.rule) newFM();
+    var x = FM.inputs.length + 1;
+    if (x > 8) return;
+    FM.inputs.push(x);
+    $("fmIn").textContent = "입력 " + x;
+    $("fmOut2").textContent = "출력 " + FM.rule(x);
+    drawFMTable();
+    $("fmMsg").innerHTML = FM.inputs.length>=3
+      ? "<b>차이</b>가 일정하면 일차, <b>차이의 차이</b>가 일정하면 이차입니다."
+      : "숫자를 더 넣어 보세요.";
+  });
+  $("fmShow").addEventListener("click", function(){
+    if (!FM.rule){ newFM(); return; }
+    $("fmMsg").innerHTML = "규칙은 <b>" + FM.name + "</b> 였습니다!";
+  });
+  newFM();
+
+  $("ffGo").addEventListener("click", function(){
+    var t = Math.max(0.5, Math.min(10, parseFloat($("ffT").value) || 3));
+    var out = $("ffOut"); clear(out);
+    out.appendChild(ce("div", null, "자유낙하 : 거리 = 4.9 × t²"));
+    out.appendChild(ce("div", null, "  t = " + t + "초 → 4.9 × " + (Math.round(t*t*100)/100) +
+      " = " + (Math.round(4.9*t*t*100)/100) + " m"));
+    out.appendChild(ce("div", null, ""));
+    out.appendChild(ce("div", null, "1초마다 떨어진 거리"));
+    var prev=0;
+    for (var k=1;k<=Math.min(Math.ceil(t),6);k++){
+      var d = 4.9*k*k;
+      out.appendChild(ce("div", null, "  " + k + "초까지 " + (Math.round(d*10)/10) +
+        "m  (그 1초 동안 " + (Math.round((d-prev)*10)/10) + "m)"));
+      prev = d;
+    }
+    var e = ce("div", null, "→ 1초마다 간 거리가 4.9 : 14.7 : 24.5 : … = 1 : 3 : 5 : …");
+    e.style.cssText = "font-weight:700;color:var(--teal)";
+    out.appendChild(e);
+    $("ffMsg").innerHTML = "시간이 <b>2배</b>가 되면 거리는 <b>4배</b>, <b>3배</b>면 <b>9배</b>가 됩니다.";
+  });
+  $("ffGo").click();
+
+  /* ================= SET 5 : 최대와 최소 ================= */
+  function drawFN(){
+    var x = +$("fnX").value, y = 20-x, area = x*y;
+    $("fnV").textContent = x;
+    var svg = $("fnSvg"); clear(svg);
+    el("rect",{x:0,y:0,width:500,height:300,fill:"#FAF9F4"},svg);
+    // 직사각형 그림
+    var s = 6.5, bx = 40, by = 155;
+    el("rect",{x:bx,y:by-y*s,width:x*s,height:y*s,fill:"#5E6B2C",opacity:"0.5",stroke:"#5E6B2C","stroke-width":"2"},svg);
+    var t1 = el("text",{x:bx+x*s/2,y:by+18,"text-anchor":"middle","font-size":"12",fill:"#1A1C22"},svg);
+    t1.textContent = "가로 " + x;
+    var t2 = el("text",{x:bx-8,y:by-y*s/2,"text-anchor":"end","font-size":"12",fill:"#1A1C22"},svg);
+    t2.textContent = "세로 " + y;
+    // 넓이 그래프
+    var ox=210, oy=250, sx=13, sy=1.7;
+    el("line",{x1:ox,y1:oy,x2:ox+280,y2:oy,stroke:"#BDBAB2","stroke-width":"1.5"},svg);
+    el("line",{x1:ox,y1:60,x2:ox,y2:oy,stroke:"#BDBAB2","stroke-width":"1.5"},svg);
+    var pts=[];
+    for (var k=0;k<=20;k+=0.25){
+      pts.push((ox+k*sx).toFixed(1)+","+(oy-k*(20-k)*sy).toFixed(1));
+    }
+    el("polyline",{points:pts.join(" "),fill:"none",stroke:"#2A4A7B","stroke-width":"2.5"},svg);
+    el("circle",{cx:ox+x*sx,cy:oy-area*sy,r:6,fill:"#B34A2B"},svg);
+    el("line",{x1:ox+10*sx,y1:oy,x2:ox+10*sx,y2:oy-100*sy,stroke:"#8F7016","stroke-width":"1.2","stroke-dasharray":"4 3"},svg);
+    var t3 = el("text",{x:ox+10*sx,y:oy-100*sy-8,"text-anchor":"middle","font-size":"11",fill:"#8F7016"},svg);
+    t3.textContent = "최대 100";
+    var t4 = el("text",{x:ox,y:48,"font-size":"12",fill:"#2A4A7B"},svg);
+    t4.textContent = "넓이 = x(20 − x)";
+    $("fnOut").textContent = "가로 " + x + " × 세로 " + y + " = 넓이 " + area + "㎡";
+    $("fnMsg").innerHTML = x===10
+      ? "<b style='color:var(--olive)'>최대!</b> 가로와 세로가 같은 <b>정사각형</b>일 때 넓이 <b>100㎡</b>로 가장 넓습니다."
+      : "정사각형에서 멀어질수록 넓이가 <b>줄어듭니다</b>. 가로를 10에 맞춰 보세요.";
+  }
+  $("fnX").addEventListener("input", function(){ drawFN(); clear($("fnTbl")); });
+  $("fnTable").addEventListener("click", function(){
+    var t = $("fnTbl"); clear(t);
+    var hd = ce("tr");
+    hd.appendChild(ce("th",null,"가로"));
+    for (var x=1;x<=19;x++) hd.appendChild(ce("th",null,String(x)));
+    t.appendChild(hd);
+    var tr = ce("tr");
+    tr.appendChild(ce("th",null,"넓이"));
+    for (var x2=1;x2<=19;x2++){
+      var a = x2*(20-x2);
+      tr.appendChild(ce("td", a===100?"ok":null, String(a)));
+    }
+    t.appendChild(tr);
+    $("fnMsg").innerHTML = "가운데(<b>x=10</b>)에서 최대이고 <b>좌우 대칭</b>입니다. 1과 19, 2와 18의 넓이가 같습니다.";
+  });
+  drawFN();
+
+  var VRCASES = [
+    { n:"네 면 모두 울타리 (40m)", f:function(x){ return x*(20-x); }, max:20, best:10, val:100,
+      d:"가로 x, 세로 20−x → 넓이 = x(20−x) = −(x−10)² + 100" },
+    { n:"한쪽이 벽 (40m)", f:function(x){ return x*(40-x)/2; }, max:40, best:20, val:200,
+      d:"가로 x, 세로 (40−x)/2 → 넓이 = −(x−20)²/2 + 200" },
+    { n:"가운데 칸막이 하나 (40m)", f:function(x){ return x*(40-2*x)/3*1.5; }, max:20, best:10, val:100,
+      d:"울타리를 3등분해 나눠 쓸 때" }
+  ];
+  var vrSel = 0;
+  (function(){
+    var box = $("vrTools");
+    VRCASES.forEach(function(c,i){
+      var b = ce("button","tbtn"+(i===0?" on":""), c.n);
+      b.addEventListener("click", function(){
+        box.querySelectorAll(".tbtn").forEach(function(x){ x.classList.remove("on"); });
+        b.classList.add("on"); vrSel=i; drawVR();
+      });
+      box.appendChild(b);
+    });
+  })();
+  function drawVR(){
+    var c = VRCASES[vrSel];
+    var svg = $("vrSvg"); clear(svg);
+    el("rect",{x:0,y:0,width:500,height:260,fill:"#FAF9F4"},svg);
+    var ox=50, oy=220, sx=400/c.max, sy=170/c.val;
+    el("line",{x1:ox,y1:oy,x2:ox+400,y2:oy,stroke:"#BDBAB2","stroke-width":"1.5"},svg);
+    el("line",{x1:ox,y1:30,x2:ox,y2:oy,stroke:"#BDBAB2","stroke-width":"1.5"},svg);
+    var pts=[], best=[0,0];
+    for (var k=0;k<=c.max;k+=c.max/200){
+      var v = c.f(k);
+      if (v>best[1]) best=[k,v];
+      pts.push((ox+k*sx).toFixed(1)+","+(oy-v*sy).toFixed(1));
+    }
+    el("polyline",{points:pts.join(" "),fill:"none",stroke:"#5E6B2C","stroke-width":"2.5"},svg);
+    el("circle",{cx:ox+c.best*sx,cy:oy-c.val*sy,r:7,fill:"#B34A2B"},svg);
+    var t1 = el("text",{x:ox+c.best*sx,y:oy-c.val*sy-12,"text-anchor":"middle","font-size":"12",fill:"#B34A2B"},svg);
+    t1.textContent = "최대 " + Math.round(c.val) + "㎡ (x=" + c.best + ")";
+    var out = $("vrOut"); clear(out);
+    out.appendChild(ce("div", null, c.d));
+    out.appendChild(ce("div", null, "→ x = " + c.best + " 일 때 넓이 최대 " + Math.round(c.val) + "㎡"));
+    $("vrMsg").innerHTML = vrSel===1
+      ? "벽을 한 면으로 쓰면 같은 울타리로 넓이가 <b>2배</b>가 됩니다!"
+      : "조건이 바뀌면 <b>최대가 되는 지점도 바뀝니다</b>.";
+  }
+  drawVR();
+
+  $("spGo").addEventListener("click", function(){
+    var s = Math.max(2, Math.min(100, +$("spS").value || 20));
+    var out = $("spOut"); clear(out);
+    var best=[0,0,0];
+    var rows=[];
+    for (var a=1;a<s;a++){
+      var p = a*(s-a);
+      if (p>best[2]) best=[a,s-a,p];
+      if (Math.abs(a - s/2) <= 3) rows.push([a, s-a, p]);
+    }
+    out.appendChild(ce("div", null, "두 수의 합이 " + s + "일 때 곱"));
+    rows.forEach(function(r){
+      out.appendChild(ce("div", null, "  " + r[0] + " × " + r[1] + " = " + r[2] +
+        (r[2]===best[2] ? "   ← 최대" : "")));
+    });
+    var d = ce("div", null, "→ 두 수가 " + best[0] + ", " + best[1] + "일 때 곱 " + best[2] + " 최대");
+    d.style.cssText = "font-weight:700;color:var(--olive)";
+    out.appendChild(d);
+    out.appendChild(ce("div", null, "  (합의 절반 = " + (s/2) + ")"));
+    $("spMsg").innerHTML = "합이 정해져 있으면 <b>두 수가 같을 때</b> 곱이 최대입니다. " +
+      "이것을 <b>산술평균-기하평균 부등식</b>이라고 합니다.";
+  });
+  $("spGo").click();
+
+  function drawBX(){
+    var x = (+$("bxX").value)/10;
+    $("bxV").textContent = x.toFixed(1);
+    var base = 12 - 2*x, vol = x*base*base;
+    var svg = $("bxSvg"); clear(svg);
+    el("rect",{x:0,y:0,width:520,height:250,fill:"#FAF9F4"},svg);
+    // 전개도
+    var s = 13, bx0 = 30, by0 = 40;
+    el("rect",{x:bx0,y:by0,width:12*s,height:12*s,fill:"#EFEDE5",stroke:"#8C7A5E","stroke-width":"2"},svg);
+    // 잘라내는 네 모서리
+    [[0,0],[12-x,0],[0,12-x],[12-x,12-x]].forEach(function(p){
+      el("rect",{x:bx0+p[0]*s,y:by0+p[1]*s,width:x*s,height:x*s,fill:"#B34A2B",opacity:"0.75"},svg);
+    });
+    el("rect",{x:bx0+x*s,y:by0+x*s,width:base*s,height:base*s,fill:"#5E6B2C",opacity:"0.35",
+      stroke:"#5E6B2C","stroke-width":"1.5","stroke-dasharray":"4 3"},svg);
+    var t1 = el("text",{x:bx0+6*s,y:by0+6*s+5,"text-anchor":"middle","font-size":"12",fill:"#1A1C22"},svg);
+    t1.textContent = "밑면 " + base.toFixed(1) + " × " + base.toFixed(1);
+    // 부피 그래프
+    var ox=250, oy=210, sx=38, sy=1.15;
+    el("line",{x1:ox,y1:oy,x2:ox+240,y2:oy,stroke:"#BDBAB2","stroke-width":"1.5"},svg);
+    el("line",{x1:ox,y1:30,x2:ox,y2:oy,stroke:"#BDBAB2","stroke-width":"1.5"},svg);
+    var pts=[];
+    for (var k=0;k<=6;k+=0.05){
+      var v = k*(12-2*k)*(12-2*k);
+      pts.push((ox+k*sx).toFixed(1)+","+(oy-v*sy).toFixed(1));
+    }
+    el("polyline",{points:pts.join(" "),fill:"none",stroke:"#2A4A7B","stroke-width":"2.5"},svg);
+    el("circle",{cx:ox+x*sx,cy:oy-vol*sy,r:6,fill:"#B34A2B"},svg);
+    el("line",{x1:ox+2*sx,y1:oy,x2:ox+2*sx,y2:oy-128*sy,stroke:"#8F7016","stroke-width":"1.2","stroke-dasharray":"4 3"},svg);
+    var t2 = el("text",{x:ox+2*sx,y:oy-128*sy-8,"text-anchor":"middle","font-size":"11",fill:"#8F7016"},svg);
+    t2.textContent = "최대 128";
+    var t3 = el("text",{x:ox,y:24,"font-size":"12",fill:"#2A4A7B"},svg);
+    t3.textContent = "부피 = x(12 − 2x)²";
+    $("bxOut").textContent = "x = " + x.toFixed(1) + " → 밑면 " + base.toFixed(1) + " × " + base.toFixed(1) +
+      " , 높이 " + x.toFixed(1) + " → 부피 " + vol.toFixed(2) + "㎤";
+    $("bxMsg").innerHTML = Math.abs(x-2)<0.05
+      ? "<b style='color:var(--olive)'>최대!</b> x = 2일 때 부피 <b>128㎤</b>입니다. (밑면 8×8, 높이 2)"
+      : "너무 조금 자르면 <b>낮은 상자</b>, 너무 많이 자르면 <b>바닥이 좁은 상자</b>가 됩니다.";
+  }
+  $("bxX").addEventListener("input", drawBX);
+  $("bxBest").addEventListener("click", function(){
+    var best=[0,0];
+    for (var k=1;k<=55;k++){
+      var x=k/10, v=x*(12-2*x)*(12-2*x);
+      if (v>best[1]) best=[k,v];
+    }
+    $("bxX").value = best[0];
+    drawBX();
+  });
+  drawBX();
+})();
+</script>
+</body>
+</html>
